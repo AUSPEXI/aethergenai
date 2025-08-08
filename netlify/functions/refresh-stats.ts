@@ -3,7 +3,9 @@ import { createClient } from '@supabase/supabase-js';
 
 const urlCandidates = [
   'SUPABASE_URL',
+  'SUPABASE_DATABASE_URL',
   'VITE_SUPABASE_URL',
+  'VITE_SUPABASE_DATABASE_URL',
   'NEXT_PUBLIC_SUPABASE_URL',
   'REACT_APP_SUPABASE_URL',
   'PUBLIC_SUPABASE_URL'

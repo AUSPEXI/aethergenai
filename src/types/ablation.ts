@@ -1,0 +1,43 @@
+export type AblationPrivacy = {
+  epsilon?: number;
+  synthetic_ratio?: number;
+};
+
+export type AblationTraining = {
+  moe?: { experts?: number; top_k?: number };
+  precision?: 'FP32' | 'FP16' | 'BF16' | 'INT8' | 'FP8';
+  modelFilter?: string[]; // run only these model names
+};
+
+export type AblationModules = {
+  enable?: string[];
+  disable?: string[];
+};
+
+export type AblationEntry = {
+  name: string;
+  description?: string;
+  modules?: AblationModules;
+  training?: AblationTraining;
+  privacy?: AblationPrivacy;
+  repeats?: number;
+};
+
+export type AblationRecipe = {
+  version?: string; // e.g., '1.0'
+  dataset?: string; // optional logical name/path
+  schema_hash?: string; // optional for auditability
+  repeats?: number; // default repeats per ablation
+  ablations: AblationEntry[];
+  metrics?: string[]; // names of metrics to highlight
+};
+
+export type AblationRunResult = {
+  ablationName: string;
+  repeatIndex: number;
+  modelName: string;
+  metrics: Record<string, number>;
+  experimentalFlags?: string[];
+};
+
+

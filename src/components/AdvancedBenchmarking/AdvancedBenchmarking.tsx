@@ -1,0 +1,1002 @@
+import React, { useState, useEffect } from 'react';
+import { BenchmarkResult, SelfLearningFeedback, advancedAIModels } from '../../types/advancedModels';
+import { hreTechnologyService } from '../../services/hreTechnologyService';
+import { AblationRecipe } from '../../types/ablation';
+import { runRecipeLocally, summarizeAblationResults } from '../../services/ablationService';
+
+interface AdvancedBenchmarkingProps {
+  schema: any;
+  seedData: any[];
+  generatedData: any[];
+}
+
+interface ModuleInfo {
+  name: string;
+  description: string;
+  enabled: boolean;
+}
+
+interface BasicBenchmarkSummary {
+  accuracy: number;
+  cost_reduction: number;
+  modules: Array<{ name: string; contribution: number }>;
+  sdgym?: {
+    synthetic_score: number;
+    real_score: number;
+    description: string;
+  };
+  privacyraven?: {
+    attack_success_rate: number;
+    description: string;
+  };
+}
+
+const AdvancedBenchmarking: React.FC<AdvancedBenchmarkingProps> = ({
+  schema,
+  seedData,
+  generatedData
+}) => {
+  const [benchmarkResults, setBenchmarkResults] = useState<BenchmarkResult[]>([]);
+  const [selfLearningFeedback, setSelfLearningFeedback] = useState<SelfLearningFeedback | null>(null);
+  const [isRunning, setIsRunning] = useState(false);
+  const [selectedModels, setSelectedModels] = useState<string[]>([]);
+  const [hreAnalysis, setHreAnalysis] = useState<any>(null);
+  
+  // Basic module benchmarks state
+  const [modules, setModules] = useState<ModuleInfo[]>([]);
+  const [selectedModules, setSelectedModules] = useState<string[]>([]);
+  const [basicBenchmarkSummary, setBasicBenchmarkSummary] = useState<BasicBenchmarkSummary | null>(null);
+  const [basicBenchmarkLoading, setBasicBenchmarkLoading] = useState(false);
+  const [basicBenchmarkError, setBasicBenchmarkError] = useState<string | null>(null);
+  const [notification, setNotification] = useState<string | null>(null);
+  const [recipeText, setRecipeText] = useState<string>('');
+  const [recipeSummary, setRecipeSummary] = useState<any | null>(null);
+  const fileInputRef = React.useRef<HTMLInputElement | null>(null);
+  const [expHarmonics, setExpHarmonics] = useState(false);
+  const [expConsensusAudit, setExpConsensusAudit] = useState(false);
+  const [expSelectiveAbstention, setExpSelectiveAbstention] = useState(false);
+  const [recipePlan, setRecipePlan] = useState<Array<{ name: string; repeats: number; modelCount: number; flags?: string[] }>>([]);
+
+  useEffect(() => {
+    fetchBasicModules();
+    fetchBasicBenchmarks();
+    
+    if (generatedData.length > 0) {
+      runComprehensiveBenchmarks();
+    }
+  }, [generatedData]);
+
+  const fetchBasicModules = async () => {
+    try {
+      const response = await fetch('/.netlify/functions/modules');
+      const data = await response.json();
+      setModules(data.modules);
+      setSelectedModules(data.modules.filter((m: ModuleInfo) => m.enabled).map((m: ModuleInfo) => m.name));
+    } catch (err) {
+      console.error('Failed to fetch modules');
+    }
+  };
+
+  const fetchBasicBenchmarks = async () => {
+    setBasicBenchmarkLoading(true);
+    setBasicBenchmarkError(null);
+    try {
+      const response = await fetch('/.netlify/functions/benchmark');
+      const summary = await response.json();
+      setBasicBenchmarkSummary(summary);
+    } catch (err: any) {
+      setBasicBenchmarkError('Failed to fetch benchmark results');
+    } finally {
+      setBasicBenchmarkLoading(false);
+    }
+  };
+
+  const runComprehensiveBenchmarks = async () => {
+    setIsRunning(true);
+    setNotification('Running comprehensive benchmarks...');
+    try {
+      const results: BenchmarkResult[] = [];
+      
+      // Run benchmarks for all advanced models
+      for (const model of advancedAIModels) {
+        if (selectedModels.length === 0 || selectedModels.includes(model.name)) {
+          const result = await hreTechnologyService.runComprehensiveBenchmark(
+            model.name,
+            generatedData,
+            schema
+          );
+          results.push(result);
+        }
+      }
+      
+      setBenchmarkResults(results);
+      
+      // Update self-learning feedback
+      const feedback = await hreTechnologyService.updateSelfLearningFeedback(results);
+      setSelfLearningFeedback(feedback);
+      
+      // Run HRE analysis
+      const hreResult = await runHREAnalysis();
+      setHreAnalysis(hreResult);
+      
+      setNotification('Benchmarks completed successfully!');
+    } catch (error) {
+      setNotification('Benchmark error: ' + (error instanceof Error ? error.message : 'Unknown error'));
+      console.error('Benchmark error:', error);
+    } finally {
+      setIsRunning(false);
+      setTimeout(() => setNotification(null), 4000);
+    }
+  };
+
+  const runRecipe = async () => {
+    if (!recipeText.trim()) {
+      setNotification('Please paste a recipe (YAML or JSON)');
+      return;
+    }
+    try {
+      setIsRunning(true);
+      setNotification('Running ablation recipe...');
+      let recipe: AblationRecipe;
+      if (recipeText.trim().startsWith('{')) {
+        recipe = JSON.parse(recipeText);
+      } else {
+        // lightweight YAML parse (very basic): key: value and arrays with -
+        // For MVP, require JSON or a simple subset. In production we would add js-yaml.
+        throw new Error('For now, please provide JSON recipe. YAML parser not bundled.');
+      }
+      // Inject experimental flags as a synthetic ablation for traceability
+      const enabledFlags: string[] = [];
+      if (expHarmonics) enabledFlags.push('HarmonicsLayer');
+      if (expConsensusAudit) enabledFlags.push('ConsensusAudit');
+      if (expSelectiveAbstention) enabledFlags.push('SelectiveAbstention');
+      if (enabledFlags.length > 0) {
+        recipe.ablations = [
+          { name: 'experimental_modules', modules: { enable: enabledFlags } },
+          ...recipe.ablations,
+        ];
+      }
+
+      // Apply privacy overrides to app via a custom event if present
+      if (recipe.ablations?.length && recipe.ablations[0].privacy) {
+        const { epsilon, synthetic_ratio } = recipe.ablations[0].privacy;
+        window.dispatchEvent(new CustomEvent('aethergen:apply-privacy', { detail: { epsilon, synthetic_ratio } }));
+      }
+
+      const results = await runRecipeLocally(recipe, generatedData, schema);
+      const summary = summarizeAblationResults(results);
+      setRecipeSummary(summary);
+      setNotification('Recipe completed. Summary available below.');
+    } catch (err: any) {
+      setNotification('Recipe error: ' + (err.message || 'Unknown error'));
+    } finally {
+      setIsRunning(false);
+      setTimeout(() => setNotification(null), 4000);
+    }
+  };
+
+  const downloadSummary = () => {
+    if (!recipeSummary) return;
+    const blob = new Blob([JSON.stringify(recipeSummary, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `ablation_summary_${Date.now()}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const downloadSummaryCsv = () => {
+    if (!recipeSummary) return;
+    const ablations = Object.keys(recipeSummary);
+    if (ablations.length === 0) return;
+    // union of metric keys
+    const metricSet = new Set<string>();
+    for (const a of ablations) {
+      Object.keys(recipeSummary[a] || {}).forEach((k) => metricSet.add(k));
+    }
+    const metrics = Array.from(metricSet);
+    const header = ['ablation', ...metrics];
+    const rows: string[][] = [header];
+    for (const a of ablations) {
+      const line = [a, ...metrics.map((m) => {
+        const v = recipeSummary[a]?.[m];
+        return typeof v === 'number' ? String(v) : (v ?? '').toString();
+      })];
+      rows.push(line);
+    }
+    const csv = rows.map(r => r.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `ablation_summary_${Date.now()}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const computeSchemaHash = (obj: any): string => {
+    try {
+      const s = JSON.stringify(obj);
+      let h = 5381;
+      for (let i = 0; i < s.length; i++) h = (h * 33) ^ s.charCodeAt(i);
+      return (h >>> 0).toString(16);
+    } catch {
+      return 'unknown';
+    }
+  };
+
+  const downloadAblationCard = () => {
+    if (!recipeSummary) return;
+    const recipeHash = computeSchemaHash(recipeText || '');
+    const card = {
+      card_version: '1.0',
+      generated_at: new Date().toISOString(),
+      schema_hash: computeSchemaHash(schema),
+      recipe_hash: recipeHash,
+      app_version: (import.meta as any)?.env?.VITE_APP_VERSION || 'local-dev',
+      privacy: {
+        epsilon: schema?.privacySettings?.epsilon,
+        synthetic_ratio: schema?.privacySettings?.syntheticRatio,
+      },
+      summary: recipeSummary,
+    };
+    const blob = new Blob([JSON.stringify(card, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `ablation_card_${Date.now()}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const loadPresetRecipe = async () => {
+    // Try to fetch from /docs, fall back to a built-in sample
+    const fallback = {
+      version: '1.0',
+      repeats: 2,
+      ablations: [
+        { name: 'baseline_all_models', training: { precision: 'FP16' } },
+        { name: 'disable_modelA', modules: { disable: ['ModelA'] }, training: { modelFilter: ['ModelB', 'ModelC'], precision: 'FP8' }, privacy: { epsilon: 0.05, synthetic_ratio: 98 } },
+      ],
+      metrics: ['accuracy', 'privacyScore', 'utilityScore', 'generationSpeed'],
+    };
+    try {
+      const res = await fetch('/docs/ABLATION_RECIPES_EXAMPLE.json');
+      if (!res.ok) throw new Error('not served');
+      const json = await res.text();
+      setRecipeText(json);
+    } catch {
+      setRecipeText(JSON.stringify(fallback, null, 2));
+    }
+  };
+
+  const loadPresetRecipePrivacy = () => {
+    const preset = {
+      version: '1.0',
+      repeats: 1,
+      ablations: [
+        { name: 'epsilon_0.5_ratio_90', privacy: { epsilon: 0.5, synthetic_ratio: 90 } },
+        { name: 'epsilon_0.2_ratio_95', privacy: { epsilon: 0.2, synthetic_ratio: 95 } },
+        { name: 'epsilon_0.1_ratio_98', privacy: { epsilon: 0.1, synthetic_ratio: 98 } }
+      ],
+      metrics: ['privacyScore', 'utilityScore', 'generationSpeed']
+    };
+    setRecipeText(JSON.stringify(preset, null, 2));
+  };
+
+  const loadPresetRecipeExperimental = async () => {
+    const fallback = {
+      version: '1.0',
+      repeats: 1,
+      ablations: [
+        {
+          name: 'experimental_harmonics_consensus_selective',
+          experimental_modules: {
+            harmonicsLayer: true,
+            consensusAuditEnsemble: true,
+            selectiveAbstention: true
+          },
+          training: { precision: 'FP16' }
+        }
+      ],
+      metrics: ['accuracy', 'privacyScore', 'utilityScore', 'generationSpeed']
+    };
+    try {
+      const res = await fetch('/docs/ABLATION_RECIPES_EXPERIMENTAL.json');
+      if (!res.ok) throw new Error('not served');
+      const json = await res.text();
+      setRecipeText(json);
+    } catch {
+      setRecipeText(JSON.stringify(fallback, null, 2));
+    }
+  };
+
+  const validateRecipe = () => {
+    try {
+      let recipe: AblationRecipe;
+      if (recipeText.trim().startsWith('{')) {
+        recipe = JSON.parse(recipeText);
+      } else {
+        throw new Error('Provide JSON for validation');
+      }
+      const defaultRepeats = recipe.repeats ?? 1;
+      const plan: Array<{ name: string; repeats: number; modelCount: number; flags?: string[] }> = [];
+      for (const ab of recipe.ablations || []) {
+        const repeats = ab.repeats ?? defaultRepeats;
+        const filter = ab.training?.modelFilter;
+        const modelCount = filter && filter.length > 0 ? filter.length : advancedAIModels.length;
+        plan.push({ name: ab.name, repeats, modelCount, flags: ab.modules?.enable });
+      }
+      setRecipePlan(plan);
+      setNotification(`Valid recipe: ${plan.length} ablations`);
+      setTimeout(() => setNotification(null), 2500);
+    } catch (e: any) {
+      setNotification('Validation error: ' + (e.message || 'Invalid JSON'));
+      setTimeout(() => setNotification(null), 3000);
+    }
+  };
+
+  const downloadRecipe = () => {
+    const text = recipeText || '{\n  "version": "1.0",\n  "repeats": 1,\n  "ablations": []\n}';
+    const blob = new Blob([text], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `ablation_recipe_${Date.now()}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const loadRecipeFromFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const text = String(ev.target?.result || '');
+      setRecipeText(text);
+    };
+    reader.readAsText(file);
+    // reset input so the same file can be selected twice if needed
+    e.target.value = '';
+  };
+
+  const runHREAnalysis = async () => {
+    // Run comprehensive HRE analysis
+    const hypercubeConfig = await hreTechnologyService.createHypercubeConfig(8, {
+      geometricMapping: {
+        vectorSpace: 'riemannian',
+        curvature: 0.1,
+        embeddingType: 'ocaonian'
+      }
+    });
+
+    const refractorTech = await hreTechnologyService.createRefractorTechnology('geometric', {
+      mappingFunction: 'non-linear',
+      dimensionalReduction: {
+        method: 'autoencoder',
+        targetDimensions: 8,
+        preserveGeometry: true
+      }
+    });
+
+    const harmonicEmbeddings = await hreTechnologyService.createHarmonicEmbeddings({
+      frequencyDomain: {
+        samplingRate: 44100,
+        windowSize: 1024,
+        transformType: 'fourier'
+      }
+    });
+
+    const triadValidator = await hreTechnologyService.createTriadValidator('geometric');
+
+    // Apply HRE transformations
+    const hypercubeEmbeddings = await hreTechnologyService.generateHypercubeEmbedding(generatedData, hypercubeConfig);
+    const refractorData = await hreTechnologyService.applyRefractorTransformation(generatedData, refractorTech);
+    const harmonicData = await hreTechnologyService.applyHarmonicEmbeddings(generatedData, harmonicEmbeddings);
+    const ocaonianData = await hreTechnologyService.applyOcaonianMapping(generatedData, await hreTechnologyService.createOcaonianMapping('stereographic', 'hyperbolic'));
+    const triadValidation = await hreTechnologyService.validateWithTriad(generatedData, triadValidator);
+
+    return {
+      hypercubeEmbeddings,
+      refractorData,
+      harmonicData,
+      ocaonianData,
+      triadValidation,
+      configs: {
+        hypercube: hypercubeConfig,
+        refractor: refractorTech,
+        harmonic: harmonicEmbeddings,
+        triad: triadValidator
+      }
+    };
+  };
+
+  const getModelCategory = (modelName: string): string => {
+    const model = advancedAIModels.find(m => m.name === modelName);
+    return model?.category || 'unknown';
+  };
+
+  const getModelColor = (category: string): string => {
+    switch (category) {
+      case 'geometric': return 'bg-blue-500';
+      case 'harmonic': return 'bg-green-500';
+      case 'refractor': return 'bg-purple-500';
+      case 'ocaonian': return 'bg-orange-500';
+      case 'triad': return 'bg-red-500';
+      case 'classical': return 'bg-gray-500';
+      case 'quantum': return 'bg-indigo-500';
+      default: return 'bg-gray-400';
+    }
+  };
+
+  return (
+    <div className="max-w-7xl mx-auto p-6 space-y-6">
+      {/* Basic Module Benchmarks */}
+      <div className="bg-white rounded-lg shadow-lg p-6">
+        <h2 className="text-2xl font-bold text-gray-800 mb-4">📊 Basic Module Benchmarks</h2>
+        
+        {/* Module Table */}
+        <div className="mb-6">
+          <h3 className="text-lg font-semibold mb-3">Module Configuration</h3>
+          <table className="min-w-full table-auto border mb-4">
+            <thead>
+              <tr>
+                <th className="px-4 py-2 text-left">Module</th>
+                <th className="px-4 py-2 text-left">Description</th>
+                <th className="px-4 py-2">Enabled</th>
+              </tr>
+            </thead>
+            <tbody>
+              {modules.map((mod) => (
+                <tr key={mod.name} className="border-t">
+                  <td className="px-4 py-2 font-semibold">{mod.name}</td>
+                  <td className="px-4 py-2">{mod.description}</td>
+                  <td className="px-4 py-2 text-center">
+                    <input
+                      type="checkbox"
+                      checked={selectedModules.includes(mod.name)}
+                      onChange={() => {
+                        setSelectedModules((prev) =>
+                          prev.includes(mod.name)
+                            ? prev.filter((m) => m !== mod.name)
+                            : [...prev, mod.name]
+                        );
+                      }}
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Basic Benchmark Results */}
+        <div>
+          <h3 className="text-lg font-semibold mb-3">Basic Benchmark Results</h3>
+          {basicBenchmarkLoading ? (
+            <div>Loading basic benchmarks...</div>
+          ) : basicBenchmarkError ? (
+            <div className="text-red-500">{basicBenchmarkError}</div>
+          ) : basicBenchmarkSummary ? (
+            <div className="space-y-4">
+              {/* Main Benchmark Stats */}
+              <div className="flex flex-wrap gap-6">
+                <div className="bg-blue-50 rounded p-4 flex-1 min-w-[180px]">
+                  <div className="text-xs text-gray-500">Accuracy</div>
+                  <div className="text-2xl font-bold">{(basicBenchmarkSummary.accuracy * 100).toFixed(2)}%</div>
+                </div>
+                <div className="bg-green-50 rounded p-4 flex-1 min-w-[180px]">
+                  <div className="text-xs text-gray-500">Cost Reduction</div>
+                  <div className="text-2xl font-bold">{(basicBenchmarkSummary.cost_reduction * 100).toFixed(2)}%</div>
+                </div>
+              </div>
+
+              {/* Module Contributions */}
+              <div>
+                <h4 className="font-semibold mb-2">Module Contributions</h4>
+                <table className="min-w-full table-auto border mb-4">
+                  <thead>
+                    <tr>
+                      <th className="px-4 py-2 text-left">Module</th>
+                      <th className="px-4 py-2 text-left">Contribution</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {basicBenchmarkSummary.modules?.map((mod: any) => (
+                      <tr key={mod.name} className="border-t">
+                        <td className="px-4 py-2">{mod.name}</td>
+                        <td className="px-4 py-2">{(mod.contribution * 100).toFixed(1)}%</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Privacy Metrics */}
+              <div className="flex flex-wrap gap-6">
+                <div className="bg-purple-50 rounded p-4 flex-1 min-w-[220px]">
+                  <div className="text-xs text-gray-500">SDGym Synthetic Score</div>
+                  <div className="text-xl font-bold">{basicBenchmarkSummary.sdgym?.synthetic_score}</div>
+                  <div className="text-xs text-gray-500 mt-1">{basicBenchmarkSummary.sdgym?.description}</div>
+                </div>
+                <div className="bg-yellow-50 rounded p-4 flex-1 min-w-[220px]">
+                  <div className="text-xs text-gray-500">SDGym Real Score</div>
+                  <div className="text-xl font-bold">{basicBenchmarkSummary.sdgym?.real_score}</div>
+                </div>
+                <div className="bg-pink-50 rounded p-4 flex-1 min-w-[220px]">
+                  <div className="text-xs text-gray-500">PrivacyRaven Attack Success Rate</div>
+                  <div className="text-xl font-bold">{basicBenchmarkSummary.privacyraven?.attack_success_rate}</div>
+                  <div className="text-xs text-gray-500 mt-1">{basicBenchmarkSummary.privacyraven?.description}</div>
+                </div>
+              </div>
+            </div>
+          ) : null}
+        </div>
+      </div>
+
+      {/* Experimental Modules (toggleable) */}
+      <div className="bg-white rounded-lg shadow-lg p-6">
+        <h2 className="text-2xl font-bold text-gray-800 mb-4">🧬 Experimental Modules</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <label className="flex items-center gap-3 p-3 border rounded">
+            <input type="checkbox" checked={expHarmonics} onChange={(e) => setExpHarmonics(e.target.checked)} />
+            <div>
+              <div className="font-semibold">Frequency Harmonics Layer</div>
+              <div className="text-sm text-gray-600">Resonance-based feature extraction for periodic data.</div>
+            </div>
+          </label>
+          <label className="flex items-center gap-3 p-3 border rounded">
+            <input type="checkbox" checked={expConsensusAudit} onChange={(e) => setExpConsensusAudit(e.target.checked)} />
+            <div>
+              <div className="font-semibold">Consensus Audit Ensemble</div>
+              <div className="text-sm text-gray-600">Outlier/bias detection via an ensemble of detectors.</div>
+            </div>
+          </label>
+          <label className="flex items-center gap-3 p-3 border rounded">
+            <input type="checkbox" checked={expSelectiveAbstention} onChange={(e) => setExpSelectiveAbstention(e.target.checked)} />
+            <div>
+              <div className="font-semibold">Selective Prediction (Abstention)</div>
+              <div className="text-sm text-gray-600">Calibrated abstain on low-confidence to improve reliability.</div>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      {/* HRE Technology Status */}
+      {/* Ablation Recipe Runner (Local) */}
+      <div className="bg-white rounded-lg shadow-lg p-6">
+        <div className="flex items-start justify-between">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-800 mb-1">🧪 Ablation Recipe (Local Runner)</h2>
+            <p className="text-sm text-gray-600">Paste a JSON recipe describing ablations to run. We map entries to the existing benchmark pipeline and summarize metrics.</p>
+          </div>
+          <div className="text-sm text-gray-700 bg-gray-50 border rounded px-3 py-2">
+            <div><span className="font-semibold">ε</span>: {schema?.privacySettings?.epsilon ?? '—'}</div>
+            <div><span className="font-semibold">Synthetic Ratio</span>: {schema?.privacySettings?.syntheticRatio ?? '—'}%</div>
+          </div>
+        </div>
+        <textarea
+          value={recipeText}
+          onChange={(e) => setRecipeText(e.target.value)}
+          placeholder='{
+  "version": "1.0",
+  "repeats": 2,
+  "ablations": [
+    { "name": "disable_some", "modules": { "disable": ["ModelA"] }, "training": { "modelFilter": ["ModelB","ModelC"], "precision": "FP8" } }
+  ],
+  "metrics": ["accuracy","privacyScore","utilityScore"]
+}'
+          className="w-full h-40 p-3 border rounded font-mono text-sm"
+        />
+        <div className="mt-3 flex gap-3 items-center flex-wrap">
+          <button
+            onClick={runRecipe}
+            disabled={isRunning || generatedData.length === 0}
+            className={`px-4 py-2 rounded ${isRunning || generatedData.length === 0 ? 'bg-gray-400 text-gray-700' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
+          >
+            {isRunning ? 'Running...' : 'Run Recipe'}
+          </button>
+          <button onClick={downloadRecipe} className="px-3 py-2 bg-gray-700 text-white rounded hover:bg-gray-800 text-sm">Download Recipe</button>
+          <div>
+            <input ref={fileInputRef} type="file" accept=".json,.yaml,.yml" onChange={loadRecipeFromFile} className="hidden" />
+            <button onClick={() => fileInputRef.current?.click()} className="px-3 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 text-sm">Load Recipe</button>
+          </div>
+          <div className="flex items-center gap-2">
+            <label className="text-sm text-gray-600">Presets:</label>
+            <select
+              className="text-sm border rounded px-2 py-1"
+              onChange={(e) => {
+                const v = e.target.value;
+                if (v === 'example') loadPresetRecipe();
+                if (v === 'privacy') loadPresetRecipePrivacy();
+                if (v === 'experimental') loadPresetRecipeExperimental();
+              }}
+              defaultValue=""
+            >
+              <option value="" disabled>Select preset</option>
+              <option value="example">Example (baseline + disable ModelA)</option>
+              <option value="privacy">Privacy sweep (ε and ratio)</option>
+              <option value="experimental">Experimental modules</option>
+            </select>
+          </div>
+          <button
+            onClick={validateRecipe}
+            className="px-3 py-2 bg-amber-600 text-white rounded hover:bg-amber-700 text-sm"
+          >
+            Validate Recipe
+          </button>
+          {generatedData.length === 0 && (
+            <span className="text-sm text-red-600">Generate data first.</span>
+          )}
+        </div>
+
+        {recipePlan.length > 0 && (
+          <div className="mt-3 border rounded p-3 bg-amber-50 text-amber-900">
+            <div className="font-semibold mb-2">Planned execution</div>
+            <ul className="list-disc ml-6 text-sm">
+              {recipePlan.map((p) => (
+                <li key={p.name}>{p.name}: repeats {p.repeats} × models {p.modelCount}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {recipeSummary && (
+          <div className="mt-4">
+            <h3 className="text-lg font-semibold mb-2">Summary (mean metrics by ablation)</h3>
+            <div className="mb-3 flex gap-2">
+              <button onClick={downloadSummary} className="px-3 py-2 bg-gray-800 text-white rounded hover:bg-gray-900 text-sm">Download JSON</button>
+              <button onClick={downloadSummaryCsv} className="px-3 py-2 bg-gray-700 text-white rounded hover:bg-gray-800 text-sm">Download CSV</button>
+              <button onClick={downloadAblationCard} className="px-3 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 text-sm">Download Ablation Card</button>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="min-w-full table-auto border">
+                <thead>
+                  <tr>
+                    <th className="px-4 py-2 text-left">Ablation</th>
+                    {Object.keys(recipeSummary[Object.keys(recipeSummary)[0]] || {}).map((m) => (
+                      <th key={m} className="px-4 py-2 text-left">{m}</th>
+                    ))}
+                    <th className="px-4 py-2 text-left">Experimental Flags</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Object.entries(recipeSummary).map(([name, metrics]: any) => {
+                    const flags = name === 'experimental_modules' ? (recipeSummary[name]?.__flags || []) : [];
+                    return (
+                      <tr key={name} className="border-t">
+                        <td className="px-4 py-2 font-medium">{name}</td>
+                        {Object.entries(metrics).filter(([k]) => k !== '__flags').map(([m, v]: any) => (
+                          <td key={m} className="px-4 py-2">{typeof v === 'number' ? v.toFixed(4) : String(v)}</td>
+                        ))}
+                        <td className="px-4 py-2 text-xs text-gray-600">{flags.join(', ')}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+      </div>
+      <div className="bg-white rounded-lg shadow-lg p-6">
+        <h2 className="text-2xl font-bold text-gray-800 mb-4">🔬 HRE Technology Integration</h2>
+        
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+          <div className="bg-blue-50 p-4 rounded-lg">
+            <h3 className="font-semibold text-blue-800">Hypercubes</h3>
+            <p className="text-2xl font-bold text-blue-600">8D</p>
+            <p className="text-sm text-blue-600">Geometric Mapping</p>
+          </div>
+          
+          <div className="bg-purple-50 p-4 rounded-lg">
+            <h3 className="font-semibold text-purple-800">Refractor</h3>
+            <p className="text-2xl font-bold text-purple-600">✓</p>
+            <p className="text-sm text-purple-600">Geometric/Agebraic</p>
+          </div>
+          
+          <div className="bg-green-50 p-4 rounded-lg">
+            <h3 className="font-semibold text-green-800">Harmonic</h3>
+            <p className="text-2xl font-bold text-green-600">✓</p>
+            <p className="text-sm text-green-600">Frequency Domain</p>
+          </div>
+          
+          <div className="bg-orange-50 p-4 rounded-lg">
+            <h3 className="font-semibold text-orange-800">Ocaonian</h3>
+            <p className="text-2xl font-bold text-orange-600">✓</p>
+            <p className="text-sm text-orange-600">Manifold Projection</p>
+          </div>
+          
+          <div className="bg-red-50 p-4 rounded-lg">
+            <h3 className="font-semibold text-red-800">Triad Validator</h3>
+            <p className="text-2xl font-bold text-red-600">✓</p>
+            <p className="text-sm text-red-600">Geometric/Algebraic</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Model Selection */}
+      <div className="bg-white rounded-lg shadow-lg p-6">
+        <h3 className="text-xl font-bold text-gray-800 mb-4">🤖 Advanced AI Model Selection</h3>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-h-96 overflow-y-auto">
+          {advancedAIModels.map((model) => (
+            <div
+              key={model.name}
+              className={`border rounded-lg p-4 cursor-pointer transition-colors ${
+                selectedModels.includes(model.name)
+                  ? 'border-blue-500 bg-blue-50'
+                  : 'border-gray-200 hover:border-gray-300'
+              }`}
+              onClick={() => {
+                if (selectedModels.includes(model.name)) {
+                  setSelectedModels(selectedModels.filter(m => m !== model.name));
+                } else {
+                  setSelectedModels([...selectedModels, model.name]);
+                }
+              }}
+            >
+              <div className="flex items-center justify-between mb-2">
+                <h4 className="font-semibold text-gray-800">{model.name}</h4>
+                <span className={`px-2 py-1 rounded-full text-xs text-white ${getModelColor(model.category)}`}>
+                  {model.category}
+                </span>
+              </div>
+              
+              <p className="text-sm text-gray-600 mb-2">{model.description}</p>
+              
+              <div className="space-y-1">
+                <div className="text-xs text-gray-500">
+                  Privacy: {model.privacyLevel}
+                </div>
+                <div className="text-xs text-gray-500">
+                  Dimensions: {model.dimensionalSupport.join(', ')}D
+                </div>
+                <div className="text-xs text-gray-500">
+                  Best for: {model.bestFor.slice(0, 2).join(', ')}
+                </div>
+              </div>
+              
+              <div className="mt-2 flex flex-wrap gap-1">
+                {model.hreIntegration.hypercubeSupport && (
+                  <span className="px-1 py-0.5 bg-blue-100 text-blue-800 text-xs rounded">H</span>
+                )}
+                {model.hreIntegration.refractorCompatible && (
+                  <span className="px-1 py-0.5 bg-purple-100 text-purple-800 text-xs rounded">R</span>
+                )}
+                {model.hreIntegration.harmonicEmbeddings && (
+                  <span className="px-1 py-0.5 bg-green-100 text-green-800 text-xs rounded">A</span>
+                )}
+                {model.hreIntegration.ocaonianMapping && (
+                  <span className="px-1 py-0.5 bg-orange-100 text-orange-800 text-xs rounded">O</span>
+                )}
+                {model.hreIntegration.triadValidation && (
+                  <span className="px-1 py-0.5 bg-red-100 text-red-800 text-xs rounded">T</span>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+        
+        <div className="mt-4 flex justify-between items-center">
+          <button
+            onClick={() => setSelectedModels(advancedAIModels.map(m => m.name))}
+            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+          >
+            Select All Models
+          </button>
+          
+          <button
+            onClick={() => setSelectedModels([])}
+            className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700"
+          >
+            Clear Selection
+          </button>
+        </div>
+      </div>
+
+      {/* Benchmark Results */}
+      {benchmarkResults.length > 0 && (
+        <div className="bg-white rounded-lg shadow-lg p-6">
+          <h3 className="text-xl font-bold text-gray-800 mb-4">📊 Rigorous Scientific Benchmark Results</h3>
+          
+          <div className="overflow-x-auto">
+            <table className="min-w-full border border-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 border-b">Model</th>
+                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 border-b">Accuracy</th>
+                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 border-b">Privacy</th>
+                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 border-b">Utility</th>
+                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 border-b">Speed</th>
+                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 border-b">HRE Score</th>
+                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 border-b">P-Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                {benchmarkResults.map((result, index) => (
+                  <tr key={index} className="hover:bg-gray-50">
+                    <td className="px-4 py-2 text-sm text-gray-900 border-b">
+                      <div className="flex items-center space-x-2">
+                        <span className={`w-3 h-3 rounded-full ${getModelColor(getModelCategory(result.modelName))}`}></span>
+                        <span>{result.modelName}</span>
+                      </div>
+                    </td>
+                    <td className="px-4 py-2 text-sm text-gray-900 border-b">
+                      {(result.metrics.accuracy * 100).toFixed(1)}%
+                    </td>
+                    <td className="px-4 py-2 text-sm text-gray-900 border-b">
+                      {(result.metrics.privacyScore * 100).toFixed(1)}%
+                    </td>
+                    <td className="px-4 py-2 text-sm text-gray-900 border-b">
+                      {(result.metrics.utilityScore * 100).toFixed(1)}%
+                    </td>
+                    <td className="px-4 py-2 text-sm text-gray-900 border-b">
+                      {Math.round(result.metrics.generationSpeed)}/sec
+                    </td>
+                    <td className="px-4 py-2 text-sm text-gray-900 border-b">
+                      {((result.hreAnalysis.geometricConsistency + 
+                         result.hreAnalysis.harmonicPreservation + 
+                         result.hreAnalysis.ocaonianMappingQuality + 
+                         result.hreAnalysis.triadValidationScore) / 4 * 100).toFixed(1)}%
+                    </td>
+                    <td className="px-4 py-2 text-sm text-gray-900 border-b">
+                      {result.empiricalEvidence.pValue.toFixed(3)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* HRE Analysis Results */}
+      {hreAnalysis && (
+        <div className="bg-white rounded-lg shadow-lg p-6">
+          <h3 className="text-xl font-bold text-gray-800 mb-4">🔬 HRE Technology Analysis</h3>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="bg-blue-50 p-4 rounded-lg">
+              <h4 className="font-semibold text-blue-800">Hypercube Embeddings</h4>
+              <p className="text-2xl font-bold text-blue-600">{hreAnalysis.hypercubeEmbeddings.length}</p>
+              <p className="text-sm text-blue-600">8D Geometric Mappings</p>
+            </div>
+            
+            <div className="bg-purple-50 p-4 rounded-lg">
+              <h4 className="font-semibold text-purple-800">Refractor Transformations</h4>
+              <p className="text-2xl font-bold text-purple-600">{hreAnalysis.refractorData.length}</p>
+              <p className="text-sm text-purple-600">Geometric/Algebraic</p>
+            </div>
+            
+            <div className="bg-green-50 p-4 rounded-lg">
+              <h4 className="font-semibold text-green-800">Harmonic Embeddings</h4>
+              <p className="text-2xl font-bold text-green-600">{hreAnalysis.harmonicData.length}</p>
+              <p className="text-sm text-green-600">Frequency Domain</p>
+            </div>
+            
+            <div className="bg-orange-50 p-4 rounded-lg">
+              <h4 className="font-semibold text-orange-800">Ocaonian Mapping</h4>
+              <p className="text-2xl font-bold text-orange-600">{hreAnalysis.ocaonianData.length}</p>
+              <p className="text-sm text-orange-600">Manifold Projection</p>
+            </div>
+          </div>
+          
+          <div className="mt-4 bg-gray-50 p-4 rounded-lg">
+            <h4 className="font-semibold text-gray-800 mb-2">Triad Validation Results</h4>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <span className="text-sm text-gray-600">Geometric Consistency:</span>
+                <span className="ml-2 font-semibold">
+                  {(hreAnalysis.triadValidation.metrics.geometricConsistency * 100).toFixed(1)}%
+                </span>
+              </div>
+              <div>
+                <span className="text-sm text-gray-600">Algebraic Invariance:</span>
+                <span className="ml-2 font-semibold">
+                  {(hreAnalysis.triadValidation.metrics.algebraicInvariance * 100).toFixed(1)}%
+                </span>
+              </div>
+              <div>
+                <span className="text-sm text-gray-600">Topological Preservation:</span>
+                <span className="ml-2 font-semibold">
+                  {(hreAnalysis.triadValidation.metrics.topologicalPreservation * 100).toFixed(1)}%
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Self-Learning Feedback */}
+      {selfLearningFeedback && (
+        <div className="bg-white rounded-lg shadow-lg p-6">
+          <h3 className="text-xl font-bold text-gray-800 mb-4">🧠 Self-Learning Feedback System</h3>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <h4 className="font-semibold text-gray-800 mb-3">Adaptive Optimization</h4>
+              <div className="space-y-2">
+                {Object.entries(selfLearningFeedback.adaptiveOptimization.modelSelection).map(([model, status]) => (
+                  <div key={model} className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600">{model}</span>
+                    <span className={`px-2 py-1 rounded-full text-xs ${
+                      status === 'optimal' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                    }`}>
+                      {status}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            
+            <div>
+              <h4 className="font-semibold text-gray-800 mb-3">Empirical Improvements</h4>
+              <div className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-gray-600">Accuracy Gain</span>
+                  <span className="font-semibold text-green-600">+{(selfLearningFeedback.empiricalImprovements.accuracyGain * 100).toFixed(1)}%</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-gray-600">Privacy Enhancement</span>
+                  <span className="font-semibold text-blue-600">+{(selfLearningFeedback.empiricalImprovements.privacyEnhancement * 100).toFixed(1)}%</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-gray-600">Speed Optimization</span>
+                  <span className="font-semibold text-purple-600">+{(selfLearningFeedback.empiricalImprovements.speedOptimization * 100).toFixed(1)}%</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-gray-600">Geometric Consistency</span>
+                  <span className="font-semibold text-orange-600">+{(selfLearningFeedback.empiricalImprovements.geometricConsistency * 100).toFixed(1)}%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Run Benchmarks Button and Notification */}
+      <div className="flex flex-col items-center">
+        <button
+          onClick={runComprehensiveBenchmarks}
+          disabled={isRunning || generatedData.length === 0}
+          className={`px-8 py-4 rounded-lg font-medium text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+            isRunning || generatedData.length === 0
+              ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
+              : 'bg-blue-600 text-white hover:bg-blue-700'
+          }`}
+          title={
+            generatedData.length === 0
+              ? 'Generate synthetic data before running benchmarks.'
+              : isRunning
+              ? 'Benchmarks are running...'
+              : ''
+          }
+        >
+          {isRunning ? 'Running Benchmarks...' : 'Run Comprehensive HRE Benchmarks'}
+        </button>
+        {notification && (
+          <div style={{ marginTop: '1rem', color: notification.startsWith('Benchmark error') ? '#dc2626' : '#2563eb', fontWeight: 600 }}>
+            {notification}
+          </div>
+        )}
+        {generatedData.length === 0 && !isRunning && (
+          <div style={{ marginTop: '0.5rem', color: '#b91c1c', fontSize: '1rem' }}>
+            Please generate synthetic data before running benchmarks.
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default AdvancedBenchmarking; 

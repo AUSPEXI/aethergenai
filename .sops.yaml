@@ -1,0 +1,10 @@
+creation_rules:
+  - path_regex: ^test\.md$
+    age: age1q9hda0gsvhc6z8kxlxhhf6u4l9rmazyfgpylz6gnhtsltg7sef9s6ecvc6
+  - path_regex: ^docs/(.*)\.(md|pdf|json)$
+    encrypted_regex: '^(data|content|body|items)$'
+    age: age1q9hda0gsvhc6z8kxlxhhf6u4l9rmazyfgpylz6gnhtsltg7sef9s6ecvc6
+  - path_regex: ^secure/(.*)$
+    age: age1q9hda0gsvhc6z8kxlxhhf6u4l9rmazyfgpylz6gnhtsltg7sef9s6ecvc6
+  - path_regex: ^src/services/(hreTechnologyService|syntheticDataService)\.ts$
+    age: age1q9hda0gsvhc6z8kxlxhhf6u4l9rmazyfgpylz6gnhtsltg7sef9s6ecvc6

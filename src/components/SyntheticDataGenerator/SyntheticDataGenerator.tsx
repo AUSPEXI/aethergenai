@@ -286,6 +286,26 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
       
       onGenerationComplete(finalResult);
       setGeneratedData([...allRecords]); // Final update
+
+      // Persist dataset (best-effort)
+      try {
+        await fetch('/api/record-dataset', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            schema_id: schema.id,
+            kind: 'synthetic',
+            record_count: allRecords.length,
+            storage_uri: null,
+            metadata: {
+              epsilon: schema.privacySettings.epsilon,
+              synthetic_ratio: schema.privacySettings.syntheticRatio
+            }
+          })
+        });
+      } catch (e) {
+        console.warn('record-dataset failed', e);
+      }
       
     } catch (error) {
       setErrors([`Generation failed: ${error}`]);

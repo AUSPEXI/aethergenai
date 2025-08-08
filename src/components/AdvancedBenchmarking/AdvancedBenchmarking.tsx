@@ -167,6 +167,38 @@ const AdvancedBenchmarking: React.FC<AdvancedBenchmarkingProps> = ({
       const summary = summarizeAblationResults(results);
       setRecipeSummary(summary);
       setNotification('Recipe completed. Summary available below.');
+
+      // Persist ablation run (best-effort)
+      try {
+        const resp = await fetch('/api/record-ablation', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ schema_id: schema.id, recipe_json: recipe, summary_json: summary })
+        });
+        const js = await resp.json().catch(() => null);
+        if (js?.id) {
+          // Also publish evidence bundle (ablation card) for governance
+          const card = {
+            card_version: '1.0',
+            generated_at: new Date().toISOString(),
+            schema_hash: computeSchemaHash(schema),
+            recipe_hash: computeSchemaHash(recipeText || ''),
+            app_version: (import.meta as any)?.env?.VITE_APP_VERSION || 'local-dev',
+            privacy: {
+              epsilon: schema?.privacySettings?.epsilon,
+              synthetic_ratio: schema?.privacySettings?.syntheticRatio,
+            },
+            summary
+          };
+          await fetch('/api/publish-evidence', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ablation_run_id: js.id, content: card })
+          });
+        }
+      } catch (e) {
+        console.warn('record-ablation/publish-evidence failed', e);
+      }
     } catch (err: any) {
       setNotification('Recipe error: ' + (err.message || 'Unknown error'));
     } finally {

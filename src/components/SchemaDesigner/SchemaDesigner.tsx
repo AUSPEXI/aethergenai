@@ -81,6 +81,34 @@ const SchemaDesigner: React.FC<SchemaDesignerProps> = ({ onSchemaChange, initial
     setSchema(prev => ({ ...prev, ...updates }));
   };
 
+  const saveSchemaToSupabase = async () => {
+    try {
+      const res = await fetch('/api/store-schema', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: schema.name || 'Untitled Schema',
+          description: schema.description || '',
+          schema_json: {
+            name: schema.name,
+            description: schema.description,
+            domain: schema.domain,
+            fields: schema.fields,
+            targetVolume: schema.targetVolume,
+            privacySettings: schema.privacySettings
+          }
+        })
+      });
+      if (!res.ok) throw new Error(`store-schema failed: ${res.status}`);
+      const json = await res.json();
+      if (json?.id) {
+        setSchema(prev => ({ ...prev, id: json.id }));
+      }
+    } catch (e) {
+      console.warn('Schema save failed', e);
+    }
+  };
+
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-6">
       {/* Schema Definition */}
@@ -392,6 +420,18 @@ const SchemaDesigner: React.FC<SchemaDesignerProps> = ({ onSchemaChange, initial
             </div>
           </div>
         )}
+
+        <div className="mt-4 flex items-center gap-3">
+          <button
+            onClick={saveSchemaToSupabase}
+            className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
+          >
+            Save to Supabase
+          </button>
+          {schema.id && (
+            <span className="text-sm text-gray-600">Saved schema id: {schema.id}</span>
+          )}
+        </div>
       </div>
     </div>
   );

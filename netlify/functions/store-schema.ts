@@ -11,21 +11,34 @@ export const handler: Handler = async (event) => {
 
   try {
     const payload = JSON.parse(event.body || '{}');
-    const { name, description, schema_json } = payload;
+    const { id, name, description, schema_json } = payload;
     if (!name || !schema_json) return { statusCode: 400, body: 'name and schema_json are required' };
 
     const schemaString = typeof schema_json === 'string' ? schema_json : JSON.stringify(schema_json);
     const schema_hash = crypto.createHash('sha256').update(schemaString).digest('hex');
 
     const supabase = createClient(url, serviceKey);
-    const { data, error } = await supabase
-      .from('ae_schemas')
-      .insert({ name, description, schema_json: JSON.parse(schemaString), schema_hash })
-      .select('id, schema_hash')
-      .single();
 
-    if (error) return { statusCode: 500, body: JSON.stringify({ error: error.message }) };
-    return { statusCode: 200, body: JSON.stringify({ id: data.id, schema_hash: data.schema_hash }) };
+    if (id) {
+      // Update existing schema
+      const { data, error } = await supabase
+        .from('ae_schemas')
+        .update({ name, description, schema_json: JSON.parse(schemaString), schema_hash })
+        .eq('id', id)
+        .select('id, schema_hash')
+        .single();
+      if (error) return { statusCode: 500, body: JSON.stringify({ error: error.message }) };
+      return { statusCode: 200, body: JSON.stringify({ id: data.id, schema_hash: data.schema_hash, updated: true }) };
+    } else {
+      // Insert new schema
+      const { data, error } = await supabase
+        .from('ae_schemas')
+        .insert({ name, description, schema_json: JSON.parse(schemaString), schema_hash })
+        .select('id, schema_hash')
+        .single();
+      if (error) return { statusCode: 500, body: JSON.stringify({ error: error.message }) };
+      return { statusCode: 200, body: JSON.stringify({ id: data.id, schema_hash: data.schema_hash, created: true }) };
+    }
   } catch (e: any) {
     return { statusCode: 500, body: JSON.stringify({ error: e.message || 'Unknown error' }) };
   }

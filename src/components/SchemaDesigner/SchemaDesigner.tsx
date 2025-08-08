@@ -38,6 +38,45 @@ const SchemaDesigner: React.FC<SchemaDesignerProps> = ({ onSchemaChange, initial
     onSchemaChange(schema);
   }, [schema, onSchemaChange]);
 
+  // Debounced autosave
+  useEffect(() => {
+    const controller = new AbortController();
+    const timeout = setTimeout(async () => {
+      try {
+        if (!schema.name && schema.fields.length === 0) return; // avoid saving empty drafts
+        await fetch('/api/store-schema', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id: schema.id,
+            name: schema.name || 'Untitled Schema',
+            description: schema.description || '',
+            schema_json: {
+              name: schema.name,
+              description: schema.description,
+              domain: schema.domain,
+              fields: schema.fields,
+              targetVolume: schema.targetVolume,
+              privacySettings: schema.privacySettings
+            }
+          }),
+          signal: controller.signal
+        }).then(async (r) => {
+          if (!r.ok) return;
+          const js = await r.json().catch(() => null);
+          if (js?.id && js.id !== schema.id) setSchema(prev => ({ ...prev, id: js.id }));
+        });
+      } catch {
+        /* ignore autosave errors */
+      }
+    }, 600);
+    return () => {
+      controller.abort();
+      clearTimeout(timeout);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [schema.name, schema.description, schema.domain, schema.fields, schema.targetVolume, schema.privacySettings]);
+
   const addField = () => {
     if (!newField.name) return;
     

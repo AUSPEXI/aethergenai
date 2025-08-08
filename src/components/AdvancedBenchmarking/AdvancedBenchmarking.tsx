@@ -689,6 +689,33 @@ const AdvancedBenchmarking: React.FC<AdvancedBenchmarkingProps> = ({
               <button onClick={downloadSummary} className="px-3 py-2 bg-gray-800 text-white rounded hover:bg-gray-900 text-sm">Download JSON</button>
               <button onClick={downloadSummaryCsv} className="px-3 py-2 bg-gray-700 text-white rounded hover:bg-gray-800 text-sm">Download CSV</button>
               <button onClick={downloadAblationCard} className="px-3 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 text-sm">Download Ablation Card</button>
+              <button
+                onClick={async () => {
+                  try {
+                    const privacy = { epsilon: schema?.privacySettings?.epsilon, synthetic_ratio: schema?.privacySettings?.syntheticRatio };
+                    const resp = await fetch('/.netlify/functions/log-mlflow', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({
+                        recipe_json: JSON.parse(recipeText || '{}'),
+                        schema_json: schema,
+                        summary: recipeSummary,
+                        privacy
+                      })
+                    });
+                    const js = await resp.json();
+                    if (resp.ok) setNotification(`Logged to MLflow run ${js.run_id}`);
+                    else setNotification(`MLflow error: ${js.error || resp.status}`);
+                    setTimeout(() => setNotification(null), 4000);
+                  } catch (e: any) {
+                    setNotification(`MLflow error: ${e.message || 'Unknown'}`);
+                    setTimeout(() => setNotification(null), 4000);
+                  }
+                }}
+                className="px-3 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 text-sm"
+              >
+                Log to Databricks MLflow
+              </button>
             </div>
             <div className="overflow-x-auto">
               <table className="min-w-full table-auto border">

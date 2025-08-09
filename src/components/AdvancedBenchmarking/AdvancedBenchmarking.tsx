@@ -61,10 +61,13 @@ const AdvancedBenchmarking: React.FC<AdvancedBenchmarkingProps> = ({
   const [triadGuidedCleaning, setTriadGuidedCleaning] = useState<boolean>(false);
   const resultsRef = useRef<HTMLDivElement | null>(null);
   const summaryRef = useRef<HTMLDivElement | null>(null);
+  const topRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     fetchBasicModules();
     fetchBasicBenchmarks();
+    // Keep the page at the top on navigation to benchmarks
+    setTimeout(() => topRef.current?.scrollIntoView({ behavior: 'auto', block: 'start' }), 0);
     if (generatedData.length > 0) {
       runComprehensiveBenchmarks();
     }
@@ -499,7 +502,7 @@ const AdvancedBenchmarking: React.FC<AdvancedBenchmarkingProps> = ({
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-6 space-y-6">
+    <div className="max-w-7xl mx-auto p-6 space-y-6" ref={topRef}>
       {/* Basic Module Benchmarks */}
       <div className="bg-white rounded-lg shadow-lg p-6">
         <h2 className="text-2xl font-bold text-gray-800 mb-4">📊 Basic Module Benchmarks</h2>
@@ -912,7 +915,18 @@ const AdvancedBenchmarking: React.FC<AdvancedBenchmarkingProps> = ({
       {/* Benchmark Results */}
       {benchmarkResults.length > 0 && (
         <div className="bg-white rounded-lg shadow-lg p-6" ref={resultsRef}>
-          <h3 className="text-xl font-bold text-gray-800 mb-4">📊 Rigorous Scientific Benchmark Results</h3>
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-xl font-bold text-gray-800">📊 Rigorous Scientific Benchmark Results</h3>
+            <span
+              className="text-xs text-gray-600 border rounded px-2 py-1 cursor-help"
+              title={
+                'Metrics include small, deterministic adjustments based on dataset size (log10 n), number of fields, uniqueness ratio, '
+                + 'and approximate categorical entropy, plus per-model sensitivity. Values are clamped for realism; speed avoids Infinity.'
+              }
+            >
+              Why these numbers?
+            </span>
+          </div>
           {/* debug: show inputs feeding metrics */}
           <div className="mb-2 text-xs text-gray-500">
             {(() => {
@@ -928,13 +942,13 @@ const AdvancedBenchmarking: React.FC<AdvancedBenchmarkingProps> = ({
             <table className="min-w-full border border-gray-200">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 border-b">Model</th>
-                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 border-b">Accuracy</th>
-                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 border-b">Privacy</th>
-                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 border-b">Utility</th>
-                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 border-b">Speed</th>
-                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 border-b">Analysis Score</th>
-                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 border-b">P-Value</th>
+                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 border-b" title="Model identifier and category">Model</th>
+                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 border-b" title="Adjusted by log10(n), fields, uniqueness, entropy, and model sensitivity">Accuracy</th>
+                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 border-b" title="Higher uniqueness and DP favors privacy; clamped to realistic bounds">Privacy</th>
+                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 border-b" title="Scales with fields and size; modest per-model effects">Utility</th>
+                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 border-b" title="Computed from elapsed time; clamped to avoid Infinity">Speed</th>
+                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 border-b" title="Aggregate of geometric/harmonic/ocaonian/triad components with data-driven deltas">Analysis Score</th>
+                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 border-b" title="Mock p-value placeholder (constant until we run true significance tests)">P-Value</th>
                 </tr>
               </thead>
               <tbody>

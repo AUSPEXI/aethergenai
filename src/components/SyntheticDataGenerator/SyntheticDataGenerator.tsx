@@ -794,14 +794,14 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
                   if (generationVolumeInput === '' || generationVolumeInput === undefined) return;
                   const parsed = parseInt(generationVolumeInput, 10);
                   if (!Number.isNaN(parsed)) {
-                    const clamped = Math.max(1, Math.min(100000, parsed));
+                    const clamped = Math.max(1, Math.min(1000000, parsed));
                     setGenerationVolume(clamped);
                     setGenerationVolumeInput(String(clamped));
                   }
                 }}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 min="1"
-                max="100000"
+                max="1000000"
                 step="100"
               />
               <p className="text-xs text-gray-500 mt-1">

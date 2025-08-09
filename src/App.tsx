@@ -15,6 +15,7 @@ function App() {
   const [detectedSchema, setDetectedSchema] = useState<SchemaField[]>([]);
   const [validationResult, setValidationResult] = useState<ValidationResult | null>(null);
   const [generationResult, setGenerationResult] = useState<SyntheticDataResult | null>(null);
+  const [totalGeneratedLastRun, setTotalGeneratedLastRun] = useState<number>(0);
   const [activeTab, setActiveTab] = useState<'design' | 'upload' | 'generate' | 'advanced' | 'privacy-metrics' | 'reporting'>('design');
   // Add privacy settings to app state
   const [privacySettings, setPrivacySettings] = useState({
@@ -88,6 +89,11 @@ function App() {
       handlePrivacySettingsChange(next);
     };
     window.addEventListener('aethergen:apply-privacy', handler as EventListener);
+    const genHandler = (e: Event) => {
+      const d = (e as CustomEvent).detail as { total?: number };
+      if (d?.total) setTotalGeneratedLastRun(d.total);
+    };
+    window.addEventListener('aethergen:gen-total', genHandler as EventListener);
     return () => window.removeEventListener('aethergen:apply-privacy', handler as EventListener);
   }, [privacySettings, currentSchema, seedData]);
 
@@ -340,6 +346,9 @@ function App() {
               <span>Schema: {currentSchema?.name || 'Not defined'}</span>
               <span>Seed Data: {seedData.length} records</span>
               <span>Generated: {generationResult?.records.length || 0} records</span>
+              {totalGeneratedLastRun > 0 && (
+                <span>Total Generated (last run): {totalGeneratedLastRun.toLocaleString()}</span>
+              )}
               <span>Validation: {validationResult?.isValid ? '✅ Passed' : validationResult ? '❌ Failed' : '⏳ Pending'}</span>
               <span>HRE Status: 🔬 Active</span>
             </div>

@@ -295,6 +295,9 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
             // Direct download URLs for large artifacts
             (handleDownloadJSON as any)._url = jsonUrl;
             (handleDownloadCSV as any)._url = csvUrl;
+            // Ensure counters show completion
+            setGeneratedRecords(targetRecords);
+            setProgress(100);
             const finalResult: SyntheticDataResult = {
               success: true,
               records: sample,
@@ -308,6 +311,8 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
             onGenerationComplete(finalResult);
             generateZKProofForSyntheticData();
             setIsGenerating(false);
+            // Notify app of total generated count for status bar
+            window.dispatchEvent(new CustomEvent('aethergen:gen-total', { detail: { total: targetRecords } }));
             w.terminate();
           }
         };

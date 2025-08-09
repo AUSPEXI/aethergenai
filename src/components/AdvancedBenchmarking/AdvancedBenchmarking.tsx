@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { BenchmarkResult, SelfLearningFeedback, advancedAIModels } from '../../types/advancedModels';
 import { hreTechnologyService } from '../../services/hreTechnologyService';
 import { AblationRecipe } from '../../types/ablation';
@@ -57,6 +57,8 @@ const AdvancedBenchmarking: React.FC<AdvancedBenchmarkingProps> = ({
   const [expConsensusAudit, setExpConsensusAudit] = useState(false);
   const [expSelectiveAbstention, setExpSelectiveAbstention] = useState(false);
   const [recipePlan, setRecipePlan] = useState<Array<{ name: string; repeats: number; modelCount: number; flags?: string[] }>>([]);
+  const resultsRef = useRef<HTMLDivElement | null>(null);
+  const summaryRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     fetchBasicModules();
@@ -130,6 +132,8 @@ const AdvancedBenchmarking: React.FC<AdvancedBenchmarkingProps> = ({
       setHreAnalysis(hreResult);
       
       setNotification('Benchmarks completed successfully!');
+      // scroll to results
+      setTimeout(() => resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
     } catch (error) {
       setNotification('Benchmark error: ' + (error instanceof Error ? error.message : 'Unknown error'));
       console.error('Benchmark error:', error);
@@ -178,6 +182,8 @@ const AdvancedBenchmarking: React.FC<AdvancedBenchmarkingProps> = ({
       const summary = summarizeAblationResults(results);
       setRecipeSummary(summary);
       setNotification('Recipe completed. Summary available below.');
+      // scroll to summary
+      setTimeout(() => summaryRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
 
       // Persist ablation run (best-effort)
       try {
@@ -315,8 +321,8 @@ const AdvancedBenchmarking: React.FC<AdvancedBenchmarkingProps> = ({
     try {
       const res = await fetch('/docs/ABLATION_RECIPES_EXAMPLE.json');
       if (!res.ok) throw new Error('not served');
-      const json = await res.text();
-      setRecipeText(json);
+      const obj = await res.json();
+      setRecipeText(JSON.stringify(obj, null, 2));
     } catch {
       setRecipeText(JSON.stringify(fallback, null, 2));
     }
@@ -356,8 +362,8 @@ const AdvancedBenchmarking: React.FC<AdvancedBenchmarkingProps> = ({
     try {
       const res = await fetch('/docs/ABLATION_RECIPES_EXPERIMENTAL.json');
       if (!res.ok) throw new Error('not served');
-      const json = await res.text();
-      setRecipeText(json);
+      const obj = await res.json();
+      setRecipeText(JSON.stringify(obj, null, 2));
     } catch {
       setRecipeText(JSON.stringify(fallback, null, 2));
     }
@@ -767,7 +773,7 @@ const AdvancedBenchmarking: React.FC<AdvancedBenchmarkingProps> = ({
           </div>
         )}
       </div>
-      <div className="bg-white rounded-lg shadow-lg p-6">
+      <div className="bg-white rounded-lg shadow-lg p-6" ref={resultsRef}>
         <h2 className="text-2xl font-bold text-gray-800 mb-4">🔬 Aethergen Analysis Engine</h2>
         
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
@@ -941,7 +947,7 @@ const AdvancedBenchmarking: React.FC<AdvancedBenchmarkingProps> = ({
 
       {/* HRE Analysis Results */}
       {hreAnalysis && (
-        <div className="bg-white rounded-lg shadow-lg p-6">
+        <div className="bg-white rounded-lg shadow-lg p-6" ref={summaryRef}>
           <h3 className="text-xl font-bold text-gray-800 mb-4">🔬 Aethergen Analysis</h3>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

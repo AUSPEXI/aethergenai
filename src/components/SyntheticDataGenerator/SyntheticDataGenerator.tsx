@@ -37,9 +37,15 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
 
   // Volume control for generation
   const [generationVolume, setGenerationVolume] = useState<number>(schema.targetVolume);
+  const [generationVolumeInput, setGenerationVolumeInput] = useState<string>(String(schema.targetVolume));
   const [generationDuration, setGenerationDuration] = useState<number>(1); // days
 
   // Proof is generated once after full generation completes (see generateSyntheticData)
+  useEffect(() => {
+    // Keep input in sync when schema target changes
+    setGenerationVolume(schema.targetVolume);
+    setGenerationVolumeInput(String(schema.targetVolume));
+  }, [schema.targetVolume]);
 
   const downloadProof = () => {
     console.log('🔍 Attempting to download synthetic data proof...', { zkProof, proofVerified });
@@ -699,8 +705,24 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
               </label>
               <input
                 type="number"
-                value={generationVolume}
-                onChange={(e) => setGenerationVolume(parseInt(e.target.value) || schema.targetVolume)}
+                value={generationVolumeInput}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setGenerationVolumeInput(val);
+                  if (val === '' || val === undefined) return; // allow empty field
+                  const parsed = parseInt(val, 10);
+                  if (Number.isNaN(parsed)) return;
+                  setGenerationVolume(parsed);
+                }}
+                onBlur={() => {
+                  if (generationVolumeInput === '' || generationVolumeInput === undefined) return;
+                  const parsed = parseInt(generationVolumeInput, 10);
+                  if (!Number.isNaN(parsed)) {
+                    const clamped = Math.max(1, Math.min(100000, parsed));
+                    setGenerationVolume(clamped);
+                    setGenerationVolumeInput(String(clamped));
+                  }
+                }}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 min="1"
                 max="100000"
@@ -747,14 +769,18 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
         
         <button
           onClick={generateSyntheticData}
-          disabled={isGenerating || seedData.length === 0}
+          disabled={isGenerating || seedData.length === 0 || (generationVolumeInput ?? '').toString().trim() === ''}
           className={`px-6 py-3 rounded-md font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-            isGenerating || seedData.length === 0
+            isGenerating || seedData.length === 0 || (generationVolumeInput ?? '').toString().trim() === ''
               ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
               : 'bg-blue-600 text-white hover:bg-blue-700'
           }`}
         >
-          {isGenerating ? 'Generating...' : `Generate ${generationVolume.toLocaleString()} Records`}
+          {isGenerating
+            ? 'Generating...'
+            : (generationVolumeInput ?? '').toString().trim() === ''
+              ? 'Generate'
+              : `Generate ${generationVolume.toLocaleString()} Records`}
         </button>
       </div>
 

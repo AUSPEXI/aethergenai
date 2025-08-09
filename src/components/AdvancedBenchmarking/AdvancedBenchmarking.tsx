@@ -60,11 +60,11 @@ const AdvancedBenchmarking: React.FC<AdvancedBenchmarkingProps> = ({
   useEffect(() => {
     fetchBasicModules();
     fetchBasicBenchmarks();
-    
     if (generatedData.length > 0) {
       runComprehensiveBenchmarks();
     }
-  }, [generatedData]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [seedData, generatedData]);
 
   const fetchBasicModules = async () => {
     try {
@@ -78,10 +78,19 @@ const AdvancedBenchmarking: React.FC<AdvancedBenchmarkingProps> = ({
   };
 
   const fetchBasicBenchmarks = async () => {
+    if (!seedData?.length || !generatedData?.length) {
+      setBasicBenchmarkSummary(null);
+      return;
+    }
     setBasicBenchmarkLoading(true);
     setBasicBenchmarkError(null);
     try {
-      const response = await fetch('/.netlify/functions/benchmark');
+      const response = await fetch('/.netlify/functions/benchmark', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ seedData, syntheticData: generatedData })
+      });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const summary = await response.json();
       setBasicBenchmarkSummary(summary);
     } catch (err: any) {

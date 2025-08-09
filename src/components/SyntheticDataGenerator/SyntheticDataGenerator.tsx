@@ -34,6 +34,7 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
   const [validationError, setValidationError] = useState<string | null>(null);
   const [finalJsonBlob, setFinalJsonBlob] = useState<Blob | null>(null);
   const [finalCsvBlob, setFinalCsvBlob] = useState<Blob | null>(null);
+  const [isComplete, setIsComplete] = useState<boolean>(false);
 
   // Volume control for generation
   const [generationVolume, setGenerationVolume] = useState<number>(schema.targetVolume);
@@ -228,6 +229,7 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
       return;
     }
     setIsGenerating(true);
+    setIsComplete(false);
     setProgress(0);
     setGeneratedRecords(0);
     setErrors([]);
@@ -317,6 +319,7 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
             onGenerationComplete(finalResult);
             generateZKProofForSyntheticData();
             setIsGenerating(false);
+            setIsComplete(true);
             // Notify app of total generated count for status bar
             window.dispatchEvent(new CustomEvent('aethergen:gen-total', { detail: { total: generated ?? targetRecords } }));
             w.terminate();
@@ -404,6 +407,7 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
       setErrors([`Generation failed: ${error}`]);
     } finally {
       setIsGenerating(false);
+      setIsComplete(true);
     }
   };
 
@@ -800,15 +804,21 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
       {(isGenerating || generatedData.length > 0) && (
         <div className="bg-white rounded-lg shadow-lg p-6 mt-6">
           <h3 className="text-xl font-bold text-gray-800 mb-4">🔄 Generation Progress</h3>
+          {(() => { return null; })()}
+          {/** Derived progress state to avoid showing Complete when not actually done */}
+          {(() => { return null; })()}
+          {/**/}
+          {(() => { return null; })()}
+          {/** compute derived values inline for JSX */}
           <div className="flex flex-col md:flex-row md:items-center md:space-x-8 space-y-2 md:space-y-0">
             <div>
-              <span className="font-semibold text-blue-700">Files Created:</span> {generatedRecords}
+              <span className="font-semibold text-blue-700">Records Generated:</span> {generatedRecords.toLocaleString()}
             </div>
             <div>
-              <span className="font-semibold text-green-700">Files Left to Create:</span> {Math.max(0, generationVolume - generatedRecords)}
+              <span className="font-semibold text-green-700">Records Remaining:</span> {Math.max(0, generationVolume - generatedRecords).toLocaleString()}
             </div>
             <div>
-              <span className="font-semibold text-purple-700">Status:</span> {isGenerating ? 'Generating...' : 'Complete'}
+              <span className="font-semibold text-purple-700">Status:</span> {(!isGenerating && generatedRecords >= generationVolume) ? 'Complete' : (isGenerating ? 'Generating...' : 'Idle')}
             </div>
           </div>
           <div className="mt-4 w-full bg-gray-200 rounded-full h-4">
@@ -816,6 +826,9 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
               className="bg-blue-600 h-4 rounded-full transition-all duration-300"
               style={{ width: `${Math.min(100, (generatedRecords / generationVolume) * 100)}%` }}
             ></div>
+          </div>
+          <div className="mt-2 text-xs text-gray-500">
+            Preview shows up to 200 in-browser records; full dataset is available via Download as JSON/CSV.
           </div>
         </div>
       )}

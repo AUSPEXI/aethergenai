@@ -345,12 +345,12 @@ function App() {
             <div className="flex items-center space-x-6">
               <span>Schema: {currentSchema?.name || 'Not defined'}</span>
               <span>Seed Data: {seedData.length} records</span>
-              <span>Generated: {generationResult?.records.length || 0} records</span>
-              {totalGeneratedLastRun > 0 && (
-                <span>Total Generated (last run): {totalGeneratedLastRun.toLocaleString()}</span>
-              )}
+              <span>
+                Generated: {totalGeneratedLastRun > 0 ? totalGeneratedLastRun.toLocaleString() : 0} records
+                {generationResult?.records?.length ? ` (live sample: ${generationResult.records.length})` : ''}
+              </span>
               <span>Validation: {validationResult?.isValid ? '✅ Passed' : validationResult ? '❌ Failed' : '⏳ Pending'}</span>
-              <span>HRE Status: 🔬 Active</span>
+              <span>Aethergen Analysis: 🔬 Active</span>
             </div>
             <div className="flex items-center space-x-4">
               <span>Privacy Score: {generationResult?.metrics.privacyScore || 0}%</span>

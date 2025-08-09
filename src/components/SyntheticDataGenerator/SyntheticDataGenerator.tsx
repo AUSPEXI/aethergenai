@@ -32,6 +32,8 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
   const proofFileInputRef = useRef<HTMLInputElement>(null);
   const [generatedData, setGeneratedData] = useState<any[]>([]);
   const [validationError, setValidationError] = useState<string | null>(null);
+  const [finalJsonBlob, setFinalJsonBlob] = useState<Blob | null>(null);
+  const [finalCsvBlob, setFinalCsvBlob] = useState<Blob | null>(null);
 
   // Volume control for generation
   const [generationVolume, setGenerationVolume] = useState<number>(schema.targetVolume);
@@ -227,12 +229,14 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
     
     const startTime = Date.now();
     const targetRecords = generationVolume;
-    // Use smaller batch UI updates to keep the main thread responsive
-    const batchSize = 200;
+    // Batch size tuned for fewer UI wakeups
+    const batchSize = 300;
     const totalBatches = Math.ceil(targetRecords / batchSize);
     
     const allRecords: any[] = [];
     let currentBatch = 0;
+    const sampleMax = 200; // cap the in-memory sample for UI/monitoring
+    let sampleRecords: any[] = [];
     
     try {
       // Simulate generation with progress updates
@@ -242,12 +246,18 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
         // Generate batch of synthetic data
         const batch = await generateBatch(seedData, batchSize, schema);
         allRecords.push(...batch);
+        // Maintain a capped sample for monitoring/preview
+        sampleRecords = [...sampleRecords, ...batch];
+        if (sampleRecords.length > sampleMax) {
+          sampleRecords.splice(0, sampleRecords.length - sampleMax);
+        }
         
         // Update progress
         currentBatch++;
         const newProgress = (currentBatch / totalBatches) * 100;
         setProgress(newProgress);
         setGeneratedRecords(allRecords.length);
+        setGeneratedData([...sampleRecords]); // lightweight UI update
         
         // Calculate speed
         const batchTime = Date.now() - batchStartTime;
@@ -271,7 +281,8 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
       
       const finalResult: SyntheticDataResult = {
         success: true,
-        records: allRecords,
+        // Pass only the sample to downstream UI to keep app responsive
+        records: sampleRecords,
         metrics: {
           privacyScore: qualityMetrics.privacyScore,
           utilityScore: qualityMetrics.utilityScore,
@@ -281,10 +292,32 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
       };
       
       onGenerationComplete(finalResult);
-      setGeneratedData(allRecords); // Set once at the end to avoid heavy re-renders
+      setGeneratedData(sampleRecords); // keep UI sample only
 
       // Generate ZK proof once after completion
       await generateZKProofForSyntheticData();
+
+      // Prepare downloadable artifacts without keeping full data in React state
+      try {
+        const jsonBlob = new Blob([JSON.stringify(allRecords)], { type: 'application/json' });
+        setFinalJsonBlob(jsonBlob);
+        // Build CSV
+        const fields = Object.keys(allRecords[0] || {});
+        const csvRows = [fields.join(',')];
+        for (const row of allRecords) {
+          const values = fields.map(f => {
+            const val = (row as any)[f];
+            if (val === null || val === undefined) return '';
+            if (typeof val === 'object') return '"' + JSON.stringify(val).replace(/"/g, '""') + '"';
+            return '"' + String(val).replace(/"/g, '""') + '"';
+          });
+          csvRows.push(values.join(','));
+        }
+        const csvBlob = new Blob([csvRows.join('\n')], { type: 'text/csv' });
+        setFinalCsvBlob(csvBlob);
+      } catch (e) {
+        console.warn('Failed to build downloadable blobs', e);
+      }
 
       // Persist dataset (best-effort)
       try {
@@ -499,17 +532,41 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
 
   // Download as JSON handler
   const handleDownloadJSON = () => {
+    if (finalJsonBlob) {
+      const url = URL.createObjectURL(finalJsonBlob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `synthetic_data_${generatedRecords}_records.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      return;
+    }
+    // Fallback to sample
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(generatedData, null, 2));
-    const downloadAnchorNode = document.createElement('a');
-    downloadAnchorNode.setAttribute("href", dataStr);
-    downloadAnchorNode.setAttribute("download", `synthetic_data_${generatedData.length}_records.json`);
-    document.body.appendChild(downloadAnchorNode);
-    downloadAnchorNode.click();
-    downloadAnchorNode.remove();
+    const a = document.createElement('a');
+    a.setAttribute("href", dataStr);
+    a.setAttribute("download", `synthetic_data_${generatedData.length}_records.json`);
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   };
 
   // Download as CSV handler
   const handleDownloadCSV = () => {
+    if (finalCsvBlob) {
+      const url = URL.createObjectURL(finalCsvBlob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `synthetic_data_${generatedRecords}_records.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      return;
+    }
+    // Fallback to sample
     if (!generatedData.length) return;
     const fields = Object.keys(generatedData[0] || {});
     const csvRows = [fields.join(",")];

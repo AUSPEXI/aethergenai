@@ -49,6 +49,7 @@ const AdvancedBenchmarking: React.FC<AdvancedBenchmarkingProps> = ({
   const [basicBenchmarkLoading, setBasicBenchmarkLoading] = useState(false);
   const [basicBenchmarkError, setBasicBenchmarkError] = useState<string | null>(null);
   const [notification, setNotification] = useState<string | null>(null);
+  const [recipeError, setRecipeError] = useState<string | null>(null);
   const [recipeText, setRecipeText] = useState<string>('');
   const [recipeSummary, setRecipeSummary] = useState<any | null>(null);
   const fileInputRef = React.useRef<HTMLInputElement | null>(null);
@@ -144,6 +145,7 @@ const AdvancedBenchmarking: React.FC<AdvancedBenchmarkingProps> = ({
       return;
     }
     try {
+      setRecipeError(null);
       setIsRunning(true);
       setNotification('Running ablation recipe...');
       let recipe: AblationRecipe;
@@ -209,7 +211,9 @@ const AdvancedBenchmarking: React.FC<AdvancedBenchmarkingProps> = ({
         console.warn('record-ablation/publish-evidence failed', e);
       }
     } catch (err: any) {
-      setNotification('Recipe error: ' + (err.message || 'Unknown error'));
+      const msg = 'Recipe error: ' + (err.message || 'Unknown error');
+      setRecipeError(msg);
+      setNotification(msg);
     } finally {
       setIsRunning(false);
       setTimeout(() => setNotification(null), 4000);
@@ -646,6 +650,7 @@ const AdvancedBenchmarking: React.FC<AdvancedBenchmarkingProps> = ({
           >
             {isRunning ? 'Running...' : 'Run Recipe'}
           </button>
+          <span className={`text-xs px-2 py-1 rounded ${isRunning ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-700'}`}>{isRunning ? 'Running' : 'Idle'}</span>
           <button onClick={downloadRecipe} className="px-3 py-2 bg-gray-700 text-white rounded hover:bg-gray-800 text-sm">Download Recipe</button>
           <div>
             <input ref={fileInputRef} type="file" accept=".json,.yaml,.yml" onChange={loadRecipeFromFile} className="hidden" />
@@ -679,6 +684,12 @@ const AdvancedBenchmarking: React.FC<AdvancedBenchmarkingProps> = ({
             <span className="text-sm text-red-600">Generate data first.</span>
           )}
         </div>
+
+        {recipeError && (
+          <div className="mt-3 p-3 border border-red-200 bg-red-50 text-red-800 rounded text-sm">
+            {recipeError}
+          </div>
+        )}
 
         {recipePlan.length > 0 && (
           <div className="mt-3 border rounded p-3 bg-amber-50 text-amber-900">
@@ -757,7 +768,7 @@ const AdvancedBenchmarking: React.FC<AdvancedBenchmarkingProps> = ({
         )}
       </div>
       <div className="bg-white rounded-lg shadow-lg p-6">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">🔬 HRE Technology Integration</h2>
+        <h2 className="text-2xl font-bold text-gray-800 mb-4">🔬 Aethergen Analysis Engine</h2>
         
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           <div className="bg-blue-50 p-4 rounded-lg">
@@ -931,7 +942,7 @@ const AdvancedBenchmarking: React.FC<AdvancedBenchmarkingProps> = ({
       {/* HRE Analysis Results */}
       {hreAnalysis && (
         <div className="bg-white rounded-lg shadow-lg p-6">
-          <h3 className="text-xl font-bold text-gray-800 mb-4">🔬 HRE Technology Analysis</h3>
+          <h3 className="text-xl font-bold text-gray-800 mb-4">🔬 Aethergen Analysis</h3>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="bg-blue-50 p-4 rounded-lg">

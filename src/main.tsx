@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
 import './index.css';
 
-console.log('🚀 Starting SDSP Finance Suite App...');
+console.log('🚀 Starting AethergenAI App...');
 
 const container = document.getElementById('root');
 
@@ -21,9 +21,9 @@ if (!container) {
       </React.StrictMode>
     );
     
-    console.log('✅ SDSP Finance Suite App rendered successfully');
+    console.log('✅ AethergenAI App rendered successfully');
   } catch (error) {
-    console.error('Failed to render SDSP Finance app:', error);
+    console.error('Failed to render AethergenAI app:', error);
     
     container.innerHTML = `
       <div style="
@@ -37,8 +37,8 @@ if (!container) {
         padding: 2rem;
       ">
         <div style="text-align: center; max-width: 500px;">
-          <h1 style="color: #dc2626; margin-bottom: 16px; font-size: 24px;">SDSP Finance Application Error</h1>
-          <p style="margin-bottom: 16px;">Failed to load SDSP Finance Suite App. Please refresh the page.</p>
+          <h1 style="color: #dc2626; margin-bottom: 16px; font-size: 24px;">AethergenAI Application Error</h1>
+          <p style="margin-bottom: 16px;">Failed to load AethergenAI App. Please refresh the page.</p>
           <p style="font-size: 14px; color: #9ca3af;">Error: ${error.message}</p>
         </div>
       </div>

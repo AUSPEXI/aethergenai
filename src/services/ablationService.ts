@@ -1,6 +1,7 @@
-import { AblationEntry, AblationRecipe, AblationRunResult } from '../types/ablation';
+import { AblationEntry, AblationRecipe, AblationRunResult, CleaningConfig } from '../types/ablation';
 import { advancedAIModels } from '../types/advancedModels';
 import { hreTechnologyService } from './hreTechnologyService';
+import { cleanSeedData, cleanSyntheticData, triadGuidedConfig } from './dataCleaningService';
 
 export async function runRecipeLocally(
   recipe: AblationRecipe,
@@ -9,6 +10,19 @@ export async function runRecipeLocally(
 ): Promise<AblationRunResult[]> {
   const results: AblationRunResult[] = [];
   const defaultRepeats = recipe.repeats ?? 1;
+
+  // Optional pre-cleaning based on recipe
+  let workingData = [...generatedData];
+  if (recipe.cleaning?.synthetic || recipe.cleaning?.triadGuided) {
+    let cfg = (recipe.cleaning?.synthetic as CleaningConfig) || {};
+    if (recipe.cleaning?.triadGuided) {
+      // quick triad probe from current data
+      const triad = await hreTechnologyService.runHREAnalysis(workingData, schema);
+      cfg = triadGuidedConfig(cfg, { geometricConsistency: triad.triadValidation.metrics?.geometricConsistency ?? 0.9, triadValidationScore: triad.triadValidation?.isValid ? 0.9 : 0.8 });
+    }
+    const { cleaned } = cleanSyntheticData(workingData, schema, cfg);
+    workingData = cleaned;
+  }
 
   for (const ablation of recipe.ablations) {
     const repeats = ablation.repeats ?? defaultRepeats;
@@ -28,7 +42,7 @@ export async function runRecipeLocally(
         // Run existing comprehensive benchmark for each model
         const bench = await hreTechnologyService.runComprehensiveBenchmark(
           modelName,
-          generatedData,
+          workingData,
           schema
         );
 

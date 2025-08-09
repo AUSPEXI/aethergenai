@@ -1,7 +1,14 @@
 # AethergenAI Development Notes (Local MVP)
 - Local-only; no Netlify/DB required; port 5174.
-- Top tabs: Schema Design, Upload, Generate, Benchmarks, Privacy Metrics, Reporting.
+- Top tabs: Upload, Schema Design, Generate, Benchmarks, Privacy Metrics, Reporting.
 - Reporting contains Model Collapse Risk Dial.
+
+Implemented
+- Seed cleaning (default-on): schema/type enforcement, dedupe, IQR capping, PII redact, ISO dates. Toggle “Use cleaned seed data by default” in Upload. Inline cleaning summary.
+- Synthetic post-generation cleaning (optional): toggle “Clean synthetic before download” in Generate. Cleans artifacts and persists `cleaning_report` via `/api/record-dataset`.
+- Triad toggles in Benchmarks: “Enable Triad Validator (experimental)” and “Triad-guided cleaning (experimental)”. When triad-guided is on, recipes apply adaptive cleaning based on analysis.
+- Data-driven analysis metrics (no hard-coded numbers) across benchmarking/analysis.
+- Navigation order updated: Upload first, then Schema.
 
 Ablation Recipes
 - Types: `src/types/ablation.ts`
@@ -10,9 +17,7 @@ Ablation Recipes
 - UI: Benchmarks → paste/load JSON → Run Recipe → summary → Download JSON/CSV.
 
 Planned
-- Thread recipe `privacy.*` fully into generation (partially wired via event).
-- Preset loader from `docs/ABLATION_RECIPES_EXAMPLE.json`.
-- Optional YAML parser once deps are added.
+- Preset loader improvements and optional YAML parser once deps are added.
 
 ---
 

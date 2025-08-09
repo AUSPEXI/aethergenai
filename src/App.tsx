@@ -16,7 +16,7 @@ function App() {
   const [validationResult, setValidationResult] = useState<ValidationResult | null>(null);
   const [generationResult, setGenerationResult] = useState<SyntheticDataResult | null>(null);
   const [totalGeneratedLastRun, setTotalGeneratedLastRun] = useState<number>(0);
-  const [activeTab, setActiveTab] = useState<'design' | 'upload' | 'generate' | 'advanced' | 'privacy-metrics' | 'reporting'>('design');
+  const [activeTab, setActiveTab] = useState<'upload' | 'design' | 'generate' | 'advanced' | 'privacy-metrics' | 'reporting'>('upload');
   // Add privacy settings to app state
   const [privacySettings, setPrivacySettings] = useState({
     syntheticRatio: 95,
@@ -98,12 +98,12 @@ function App() {
   }, [privacySettings, currentSchema, seedData]);
 
   const workflowSteps = [
-    { key: 'design', label: '0. Schema Design' },
     { key: 'upload', label: '1. Upload Data' },
-    { key: 'generate', label: '2. Generate Synthetic Data' },
-    { key: 'advanced', label: '3. Benchmarks' },
-    { key: 'privacy-metrics', label: '4. Privacy Metrics' },
-    { key: 'reporting', label: '5. Reporting' },
+    { key: 'design', label: '2. Schema Design' },
+    { key: 'generate', label: '3. Generate Synthetic Data' },
+    { key: 'advanced', label: '4. Benchmarks' },
+    { key: 'privacy-metrics', label: '5. Privacy Metrics' },
+    { key: 'reporting', label: '6. Reporting' },
   ];
 
   const getStepIndex = (key: string) => workflowSteps.findIndex(step => step.key === key);
@@ -132,16 +132,6 @@ function App() {
           <div className="max-w-7xl mx-auto px-6">
             <nav className="flex space-x-8 overflow-x-auto">
               <button
-                onClick={() => setActiveTab('design')}
-                className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
-                  activeTab === 'design'
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
-              >
-                📋 Schema Design
-              </button>
-              <button
                 onClick={() => setActiveTab('upload')}
                 className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
                   activeTab === 'upload'
@@ -150,6 +140,16 @@ function App() {
                 }`}
               >
                 📤 Upload Data
+              </button>
+              <button
+                onClick={() => setActiveTab('design')}
+                className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
+                  activeTab === 'design'
+                    ? 'border-blue-500 text-blue-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                📋 Schema Design
               </button>
               <button
                 onClick={() => setActiveTab('generate')}

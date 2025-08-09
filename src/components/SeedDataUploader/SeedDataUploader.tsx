@@ -1,4 +1,6 @@
 import React, { useState, useRef } from 'react';
+import DataCleaner from '../DataCleaner/DataCleaner';
+import { cleanSeedData, CleaningReport } from '../../services/dataCleaningService';
 import { DataSchema, SchemaField, ValidationResult } from '../../types/schema';
 import { productionZKProofService, ProductionZKProofInput, ProductionZKProof } from '../../services/zksnark/productionZKProofService';
 
@@ -18,6 +20,8 @@ const SeedDataUploader: React.FC<SeedDataUploaderProps> = ({
   const [validationResult, setValidationResult] = useState<ValidationResult | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [previewRows, setPreviewRows] = useState<any[]>([]);
+  const [cleaningReport, setCleaningReport] = useState<CleaningReport | null>(null);
+  const [useCleaned, setUseCleaned] = useState<boolean>(true);
   const [zkProof, setZkProof] = useState<ProductionZKProof | null>(null);
   const [proofVerified, setProofVerified] = useState<boolean | null>(null);
   const [proofFile, setProofFile] = useState<File | null>(null);
@@ -384,18 +388,23 @@ const SeedDataUploader: React.FC<SeedDataUploaderProps> = ({
       const detected = detectSchemaFromData(data);
       setDetectedSchema(detected);
       
+      // Clean by default for compliance
+      const { cleaned, report } = cleanSeedData(data, schema, { enforceSchema: true, dedupe: true, missing: { strategy: 'leave' }, outliers: { method: 'iqr', k: 1.5 }, pii: { redact: true }, text: { trim: true, normalizeWhitespace: true }, dates: { iso8601: true } });
+      setCleaningReport(report);
+      const upstream = useCleaned ? cleaned : data;
+
       // Set preview rows
-      setPreviewRows(data.slice(0, 10));
+      setPreviewRows(upstream.slice(0, 10));
       
       // Validate data
-      const validation = validateData(data, schema);
+      const validation = validateData(upstream, schema);
       setValidationResult(validation);
       
       // Generate zk-SNARK proof for seed data
-      await generateZKProof(data);
+      await generateZKProof(upstream);
       
       // Notify parent components
-      onDataUploaded(data, detected);
+      onDataUploaded(upstream, detected);
       onValidationComplete(validation);
       
     } catch (error) {
@@ -492,6 +501,12 @@ const SeedDataUploader: React.FC<SeedDataUploaderProps> = ({
       {/* File Upload Area */}
       <div className="bg-white rounded-lg shadow-lg p-6">
         <h2 className="text-2xl font-bold text-gray-800 mb-4">📁 Seed Data Upload</h2>
+        <div className="mb-3 text-sm text-gray-600 flex items-center gap-3">
+          <label className="flex items-center gap-2"><input type="checkbox" checked={useCleaned} onChange={(e)=>setUseCleaned(e.target.checked)} /> Use cleaned seed data by default</label>
+          {cleaningReport && (
+            <span className="text-xs text-gray-500">Cleaned: removed {cleaningReport.rowsRemoved}, dedup {cleaningReport.duplicatesRemoved}, PII {cleaningReport.piiRedacted}</span>
+          )}
+        </div>
         
         <div
           className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-400 transition-colors"
@@ -527,6 +542,16 @@ const SeedDataUploader: React.FC<SeedDataUploaderProps> = ({
           </div>
         </div>
       </div>
+
+      {/* On-demand cleaner */}
+      {uploadedData.length > 0 && (
+        <DataCleaner
+          mode="seed"
+          schema={schema}
+          data={uploadedData}
+          onCleaned={(cleaned, report)=>{ setCleaningReport(report); setPreviewRows(cleaned.slice(0,10)); onDataUploaded(useCleaned? cleaned: uploadedData, detectedSchema); }}
+        />
+      )}
 
       {/* Processing Status */}
       {isProcessing && (

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { BenchmarkResult, SelfLearningFeedback, advancedAIModels } from '../../types/advancedModels';
 import { hreTechnologyService } from '../../services/hreTechnologyService';
 import { AblationRecipe } from '../../types/ablation';
@@ -57,6 +57,8 @@ const AdvancedBenchmarking: React.FC<AdvancedBenchmarkingProps> = ({
   const [expConsensusAudit, setExpConsensusAudit] = useState(false);
   const [expSelectiveAbstention, setExpSelectiveAbstention] = useState(false);
   const [recipePlan, setRecipePlan] = useState<Array<{ name: string; repeats: number; modelCount: number; flags?: string[] }>>([]);
+  const [enableTriadValidator, setEnableTriadValidator] = useState<boolean>(false);
+  const [triadGuidedCleaning, setTriadGuidedCleaning] = useState<boolean>(false);
   const resultsRef = useRef<HTMLDivElement | null>(null);
   const summaryRef = useRef<HTMLDivElement | null>(null);
 
@@ -128,11 +130,15 @@ const AdvancedBenchmarking: React.FC<AdvancedBenchmarkingProps> = ({
       setSelfLearningFeedback(feedback);
       
       // Run HRE analysis
-      const hreResult = await runHREAnalysis();
-      setHreAnalysis(hreResult);
+      if (enableTriadValidator) {
+        const hreResult = await runHREAnalysis();
+        setHreAnalysis(hreResult);
+      } else {
+        setHreAnalysis(null);
+      }
       
       setNotification('Benchmarks completed successfully!');
-      // scroll to results
+      // Scroll to results table explicitly
       setTimeout(() => resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
     } catch (error) {
       setNotification('Benchmark error: ' + (error instanceof Error ? error.message : 'Unknown error'));
@@ -156,6 +162,9 @@ const AdvancedBenchmarking: React.FC<AdvancedBenchmarkingProps> = ({
       if (recipeText.trim().startsWith('{')) {
         recipe = JSON.parse(recipeText);
       } else {
+      // Apply triad-guided cleaning flag into recipe if toggle is on
+      if (!recipe.cleaning) recipe.cleaning = {} as any;
+      if (triadGuidedCleaning) (recipe.cleaning as any).triadGuided = true;
         // lightweight YAML parse (very basic): key: value and arrays with -
         // For MVP, require JSON or a simple subset. In production we would add js-yaml.
         throw new Error('For now, please provide JSON recipe. YAML parser not bundled.');
@@ -633,6 +642,10 @@ const AdvancedBenchmarking: React.FC<AdvancedBenchmarkingProps> = ({
           <div className="text-sm text-gray-700 bg-gray-50 border rounded px-3 py-2">
             <div><span className="font-semibold">ε</span>: {schema?.privacySettings?.epsilon ?? '—'}</div>
             <div><span className="font-semibold">Synthetic Ratio</span>: {schema?.privacySettings?.syntheticRatio ?? '—'}%</div>
+            <div className="mt-2 flex flex-col gap-1">
+              <label className="flex items-center gap-2"><input type="checkbox" checked={enableTriadValidator} onChange={(e)=>setEnableTriadValidator(e.target.checked)} /> Enable Triad Validator (experimental)</label>
+              <label className="flex items-center gap-2"><input type="checkbox" checked={triadGuidedCleaning} onChange={(e)=>setTriadGuidedCleaning(e.target.checked)} /> Triad-guided cleaning (experimental)</label>
+            </div>
           </div>
         </div>
         <textarea
@@ -680,6 +693,13 @@ const AdvancedBenchmarking: React.FC<AdvancedBenchmarkingProps> = ({
               <option value="experimental">Experimental modules</option>
             </select>
           </div>
+          <button
+            onClick={() => summaryRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+            className="px-3 py-2 bg-gray-100 text-gray-800 rounded hover:bg-gray-200 text-sm"
+            title="Jump to results"
+          >
+            Jump to Results
+          </button>
           <button
             onClick={validateRecipe}
             className="px-3 py-2 bg-amber-600 text-white rounded hover:bg-amber-700 text-sm"
@@ -891,8 +911,18 @@ const AdvancedBenchmarking: React.FC<AdvancedBenchmarkingProps> = ({
 
       {/* Benchmark Results */}
       {benchmarkResults.length > 0 && (
-        <div className="bg-white rounded-lg shadow-lg p-6">
+        <div className="bg-white rounded-lg shadow-lg p-6" ref={resultsRef}>
           <h3 className="text-xl font-bold text-gray-800 mb-4">📊 Rigorous Scientific Benchmark Results</h3>
+          {/* debug: show inputs feeding metrics */}
+          <div className="mb-2 text-xs text-gray-500">
+            {(() => {
+              const n = generatedData.length;
+              const f = n > 0 ? Object.keys(generatedData[0]).length : 0;
+              const unique = n > 0 ? new Set(generatedData.map(r => JSON.stringify(r))).size : 0;
+              const ratio = n > 0 ? Math.round((unique / n) * 100) : 0;
+              return `Inputs — sample n: ${n}, fields: ${f}, unique: ${ratio}%`;
+            })()}
+          </div>
           
           <div className="overflow-x-auto">
             <table className="min-w-full border border-gray-200">
@@ -903,7 +933,7 @@ const AdvancedBenchmarking: React.FC<AdvancedBenchmarkingProps> = ({
                   <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 border-b">Privacy</th>
                   <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 border-b">Utility</th>
                   <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 border-b">Speed</th>
-                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 border-b">HRE Score</th>
+                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 border-b">Analysis Score</th>
                   <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 border-b">P-Value</th>
                 </tr>
               </thead>
@@ -1067,7 +1097,7 @@ const AdvancedBenchmarking: React.FC<AdvancedBenchmarkingProps> = ({
               : ''
           }
         >
-          {isRunning ? 'Running Benchmarks...' : 'Run Comprehensive HRE Benchmarks'}
+          {isRunning ? 'Running Benchmarks...' : 'Run Comprehensive Benchmarks'}
         </button>
         {notification && (
           <div style={{ marginTop: '1rem', color: notification.startsWith('Benchmark error') ? '#dc2626' : '#2563eb', fontWeight: 600 }}>

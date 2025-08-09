@@ -364,7 +364,7 @@ export class ProductionZKProofService {
     return Promise.resolve(true); // Simplified for fallback
   }
 
-  private _0x4c1e(): Promise<string> {
+  private _0xa1b2(): Promise<string> {
     return Promise.resolve(generateCircuitHash());
   }
 

@@ -1,3 +1,53 @@
+## IP Protection: How to Verify and Operate (SOPS + age)
+
+This repo is configured for local‑first encryption. Use this as a quick checklist before sharing builds or pushing code.
+
+### 1) What must be ignored (already configured)
+- `.agekey`, `.passphrase` (do not commit your private key or passphrase)
+- `unlocked/` (decrypted scratch space)
+- `secure/*.dec`, `secure/*.key`, `secure/*.tmp`
+- `docs/ip_manifest.json` (plaintext manifest is local only)
+
+### 2) SOPS config
+- File: `.sops.yaml` in repo root
+- Uses your age public key to encrypt:
+  - `docs/*.(md|pdf|json)` (selective fields or full files as configured)
+  - everything under `secure/`
+  - any extra rules you add
+
+### 3) Basic workflow
+1. Place proprietary plaintext into `secure/` or `docs/` as needed.
+2. Run: `sops --encrypt --age <YOUR_AGE_PUBLIC_KEY> <file> > <file>.enc` (or use your lock script).
+3. Move decrypted working copies to `unlocked/` (ignored) for local editing.
+4. Never commit `unlocked/`.
+
+### 4) Quick verification before sharing
+- Inspect `git status`: should not show `.agekey`, `.passphrase`, `unlocked/`, or plaintext manifests.
+- Open any encrypted doc in `docs/` or `secure/`: contents should be ciphertext (not readable).
+- Search `dist/` (production bundle) for obvious secrets/tokens. Nothing sensitive should appear in built JS.
+- Netlify/CI: ensure only public runtime keys (e.g., Supabase anon) are set; never put private keys or passphrases in CI.
+
+### 5) Pre‑push sanity script (optional)
+Add a simple script that fails the push if proprietary plaintext is present outside `unlocked/`.
+
+Example (PowerShell):
+```
+$paths = @('docs/*.md','docs/*.pdf','docs/*.json')
+$fail = $false
+foreach ($p in $paths) {
+  Get-ChildItem $p -Recurse | ForEach-Object {
+    if ($_.FullName -notmatch "unlocked" -and (Get-Content $_ -TotalCount 1) -match "AUSPEXI|CONFIDENTIAL|PROPRIETARY") {
+      Write-Error "Proprietary marker found in plaintext: $($_.FullName)"; $fail = $true
+    }
+  }
+}
+if ($fail) { exit 1 } else { Write-Output "IP pre-push check: OK" }
+```
+
+### 6) Recovery
+- If plaintext slipped into a commit: rotate keys if needed, purge from history, and replace with encrypted versions.
+- Consider GitHub’s secret scanning alerts for common tokens; keep it on.
+
 # AethergenAI IP Protection Strategy
 
 ## Overview

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { cleanSyntheticData, CleaningReport } from '../../services/dataCleaningService';
 import ModelCollapseRiskDial from '../ModelCollapseRiskDial/ModelCollapseRiskDial';
 import { DataSchema, SyntheticDataResult } from '../../types/schema';
 import { productionZKProofService, ProductionZKProofInput, ProductionZKProof } from '../../services/zksnark/productionZKProofService';
@@ -38,6 +39,9 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
   const [elapsedMs, setElapsedMs] = useState<number>(0);
   const startRef = useRef<number | null>(null);
   const [isSampleOpen, setIsSampleOpen] = useState<boolean>(true);
+  const [cleanBeforeDownload, setCleanBeforeDownload] = useState<boolean>(false);
+  const [cleaningReport, setCleaningReport] = useState<CleaningReport | null>(null);
+  const [isCleaning, setIsCleaning] = useState<boolean>(false);
 
   // Volume control for generation
   const [generationVolume, setGenerationVolume] = useState<number>(schema.targetVolume);
@@ -316,6 +320,37 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
               setFinalJsonBlob(null);
               setFinalCsvBlob(null);
             }
+            // Optional post-generation cleaning (outside recipes)
+            if (cleanBeforeDownload) {
+              try {
+                setIsCleaning(true);
+                const raw = jsonText ? JSON.parse(jsonText) : [];
+                const { cleaned, report } = cleanSyntheticData(raw, schema, {
+                  enforceSchema: true,
+                  dedupe: true,
+                  outliers: { method: 'iqr', k: 1.5 },
+                  text: { trim: true, normalizeWhitespace: true },
+                  dates: { iso8601: true },
+                });
+                setCleaningReport(report);
+                const j = new Blob([JSON.stringify(cleaned)], { type: 'application/json' });
+                setFinalJsonBlob(j);
+                // rebuild CSV
+                const fields = Object.keys(cleaned[0] || {});
+                const rows = [fields.join(',')].concat(cleaned.map((row:any)=>fields.map(f=>{
+                  const val = row[f];
+                  if (val === null || val === undefined) return '';
+                  if (typeof val === 'object') return '"' + JSON.stringify(val).replace(/"/g,'""') + '"';
+                  return '"' + String(val).replace(/"/g,'""') + '"';
+                }).join(',')));
+                const c = new Blob([rows.join('\n')], { type: 'text/csv' });
+                setFinalCsvBlob(c);
+              } catch (e) {
+                console.warn('post-gen cleaning failed', e);
+              } finally {
+                setIsCleaning(false);
+              }
+            }
             // Ensure counters show actual generated count
             setGeneratedRecords(generated ?? targetRecords);
             setProgress(Math.min(100, ((generated ?? targetRecords) / targetRecords) * 100));
@@ -380,13 +415,28 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
 
       // Prepare downloadable artifacts without keeping full data in React state
       try {
-        if (allRecords.length > 0) {
-          const jsonBlob = new Blob([JSON.stringify(allRecords)], { type: 'application/json' });
+        let recordsForArtifacts = allRecords;
+        // Optional post-gen cleaning path for small volumes
+        if (cleanBeforeDownload && allRecords.length > 0) {
+          setIsCleaning(true);
+          const { cleaned, report } = cleanSyntheticData(allRecords, schema, {
+            enforceSchema: true,
+            dedupe: true,
+            outliers: { method: 'iqr', k: 1.5 },
+            text: { trim: true, normalizeWhitespace: true },
+            dates: { iso8601: true },
+          });
+          setCleaningReport(report);
+          recordsForArtifacts = cleaned;
+          setIsCleaning(false);
+        }
+        if (recordsForArtifacts.length > 0) {
+          const jsonBlob = new Blob([JSON.stringify(recordsForArtifacts)], { type: 'application/json' });
           setFinalJsonBlob(jsonBlob);
           // Build CSV
-          const fields = Object.keys(allRecords[0] || {});
+          const fields = Object.keys(recordsForArtifacts[0] || {});
           const csvRows = [fields.join(',')];
-          for (const row of allRecords) {
+          for (const row of recordsForArtifacts) {
             const values = fields.map(f => {
               const val = (row as any)[f];
               if (val === null || val === undefined) return '';
@@ -414,10 +464,26 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
             storage_uri: null,
             metadata: {
               epsilon: schema.privacySettings.epsilon,
-              synthetic_ratio: schema.privacySettings.syntheticRatio
+              synthetic_ratio: schema.privacySettings.syntheticRatio,
+              cleaned: cleanBeforeDownload || undefined,
+              cleaning_report: cleaningReport || undefined
             }
           })
         });
+        // If we cleaned post-fact, record a second entry for cleaned artifacts
+        if (cleanBeforeDownload && cleaningReport) {
+          await fetch('/api/record-dataset', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              schema_id: schema.id,
+              kind: 'synthetic_cleaned',
+              record_count: generatedRecords,
+              storage_uri: null,
+              metadata: { cleaning_report: cleaningReport }
+            })
+          });
+        }
       } catch (e) {
         console.warn('record-dataset failed', e);
       }
@@ -680,6 +746,13 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
       {/* Generation Settings */}
       <div className="bg-white rounded-lg shadow-lg p-6">
         <h2 className="text-2xl font-bold text-gray-800 mb-4">🎯 Generation Settings</h2>
+        <div className="mb-3 text-sm text-gray-700 flex items-center gap-3">
+          <label className="flex items-center gap-2"><input type="checkbox" checked={cleanBeforeDownload} onChange={(e)=>setCleanBeforeDownload(e.target.checked)} /> Clean synthetic before download</label>
+          {isCleaning && <span className="text-xs text-blue-700">Cleaning…</span>}
+          {cleaningReport && (
+            <span className="text-xs text-gray-500">Cleaned: removed {cleaningReport.rowsRemoved}, dedup {cleaningReport.duplicatesRemoved}, outliers {cleaningReport.outliersCapped}</span>
+          )}
+        </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <div className="bg-blue-50 p-4 rounded-lg">

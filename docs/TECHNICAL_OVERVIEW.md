@@ -10,8 +10,8 @@ Audience: founders, engineers, contributors. This evolves with the codebase.
 ## 2. Architecture (MVP)
 - Frontend (React + Vite) modules:
   - `SchemaDesigner` → define fields, privacy settings.
-  - `SeedDataUploader` → load CSV/JSON; validate; generate ZK proofs (dev fallback available).
-  - `SyntheticDataGenerator` → local mock generator with ε‑aware noise; telemetry.
+  - `SeedDataUploader` → load CSV/JSON; clean (default‑on), validate; generate ZK proofs (dev fallback available).
+  - `SyntheticDataGenerator` → local mock generator with ε‑aware noise; optional post‑gen cleaning; telemetry.
   - `AdvancedBenchmarking` → interactive benchmarks + Ablation Recipes (JSON).
   - `ReportingDashboard` → quality/cost/risk + Model Collapse Risk Dial.
 - Services:
@@ -25,33 +25,40 @@ Audience: founders, engineers, contributors. This evolves with the codebase.
 - Runner: `src/services/ablationService.ts`
   - Executes per‑model benchmarks via `hreTechnologyService`.
   - Aggregates mean metrics; carries `experimentalFlags` into summaries and Ablation Card.
+  - Cleaning alignment: `recipe.cleaning.synthetic` and `recipe.cleaning.triadGuided` enable pre‑ablation cleaning and triad‑guided adaptive cleaning.
 - UI: `AdvancedBenchmarking`
   - Paste/load → Validate → Run; Download JSON/CSV; Download Ablation Card (schema hash, recipe hash, app version, privacy).
 
-## 4. Privacy & Proofs
+## 4. Data Cleaning
+- Service: `src/services/dataCleaningService.ts` with `cleanSeedData`, `cleanSyntheticData`, and `triadGuidedConfig`.
+- Seed defaults: schema enforcement, dedupe, IQR outlier capping, ISO dates, PII redact.
+- Synthetic: optional post‑gen cleaning before downloads (toggle in UI) and persisted cleaning reports.
+- Triad‑guided cleaning (experimental): adapt thresholds using analysis metrics.
+
+## 5. Privacy & Proofs
 - Differential privacy (ε) influences generator noise scale.
 - ZK proof workflow: `productionZKProofService` with dev fallback; UI in uploader/generator.
 - Live privacy context badges in Reporting, Benchmarks, and Header.
 
-## 5. Experimental Modules (behind toggles)
+## 6. Experimental Modules (behind toggles)
 - Frequency Harmonics Layer: resonance features for periodic data.
 - Consensus Audit Ensemble: outlier/bias detection via ensemble.
 - Selective Prediction (Abstention): calibrated abstain on low confidence.
 - Injected as `experimental_modules` in recipes for traceability.
 
-## 6. Cross‑Domain Data Fusion (experimental)
+## 7. Cross‑Domain Data Fusion (experimental)
 - Schema Designer includes a mapping UI (source→target).
 - Copy mappings as JSON to use in future fusion recipes/pipelines.
 
-## 7. Roadmap → Cloud Beta
+## 8. Roadmap → Cloud Beta
 - Databricks runner: map recipes to Jobs API; log to MLflow; write datasets to Delta; Unity Catalog for governance.
 - Evidence bundles: signed lineage (schema hash, ε, proofs, recipe hash) surfaced in UI.
 
-## 8. KPIs & Validation
+## 9. KPIs & Validation
 - Utility (task accuracy), privacy (<5% attack success), cost (≥5–10× savings), time‑to‑experiment.
 - Use ablations to quantify trade‑offs, include confidence intervals where applicable.
 
-## 9. Glossary (plain English)
+## 10. Glossary (plain English)
 - Ablation: A structured experiment where you add/remove/change one factor to see effect on metrics.
 - ε (epsilon): Differential privacy budget. Smaller ε = stronger privacy (more noise).
 - MoE: Mixture of Experts. A router activates a small subset of model “experts” per input for efficiency.

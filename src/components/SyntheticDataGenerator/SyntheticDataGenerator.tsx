@@ -849,8 +849,9 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
             </button>
           </div>
           {isSampleOpen && (
-          {/* Table View */}
-          <div className="overflow-x-auto mb-4">
+            <>
+            {/* Table View */}
+            <div className="overflow-x-auto mb-4">
             <table className="min-w-full table-auto border">
               <thead>
                 <tr>
@@ -869,11 +870,12 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
                 ))}
               </tbody>
             </table>
-          </div>
-          {/* Raw JSON View */}
-          <div className="bg-gray-50 p-3 rounded border text-xs text-gray-700 max-h-48 overflow-auto">
-            <pre>{JSON.stringify(generatedData.slice(0, 10), null, 2)}</pre>
-          </div>
+            </div>
+            {/* Raw JSON View */}
+            <div className="bg-gray-50 p-3 rounded border text-xs text-gray-700 max-h-48 overflow-auto">
+              <pre>{JSON.stringify(generatedData.slice(0, 10), null, 2)}</pre>
+            </div>
+            </>
           )}
         </div>
       )}

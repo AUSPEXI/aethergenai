@@ -275,7 +275,7 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
             jsonParts.push(']');
             const jb = new Blob([jsonParts.join('')],{type:'application/json'});
             const cb = new Blob([csvRows.join('\n')],{type:'text/csv'});
-            (self as any).postMessage({type:'done', sample, jsonUrl: URL.createObjectURL(jb), csvUrl: URL.createObjectURL(cb), elapsedMs: Date.now()-start});
+            (self as any).postMessage({type:'done', generated, total, sample, jsonUrl: URL.createObjectURL(jb), csvUrl: URL.createObjectURL(cb), elapsedMs: Date.now()-start});
           };
         /* worker-end */ };
         const code = `(${workerFn.toString()})()`;
@@ -288,16 +288,16 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
             setProgress(Math.min(100, (msg.generated / targetRecords) * 100));
             setCurrentSpeed(msg.rps);
           } else if (msg.type === 'done') {
-            const { sample, jsonUrl, csvUrl, elapsedMs } = msg;
+            const { sample, jsonUrl, csvUrl, elapsedMs, generated } = msg;
             setGeneratedData(sample);
             setFinalJsonBlob(null);
             setFinalCsvBlob(null);
             // Direct download URLs for large artifacts
             (handleDownloadJSON as any)._url = jsonUrl;
             (handleDownloadCSV as any)._url = csvUrl;
-            // Ensure counters show completion
-            setGeneratedRecords(targetRecords);
-            setProgress(100);
+            // Ensure counters show actual generated count
+            setGeneratedRecords(generated ?? targetRecords);
+            setProgress(Math.min(100, ((generated ?? targetRecords) / targetRecords) * 100));
             const finalResult: SyntheticDataResult = {
               success: true,
               records: sample,
@@ -305,14 +305,14 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
                 privacyScore: qualityMetrics.privacyScore,
                 utilityScore: qualityMetrics.utilityScore,
                 generationTime: elapsedMs,
-                recordsPerSecond: Math.round(targetRecords / (elapsedMs / 1000))
+                recordsPerSecond: Math.round((generated ?? targetRecords) / (elapsedMs / 1000))
               }
             };
             onGenerationComplete(finalResult);
             generateZKProofForSyntheticData();
             setIsGenerating(false);
             // Notify app of total generated count for status bar
-            window.dispatchEvent(new CustomEvent('aethergen:gen-total', { detail: { total: targetRecords } }));
+            window.dispatchEvent(new CustomEvent('aethergen:gen-total', { detail: { total: generated ?? targetRecords } }));
             w.terminate();
           }
         };

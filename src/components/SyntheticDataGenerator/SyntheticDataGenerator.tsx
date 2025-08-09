@@ -35,6 +35,9 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
   const [finalJsonBlob, setFinalJsonBlob] = useState<Blob | null>(null);
   const [finalCsvBlob, setFinalCsvBlob] = useState<Blob | null>(null);
   const [isComplete, setIsComplete] = useState<boolean>(false);
+  const [elapsedMs, setElapsedMs] = useState<number>(0);
+  const startRef = useRef<number | null>(null);
+  const [isSampleOpen, setIsSampleOpen] = useState<boolean>(true);
 
   // Volume control for generation
   const [generationVolume, setGenerationVolume] = useState<number>(schema.targetVolume);
@@ -46,6 +49,7 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
     // Keep input in sync when schema target changes
     setGenerationVolume(schema.targetVolume);
     setGenerationVolumeInput(String(schema.targetVolume));
+    setIsSampleOpen(schema.targetVolume <= 1000);
   }, [schema.targetVolume]);
 
   const downloadProof = () => {
@@ -234,6 +238,9 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
     setGeneratedRecords(0);
     setErrors([]);
     setGeneratedData([]); // Reset generatedData at start
+    setElapsedMs(0);
+    startRef.current = Date.now();
+    setIsSampleOpen(generationVolume <= 1000);
     
     const startTime = Date.now();
     const targetRecords = generationVolume;
@@ -295,6 +302,7 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
             setGeneratedRecords(msg.generated);
             setProgress(Math.min(100, (msg.generated / targetRecords) * 100));
             setCurrentSpeed(msg.rps);
+            if (startRef.current) setElapsedMs(Date.now() - startRef.current);
           } else if (msg.type === 'done') {
             const { sample, jsonText, csvText, elapsedMs, generated } = msg;
             setGeneratedData(sample);
@@ -311,6 +319,7 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
             // Ensure counters show actual generated count
             setGeneratedRecords(generated ?? targetRecords);
             setProgress(Math.min(100, ((generated ?? targetRecords) / targetRecords) * 100));
+            setElapsedMs(elapsedMs || (startRef.current ? Date.now() - startRef.current : 0));
             const finalResult: SyntheticDataResult = {
               success: true,
               records: sample,
@@ -318,7 +327,7 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
                 privacyScore: qualityMetrics.privacyScore,
                 utilityScore: qualityMetrics.utilityScore,
                 generationTime: elapsedMs,
-                recordsPerSecond: Math.round((generated ?? targetRecords) / (elapsedMs / 1000))
+                recordsPerSecond: Math.round((generated ?? targetRecords) / (Math.max(1, elapsedMs) / 1000))
               }
             };
             onGenerationComplete(finalResult);
@@ -346,6 +355,7 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
         setGeneratedData([...sampleRecords]);
         setCurrentSpeed(Math.round((batch.length / (Date.now() - batchStart)) * 1000));
         const elapsed = Date.now() - startTime;
+        setElapsedMs(elapsed);
         setQualityMetrics({ privacyScore: calculatePrivacyScore(sampleRecords, seedData), utilityScore: calculateUtilityScore(sampleRecords, seedData), generationTime: elapsed });
         if (i % 2 === 0) await new Promise(r => setTimeout(r, 0));
       }
@@ -810,13 +820,35 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
               style={{ width: `${Math.min(100, (generatedRecords / Math.max(1, generationVolume)) * 100)}%` }}
             ></div>
           </div>
+          {/* Secondary run stats */}
+          <div className="mt-3 grid grid-cols-2 md:grid-cols-4 gap-3 text-sm text-gray-600">
+            <div>Elapsed: <span className="font-semibold">{Math.max(0, Math.round(elapsedMs/1000)).toLocaleString()}s</span></div>
+            <div>Throughput: <span className="font-semibold">{currentSpeed.toLocaleString()}/s</span></div>
+            <div>
+              ETA: <span className="font-semibold">
+                {isGenerating && currentSpeed > 0
+                  ? `${Math.max(0, Math.ceil((generationVolume - generatedRecords) / currentSpeed)).toLocaleString()}s`
+                  : (isComplete ? '0s' : '—')}
+              </span>
+            </div>
+            <div>Target: <span className="font-semibold">{generationVolume.toLocaleString()}</span></div>
+          </div>
         </div>
       )}
 
-      {/* Synthetic Data Preview Section */}
+      {/* Live sample (collapsible) */}
       {generatedData.length > 0 && (
         <div className="bg-white rounded-lg shadow-lg p-6 mt-6">
-          <h3 className="text-xl font-bold text-gray-800 mb-4">👀 Synthetic Data Preview</h3>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-xl font-bold text-gray-800">👀 Live sample (200 rows)</h3>
+            <button
+              onClick={() => setIsSampleOpen(v => !v)}
+              className="text-sm px-3 py-1 rounded border border-gray-300 hover:bg-gray-50"
+            >
+              {isSampleOpen ? 'Hide' : 'Show'}
+            </button>
+          </div>
+          {isSampleOpen && (
           {/* Table View */}
           <div className="overflow-x-auto mb-4">
             <table className="min-w-full table-auto border">
@@ -842,6 +874,7 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
           <div className="bg-gray-50 p-3 rounded border text-xs text-gray-700 max-h-48 overflow-auto">
             <pre>{JSON.stringify(generatedData.slice(0, 10), null, 2)}</pre>
           </div>
+          )}
         </div>
       )}
       {generatedData.length === 0 && !isGenerating && (
@@ -850,13 +883,14 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
         </div>
       )}
 
-      {generatedData.length > 0 && (
+      {true && (
         <div className="flex gap-4 justify-center mt-4">
           <button
             onClick={handleDownloadJSON}
+            disabled={!finalJsonBlob || !isComplete}
             style={{
               padding: '0.75rem 2rem',
-              background: '#2563eb',
+              background: (!finalJsonBlob || !isComplete) ? '#93c5fd' : '#2563eb',
               color: '#fff',
               border: 'none',
               borderRadius: '8px',
@@ -867,13 +901,14 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
               transition: 'background 0.2s',
             }}
           >
-            Download as JSON ({generatedData.length} records)
+            {finalJsonBlob && isComplete ? `Download full JSON (${generatedRecords.toLocaleString()})` : 'Preparing JSON…'}
           </button>
           <button
             onClick={handleDownloadCSV}
+            disabled={!finalCsvBlob || !isComplete}
             style={{
               padding: '0.75rem 2rem',
-              background: '#059669',
+              background: (!finalCsvBlob || !isComplete) ? '#86efac' : '#059669',
               color: '#fff',
               border: 'none',
               borderRadius: '8px',
@@ -884,7 +919,7 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
               transition: 'background 0.2s',
             }}
           >
-            Download as CSV ({generatedData.length} records)
+            {finalCsvBlob && isComplete ? `Download full CSV (${generatedRecords.toLocaleString()})` : 'Preparing CSV…'}
           </button>
         </div>
       )}

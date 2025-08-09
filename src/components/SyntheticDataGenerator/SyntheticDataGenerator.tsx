@@ -232,51 +232,101 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
     // Batch size tuned for fewer UI wakeups
     const batchSize = 300;
     const totalBatches = Math.ceil(targetRecords / batchSize);
-    
-    const allRecords: any[] = [];
-    let currentBatch = 0;
-    const sampleMax = 200; // cap the in-memory sample for UI/monitoring
+    const sampleMax = 200;
     let sampleRecords: any[] = [];
-    
+    const useWorker = targetRecords >= 1500;
+    const allRecords: any[] = [];
     try {
-      // Simulate generation with progress updates
+      if (useWorker) {
+        // Inline worker code (no extra bundler config)
+        const workerFn = function() { /* worker-start */
+          /* eslint-disable no-restricted-globals */
+          (self as any).onmessage = async (e: MessageEvent) => {
+            const d: any = e.data || {};
+            if (d.cmd !== 'start') return;
+            const seedData: any[] = d.seedData || [];
+            const schema = d.schema || { fields: [], privacySettings: { epsilon: 0.1 } };
+            const total: number = Math.max(1, d.total || 1000);
+            const batchSize: number = Math.max(50, d.batchSize || 500);
+            const sampleMax: number = Math.max(50, d.sampleMax || 200);
+            const epsilon = schema?.privacySettings?.epsilon ?? 0.1;
+            const fields = (schema.fields || []).map((f: any) => f.name);
+            function ns(eps: number) { const s = 1 / Math.max(eps, 0.01); return Math.min(Math.max(s, 0.1), 5); }
+            function hp(val: any, t: string, eps: number) { const n = ns(eps); if (t==='string') return `anon_${Math.random().toString(36).slice(2,10)}`; if (t==='number') return Math.floor((Math.random()*1000)*n); if (t==='date') return new Date(Date.now()-Math.random()*31536e6*n).toISOString(); return val; }
+            function mp(val: any, t: string, eps: number) { const n = ns(eps)*0.2; if (t==='string') return typeof val==='string'?`${val}_syn`:val; if (t==='number') return typeof val==='number'?val+(Math.random()-0.5)*20*n:val; return val; }
+            function gv(f: any, seed: any[], eps: number) { const sample = seed.map(r=>r[f.name]).filter((v:any)=>v!==undefined); if(sample.length===0){ if(f.type==='string')return `synthetic_${f.name}_${Math.random().toString(36).slice(2,10)}`; if(f.type==='number')return Math.floor(Math.random()*1000); if(f.type==='boolean')return Math.random()>0.5; if(f.type==='date')return new Date(Date.now()-Math.random()*31536e6).toISOString(); if(f.type==='json')return {synthetic:true,field:f.name}; return null;} let v=sample[Math.floor(Math.random()*sample.length)]; if(f.privacyLevel==='high')v=hp(v,f.type,eps); else if(f.privacyLevel==='medium')v=mp(v,f.type,eps); return v; }
+            const start = Date.now();
+            let generated = 0, lastTick = Date.now(), lastGen = 0;
+            const sample: any[] = [];
+            let jsonParts: string[] = ['[']; let first = true;
+            const csvRows: string[] = [fields.join(',')];
+            while (generated < total) {
+              const n = Math.min(batchSize, total - generated);
+              for (let i=0;i<n;i++){
+                const rec: any = {}; for (const f of schema.fields) rec[f.name]=gv(f,seedData,epsilon);
+                sample.push(rec); if (sample.length>sampleMax) sample.splice(0,sample.length-sampleMax);
+                const frag = JSON.stringify(rec); if(!first) jsonParts.push(','); jsonParts.push(frag); first=false;
+                const csvVals = fields.map(fn=>{ const v=rec[fn]; if(v===null||v===undefined) return ''; if(typeof v==='object') return '"'+JSON.stringify(v).replace(/"/g,'""')+'"'; return '"'+String(v).replace(/"/g,'""')+'"'; }); csvRows.push(csvVals.join(','));
+              }
+              generated += n;
+              const now = Date.now();
+              if (now-lastTick>=300){ const rps=Math.round((generated-lastGen)/((now-lastTick)/1000)); (self as any).postMessage({type:'progress',generated,rps}); lastTick=now; lastGen=generated; await new Promise(r=>setTimeout(r,0)); }
+            }
+            jsonParts.push(']');
+            const jb = new Blob([jsonParts.join('')],{type:'application/json'});
+            const cb = new Blob([csvRows.join('\n')],{type:'text/csv'});
+            (self as any).postMessage({type:'done', sample, jsonUrl: URL.createObjectURL(jb), csvUrl: URL.createObjectURL(cb), elapsedMs: Date.now()-start});
+          };
+        /* worker-end */ };
+        const code = `(${workerFn.toString()})()`;
+        const blob = new Blob([code], { type: 'application/javascript' });
+        const w = new Worker(URL.createObjectURL(blob));
+        w.onmessage = (ev: MessageEvent) => {
+          const msg: any = ev.data || {};
+          if (msg.type === 'progress') {
+            setGeneratedRecords(msg.generated);
+            setProgress(Math.min(100, (msg.generated / targetRecords) * 100));
+            setCurrentSpeed(msg.rps);
+          } else if (msg.type === 'done') {
+            const { sample, jsonUrl, csvUrl, elapsedMs } = msg;
+            setGeneratedData(sample);
+            setFinalJsonBlob(null);
+            setFinalCsvBlob(null);
+            // Direct download URLs for large artifacts
+            (handleDownloadJSON as any)._url = jsonUrl;
+            (handleDownloadCSV as any)._url = csvUrl;
+            const finalResult: SyntheticDataResult = {
+              success: true,
+              records: sample,
+              metrics: {
+                privacyScore: qualityMetrics.privacyScore,
+                utilityScore: qualityMetrics.utilityScore,
+                generationTime: elapsedMs,
+                recordsPerSecond: Math.round(targetRecords / (elapsedMs / 1000))
+              }
+            };
+            onGenerationComplete(finalResult);
+            generateZKProofForSyntheticData();
+            setIsGenerating(false);
+            w.terminate();
+          }
+        };
+        w.postMessage({ cmd:'start', seedData, schema, total: targetRecords, batchSize, sampleMax });
+        return;
+      }
+      // Fallback inline small-volume path
       for (let i = 0; i < totalBatches; i++) {
-        const batchStartTime = Date.now();
-        
-        // Generate batch of synthetic data
+        const batchStart = Date.now();
         const batch = await generateBatch(seedData, batchSize, schema);
-        allRecords.push(...batch);
-        // Maintain a capped sample for monitoring/preview
         sampleRecords = [...sampleRecords, ...batch];
-        if (sampleRecords.length > sampleMax) {
-          sampleRecords.splice(0, sampleRecords.length - sampleMax);
-        }
-        
-        // Update progress
-        currentBatch++;
-        const newProgress = (currentBatch / totalBatches) * 100;
-        setProgress(newProgress);
-        setGeneratedRecords(allRecords.length);
-        setGeneratedData([...sampleRecords]); // lightweight UI update
-        
-        // Calculate speed
-        const batchTime = Date.now() - batchStartTime;
-        const speed = Math.round((batch.length / batchTime) * 1000);
-        setCurrentSpeed(speed);
-        
-        // Update quality metrics
-        const elapsedTime = Date.now() - startTime;
-        const privacyScore = calculatePrivacyScore(allRecords, seedData);
-        const utilityScore = calculateUtilityScore(allRecords, seedData);
-        
-        setQualityMetrics({
-          privacyScore,
-          utilityScore,
-          generationTime: elapsedTime
-        });
-        
-        // Yield to the browser occasionally to keep UI responsive
-        if (i % 2 === 0) await new Promise(resolve => setTimeout(resolve, 0));
+        if (sampleRecords.length > sampleMax) sampleRecords.splice(0, sampleRecords.length - sampleMax);
+        setProgress(((i+1)/totalBatches)*100);
+        setGeneratedRecords((i+1)*batchSize > targetRecords ? targetRecords : (i+1)*batchSize);
+        setGeneratedData([...sampleRecords]);
+        setCurrentSpeed(Math.round((batch.length / (Date.now() - batchStart)) * 1000));
+        const elapsed = Date.now() - startTime;
+        setQualityMetrics({ privacyScore: calculatePrivacyScore(sampleRecords, seedData), utilityScore: calculateUtilityScore(sampleRecords, seedData), generationTime: elapsed });
+        if (i % 2 === 0) await new Promise(r => setTimeout(r, 0));
       }
       
       const finalResult: SyntheticDataResult = {
@@ -532,6 +582,16 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
 
   // Download as JSON handler
   const handleDownloadJSON = () => {
+    const urlOverride = (handleDownloadJSON as any)._url as string | undefined;
+    if (urlOverride) {
+      const a = document.createElement('a');
+      a.href = urlOverride;
+      a.download = `synthetic_data_${generatedRecords}_records.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      return;
+    }
     if (finalJsonBlob) {
       const url = URL.createObjectURL(finalJsonBlob);
       const a = document.createElement('a');
@@ -555,6 +615,16 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
 
   // Download as CSV handler
   const handleDownloadCSV = () => {
+    const urlOverride = (handleDownloadCSV as any)._url as string | undefined;
+    if (urlOverride) {
+      const a = document.createElement('a');
+      a.href = urlOverride;
+      a.download = `synthetic_data_${generatedRecords}_records.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      return;
+    }
     if (finalCsvBlob) {
       const url = URL.createObjectURL(finalCsvBlob);
       const a = document.createElement('a');

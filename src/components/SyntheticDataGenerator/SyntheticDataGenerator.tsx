@@ -281,9 +281,9 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
               if (now-lastTick>=300){ const rps=Math.round((generated-lastGen)/((now-lastTick)/1000)); (self as any).postMessage({type:'progress',generated,rps}); lastTick=now; lastGen=generated; await new Promise(r=>setTimeout(r,0)); }
             }
             jsonParts.push(']');
-            const jb = new Blob([jsonParts.join('')],{type:'application/json'});
-            const cb = new Blob([csvRows.join('\n')],{type:'text/csv'});
-            (self as any).postMessage({type:'done', generated, total, sample, jsonUrl: URL.createObjectURL(jb), csvUrl: URL.createObjectURL(cb), elapsedMs: Date.now()-start});
+            const jsonText = jsonParts.join('');
+            const csvText = csvRows.join('\n');
+            (self as any).postMessage({type:'done', generated, total, sample, jsonText, csvText, elapsedMs: Date.now()-start});
           };
         /* worker-end */ };
         const code = `(${workerFn.toString()})()`;
@@ -296,13 +296,18 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
             setProgress(Math.min(100, (msg.generated / targetRecords) * 100));
             setCurrentSpeed(msg.rps);
           } else if (msg.type === 'done') {
-            const { sample, jsonUrl, csvUrl, elapsedMs, generated } = msg;
+            const { sample, jsonText, csvText, elapsedMs, generated } = msg;
             setGeneratedData(sample);
-            setFinalJsonBlob(null);
-            setFinalCsvBlob(null);
-            // Direct download URLs for large artifacts
-            (handleDownloadJSON as any)._url = jsonUrl;
-            (handleDownloadCSV as any)._url = csvUrl;
+            // Build blobs on main thread for reliable downloads
+            try {
+              const jBlob = new Blob([jsonText || '[]'], { type: 'application/json' });
+              const cBlob = new Blob([csvText || ''], { type: 'text/csv' });
+              setFinalJsonBlob(jBlob);
+              setFinalCsvBlob(cBlob);
+            } catch (_) {
+              setFinalJsonBlob(null);
+              setFinalCsvBlob(null);
+            }
             // Ensure counters show actual generated count
             setGeneratedRecords(generated ?? targetRecords);
             setProgress(Math.min(100, ((generated ?? targetRecords) / targetRecords) * 100));
@@ -333,6 +338,8 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
         const batchStart = Date.now();
         const batch = await generateBatch(seedData, batchSize, schema);
         sampleRecords = [...sampleRecords, ...batch];
+        // accumulate full dataset for small runs only
+        allRecords.push(...batch);
         if (sampleRecords.length > sampleMax) sampleRecords.splice(0, sampleRecords.length - sampleMax);
         setProgress(((i+1)/totalBatches)*100);
         setGeneratedRecords((i+1)*batchSize > targetRecords ? targetRecords : (i+1)*batchSize);
@@ -363,22 +370,24 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
 
       // Prepare downloadable artifacts without keeping full data in React state
       try {
-        const jsonBlob = new Blob([JSON.stringify(allRecords)], { type: 'application/json' });
-        setFinalJsonBlob(jsonBlob);
-        // Build CSV
-        const fields = Object.keys(allRecords[0] || {});
-        const csvRows = [fields.join(',')];
-        for (const row of allRecords) {
-          const values = fields.map(f => {
-            const val = (row as any)[f];
-            if (val === null || val === undefined) return '';
-            if (typeof val === 'object') return '"' + JSON.stringify(val).replace(/"/g, '""') + '"';
-            return '"' + String(val).replace(/"/g, '""') + '"';
-          });
-          csvRows.push(values.join(','));
+        if (allRecords.length > 0) {
+          const jsonBlob = new Blob([JSON.stringify(allRecords)], { type: 'application/json' });
+          setFinalJsonBlob(jsonBlob);
+          // Build CSV
+          const fields = Object.keys(allRecords[0] || {});
+          const csvRows = [fields.join(',')];
+          for (const row of allRecords) {
+            const values = fields.map(f => {
+              const val = (row as any)[f];
+              if (val === null || val === undefined) return '';
+              if (typeof val === 'object') return '"' + JSON.stringify(val).replace(/"/g, '""') + '"';
+              return '"' + String(val).replace(/"/g, '""') + '"';
+            });
+            csvRows.push(values.join(','));
+          }
+          const csvBlob = new Blob([csvRows.join('\n')], { type: 'text/csv' });
+          setFinalCsvBlob(csvBlob);
         }
-        const csvBlob = new Blob([csvRows.join('\n')], { type: 'text/csv' });
-        setFinalCsvBlob(csvBlob);
       } catch (e) {
         console.warn('Failed to build downloadable blobs', e);
       }
@@ -597,16 +606,6 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
 
   // Download as JSON handler
   const handleDownloadJSON = () => {
-    const urlOverride = (handleDownloadJSON as any)._url as string | undefined;
-    if (urlOverride) {
-      const a = document.createElement('a');
-      a.href = urlOverride;
-      a.download = `synthetic_data_${generatedRecords}_records.json`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      return;
-    }
     if (finalJsonBlob) {
       const url = URL.createObjectURL(finalJsonBlob);
       const a = document.createElement('a');
@@ -630,16 +629,6 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
 
   // Download as CSV handler
   const handleDownloadCSV = () => {
-    const urlOverride = (handleDownloadCSV as any)._url as string | undefined;
-    if (urlOverride) {
-      const a = document.createElement('a');
-      a.href = urlOverride;
-      a.download = `synthetic_data_${generatedRecords}_records.csv`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      return;
-    }
     if (finalCsvBlob) {
       const url = URL.createObjectURL(finalCsvBlob);
       const a = document.createElement('a');
@@ -801,15 +790,9 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
       </div>
 
       {/* Generation Progress/Monitoring Section */}
-      {(isGenerating || generatedData.length > 0) && (
+      {(isGenerating || generatedRecords > 0) && (
         <div className="bg-white rounded-lg shadow-lg p-6 mt-6">
           <h3 className="text-xl font-bold text-gray-800 mb-4">🔄 Generation Progress</h3>
-          {(() => { return null; })()}
-          {/** Derived progress state to avoid showing Complete when not actually done */}
-          {(() => { return null; })()}
-          {/**/}
-          {(() => { return null; })()}
-          {/** compute derived values inline for JSX */}
           <div className="flex flex-col md:flex-row md:items-center md:space-x-8 space-y-2 md:space-y-0">
             <div>
               <span className="font-semibold text-blue-700">Records Generated:</span> {generatedRecords.toLocaleString()}
@@ -818,17 +801,14 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
               <span className="font-semibold text-green-700">Records Remaining:</span> {Math.max(0, generationVolume - generatedRecords).toLocaleString()}
             </div>
             <div>
-              <span className="font-semibold text-purple-700">Status:</span> {(!isGenerating && generatedRecords >= generationVolume) ? 'Complete' : (isGenerating ? 'Generating...' : 'Idle')}
+              <span className="font-semibold text-purple-700">Status:</span> {isComplete ? 'Complete' : (isGenerating ? 'Generating...' : 'Idle')}
             </div>
           </div>
           <div className="mt-4 w-full bg-gray-200 rounded-full h-4">
             <div
               className="bg-blue-600 h-4 rounded-full transition-all duration-300"
-              style={{ width: `${Math.min(100, (generatedRecords / generationVolume) * 100)}%` }}
+              style={{ width: `${Math.min(100, (generatedRecords / Math.max(1, generationVolume)) * 100)}%` }}
             ></div>
-          </div>
-          <div className="mt-2 text-xs text-gray-500">
-            Preview shows up to 200 in-browser records; full dataset is available via Download as JSON/CSV.
           </div>
         </div>
       )}

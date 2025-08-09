@@ -37,11 +37,7 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
   const [generationVolume, setGenerationVolume] = useState<number>(schema.targetVolume);
   const [generationDuration, setGenerationDuration] = useState<number>(1); // days
 
-  useEffect(() => {
-    if (generatedRecords > 0) {
-      generateZKProofForSyntheticData();
-    }
-  }, [generatedRecords]);
+  // Proof is generated once after full generation completes (see generateSyntheticData)
 
   const downloadProof = () => {
     console.log('🔍 Attempting to download synthetic data proof...', { zkProof, proofVerified });
@@ -231,7 +227,8 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
     
     const startTime = Date.now();
     const targetRecords = generationVolume;
-    const batchSize = 100;
+    // Use smaller batch UI updates to keep the main thread responsive
+    const batchSize = 200;
     const totalBatches = Math.ceil(targetRecords / batchSize);
     
     const allRecords: any[] = [];
@@ -245,7 +242,6 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
         // Generate batch of synthetic data
         const batch = await generateBatch(seedData, batchSize, schema);
         allRecords.push(...batch);
-        setGeneratedData([...allRecords]); // Update generatedData state
         
         // Update progress
         currentBatch++;
@@ -269,8 +265,8 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
           generationTime: elapsedTime
         });
         
-        // Small delay to show progress
-        await new Promise(resolve => setTimeout(resolve, 100));
+        // Yield to the browser occasionally to keep UI responsive
+        if (i % 2 === 0) await new Promise(resolve => setTimeout(resolve, 0));
       }
       
       const finalResult: SyntheticDataResult = {
@@ -285,7 +281,10 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
       };
       
       onGenerationComplete(finalResult);
-      setGeneratedData([...allRecords]); // Final update
+      setGeneratedData(allRecords); // Set once at the end to avoid heavy re-renders
+
+      // Generate ZK proof once after completion
+      await generateZKProofForSyntheticData();
 
       // Persist dataset (best-effort)
       try {

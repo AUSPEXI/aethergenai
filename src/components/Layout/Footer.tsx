@@ -44,8 +44,7 @@ const Footer: React.FC = () => {
           <div className="mt-2 flex justify-center space-x-4">
             <a href="https://auspexi.com/privacy" className="hover:text-white">Privacy Policy</a>
             <a href="https://auspexi.com/terms" className="hover:text-white">Terms of Service</a>
-            <a href="https://auspexi.com/compliance" className="hover:text-white">Compliance</a>
-            <a href="https://auspexi.com/security" className="hover:text-white">Security</a>
+            <a href="https://auspexi.com" className="hover:text-white">AUSPEXI</a>
           </div>
         </div>
       </div>

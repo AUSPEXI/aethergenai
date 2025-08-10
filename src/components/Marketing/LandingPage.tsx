@@ -1,21 +1,42 @@
 import React from 'react';
 
+const CTAButton: React.FC<{ label: string; tab: 'pricing' | 'resources' }>=({ label, tab })=> {
+  return (
+    <button
+      onClick={() => window.dispatchEvent(new CustomEvent('aeg:navigate', { detail: { tab } }))}
+      className={`px-6 py-3 rounded-lg font-semibold shadow-md transition-colors ${tab==='pricing' ? 'bg-emerald-600 hover:bg-emerald-500 text-white' : 'bg-slate-800 hover:bg-slate-700 text-white'}`}
+    >{label}</button>
+  );
+};
+
 const LandingPage: React.FC = () => {
   return (
-    <div className="bg-white">
-      <section className="max-w-7xl mx-auto p-8 text-center">
-        <h1 className="text-4xl font-bold mb-4">AethergenAI — Evidence‑Led Synthetic Data & Model Platform</h1>
-        <p className="text-slate-700 mb-6">Build, validate, and publish with AUM/AGO/432/TriCoT/VRME evidence. Faster than brute force, safer than real data.</p>
+    <div className="bg-gradient-to-b from-slate-50 to-white">
+      <section className="max-w-7xl mx-auto px-6 py-16 text-center">
+        <div className="inline-block rounded-2xl px-4 py-1 text-sm bg-blue-50 text-blue-700 mb-4">Evidence‑led. Privacy‑preserving. Databricks‑ready.</div>
+        <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4">
+          AethergenAI — Synthetic Data & Model Training that Proves Itself
+        </h1>
+        <p className="text-slate-700 max-w-3xl mx-auto mb-8">
+          Generate high‑fidelity synthetic datasets, validate with AUM/AGO/432/TriCoT/VRME, and publish to Databricks Marketplace. Build specialised models with Autopilot and ablation—faster than brute force, safer than real data.
+        </p>
         <div className="flex gap-3 justify-center">
-          <a href="#pricing" className="px-5 py-3 rounded bg-blue-600 text-white">View Pricing</a>
-          <a href="#resources" className="px-5 py-3 rounded bg-slate-700 text-white">Explore Resources</a>
+          <CTAButton label="View Pricing" tab="pricing" />
+          <CTAButton label="Explore Resources" tab="resources" />
         </div>
       </section>
-      <section className="max-w-7xl mx-auto p-8 grid md:grid-cols-3 gap-6">
-        {["Synthetic First", "Evidence Bundles", "Databricks Ready"].map((t) => (
-          <div key={t} className="border rounded p-6">
+
+      <section className="max-w-7xl mx-auto px-6 pb-16 grid md:grid-cols-3 gap-6">
+        {[{
+          t: 'Synthetic First', d: 'Scale to tens of millions of rows locally; DP ε control and cleaning built‑in.'
+        },{
+          t: 'Auditable Evidence', d: 'AUM certificate, AGO resonance, 432 harmony, TriCoT, ACI, VRME—bundled per release.'
+        },{
+          t: 'Databricks Ready', d: 'Delta tables + preview, OPTIMIZE/Z‑ORDER, Unity Catalog properties, Marketplace listings.'
+        }].map(({t,d}) => (
+          <div key={t} className="border rounded-xl p-6 bg-white shadow-sm">
             <div className="text-lg font-semibold mb-2">{t}</div>
-            <p className="text-sm text-slate-700">High‑fidelity synthetic data, auditable metrics, and Marketplace‑ready Delta tables.</p>
+            <p className="text-sm text-slate-700">{d}</p>
           </div>
         ))}
       </section>

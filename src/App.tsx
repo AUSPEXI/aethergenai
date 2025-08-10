@@ -318,27 +318,29 @@ function App() {
             </div>
         </div>
 
-        {/* Enhanced Status Bar */}
-        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4">
-          <div className="max-w-7xl mx-auto flex items-center justify-between text-sm text-gray-600">
-            <div className="flex items-center space-x-6">
-              <span>Schema: {currentSchema?.name || 'Not defined'}</span>
-              <span>Seed Data: {seedData.length} records</span>
-              <span>
-                Generated: {totalGeneratedLastRun > 0 ? totalGeneratedLastRun.toLocaleString() : 0} records
-                {generationResult?.records?.length ? ` (live sample: ${generationResult.records.length})` : ''}
-              </span>
-              <span>Validation: {validationResult?.isValid ? '✅ Passed' : validationResult ? '❌ Failed' : '⏳ Pending'}</span>
-              <span>Aethergen Analysis: 🔬 Active</span>
-            </div>
-            <div className="flex items-center space-x-4">
-              <span>Privacy Score: {generationResult?.metrics.privacyScore || 0}%</span>
-              <span>Utility Score: {generationResult?.metrics.utilityScore || 0}%</span>
-              <span>Speed: {generationResult?.metrics.recordsPerSecond || 0}/sec</span>
-              <span>Models: 20+ AI Models</span>
+        {/* Enhanced Status Bar (paywalled) */}
+        {canAccessPlatform && (
+          <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4">
+            <div className="max-w-7xl mx-auto flex items-center justify-between text-sm text-gray-600">
+              <div className="flex items-center space-x-6">
+                <span>Schema: {currentSchema?.name || 'Not defined'}</span>
+                <span>Seed Data: {seedData.length} records</span>
+                <span>
+                  Generated: {totalGeneratedLastRun > 0 ? totalGeneratedLastRun.toLocaleString() : 0} records
+                  {generationResult?.records?.length ? ` (live sample: ${generationResult.records.length})` : ''}
+                </span>
+                <span>Validation: {validationResult?.isValid ? '✅ Passed' : validationResult ? '❌ Failed' : '⏳ Pending'}</span>
+                <span>Aethergen Analysis: 🔬 Active</span>
+              </div>
+              <div className="flex items-center space-x-4">
+                <span>Privacy Score: {generationResult?.metrics.privacyScore || 0}%</span>
+                <span>Utility Score: {generationResult?.metrics.utilityScore || 0}%</span>
+                <span>Speed: {generationResult?.metrics.recordsPerSecond || 0}/sec</span>
+                <span>Models: 20+ AI Models</span>
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </Layout>
   );

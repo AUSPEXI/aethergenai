@@ -82,7 +82,7 @@ const Section: React.FC<{ title: string; subtitle?: string; align?: 'left' | 'ri
   return (
     <section className="max-w-7xl mx-auto px-6 py-12">
       <h2 className={`text-2xl md:text-3xl font-extrabold tracking-tight text-slate-100 mb-2 ${textAlign}`}>{title}</h2>
-      {subtitle && (<p className={`text-slate-300 mb-6 max-w-3xl ${textAlign} ${subWrap}`}>{subtitle}</p>)}
+      {subtitle && (<p className={`text-slate-300 mb-8 max-w-3xl ${textAlign} ${subWrap}`}>{subtitle}</p>)}
       {children}
     </section>
   );
@@ -153,7 +153,7 @@ const LandingPage: React.FC = () => {
             <p className="text-slate-300 text-sm">Autopilot finds optimal recipes for your data—faster than brute force, safer than real data.</p>
           </div>
         </div>
-        <div className="mt-6">
+        <div className="mt-6 flex justify-end">
           <CTAButton label="Build Your Model" tab="account" />
         </div>
       </Section>
@@ -176,15 +176,15 @@ const LandingPage: React.FC = () => {
             </div>
           ))}
         </div>
-        <p className="text-slate-300 mt-6">Unlock unlimited potential—contact us for bundles or custom quotes.</p>
-        <div className="mt-4"><CTAButton label="Get Started" tab="account" /></div>
+        <p className="text-slate-300 mt-6 text-center">Unlock unlimited potential—contact us for bundles or custom quotes.</p>
+        <div className="mt-4 flex justify-center"><CTAButton label="Get Started" tab="account" /></div>
       </Section>
 
       {/* Section 4: Call to Action (Netlify form) */}
       {/* Divider: Offerings → CTA (Pulse gradient bar) */}
       <DividerPulseBar />
       <Section title="Ready to Transform Your AI Workflow?" subtitle="Join innovators using AethergenAI to experiment at the edge and compete on outcomes, not hardware. We’re here to partner—let’s chat.">
-        <form name="contact" method="POST" data-netlify="true" className="grid md:grid-cols-3 gap-4 max-w-3xl" netlify-honeypot="bot-field">
+        <form name="contact" method="POST" data-netlify="true" className="grid md:grid-cols-3 gap-4 max-w-3xl mx-auto" netlify-honeypot="bot-field">
           <input type="hidden" name="form-name" value="contact" />
           <input className="col-span-1 bg-slate-900/70 border border-slate-700 rounded px-3 py-2 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="Name" name="name" required />
           <input className="col-span-1 bg-slate-900/70 border border-slate-700 rounded px-3 py-2 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="Email" type="email" name="email" required />
@@ -192,7 +192,7 @@ const LandingPage: React.FC = () => {
             <input name="bot-field" />
           </div>
           <textarea className="md:col-span-3 bg-slate-900/70 border border-slate-700 rounded px-3 py-2 h-28 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="Message" name="message" required />
-          <div className="md:col-span-3"><button type="submit" className="px-6 py-3 rounded-lg font-semibold bg-emerald-600 hover:bg-emerald-500">Submit</button></div>
+          <div className="md:col-span-3 flex justify-center"><button type="submit" className="px-6 py-3 rounded-lg font-semibold bg-emerald-600 hover:bg-emerald-500">Submit</button></div>
         </form>
       </Section>
       {/* Divider: CTA → Footer (Wavy with shield) */}

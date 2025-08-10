@@ -85,6 +85,7 @@ const AdvancedBenchmarking: React.FC<AdvancedBenchmarkingProps> = ({
   const [zkupb, setZkupb] = useState<{ ok?: boolean } | null>(null);
   const [hca, setHca] = useState<{ abstainRate:number; calibratedGain:number } | null>(null);
   const [hcaSweep, setHcaSweep] = useState<Array<{ t:number; ar:number; gain:number }>>([]);
+  const [froFrs, setFroFrs] = useState<number | null>(null);
   const resultsRef = useRef<HTMLDivElement | null>(null);
   const summaryRef = useRef<HTMLDivElement | null>(null);
   const topRef = useRef<HTMLDivElement | null>(null);
@@ -97,7 +98,7 @@ const AdvancedBenchmarking: React.FC<AdvancedBenchmarkingProps> = ({
     if (generatedData.length > 0) {
       runComprehensiveBenchmarks();
       try {
-        const fields = Object.keys(generatedData[0]||{});
+          const fields = Object.keys(generatedData[0]||{});
         const ago = analyzeAGO(generatedData, schema);
         const harm = analyzeHarmony432(generatedData, fields);
         setAgoMetrics(ago);
@@ -107,6 +108,7 @@ const AdvancedBenchmarking: React.FC<AdvancedBenchmarkingProps> = ({
         setOctonion(octonionTransform(generatedData, fields).metrics);
         setTricots(certifyTriCoT(generatedData));
         setAci(computeACI(generatedData));
+          try { const { runFractalResonanceOracle } = require('../../services/fractalResonanceOracle'); const frs = runFractalResonanceOracle(generatedData, schema).frs; setFroFrs(frs); } catch {}
         const uniqueRatio = (()=>{ const u=new Set(generatedData.map(r=>JSON.stringify(r))).size; return u/Math.max(1,generatedData.length); })();
         const epsilon = schema?.privacySettings?.epsilon ?? 0.1;
         setZkupb({ ok: buildZkUpbProof(epsilon, uniqueRatio).public.ok });

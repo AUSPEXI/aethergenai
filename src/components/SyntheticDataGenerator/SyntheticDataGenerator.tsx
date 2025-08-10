@@ -1102,6 +1102,11 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
           </button>
         </div>
       )}
+      {generatedRecords > 100000 && (!finalCsvBlob || !finalJsonBlob) && (
+        <div className="mt-2 text-center text-xs text-gray-600">
+          Large dataset detected; assembling download files can take longer. Please keep this tab open while we prepare your CSV/JSON.
+        </div>
+      )}
 
       {/* zk-SNARK Proof Status for Synthetic Data */}
       {proofGenerating && (

@@ -2,6 +2,7 @@ import { estimateStep } from './costEstimator';
 import { hreTechnologyService } from './hreTechnologyService';
 import { computeACI } from './anticipatoryConsistency';
 import { certifyTriCoT } from './triCotValidator';
+import { runVRME } from './vacuumResonanceMultiverse';
 
 export type RiskLevel = 'green' | 'amber' | 'red';
 
@@ -91,8 +92,9 @@ export async function runAutopilot(config: AutopilotConfig, schema: any, generat
       // Innovation-aware boosts: ACI and TriCoT
       const aci = computeACI(generatedData).aci; // 0..1
       const tricotsRes = certifyTriCoT(generatedData);
+      const vacuum = runVRME(generatedData, schema, { scales: 2, variants: 2 }).vacuumScore; // 0..1
       const tricots = tricotsRes.tricotscore; // 0..1
-      const score = weights.accuracy*accuracy + weights.utility*utility + weights.privacy*privacy - weights.latency*(latency/2000) + 0.05*aci + 0.05*tricots;
+      const score = weights.accuracy*accuracy + weights.utility*utility + weights.privacy*privacy - weights.latency*(latency/2000) + 0.05*aci + 0.05*tricots + 0.05*vacuum;
       res = { cfg, metrics: { accuracy, utility, privacy }, latencyMs: latency, risk, score };
       cache.set(k, res);
     }

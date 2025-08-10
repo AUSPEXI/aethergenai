@@ -10,6 +10,8 @@ import ResourcesHub from './components/Resources/ResourcesHub';
 import PricingPage from './components/Marketing/PricingPage';
 import AuthPage from './components/Auth/AuthPage';
 import LandingPage from './components/Marketing/LandingPage';
+import { assertSupabase } from './services/supabaseClient';
+import { getEntitlements, hasPlatformAccess, Entitlement } from './services/entitlementsClient';
 import { DataSchema, SchemaField, ValidationResult, SyntheticDataResult } from './types/schema';
 import './index.css';
 
@@ -26,6 +28,13 @@ function App() {
     syntheticRatio: 95,
     epsilon: 0.1
   });
+
+  // Auth + entitlements for paywall
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [ents, setEnts] = useState<Entitlement[] | null>(null);
+  const devhubPrice = (import.meta as any).env.VITE_PRICE_DEVHUB as string | undefined;
+  const devhubProPrice = (import.meta as any).env.VITE_PRICE_DEVHUB_PRO as string | undefined;
+  const canAccessPlatform = !!(ents && hasPlatformAccess(ents, [devhubPrice || '', devhubProPrice || '']));
 
   const handleSchemaChange = (schema: DataSchema) => {
     setCurrentSchema(schema);
@@ -104,6 +113,26 @@ function App() {
     return () => window.removeEventListener('aethergen:apply-privacy', handler as EventListener);
   }, [privacySettings, currentSchema, seedData]);
 
+  // Get current user and entitlements
+  useEffect(() => {
+    (async () => {
+      try {
+        const sb = assertSupabase();
+        const { data: { user } } = await sb.auth.getUser();
+        const email = user?.email || null;
+        setUserEmail(email);
+        if (email) {
+          const e = await getEntitlements({ email });
+          setEnts(e);
+        } else {
+          setEnts([]);
+        }
+      } catch {
+        setEnts([]);
+      }
+    })();
+  }, []);
+
   // Listen for header navigation events
   useEffect(() => {
     const navHandler = (e: Event) => {
@@ -144,110 +173,25 @@ function App() {
   return (
     <Layout>
       <div className="min-h-screen bg-gray-50">
-        {/* Navigation Tabs */}
-        <div className="bg-white shadow-sm border-b">
-          <div className="max-w-7xl mx-auto px-6">
-            <nav className="flex space-x-8 overflow-x-auto">
-              <button
-                onClick={() => setActiveTab('upload')}
-                className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
-                  activeTab === 'upload'
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
-              >
-                📤 Upload Data
-              </button>
-              <button
-                onClick={() => setActiveTab('design')}
-                className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
-                  activeTab === 'design'
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
-              >
-                📋 Schema Design
-              </button>
-              <button
-                onClick={() => setActiveTab('generate')}
-                className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
-                  activeTab === 'generate'
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
-              >
-                ⚙️ Generate Synthetic Data
-              </button>
-              <button
-                onClick={() => setActiveTab('advanced')}
-                className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
-                  activeTab === 'advanced'
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
-              >
-                📈 Benchmarks
-              </button>
-              <button
-                onClick={() => setActiveTab('privacy-metrics')}
-                className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
-                  activeTab === 'privacy-metrics'
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
-              >
-                🔒 Privacy Metrics
-              </button>
-              <button
-                onClick={() => setActiveTab('reporting')}
-                className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
-                  activeTab === 'reporting'
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
-              >
-                📊 Reporting
-              </button>
-              
-            </nav>
+        {/* Platform Subheader (paywalled) */}
+        {canAccessPlatform && (
+          <div className="bg-white shadow-sm border-b">
+            <div className="max-w-7xl mx-auto px-6">
+              <nav className="flex space-x-8 overflow-x-auto">
+                <button onClick={() => setActiveTab('upload')} className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${activeTab === 'upload' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}>📤 Upload Data</button>
+                <button onClick={() => setActiveTab('design')} className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${activeTab === 'design' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}>📋 Schema Design</button>
+                <button onClick={() => setActiveTab('generate')} className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${activeTab === 'generate' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}>⚙️ Generate Synthetic Data</button>
+                <button onClick={() => setActiveTab('advanced')} className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${activeTab === 'advanced' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}>📈 Benchmarks</button>
+                <button onClick={() => setActiveTab('privacy-metrics')} className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${activeTab === 'privacy-metrics' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}>🔒 Privacy Metrics</button>
+                <button onClick={() => setActiveTab('reporting')} className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${activeTab === 'reporting' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}>📊 Reporting</button>
+              </nav>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Main Content */}
         <div className="py-8">
-            {/* Workflow Wizard */}
-            <div className="workflow-wizard" style={{ display: 'flex', gap: '1.5rem', marginBottom: '2rem', alignItems: 'center', justifyContent: 'center' }}>
-              {workflowSteps.map((step, idx) => {
-                const complete = isStepComplete(step.key);
-                const active = activeTab === step.key;
-                return (
-                  <div key={step.key} style={{ display: 'flex', alignItems: 'center' }}>
-                    <button
-                      disabled={idx > 0 && !isStepComplete(workflowSteps[idx - 1].key)}
-                      onClick={() => setActiveTab(step.key as any)}
-                      style={{
-                        background: active ? '#2563eb' : complete ? '#22c55e' : '#e5e7eb',
-                        color: active || complete ? '#fff' : '#374151',
-                        border: 'none',
-                        borderRadius: '999px',
-                        padding: '0.5rem 1.25rem',
-                        fontWeight: 600,
-                        fontSize: '1rem',
-                        cursor: idx > 0 && !isStepComplete(workflowSteps[idx - 1].key) ? 'not-allowed' : 'pointer',
-                        opacity: idx > 0 && !isStepComplete(workflowSteps[idx - 1].key) ? 0.5 : 1,
-                        boxShadow: active ? '0 0 0 2px #2563eb33' : undefined,
-                        transition: 'all 0.2s',
-                      }}
-                    >
-                      {step.label}
-                    </button>
-                    {idx < workflowSteps.length - 1 && (
-                      <span style={{ margin: '0 0.5rem', color: '#a1a1aa', fontSize: '1.5rem' }}>→</span>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
+            {/* Removed workflow wizard (duplicate nav) */}
 
             {/* Main Content */}
             <div className="py-8">
@@ -255,7 +199,7 @@ function App() {
             <LandingPage />
           )}
 
-          {activeTab === 'design' && (
+          {canAccessPlatform && activeTab === 'design' && (
             <SchemaDesigner
               onSchemaChange={handleSchemaChange}
               initialSchema={currentSchema}
@@ -263,7 +207,7 @@ function App() {
             />
           )}
           
-          {activeTab === 'upload' && (
+          {canAccessPlatform && activeTab === 'upload' && (
             <SeedDataUploader
               schema={currentSchema || {
                 id: '',
@@ -283,7 +227,7 @@ function App() {
             />
           )}
           
-          {activeTab === 'generate' && (
+          {canAccessPlatform && activeTab === 'generate' && (
             <SyntheticDataGenerator
               schema={{
                 ...(currentSchema || {
@@ -310,7 +254,7 @@ function App() {
             />
           )}
           
-          {activeTab === 'advanced' && (
+          {canAccessPlatform && activeTab === 'advanced' && (
             <AdvancedBenchmarking
               schema={currentSchema || {
                 id: '',
@@ -330,7 +274,7 @@ function App() {
             />
           )}
 
-          {activeTab === 'reporting' && (
+          {canAccessPlatform && activeTab === 'reporting' && (
             <ReportingDashboard
               schema={currentSchema || {
                 id: '',
@@ -351,7 +295,7 @@ function App() {
             />
           )}
 
-          {activeTab === 'privacy-metrics' && (
+          {canAccessPlatform && activeTab === 'privacy-metrics' && (
             <PrivacyMetrics
               seedData={seedData}
               syntheticData={generationResult?.records || []}

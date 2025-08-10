@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Shield, Lock, Brain } from 'lucide-react';
+import { Shield } from 'lucide-react';
 
 const Header: React.FC = () => {
   const [privacy, setPrivacy] = useState<{ epsilon?: number; synthetic_ratio?: number } | null>(null);
@@ -26,19 +26,11 @@ const Header: React.FC = () => {
         </div>
         
         <nav className="flex space-x-2 items-center">
-          <div className="flex items-center space-x-2 px-3 py-2 rounded-md bg-blue-700">
-            <Lock className="h-4 w-4" />
-            <span className="text-sm">FCA/SEC Compliant</span>
-          </div>
           {privacy && (
             <div className="px-3 py-2 rounded-md bg-blue-700 text-sm">
               ε {privacy.epsilon ?? '—'} • {privacy.synthetic_ratio ?? '—'}%
             </div>
           )}
-          <div className="flex items-center space-x-2 px-3 py-2 rounded-md bg-blue-700">
-            <Brain className="h-4 w-4" />
-            <span className="text-sm">AI Enhanced</span>
-          </div>
           <button
             onClick={() => window.dispatchEvent(new CustomEvent('aeg:navigate', { detail: { tab: 'home' } }))}
             className="px-3 py-2 rounded-md bg-blue-700 hover:bg-blue-600 transition-colors"
@@ -55,14 +47,6 @@ const Header: React.FC = () => {
             onClick={() => window.dispatchEvent(new CustomEvent('aeg:navigate', { detail: { tab: 'account' } }))}
             className="px-3 py-2 rounded-md bg-blue-700 hover:bg-blue-600 transition-colors"
           >Account</button>
-          <a 
-            href="https://github.com/AUSPEXI/aethergenai" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="flex items-center px-3 py-2 rounded-md bg-yellow-500 text-blue-800 hover:bg-yellow-400 transition-colors font-medium"
-          >
-            GitHub
-          </a>
           <a 
             href="https://auspexi.com" 
             target="_blank" 

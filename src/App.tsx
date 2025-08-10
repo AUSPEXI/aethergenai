@@ -104,6 +104,16 @@ function App() {
     return () => window.removeEventListener('aethergen:apply-privacy', handler as EventListener);
   }, [privacySettings, currentSchema, seedData]);
 
+  // Listen for header navigation events
+  useEffect(() => {
+    const navHandler = (e: Event) => {
+      const d = (e as CustomEvent).detail as { tab?: typeof activeTab };
+      if (d?.tab) setActiveTab(d.tab);
+    };
+    window.addEventListener('aeg:navigate', navHandler as EventListener);
+    return () => window.removeEventListener('aeg:navigate', navHandler as EventListener);
+  }, []);
+
   const workflowSteps = [
     { key: 'upload', label: '1. Upload Data' },
     { key: 'design', label: '2. Schema Design' },
@@ -138,16 +148,6 @@ function App() {
         <div className="bg-white shadow-sm border-b">
           <div className="max-w-7xl mx-auto px-6">
             <nav className="flex space-x-8 overflow-x-auto">
-              <button
-                onClick={() => setActiveTab('home')}
-                className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
-                  activeTab === 'home'
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
-              >
-                🏠 Home
-              </button>
               <button
                 onClick={() => setActiveTab('upload')}
                 className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
@@ -208,36 +208,7 @@ function App() {
               >
                 📊 Reporting
               </button>
-              <button
-                onClick={() => setActiveTab('resources')}
-                className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
-                  activeTab === 'resources'
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
-              >
-                📚 Resources
-              </button>
-              <button
-                onClick={() => setActiveTab('pricing')}
-                className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
-                  activeTab === 'pricing'
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
-              >
-                💳 Pricing
-              </button>
-              <button
-                onClick={() => setActiveTab('account')}
-                className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
-                  activeTab === 'account'
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
-              >
-                👤 Account
-              </button>
+              
             </nav>
           </div>
         </div>

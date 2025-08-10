@@ -25,7 +25,7 @@ const Header: React.FC = () => {
           </div>
         </div>
         
-        <nav className="flex space-x-4 items-center">
+        <nav className="flex space-x-2 items-center">
           <div className="flex items-center space-x-2 px-3 py-2 rounded-md bg-blue-700">
             <Lock className="h-4 w-4" />
             <span className="text-sm">FCA/SEC Compliant</span>
@@ -39,6 +39,22 @@ const Header: React.FC = () => {
             <Brain className="h-4 w-4" />
             <span className="text-sm">AI Enhanced</span>
           </div>
+          <button
+            onClick={() => window.dispatchEvent(new CustomEvent('aeg:navigate', { detail: { tab: 'home' } }))}
+            className="px-3 py-2 rounded-md bg-blue-700 hover:bg-blue-600 transition-colors"
+          >Home</button>
+          <button
+            onClick={() => window.dispatchEvent(new CustomEvent('aeg:navigate', { detail: { tab: 'resources' } }))}
+            className="px-3 py-2 rounded-md bg-blue-700 hover:bg-blue-600 transition-colors"
+          >Resources</button>
+          <button
+            onClick={() => window.dispatchEvent(new CustomEvent('aeg:navigate', { detail: { tab: 'pricing' } }))}
+            className="px-3 py-2 rounded-md bg-blue-700 hover:bg-blue-600 transition-colors"
+          >Pricing</button>
+          <button
+            onClick={() => window.dispatchEvent(new CustomEvent('aeg:navigate', { detail: { tab: 'account' } }))}
+            className="px-3 py-2 rounded-md bg-blue-700 hover:bg-blue-600 transition-colors"
+          >Account</button>
           <a 
             href="https://github.com/AUSPEXI/aethergenai" 
             target="_blank" 

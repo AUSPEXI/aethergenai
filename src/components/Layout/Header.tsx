@@ -14,7 +14,7 @@ const Header: React.FC = () => {
   }, []);
 
   return (
-    <header className="bg-gradient-to-r from-slate-900 to-blue-950 text-slate-100 shadow-md/30 backdrop-blur">
+    <header className="bg-gradient-to-r from-slate-950 via-slate-900 to-blue-950 text-slate-100 shadow-md/30 backdrop-blur">
       <div className="container mx-auto px-4 py-3 flex flex-col sm:flex-row items-center justify-between">
         <div className="flex items-center mb-4 sm:mb-0">
           <Shield className="h-8 w-8 text-yellow-400 mr-2" />

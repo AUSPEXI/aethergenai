@@ -143,7 +143,7 @@ function App() {
     return () => window.removeEventListener('aeg:navigate', navHandler as EventListener);
   }, []);
 
-  const workflowSteps = [
+  const workflowSteps: Array<{ key: typeof activeTab; label: string }> = [
     { key: 'upload', label: '1. Upload Data' },
     { key: 'design', label: '2. Schema Design' },
     { key: 'generate', label: '3. Generate Synthetic Data' },

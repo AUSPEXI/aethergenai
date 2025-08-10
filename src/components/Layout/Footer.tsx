@@ -3,7 +3,7 @@ import { Github, Mail, Shield, Lock } from 'lucide-react';
 
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-blue-900 text-white py-6 mt-12">
+    <footer className="bg-gradient-to-r from-slate-900 to-blue-900 text-slate-100 py-6 mt-12">
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="mb-4 md:mb-0">
@@ -36,7 +36,7 @@ const Footer: React.FC = () => {
           </div>
         </div>
         
-        <div className="mt-6 pt-6 border-t border-blue-800 text-center text-sm text-blue-300">
+          <div className="mt-6 pt-6 border-t border-blue-800/50 text-center text-sm text-blue-200/90">
           <p>© {new Date().getFullYear()} AUSPEXI. All rights reserved.</p>
           <p className="mt-1">
             Global Compliance • Privacy-Preserving AI • Modular Benchmarking • Quantum-Ready

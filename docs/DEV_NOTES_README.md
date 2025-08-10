@@ -44,6 +44,16 @@ Capabilities checklist (current)
   - Provider switch (heuristic/local/remote) for prompts (LM Studio/Ollama later)
   - Supabase schema migration scripts (Aethergen‑native); Netlify functions stubs (record‑dataset, ablations, MLflow, etc.)
 
+Commerce & Access
+- Stripe endpoints: `create-checkout-session`, `stripe-webhook`; entitlements read via `get-entitlements`.
+- Supabase tables: `ae_customers`, `ae_entitlements` for entitlement storage.
+- UI components: `BuyButtons`, `PlatformAccess` for checkout and gating.
+- Docs: `docs/BILLING_AND_ACCESS.md` for pricing and integration details.
+
+Databricks Marketplace
+- Publishing notebooks: `notebooks/publish_csv_to_delta.py`, `notebooks/optimize_and_publish.py`.
+- Guide: `docs/DATABRICKS_MARKETPLACE_PUBLISHER.md`.
+
 
 Ablation Recipes
 - Types: `src/types/ablation.ts`

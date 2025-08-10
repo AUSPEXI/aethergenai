@@ -258,3 +258,8 @@ if (process.env.NODE_ENV === 'production') {
 ---
 
 **Note**: This document is confidential and should be treated as a trade secret. Access should be limited to authorized personnel only. 
+
+## Commercial exposure boundaries
+- Marketplace listings include evidence (AUM/AGO/432/TriCoT/VRME, ε, cleaning report) but not algorithmic source or internal parameterizations.
+- Platform tiers expose feature outputs and configs (quotas/flags) without disclosing internal implementations.
+- Stripe/Supabase data contains customer entitlements only; no sensitive IP.

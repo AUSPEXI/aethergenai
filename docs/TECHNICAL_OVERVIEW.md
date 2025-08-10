@@ -61,8 +61,8 @@ Audience: founders, engineers, contributors. This evolves with the codebase.
 - Anticipatory Consistency Index (ACI): Shift‑robustness proxy from subspace heads; outputs `aci` and field sensitivities; used by Autopilot.
 - ZK Utility‑Privacy Balance (ZK‑UPB): Evidence‑level constraint proof over ε and uniqueness ratio; `zk_upb_proof`.
 - Harmonic Consensus Abstention (HCA): Composite confidence for abstention; metrics: abstain rate, calibrated gain; sparkline over threshold sweep.
-- Fractal Resonance Oracle (FRO): Multiscale variant generation on an 8D harmonic lattice; selects winners via AGO/432/AUM/TriCoT; outputs FRS and mirror evidence.
- - Vacuum Resonance Multiverse Engine (VRME): Vacuum-energy–driven patch evolution over the 8D lattice; recursively generates “galaxies” (synthetic datasets) and collapses via AUM/TriCoT; outputs vacuumScore and multiverse patch history.
+  - Fractal Resonance Oracle (FRO): Multiscale variant generation on an 8D harmonic lattice; selects winners via AGO/432/AUM/TriCoT; outputs FRS and mirror evidence.
+  - Vacuum Resonance Multiverse Engine (VRME): Vacuum-energy–driven patch evolution over the 8D lattice; recursively generates “galaxies” (synthetic datasets) and collapses via AUM/TriCoT; outputs vacuumScore and multiverse patch history.
 
 Notes
 - Toggles for AGO/432 live in Generator. Adaptive weights: `aeg_ago_weight`, `aeg_432_weight`, and toggles `aeg_use_ago`, `aeg_use_432` are persisted.
@@ -79,6 +79,10 @@ Notes
 ## 10. Roadmap → Cloud Beta
 - Databricks runner: map recipes to Jobs API; log to MLflow; write datasets to Delta; Unity Catalog for governance.
 - Evidence bundles: signed lineage (schema hash, ε, proofs, recipe hash) surfaced in UI. Redacted share bundles for external review.
+
+## 10.5. Marketplace, Billing & Access
+- Databricks Marketplace: see `docs/DATABRICKS_MARKETPLACE_PUBLISHER.md` and notebooks `notebooks/publish_csv_to_delta.py`, `notebooks/optimize_and_publish.py` for Delta registration, preview tables, OPTIMIZE/Z‑ORDER, and listing guidance.
+- Billing & Platform Access: Stripe Checkout + webhooks with Supabase entitlements (`ae_customers`, `ae_entitlements`), UI gating via `PlatformAccess` and `BuyButtons`. Pricing tiers (datasets, models, predictions, platform) in `docs/BILLING_AND_ACCESS.md`.
 
 ## 11. KPIs & Validation
 - Utility (task accuracy), privacy (<5% attack success), cost (≥5–10× savings), time‑to‑experiment.

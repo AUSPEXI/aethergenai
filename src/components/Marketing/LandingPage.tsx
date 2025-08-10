@@ -11,16 +11,16 @@ const CTAButton: React.FC<{ label: string; tab: 'pricing' | 'resources' }>=({ la
 
 const LandingPage: React.FC = () => {
   return (
-    <div className="bg-gradient-to-b from-slate-50 to-white">
+    <div className="bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white">
       <section className="max-w-7xl mx-auto px-6 py-16 text-center">
-        <div className="inline-block rounded-2xl px-4 py-1 text-sm bg-blue-50 text-blue-700 mb-4">Evidence‑led. Privacy‑preserving. Databricks‑ready.</div>
-        <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4">
-          AethergenAI — Synthetic Data & Model Training that Proves Itself
+        <div className="inline-block rounded-2xl px-4 py-1 text-sm bg-emerald-900/30 text-emerald-300 mb-4 neon-ring">Evidence‑led. Privacy‑preserving. Databricks‑ready.</div>
+        <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-4">
+          AethergenAI — Evidence‑Led Synthetic Data & Model Platform
         </h1>
-        <p className="text-slate-700 max-w-3xl mx-auto mb-8">
+        <p className="text-slate-300 max-w-3xl mx-auto mb-10">
           Generate high‑fidelity synthetic datasets, validate with AUM/AGO/432/TriCoT/VRME, and publish to Databricks Marketplace. Build specialised models with Autopilot and ablation—faster than brute force, safer than real data.
         </p>
-        <div className="flex gap-3 justify-center">
+        <div className="flex gap-4 justify-center">
           <CTAButton label="View Pricing" tab="pricing" />
           <CTAButton label="Explore Resources" tab="resources" />
         </div>
@@ -34,9 +34,9 @@ const LandingPage: React.FC = () => {
         },{
           t: 'Databricks Ready', d: 'Delta tables + preview, OPTIMIZE/Z‑ORDER, Unity Catalog properties, Marketplace listings.'
         }].map(({t,d}) => (
-          <div key={t} className="border rounded-xl p-6 bg-white shadow-sm">
-            <div className="text-lg font-semibold mb-2">{t}</div>
-            <p className="text-sm text-slate-700">{d}</p>
+          <div key={t} className="rounded-xl p-6 bg-slate-900/60 border border-slate-700 neon-card">
+            <div className="text-lg font-semibold mb-2 text-emerald-300">{t}</div>
+            <p className="text-sm text-slate-300">{d}</p>
           </div>
         ))}
       </section>

@@ -2,6 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Brand utilities */
+.neon-card {
+  box-shadow: 0 0 0 1px rgba(16,185,129,0.3), 0 10px 30px rgba(16,185,129,0.15), inset 0 0 40px rgba(59,130,246,0.08);
+}
+.neon-ring {
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.25), 0 0 40px rgba(16,185,129,0.25);
+}
+.soft-divider {
+  height: 1px;
+  background: linear-gradient(90deg, rgba(59,130,246,0) 0%, rgba(59,130,246,0.35) 50%, rgba(16,185,129,0) 100%);
+}
+
 /* CRITICAL: Prevent flashing while preserving all styling */
 @layer base {
   html {

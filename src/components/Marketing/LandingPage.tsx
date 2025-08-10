@@ -76,13 +76,17 @@ const DividerWavyShield: React.FC = () => (
   </div>
 );
 
-const Section: React.FC<{ title: string; subtitle?: string; children: React.ReactNode }>=({ title, subtitle, children }) => (
-  <section className="max-w-7xl mx-auto px-6 py-12">
-    <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-100 mb-2">{title}</h2>
-    {subtitle && (<p className="text-slate-300 mb-6 max-w-3xl">{subtitle}</p>)}
-    {children}
-  </section>
-);
+const Section: React.FC<{ title: string; subtitle?: string; align?: 'left' | 'right' | 'center'; children: React.ReactNode }>=({ title, subtitle, align='left', children }) => {
+  const textAlign = align === 'center' ? 'text-center' : align === 'right' ? 'text-right' : 'text-left';
+  const subWrap = align === 'center' ? 'mx-auto' : align === 'right' ? 'ml-auto' : '';
+  return (
+    <section className="max-w-7xl mx-auto px-6 py-12">
+      <h2 className={`text-2xl md:text-3xl font-extrabold tracking-tight text-slate-100 mb-2 ${textAlign}`}>{title}</h2>
+      {subtitle && (<p className={`text-slate-300 mb-6 max-w-3xl ${textAlign} ${subWrap}`}>{subtitle}</p>)}
+      {children}
+    </section>
+  );
+};
 
 const LandingPage: React.FC = () => {
   return (
@@ -107,7 +111,7 @@ const LandingPage: React.FC = () => {
       {/* Section 1: Problem We Solve */}
       {/* Divider: Hero → Problem (Gradient Wave) */}
       <DividerWave />
-      <Section title="Why Traditional AI Training Falls Short" subtitle="Brute‑force scaling with GPUs is expensive and unsustainable—hitting cost walls, data scarcity, and privacy risks. Regulated sectors like healthcare and MoD struggle with compliance, while businesses waste time on opaque processes. AethergenAI changes that with evidence‑led, optimised tools that put control back in your hands.">
+      <Section title="Why Traditional AI Training Falls Short" subtitle="Brute‑force scaling with GPUs is expensive and unsustainable—hitting cost walls, data scarcity, and privacy risks. Regulated sectors like healthcare and MoD struggle with compliance, while businesses waste time on opaque processes. AethergenAI changes that with evidence‑led, optimised tools that put control back in your hands." align='left'>
         <div className="grid md:grid-cols-3 gap-6">
           <div className="rounded-xl p-6 dark-card neon-card">
             <div className="flex items-center gap-2 text-emerald-300 font-semibold mb-1"><PiggyBank size={18}/> Cost Barriers</div>
@@ -130,7 +134,7 @@ const LandingPage: React.FC = () => {
       {/* Section 2: Innovations & Capabilities */}
       {/* Divider: Problem → Innovations (Zigzag with cogs) */}
       <DividerZigzag />
-      <Section title="10 Innovations Powering Your Success" subtitle="AethergenAI’s breakthroughs deliver real‑world results without revealing the magic. From synthetic‑first generation to self‑improving Autopilot, we’ve crafted a platform that’s efficient, auditable, and scalable.">
+      <Section title="10 Innovations Powering Your Success" subtitle="AethergenAI’s breakthroughs deliver real‑world results without revealing the magic. From synthetic‑first generation to self‑improving Autopilot, we’ve crafted a platform that’s efficient, auditable, and scalable." align='right'>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           <div className="rounded-xl p-6 dark-card neon-card">
             <div className="flex items-center gap-2 text-emerald-300 font-semibold mb-1"><Cpu size={18}/> Synthetic‑First Generation</div>
@@ -157,7 +161,7 @@ const LandingPage: React.FC = () => {
       {/* Section 3: Offerings & Pricing */}
       {/* Divider: Innovations → Offerings (Dashed with diamond) */}
       <DividerDashedDiamond />
-      <Section title="Tailored Solutions for Your Needs" subtitle="Whether you’re buying datasets, renting models, or building your own, AethergenAI offers flexible tiers with benefits like cost savings, privacy assurance, and innovation at scale.">
+      <Section title="Tailored Solutions for Your Needs" subtitle="Whether you’re buying datasets, renting models, or building your own, AethergenAI offers flexible tiers with benefits like cost savings, privacy assurance, and innovation at scale." align='center'>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 items-stretch">
           {[
             {t:'Datasets',d:'Preview (Free, 50k rows) • Standard £399/$499 • Enterprise £25k/$30k/yr (Delta Sharing)'},

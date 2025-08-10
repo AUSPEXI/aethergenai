@@ -15,9 +15,22 @@ const Header: React.FC = () => {
 
   return (
     <header className="bg-gradient-to-r from-slate-950 via-slate-900 to-blue-950 text-slate-100 shadow-md/30 backdrop-blur">
-      <div className="container mx-auto px-4 py-3 flex flex-col sm:flex-row items-center justify-between">
+      <div className="w-full px-2 sm:px-4 py-3 flex flex-col sm:flex-row items-center justify-between">
         <div className="flex items-center mb-4 sm:mb-0">
-          <Shield className="h-8 w-8 text-yellow-400 mr-2" />
+          {/* Try external logo first; fallback to Shield if it fails */}
+          <img
+            src="/auspexi.svg"
+            alt="Auspexi"
+            className="h-16 w-16 mr-3"
+            onError={(e) => {
+              const target = e.currentTarget as HTMLImageElement;
+              target.style.display = 'none';
+              const sibling = document.createElement('span');
+              sibling.className = 'inline-flex';
+              sibling.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="h-16 w-16 text-yellow-400"><path fill="currentColor" d="M12 2l7 4v6c0 5-3.4 9.4-7 10c-3.6-.6-7-5-7-10V6l7-4z"/></svg>';
+              target.parentElement?.insertBefore(sibling, target.nextSibling);
+            }}
+          />
           <div>
             <h1 className="text-xl font-extrabold tracking-tight">AethergenAI</h1>
             <p className="text-xs text-blue-200/90 italic">The Edge of Chaos and Order: Modular AI Training Pipeline</p>
@@ -47,6 +60,7 @@ const Header: React.FC = () => {
             onClick={() => window.dispatchEvent(new CustomEvent('aeg:navigate', { detail: { tab: 'account' } }))}
             className="px-3 py-1.5 rounded-md bg-slate-800/60 hover:bg-slate-700/60 border border-slate-700/40 transition-colors"
           >Account</button>
+          {/* Legal links hidden per request; available in footer */}
           <a 
             href="https://auspexi.com" 
             target="_blank" 

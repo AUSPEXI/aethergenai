@@ -42,9 +42,9 @@ const Footer: React.FC = () => {
             Global Compliance • Privacy-Preserving AI • Modular Benchmarking • Quantum-Ready
           </p>
           <div className="mt-2 flex justify-center space-x-4">
-            <a href="https://auspexi.com/privacy" className="hover:text-white">Privacy Policy</a>
-            <a href="https://auspexi.com/terms" className="hover:text-white">Terms of Service</a>
-            <a href="https://auspexi.com" className="hover:text-white">AUSPEXI</a>
+            <a href="#/privacy" className="hover:text-white">Privacy Policy</a>
+            <a href="#/terms" className="hover:text-white">Terms of Service</a>
+            <a href="https://auspexi.com" target="_blank" rel="noopener noreferrer" className="hover:text-white">AUSPEXI</a>
           </div>
         </div>
       </div>

@@ -10,6 +10,9 @@ import ResourcesHub from './components/Resources/ResourcesHub';
 import PricingPage from './components/Marketing/PricingPage';
 import AuthPage from './components/Auth/AuthPage';
 import LandingPage from './components/Marketing/LandingPage';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsOfService from './pages/TermsOfService';
+import NotFound from './pages/NotFound';
 import { assertSupabase } from './services/supabaseClient';
 import { getEntitlements, hasPlatformAccess, Entitlement } from './services/entitlementsClient';
 import { DataSchema, SchemaField, ValidationResult, SyntheticDataResult } from './types/schema';
@@ -22,7 +25,8 @@ function App() {
   const [validationResult, setValidationResult] = useState<ValidationResult | null>(null);
   const [generationResult, setGenerationResult] = useState<SyntheticDataResult | null>(null);
   const [totalGeneratedLastRun, setTotalGeneratedLastRun] = useState<number>(0);
-  const [activeTab, setActiveTab] = useState<'home' | 'upload' | 'design' | 'generate' | 'advanced' | 'privacy-metrics' | 'reporting' | 'resources' | 'pricing' | 'account'>('home');
+  type RouteTab = 'home' | 'upload' | 'design' | 'generate' | 'advanced' | 'privacy-metrics' | 'reporting' | 'resources' | 'pricing' | 'account' | 'privacy' | 'terms';
+  const [activeTab, setActiveTab] = useState<RouteTab>('home');
   // Add privacy settings to app state
   const [privacySettings, setPrivacySettings] = useState({
     syntheticRatio: 95,
@@ -133,14 +137,36 @@ function App() {
     })();
   }, []);
 
-  // Listen for header navigation events
+  // Hash routing helpers
+  const tabToHash = (tab: RouteTab) => `#/${tab}`;
+  const hashToTab = (hash: string): RouteTab => {
+    const cleaned = (hash || '').replace(/^#\//, '');
+    const allowed: RouteTab[] = ['home','upload','design','generate','advanced','privacy-metrics','reporting','resources','pricing','account','privacy','terms'];
+    return (allowed.includes(cleaned as RouteTab) ? cleaned : 'home') as RouteTab;
+  };
+
+  // Listen for header navigation events and update hash
   useEffect(() => {
     const navHandler = (e: Event) => {
-      const d = (e as CustomEvent).detail as { tab?: typeof activeTab };
-      if (d?.tab) setActiveTab(d.tab);
+      const d = (e as CustomEvent).detail as { tab?: RouteTab };
+      if (d?.tab) {
+        if (tabToHash(d.tab) !== window.location.hash) {
+          window.location.hash = tabToHash(d.tab);
+        } else {
+          setActiveTab(d.tab);
+        }
+      }
     };
     window.addEventListener('aeg:navigate', navHandler as EventListener);
     return () => window.removeEventListener('aeg:navigate', navHandler as EventListener);
+  }, []);
+
+  // Initialise from hash and handle back/forward
+  useEffect(() => {
+    const applyHash = () => setActiveTab(hashToTab(window.location.hash));
+    applyHash();
+    window.addEventListener('hashchange', applyHash);
+    return () => window.removeEventListener('hashchange', applyHash);
   }, []);
 
   const workflowSteps: Array<{ key: typeof activeTab; label: string }> = [
@@ -314,6 +340,18 @@ function App() {
 
           {activeTab === 'account' && (
             <AuthPage />
+          )}
+
+          {activeTab === 'privacy' && (
+            <PrivacyPolicy />
+          )}
+
+          {activeTab === 'terms' && (
+            <TermsOfService />
+          )}
+
+          {!(['home','upload','design','generate','advanced','privacy-metrics','reporting','resources','pricing','account','privacy','terms'] as RouteTab[]).includes(activeTab) && (
+            <NotFound />
           )}
             </div>
         </div>

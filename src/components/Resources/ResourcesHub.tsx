@@ -101,7 +101,7 @@ const ResourcesHub: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-6">
       <div className="grid grid-cols-12 gap-6">
-        <aside className="col-span-12 md:col-span-4 lg:col-span-3 bg-white border rounded p-4">
+        <aside className="col-span-12 md:col-span-4 lg:col-span-3 bg-white text-slate-900 border rounded p-4">
           {sections.map((sec) => (
             <div key={sec.title} className="mb-4">
               <div className="text-xs uppercase tracking-wide text-slate-500 mb-2">{sec.title}</div>
@@ -111,7 +111,7 @@ const ResourcesHub: React.FC = () => {
                     <button
                       onClick={() => setActive(it.key)}
                       className={`w-full text-left px-2 py-1 rounded ${
-                        active === it.key ? "bg-blue-50 text-blue-700" : "hover:bg-slate-50"
+                        active === it.key ? "bg-blue-50 text-blue-700" : "text-slate-800 hover:bg-slate-50"
                       }`}
                     >
                       {it.label}
@@ -123,11 +123,11 @@ const ResourcesHub: React.FC = () => {
           ))}
         </aside>
 
-        <main className="col-span-12 md:col-span-8 lg:col-span-9 bg-white border rounded p-6">
+        <main className="col-span-12 md:col-span-8 lg:col-span-9 bg-white text-slate-900 border rounded p-6">
           {error ? (
             <div className="text-red-600">{error}</div>
           ) : (
-            <pre style={{ whiteSpace: "pre-wrap", fontFamily: "ui-sans-serif, system-ui" }}>{content}</pre>
+            <pre className="text-slate-900" style={{ whiteSpace: "pre-wrap", fontFamily: "ui-sans-serif, system-ui" }}>{content}</pre>
           )}
         </main>
       </div>

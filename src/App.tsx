@@ -7,6 +7,9 @@ import AdvancedBenchmarking from './components/AdvancedBenchmarking/AdvancedBenc
 import ReportingDashboard from './components/ReportingDashboard/ReportingDashboard';
 import PrivacyMetrics from './components/PrivacyMetrics/PrivacyMetrics';
 import ResourcesHub from './components/Resources/ResourcesHub';
+import PricingPage from './components/Marketing/PricingPage';
+import AuthPage from './components/Auth/AuthPage';
+import LandingPage from './components/Marketing/LandingPage';
 import { DataSchema, SchemaField, ValidationResult, SyntheticDataResult } from './types/schema';
 import './index.css';
 
@@ -17,7 +20,7 @@ function App() {
   const [validationResult, setValidationResult] = useState<ValidationResult | null>(null);
   const [generationResult, setGenerationResult] = useState<SyntheticDataResult | null>(null);
   const [totalGeneratedLastRun, setTotalGeneratedLastRun] = useState<number>(0);
-  const [activeTab, setActiveTab] = useState<'upload' | 'design' | 'generate' | 'advanced' | 'privacy-metrics' | 'reporting' | 'resources'>('upload');
+  const [activeTab, setActiveTab] = useState<'home' | 'upload' | 'design' | 'generate' | 'advanced' | 'privacy-metrics' | 'reporting' | 'resources' | 'pricing' | 'account'>('home');
   // Add privacy settings to app state
   const [privacySettings, setPrivacySettings] = useState({
     syntheticRatio: 95,
@@ -136,6 +139,16 @@ function App() {
           <div className="max-w-7xl mx-auto px-6">
             <nav className="flex space-x-8 overflow-x-auto">
               <button
+                onClick={() => setActiveTab('home')}
+                className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
+                  activeTab === 'home'
+                    ? 'border-blue-500 text-blue-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                🏠 Home
+              </button>
+              <button
                 onClick={() => setActiveTab('upload')}
                 className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
                   activeTab === 'upload'
@@ -205,6 +218,26 @@ function App() {
               >
                 📚 Resources
               </button>
+              <button
+                onClick={() => setActiveTab('pricing')}
+                className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
+                  activeTab === 'pricing'
+                    ? 'border-blue-500 text-blue-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                💳 Pricing
+              </button>
+              <button
+                onClick={() => setActiveTab('account')}
+                className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
+                  activeTab === 'account'
+                    ? 'border-blue-500 text-blue-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                👤 Account
+              </button>
             </nav>
           </div>
         </div>
@@ -247,6 +280,10 @@ function App() {
 
             {/* Main Content */}
             <div className="py-8">
+          {activeTab === 'home' && (
+            <LandingPage />
+          )}
+
           {activeTab === 'design' && (
             <SchemaDesigner
               onSchemaChange={handleSchemaChange}
@@ -354,6 +391,14 @@ function App() {
 
           {activeTab === 'resources' && (
             <ResourcesHub />
+          )}
+
+          {activeTab === 'pricing' && (
+            <div id="pricing"><PricingPage /></div>
+          )}
+
+          {activeTab === 'account' && (
+            <AuthPage />
           )}
             </div>
         </div>

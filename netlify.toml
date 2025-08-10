@@ -18,6 +18,21 @@
   status = 200
 
 [[redirects]]
+  from = "/api/stripe/create-checkout"
+  to = "/.netlify/functions/create-checkout-session"
+  status = 200
+
+[[redirects]]
+  from = "/api/stripe/webhook"
+  to = "/.netlify/functions/stripe-webhook"
+  status = 200
+
+[[redirects]]
+  from = "/api/entitlements"
+  to = "/.netlify/functions/get-entitlements"
+  status = 200
+
+[[redirects]]
   from = "/trigger-enhanced-collection"
   to = "/.netlify/functions/enhanced-cron-collect"
   status = 200

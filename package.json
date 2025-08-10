@@ -34,7 +34,8 @@
     "react-dom": "^18.3.1",
     "recharts": "^3.1.0",
     "rss-parser": "^3.13.0",
-    "snarkjs": "^0.7.5"
+    "snarkjs": "^0.7.5",
+    "stripe": "^14.23.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.1",

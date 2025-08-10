@@ -6,6 +6,7 @@ import SyntheticDataGenerator from './components/SyntheticDataGenerator/Syntheti
 import AdvancedBenchmarking from './components/AdvancedBenchmarking/AdvancedBenchmarking';
 import ReportingDashboard from './components/ReportingDashboard/ReportingDashboard';
 import PrivacyMetrics from './components/PrivacyMetrics/PrivacyMetrics';
+import ResourcesHub from './components/Resources/ResourcesHub';
 import { DataSchema, SchemaField, ValidationResult, SyntheticDataResult } from './types/schema';
 import './index.css';
 
@@ -16,7 +17,7 @@ function App() {
   const [validationResult, setValidationResult] = useState<ValidationResult | null>(null);
   const [generationResult, setGenerationResult] = useState<SyntheticDataResult | null>(null);
   const [totalGeneratedLastRun, setTotalGeneratedLastRun] = useState<number>(0);
-  const [activeTab, setActiveTab] = useState<'upload' | 'design' | 'generate' | 'advanced' | 'privacy-metrics' | 'reporting'>('upload');
+  const [activeTab, setActiveTab] = useState<'upload' | 'design' | 'generate' | 'advanced' | 'privacy-metrics' | 'reporting' | 'resources'>('upload');
   // Add privacy settings to app state
   const [privacySettings, setPrivacySettings] = useState({
     syntheticRatio: 95,
@@ -194,6 +195,16 @@ function App() {
               >
                 📊 Reporting
               </button>
+              <button
+                onClick={() => setActiveTab('resources')}
+                className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
+                  activeTab === 'resources'
+                    ? 'border-blue-500 text-blue-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                📚 Resources
+              </button>
             </nav>
           </div>
         </div>
@@ -339,6 +350,10 @@ function App() {
               privacySettings={privacySettings}
               onPrivacySettingsChange={handlePrivacySettingsChange}
             />
+          )}
+
+          {activeTab === 'resources' && (
+            <ResourcesHub />
           )}
             </div>
         </div>

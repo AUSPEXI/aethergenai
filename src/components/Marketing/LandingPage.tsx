@@ -1,5 +1,5 @@
 import React from 'react';
-import { Rocket, ShieldCheck, PiggyBank, Database, Sparkles, Boxes, Mail, ArrowRightCircle, Cpu } from 'lucide-react';
+import { Rocket, ShieldCheck, PiggyBank, Database, Sparkles, Boxes, Mail, ArrowRightCircle, Cpu, Cog, Gem, Shield } from 'lucide-react';
 
 const CTAButton: React.FC<{ label: string; tab?: 'pricing' | 'resources' | 'account'; variant?: 'primary' | 'secondary' }>=({ label, tab, variant='primary' })=> (
   <button
@@ -10,11 +10,69 @@ const CTAButton: React.FC<{ label: string; tab?: 'pricing' | 'resources' | 'acco
   >{label}</button>
 );
 
-const Divider: React.FC<{ icon?: React.ReactNode }>=({ icon }) => (
-  <div className="flex items-center justify-center my-10">
-    <div className="h-px w-24 bg-gradient-to-r from-transparent via-blue-500/60 to-transparent" />
-    <div className="mx-3 text-blue-300">{icon}</div>
-    <div className="h-px w-24 bg-gradient-to-r from-transparent via-blue-500/60 to-transparent" />
+// Divider variations
+const DividerWave: React.FC = () => (
+  <div className="w-full mx-auto my-10 flex justify-center">
+    <svg viewBox="0 0 1440 60" className="w-full max-w-7xl" height="60" preserveAspectRatio="none">
+      <defs>
+        <linearGradient id="waveGrad" x1="0" x2="1" y1="0" y2="0">
+          <stop offset="0%" stopColor="#1e3a8a" />
+          <stop offset="100%" stopColor="#0b1220" />
+        </linearGradient>
+      </defs>
+      <path d="M0,40 C240,80 480,0 720,40 C960,80 1200,0 1440,40 L1440,60 L0,60 Z" fill="url(#waveGrad)" />
+    </svg>
+  </div>
+);
+
+const DividerZigzag: React.FC = () => (
+  <div className="w-full mx-auto my-10 flex justify-center">
+    <svg viewBox="0 0 600 80" className="max-w-3xl w-full" height="80" preserveAspectRatio="none">
+      {/* blue outline */}
+      <polyline points="0,60 100,20 200,60 300,20 400,60 500,20 600,60" fill="none" stroke="#1e3a8a" strokeWidth="8" />
+      {/* white main line */}
+      <polyline points="0,60 100,20 200,60 300,20 400,60 500,20 600,60" fill="none" stroke="#ffffff" strokeWidth="5" />
+    </svg>
+    {/* icons positioned at peaks */}
+    <div className="absolute w-full max-w-3xl h-20 pointer-events-none">
+      <div className="relative w-full h-full">
+        <Cog className="text-blue-300 absolute left-[16%] top-2 transition-all duration-300 hover:scale-105" size={18} />
+        <Cog className="text-blue-300 absolute left-[50%] top-2 transition-all duration-300 hover:scale-105" size={18} />
+        <Cog className="text-blue-300 absolute left-[83%] top-2 transition-all duration-300 hover:scale-105" size={18} />
+      </div>
+    </div>
+  </div>
+);
+
+const DividerDashedDiamond: React.FC = () => (
+  <div className="w-full mx-auto my-10 flex justify-center items-center">
+    <div className="relative w-full max-w-5xl">
+      <div className="border-t-4 border-blue-500 border-dashed" style={{ borderImage: 'linear-gradient(90deg, rgba(59,130,246,1), rgba(59,130,246,1)) 1', borderStyle: 'dashed' }} />
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div className="bg-slate-900 px-3 py-1 rounded-full shadow-md">
+          <Gem className="text-blue-400 transition-all duration-300 hover:scale-105" size={18} />
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+const DividerPulseBar: React.FC = () => (
+  <div className="w-full mx-auto my-10 flex justify-center">
+    <div className="w-full max-w-6xl h-16 sm:h-20 bg-gradient-to-b from-blue-900/60 to-transparent rounded animate-pulse shadow-md" />
+  </div>
+);
+
+const DividerWavyShield: React.FC = () => (
+  <div className="w-full mx-auto my-8 flex justify-center items-center relative">
+    <svg viewBox="0 0 600 30" className="max-w-4xl w-full" height="30" preserveAspectRatio="none">
+      <path d="M0,15 C75,5 150,25 225,15 C300,5 375,25 450,15 C525,5 600,25 600,25" fill="none" stroke="#ffffff" strokeWidth="2" />
+    </svg>
+    <div className="absolute flex justify-center items-center">
+      <div className="bg-slate-900 px-2 rounded-full shadow-md">
+        <Shield className="text-blue-300 transition-all duration-300 hover:scale-105" size={16} />
+      </div>
+    </div>
   </div>
 );
 
@@ -47,7 +105,8 @@ const LandingPage: React.FC = () => {
       </section>
 
       {/* Section 1: Problem We Solve */}
-      <Divider icon={<ShieldCheck size={20} />} />
+      {/* Divider: Hero → Problem (Gradient Wave) */}
+      <DividerWave />
       <Section title="Why Traditional AI Training Falls Short" subtitle="Brute‑force scaling with GPUs is expensive and unsustainable—hitting cost walls, data scarcity, and privacy risks. Regulated sectors like healthcare and MoD struggle with compliance, while businesses waste time on opaque processes. AethergenAI changes that with evidence‑led, optimised tools that put control back in your hands.">
         <div className="grid md:grid-cols-3 gap-6">
           <div className="rounded-xl p-6 dark-card neon-card">
@@ -69,7 +128,8 @@ const LandingPage: React.FC = () => {
       </Section>
 
       {/* Section 2: Innovations & Capabilities */}
-      <Divider icon={<Rocket size={20} />} />
+      {/* Divider: Problem → Innovations (Zigzag with cogs) */}
+      <DividerZigzag />
       <Section title="10 Innovations Powering Your Success" subtitle="AethergenAI’s breakthroughs deliver real‑world results without revealing the magic. From synthetic‑first generation to self‑improving Autopilot, we’ve crafted a platform that’s efficient, auditable, and scalable.">
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           <div className="rounded-xl p-6 dark-card neon-card">
@@ -95,7 +155,8 @@ const LandingPage: React.FC = () => {
       </Section>
 
       {/* Section 3: Offerings & Pricing */}
-      <Divider icon={<ArrowRightCircle size={20} />} />
+      {/* Divider: Innovations → Offerings (Dashed with diamond) */}
+      <DividerDashedDiamond />
       <Section title="Tailored Solutions for Your Needs" subtitle="Whether you’re buying datasets, renting models, or building your own, AethergenAI offers flexible tiers with benefits like cost savings, privacy assurance, and innovation at scale.">
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 items-stretch">
           {[
@@ -116,7 +177,8 @@ const LandingPage: React.FC = () => {
       </Section>
 
       {/* Section 4: Call to Action (Netlify form) */}
-      <Divider icon={<Mail size={20} />} />
+      {/* Divider: Offerings → CTA (Pulse gradient bar) */}
+      <DividerPulseBar />
       <Section title="Ready to Transform Your AI Workflow?" subtitle="Join innovators using AethergenAI to experiment at the edge and compete on outcomes, not hardware. We’re here to partner—let’s chat.">
         <form name="contact" method="POST" data-netlify="true" className="grid md:grid-cols-3 gap-4 max-w-3xl" netlify-honeypot="bot-field">
           <input type="hidden" name="form-name" value="contact" />
@@ -129,6 +191,8 @@ const LandingPage: React.FC = () => {
           <div className="md:col-span-3"><button type="submit" className="px-6 py-3 rounded-lg font-semibold bg-emerald-600 hover:bg-emerald-500">Submit</button></div>
         </form>
       </Section>
+      {/* Divider: CTA → Footer (Wavy with shield) */}
+      <DividerWavyShield />
     </div>
   );
 };

@@ -6,14 +6,14 @@ type CardTheme = 'dark' | 'light';
 const Card: React.FC<{ title: string; price: string; features: string[]; cta?: React.ReactNode; highlight?: boolean; tagline?: string; theme?: CardTheme }>=({title, price, features, cta, highlight, tagline, theme='dark'})=>{
   const isDark = theme === 'dark';
   return (
-    <div className={`rounded-xl p-6 flex flex-col ${isDark ? 'bg-slate-900/60 text-white neon-card border border-slate-700' : 'bg-white border'}`}>
+    <div className={`rounded-xl p-6 flex flex-col h-full ${isDark ? 'bg-slate-900/60 text-white neon-card border border-slate-700' : 'bg-white border'}`}>
       <div className="text-lg font-semibold mb-1">{title}</div>
       {tagline && <div className={`text-xs mb-1 uppercase tracking-wide ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`}>{tagline}</div>}
       <div className={`text-3xl font-bold mb-4 ${isDark ? 'text-emerald-300' : ''}`}>{price}</div>
       <ul className={`mb-4 list-disc pl-5 text-sm space-y-1 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
         {features.map((f)=> <li key={f}>{f}</li>)}
       </ul>
-      {cta}
+      <div className="mt-auto">{cta}</div>
     </div>
   );
 };
@@ -22,7 +22,8 @@ const PricingPage: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto p-6 text-slate-100" id="pricing">
       <h2 className="text-4xl font-extrabold tracking-tight mb-8 text-center text-slate-100">Pricing</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* Top row of three aligned cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
         <Card
           title="Standard Dataset"
           price="£399 / $499 mo"
@@ -47,6 +48,9 @@ const PricingPage: React.FC = () => {
           cta={<BuyButtons modelSeatPriceId={import.meta.env.VITE_PRICE_DEVHUB_PRO as any} />}
           theme="dark"
         />
+      </div>
+      {/* Row of two centered under the three */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch md:max-w-4xl mx-auto mt-6">
         <Card
           title="Model Seat"
           price="£149 / $199 seat/mo"

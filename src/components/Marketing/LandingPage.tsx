@@ -11,7 +11,7 @@ const CTAButton: React.FC<{ label: string; tab: 'pricing' | 'resources' }>=({ la
 
 const LandingPage: React.FC = () => {
   return (
-    <div className="bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white">
+    <div className="text-white">
       <section className="max-w-7xl mx-auto px-6 py-16 text-center">
         <div className="inline-block rounded-2xl px-4 py-1 text-sm bg-emerald-900/30 text-emerald-300 mb-4 neon-ring">Evidence‑led. Privacy‑preserving. Databricks‑ready.</div>
         <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-4">

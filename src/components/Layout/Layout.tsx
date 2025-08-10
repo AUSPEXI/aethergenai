@@ -13,9 +13,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       style={{ margin: 0, padding: 0 }}
     >
       <Header />
-      <main 
-        className="flex-grow container mx-auto px-4 py-8"
-      >
+      <main className="flex-grow px-4 py-8">
         {children}
       </main>
       <Footer />

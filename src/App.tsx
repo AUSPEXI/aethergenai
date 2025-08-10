@@ -77,16 +77,19 @@ function App() {
     }
   };
 
-  // Listen for privacy updates from other components (e.g., recipe UI)
+  // Listen for privacy updates from other components (e.g., recipe UI, Autopilot)
   useEffect(() => {
     const handler = (e: Event) => {
-      const detail = (e as CustomEvent).detail as { epsilon?: number; synthetic_ratio?: number };
+      const detail = (e as CustomEvent).detail as { epsilon?: number; synthetic_ratio?: number; iqr_k?: number };
       if (!detail) return;
       const next = {
         syntheticRatio: detail.synthetic_ratio ?? privacySettings.syntheticRatio,
         epsilon: detail.epsilon ?? privacySettings.epsilon,
       };
       handlePrivacySettingsChange(next);
+      if (detail.iqr_k !== undefined) {
+        try { localStorage.setItem('aeg_cleaning_iqrk', String(detail.iqr_k)); } catch {}
+      }
     };
     window.addEventListener('aethergen:apply-privacy', handler as EventListener);
     const genHandler = (e: Event) => {
@@ -237,6 +240,7 @@ function App() {
             <SchemaDesigner
               onSchemaChange={handleSchemaChange}
               initialSchema={currentSchema}
+              seedData={seedData}
             />
           )}
           

@@ -9,6 +9,41 @@ Implemented
 - Triad toggles in Benchmarks: “Enable Triad Validator (experimental)” and “Triad-guided cleaning (experimental)”. When triad-guided is on, recipes apply adaptive cleaning based on analysis.
 - Data-driven analysis metrics (no hard-coded numbers) across benchmarking/analysis.
 - Navigation order updated: Upload first, then Schema.
+- Adaptation modes added to recipe types: black-box (tools, RAG), grey-box (prompts), white-box (PEFT adapters). UI wiring starting in Benchmarks.
+ - Recursive prompt policy scaffold added: bounded depth/attempts, base/trigger/revert/unravel/renest rules. Runner skeleton implemented for future LLM wiring.
+- Cost/latency estimator added (local): chips in Generate and Benchmarks; $0 default.
+- Drift/Collapse watchdog: uniqueness/entropy guard with auto-tighten of outlier cap.
+
+Capabilities checklist (current)
+- Synthetic generation
+  - Off‑main‑thread worker; progress streaming; sample preview; 1,000,000 volume cap
+  - zk‑SNARK proof scaffold for generation and seed upload; proof download/upload
+  - Download JSON/CSV (full records) with optional post‑gen cleaning
+- Privacy & cleaning
+  - DP ε integrated into noise scale; ε budget indicator in Privacy panel
+  - Seed cleaning (schema/type enforce, dedupe, IQR/z‑score, text/dates, PII redact)
+  - Synthetic post‑gen cleaning toggle; cleaning reports persisted; auto‑tighten on drift/collapse
+  - Privacy Metrics panel with gauges and quick risk badge (placeholder harness)
+- Benchmarks & ablations
+  - Basic module benchmarks via Netlify function; auto‑scroll to results; estimators
+  - Ablation Recipes: modules/training/privacy/repeats; experimental flags; summaries; CSV/JSON; ablation card
+  - Evidence bundle export + redacted share (public sample, hashes, ε)
+  - Data‑driven analysis metrics (no constants) with explainability tooltips; deterministic per‑model jitter
+- Adaptation modes
+  - Types for black‑box (tools/RAG), grey‑box (prompts + recursion), white‑box (PEFT adapters)
+  - Recursive Prompt Sandbox (zero‑cost heuristic rewrite/unravel/renest) with step viewer
+  - RAG confidence gates (BM25‑like heuristic) with recursive retries and caps
+- UI/UX
+  - Top tabs reordered: Upload → Schema → Generate → Benchmarks → Privacy → Reporting
+  - Anchors: stay at top on nav; scroll to results on completion; “Why these numbers?” tooltips
+  - Estimator chips (local $0) in Generate/Benchmarks
+- Security & IP
+  - SOPS + age policy; .gitignore hardened; pre‑push IP check (husky) blocks plaintext/secrets
+  - IP protection docs and verification checklist
+- Integrations (scaffold)
+  - Provider switch (heuristic/local/remote) for prompts (LM Studio/Ollama later)
+  - Supabase schema migration scripts (Aethergen‑native); Netlify functions stubs (record‑dataset, ablations, MLflow, etc.)
+
 
 Ablation Recipes
 - Types: `src/types/ablation.ts`

@@ -4,9 +4,10 @@ import { SchemaField, DataSchema } from '../../types/schema';
 interface SchemaDesignerProps {
   onSchemaChange: (schema: DataSchema) => void;
   initialSchema?: DataSchema;
+  seedData?: any[];
 }
 
-const SchemaDesigner: React.FC<SchemaDesignerProps> = ({ onSchemaChange, initialSchema }) => {
+const SchemaDesigner: React.FC<SchemaDesignerProps> = ({ onSchemaChange, initialSchema, seedData }) => {
   const [schema, setSchema] = useState<DataSchema>(initialSchema || {
     id: crypto.randomUUID(),
     name: '',
@@ -33,6 +34,9 @@ const SchemaDesigner: React.FC<SchemaDesignerProps> = ({ onSchemaChange, initial
   const privacyLevels = ['low', 'medium', 'high'];
   const domains = ['Finance', 'Healthcare', 'Retail', 'Education', 'Transportation', 'Custom'];
   const [fusionMappings, setFusionMappings] = useState<Array<{ sourceField: string; targetField: string }>>([]);
+  const [offline, setOffline] = useState<boolean>(() => {
+    try { return localStorage.getItem('aeg_offline') === '1'; } catch { return false; }
+  });
 
   useEffect(() => {
     onSchemaChange(schema);
@@ -43,6 +47,7 @@ const SchemaDesigner: React.FC<SchemaDesignerProps> = ({ onSchemaChange, initial
     const controller = new AbortController();
     const timeout = setTimeout(async () => {
       try {
+        if (offline) return; // offline mode: skip autosave
         if (!schema.name && schema.fields.length === 0) return; // avoid saving empty drafts
         await fetch('/api/store-schema', {
           method: 'POST',
@@ -75,7 +80,17 @@ const SchemaDesigner: React.FC<SchemaDesignerProps> = ({ onSchemaChange, initial
       clearTimeout(timeout);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [schema.name, schema.description, schema.domain, schema.fields, schema.targetVolume, schema.privacySettings]);
+  }, [schema.name, schema.description, schema.domain, schema.fields, schema.targetVolume, schema.privacySettings, offline]);
+
+  // Listen for offline toggle
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const d = (e as CustomEvent).detail as { offline?: boolean };
+      if (typeof d?.offline === 'boolean') setOffline(d.offline);
+    };
+    window.addEventListener('aeg:offline', handler as EventListener);
+    return () => window.removeEventListener('aeg:offline', handler as EventListener);
+  }, []);
 
   const addField = () => {
     if (!newField.name) return;
@@ -150,6 +165,11 @@ const SchemaDesigner: React.FC<SchemaDesignerProps> = ({ onSchemaChange, initial
 
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-6">
+      {offline && (
+        <div className="p-3 rounded border border-yellow-200 bg-yellow-50 text-yellow-800 text-sm">
+          Offline mode is enabled. Remote saves are disabled; changes persist locally until you go online.
+        </div>
+      )}
       {/* Schema Definition */}
       <div className="bg-white rounded-lg shadow-lg p-6">
         <h2 className="text-2xl font-bold text-gray-800 mb-4">📋 Schema Definition</h2>
@@ -466,6 +486,26 @@ const SchemaDesigner: React.FC<SchemaDesignerProps> = ({ onSchemaChange, initial
             className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
           >
             Save to Supabase
+          </button>
+          <button
+            onClick={() => {
+              const content = JSON.stringify({
+                name: schema.name,
+                description: schema.description,
+                domain: schema.domain,
+                fields: schema.fields,
+                targetVolume: schema.targetVolume,
+                privacySettings: schema.privacySettings,
+              }, null, 2);
+              const blob = new Blob([content], { type: 'application/json' });
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url; a.download = `schema_${schema.name || 'untitled'}.json`;
+              document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+            }}
+            className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300"
+          >
+            Save locally (JSON)
           </button>
           {schema.id && (
             <span className="text-sm text-gray-600">Saved schema id: {schema.id}</span>

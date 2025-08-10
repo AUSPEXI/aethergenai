@@ -1,4 +1,5 @@
-import { AblationEntry, AblationRecipe, AblationRunResult, CleaningConfig } from '../types/ablation';
+import { AblationEntry, AblationRecipe, AblationRunResult, CleaningConfig, AdaptationConfig, RecursionPolicy, EvaluationCheck } from '../types/ablation';
+import { heuristicRewrite, heuristicUnravel, heuristicRenest } from './heuristicTransformers';
 import { advancedAIModels } from '../types/advancedModels';
 import { hreTechnologyService } from './hreTechnologyService';
 import { cleanSeedData, cleanSyntheticData, triadGuidedConfig } from './dataCleaningService';
@@ -39,7 +40,7 @@ export async function runRecipeLocally(
       for (const modelName of modelNames) {
         if (disabled.has(modelName)) continue;
 
-        // Run existing comprehensive benchmark for each model
+        // Run existing comprehensive benchmark for each model (with optional recursion sandbox for prompts)
         const bench = await hreTechnologyService.runComprehensiveBenchmark(
           modelName,
           workingData,
@@ -92,6 +93,60 @@ export function summarizeAblationResults(results: AblationRunResult[]): Record<s
 function mean(arr: number[]): number {
   if (arr.length === 0) return 0;
   return arr.reduce((a, b) => a + b, 0) / arr.length;
+}
+
+// --- Recursive prompt sandbox (skeleton) ---
+export async function runRecursivePromptChain(promptText: string, policy: RecursionPolicy): Promise<{ steps: any[]; final: string }>{
+  const steps: any[] = [];
+  const maxDepth = policy.maxDepth ?? 3;
+  const maxAttempts = policy.maxAttempts ?? 3;
+  let attempt = 0;
+  let depth = 0;
+  let current = promptText;
+
+  const evalMetric = (text: string): Record<string, number> => ({ wordCount: text.split(/\s+/).filter(Boolean).length });
+  const check = (metrics: Record<string, number>, checks?: EvaluationCheck[]): boolean => {
+    if (!checks || checks.length === 0) return false;
+    return checks.some((c) => {
+      const v = metrics[c.metric] ?? 0;
+      switch (c.op) {
+        case '>': return v > c.value;
+        case '>=': return v >= c.value;
+        case '<': return v < c.value;
+        case '<=': return v <= c.value;
+        case '==': return v === c.value;
+        case '!=': return v !== c.value;
+        default: return false;
+      }
+    });
+  };
+
+  const rewrite = (text: string) => heuristicRewrite(text);
+  const unravel = (text: string) => heuristicUnravel(text);
+  const renest = (text: string, lines = 5) => heuristicRenest(text, lines);
+
+  while (attempt < maxAttempts && depth <= maxDepth) {
+    const metrics = evalMetric(current);
+    steps.push({ depth, attempt, current, metrics });
+    if (!check(metrics, policy.trigger) && check(metrics, policy.baseCase)) break;
+    if (check(metrics, policy.revertOn)) {
+      // revert to previous step if available
+      const prev = steps[steps.length - 2];
+      if (prev) current = prev.current;
+      attempt++;
+      continue;
+    }
+    if (check(metrics, policy.trigger)) {
+      current = rewrite(current);
+      if (policy.unravel?.simplifyToCore) current = unravel(current);
+      current = renest(current, policy.renest?.lines ?? 5);
+      depth++;
+      attempt++;
+      continue;
+    }
+    break;
+  }
+  return { steps, final: current };
 }
 
 

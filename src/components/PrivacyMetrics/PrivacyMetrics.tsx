@@ -28,8 +28,15 @@ const PrivacyMetrics: React.FC<PrivacyMetricsProps> = ({ seedData, syntheticData
   const [scores, setScores] = useState<PrivacyScores>(defaultScores);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [riskBadge, setRiskBadge] = useState<'green'|'amber'|'red'>('green');
   // Local state for settings UI
   const [localSettings, setLocalSettings] = useState(privacySettings);
+  const [epsilonBudget, setEpsilonBudget] = useState<number>(()=>{
+    try { const v = localStorage.getItem('aeg_epsilon_budget'); return v? Number(v) : 1.0; } catch { return 1.0; }
+  });
+  const [consumed, setConsumed] = useState<number>(()=>{
+    try { const v = localStorage.getItem('aeg_epsilon_consumed'); return v? Number(v) : 0; } catch { return 0; }
+  });
 
   useEffect(() => {
     setLocalSettings(privacySettings);
@@ -50,10 +57,20 @@ const PrivacyMetrics: React.FC<PrivacyMetricsProps> = ({ seedData, syntheticData
         });
         if (!res.ok) throw new Error("Failed to fetch privacy metrics");
         const data = await res.json();
-        setScores({
+        const s = {
           ...data,
-          diversity_loss: 100, // Placeholder, update with real value if available
-          model_collapse: 100, // Placeholder, update with real value if available
+          diversity_loss: data.diversity_loss ?? 0,
+          model_collapse: data.model_collapse ?? 0,
+        } as PrivacyScores;
+        setScores(s);
+        // Risk badge (quick harness; replace with real attacks later)
+        const low = [s.nearest_neighbor, s.membership_inference, s.attribute_disclosure].filter(v=>v<70).length;
+        setRiskBadge(low>=2 ? 'red' : low===1 ? 'amber' : 'green');
+        // Privacy budget: accumulate epsilon
+        setConsumed(prev => {
+          const next = Math.min(epsilonBudget, prev + (privacySettings.epsilon || 0));
+          try { localStorage.setItem('aeg_epsilon_consumed', String(next)); } catch {}
+          return next;
         });
       } catch (err: any) {
         setError(err.message || "Unknown error");
@@ -73,6 +90,8 @@ const PrivacyMetrics: React.FC<PrivacyMetricsProps> = ({ seedData, syntheticData
   return (
     <div className="privacy-metrics-container">
       <h2>Privacy Metrics</h2>
+      <div className="text-xs" style={{color: riskBadge==='red'?'#dc2626': riskBadge==='amber'?'#b45309':'#16a34a'}}>Risk: {riskBadge.toUpperCase()}</div>
+      <div className="text-xs text-gray-600">ε budget: {epsilonBudget.toFixed(2)} • consumed: {consumed.toFixed(2)} • remaining: {(Math.max(0, epsilonBudget - consumed)).toFixed(2)}</div>
       {loading && <div>Checking privacy...</div>}
       {error && <div style={{ color: "red" }}>{error}</div>}
       <div className="dials-row" style={{ display: "flex", gap: "2rem", marginTop: "2rem" }}>
@@ -108,6 +127,22 @@ const PrivacyMetrics: React.FC<PrivacyMetricsProps> = ({ seedData, syntheticData
                 step={0.01}
                 value={localSettings.epsilon}
                 onChange={e => setLocalSettings(s => ({ ...s, epsilon: Number(e.target.value) }))}
+                style={{ marginLeft: '0.5rem', width: '4rem' }}
+              />
+            </label>
+            <label>
+              ε Budget:
+              <input
+                type="number"
+                min={0.1}
+                max={10}
+                step={0.1}
+                value={epsilonBudget}
+                onChange={e => {
+                  const v = Number(e.target.value) || 1.0;
+                  setEpsilonBudget(v);
+                  try { localStorage.setItem('aeg_epsilon_budget', String(v)); } catch {}
+                }}
                 style={{ marginLeft: '0.5rem', width: '4rem' }}
               />
             </label>

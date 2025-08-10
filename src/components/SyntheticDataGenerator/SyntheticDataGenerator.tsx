@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { cleanSyntheticData, CleaningReport } from '../../services/dataCleaningService';
+import { estimateStep } from '../../services/costEstimator';
 import ModelCollapseRiskDial from '../ModelCollapseRiskDial/ModelCollapseRiskDial';
 import { DataSchema, SyntheticDataResult } from '../../types/schema';
 import { productionZKProofService, ProductionZKProofInput, ProductionZKProof } from '../../services/zksnark/productionZKProofService';
@@ -42,6 +43,10 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
   const [cleanBeforeDownload, setCleanBeforeDownload] = useState<boolean>(false);
   const [cleaningReport, setCleaningReport] = useState<CleaningReport | null>(null);
   const [isCleaning, setIsCleaning] = useState<boolean>(false);
+  const [autoTighten, setAutoTighten] = useState<boolean>(true);
+  const [driftAlert, setDriftAlert] = useState<string | null>(null);
+  const [useAgo, setUseAgo] = useState<boolean>(false);
+  const [useHarm432, setUseHarm432] = useState<boolean>(false);
 
   // Volume control for generation
   const [generationVolume, setGenerationVolume] = useState<number>(schema.targetVolume);
@@ -268,6 +273,8 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
             const total: number = Math.max(1, d.total || 1000);
             const batchSize: number = Math.max(50, d.batchSize || 500);
             const sampleMax: number = Math.max(50, d.sampleMax || 200);
+            const useAgo: boolean = !!d.useAgo;
+            const useHarm432: boolean = !!d.useHarm432;
             const epsilon = schema?.privacySettings?.epsilon ?? 0.1;
             const fields = (schema.fields || []).map((f: any) => f.name);
             function ns(eps: number) { const s = 1 / Math.max(eps, 0.01); return Math.min(Math.max(s, 0.1), 5); }
@@ -283,6 +290,14 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
               const n = Math.min(batchSize, total - generated);
               for (let i=0;i<n;i++){
                 const rec: any = {}; for (const f of schema.fields) rec[f.name]=gv(f,seedData,epsilon);
+                if (useAgo) {
+                  const phase = (generated+i) % 3;
+                  for (const k of Object.keys(rec)) { const v = rec[k]; if (typeof v==='number') { if (phase===0) rec[k]=v*1.05; else if (phase===2) rec[k]=v*0.95; } }
+                }
+                if (useHarm432) {
+                  const knum = fields.find(fn=> typeof rec[fn] === 'number');
+                  if (knum) { const base = Number(rec[knum])||0; rec[knum] = base + 0.02*Math.sin(2*Math.PI*((generated+i)/50)); }
+                }
                 sample.push(rec); if (sample.length>sampleMax) sample.splice(0,sample.length-sampleMax);
                 const frag = JSON.stringify(rec); if(!first) jsonParts.push(','); jsonParts.push(frag); first=false;
                 const csvVals = fields.map(fn=>{ const v=rec[fn]; if(v===null||v===undefined) return ''; if(typeof v==='object') return '"'+JSON.stringify(v).replace(/"/g,'""')+'"'; return '"'+String(v).replace(/"/g,'""')+'"'; }); csvRows.push(csvVals.join(','));
@@ -321,14 +336,26 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
               setFinalCsvBlob(null);
             }
             // Optional post-generation cleaning (outside recipes)
-            if (cleanBeforeDownload) {
+            if (cleanBeforeDownload || autoTighten) {
               try {
                 setIsCleaning(true);
                 const raw = jsonText ? JSON.parse(jsonText) : [];
+                // drift detection
+                const metrics = detectDrift(seedData, raw);
+                if (autoTighten && (metrics.uniqueness < 0.9 || metrics.entropy < 0.6)) {
+                  setDriftAlert(`Auto-tighten applied (uniqueness ${Math.round(metrics.uniqueness*100)}%, entropy ${Math.round(metrics.entropy*100)}%)`);
+                }
+                // Prefer user-chosen IQR k from Autopilot if present
+                let k = (autoTighten && (metrics.uniqueness < 0.9 || metrics.entropy < 0.6)) ? 1.2 : 1.5;
+                try {
+                  const s = localStorage.getItem('aeg_cleaning_iqrk');
+                  const n = s ? parseFloat(s) : NaN;
+                  if (Number.isFinite(n) && n > 0.5 && n < 5) k = n;
+                } catch {}
                 const { cleaned, report } = cleanSyntheticData(raw, schema, {
                   enforceSchema: true,
                   dedupe: true,
-                  outliers: { method: 'iqr', k: 1.5 },
+                  outliers: { method: 'iqr', k },
                   text: { trim: true, normalizeWhitespace: true },
                   dates: { iso8601: true },
                 });
@@ -374,7 +401,7 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
             w.terminate();
           }
         };
-        w.postMessage({ cmd:'start', seedData, schema, total: targetRecords, batchSize, sampleMax });
+        w.postMessage({ cmd:'start', seedData, schema, total: targetRecords, batchSize, sampleMax, useAgo, useHarm432 });
         return;
       }
       // Fallback inline small-volume path
@@ -417,12 +444,23 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
       try {
         let recordsForArtifacts = allRecords;
         // Optional post-gen cleaning path for small volumes
-        if (cleanBeforeDownload && allRecords.length > 0) {
+        if ((cleanBeforeDownload || autoTighten) && allRecords.length > 0) {
           setIsCleaning(true);
+          const dm = detectDrift(seedData, allRecords);
+          if (autoTighten && (dm.uniqueness < 0.9 || dm.entropy < 0.6)) {
+            setDriftAlert(`Auto-tighten applied (uniqueness ${Math.round(dm.uniqueness*100)}%, entropy ${Math.round(dm.entropy*100)}%)`);
+          }
+          // Prefer user-chosen IQR k from Autopilot if present
+          let kk = (autoTighten && (dm.uniqueness < 0.9 || dm.entropy < 0.6)) ? 1.2 : 1.5;
+          try {
+            const s = localStorage.getItem('aeg_cleaning_iqrk');
+            const n = s ? parseFloat(s) : NaN;
+            if (Number.isFinite(n) && n > 0.5 && n < 5) kk = n;
+          } catch {}
           const { cleaned, report } = cleanSyntheticData(allRecords, schema, {
             enforceSchema: true,
             dedupe: true,
-            outliers: { method: 'iqr', k: 1.5 },
+            outliers: { method: 'iqr', k: kk },
             text: { trim: true, normalizeWhitespace: true },
             dates: { iso8601: true },
           });
@@ -454,6 +492,8 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
 
       // Persist dataset (best-effort)
       try {
+        const offline = (localStorage.getItem('aeg_offline')==='1');
+        if (!offline) {
         await fetch('/api/record-dataset', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -465,13 +505,14 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
             metadata: {
               epsilon: schema.privacySettings.epsilon,
               synthetic_ratio: schema.privacySettings.syntheticRatio,
-              cleaned: cleanBeforeDownload || undefined,
+              cleaned: (cleanBeforeDownload || autoTighten) || undefined,
               cleaning_report: cleaningReport || undefined
             }
           })
         });
+        }
         // If we cleaned post-fact, record a second entry for cleaned artifacts
-        if (cleanBeforeDownload && cleaningReport) {
+        if (!offline && (cleanBeforeDownload || autoTighten) && cleaningReport) {
           await fetch('/api/record-dataset', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -507,6 +548,32 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
         record[field.name] = generateFieldValue(field, seedData);
       });
       
+      // AGO-guided tweak: mild variance warm/cool by phase
+      if (useAgo) {
+        const phase = i % 3; // A/G/O cycle
+        for (const k of Object.keys(record)) {
+          const v = record[k];
+          if (typeof v === 'number') {
+            let factorWarm = 1.05, factorCool = 0.95;
+            try { const wt = parseFloat(localStorage.getItem('aeg_ago_weight')||'NaN'); if (Number.isFinite(wt)) { const d = 0.02 + 0.05*wt; factorWarm = 1 + d; factorCool = 1 - d; } } catch {}
+            if (phase===0) record[k] = v * factorWarm; // warm
+            else if (phase===2) record[k] = v * factorCool; // cool
+          }
+        }
+      }
+
+      // 432 harmonic nudge: small periodic modulation on first numeric
+      if (useHarm432) {
+        const keys = Object.keys(record);
+        const k = keys.find(kk => typeof record[kk] === 'number');
+        if (k) {
+          const base = Number(record[k])||0;
+          let w = 0.02;
+          try { const wt = parseFloat(localStorage.getItem('aeg_432_weight')||'NaN'); if (Number.isFinite(wt)) w = 0.01 + 0.05*wt; } catch {}
+          record[k] = base + w * Math.sin(2*Math.PI*(i/50));
+        }
+      }
+
       batch.push(record);
     }
     
@@ -669,6 +736,34 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
     return 0.8; // Default similarity for numeric distributions
   };
 
+  // Drift/collapse detection helpers
+  const detectDrift = (seed: any[], synth: any[]) => {
+    const n = Math.max(1, synth.length);
+    const unique = new Set(synth.map((r) => JSON.stringify(r))).size;
+    const uniqueRatio = unique / n;
+    const entropy = approxEntropy(synth);
+    return { uniqueness: uniqueRatio, entropy };
+  };
+
+  const approxEntropy = (data: any[]): number => {
+    if (data.length === 0) return 0;
+    const keys = Object.keys(data[0] || {}).slice(0, 8);
+    const ent: number[] = [];
+    for (const k of keys) {
+      const vals = data.map((r) => r[k]).filter((v) => typeof v === 'string' || typeof v === 'boolean');
+      if (vals.length < 2) continue;
+      const freq: Record<string, number> = {};
+      for (const v of vals) freq[String(v)] = (freq[String(v)] || 0) + 1;
+      const total = vals.length;
+      const probs = Object.values(freq).map((c) => c / total);
+      const H = -probs.reduce((a, p) => a + (p > 0 ? p * Math.log2(p) : 0), 0);
+      const Hnorm = Object.keys(freq).length > 1 ? H / Math.log2(Object.keys(freq).length) : 0;
+      ent.push(Hnorm);
+    }
+    if (ent.length === 0) return 0;
+    return ent.reduce((a, b) => a + b, 0) / ent.length;
+  };
+
   // Replace the download handler with a pure JS solution
   const handleDownload = () => {
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(generatedData, null, 2));
@@ -746,12 +841,23 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
       {/* Generation Settings */}
       <div className="bg-white rounded-lg shadow-lg p-6">
         <h2 className="text-2xl font-bold text-gray-800 mb-4">🎯 Generation Settings</h2>
+        {/* Estimator chips */}
+        <div className="mb-2 text-xs text-gray-600 flex flex-wrap gap-3">
+          <span className="px-2 py-1 border rounded">Est. generation latency: {Math.round((estimateStep('generation', { records: generationVolume }).latencyMs||0))} ms • $0</span>
+          <span className="px-2 py-1 border rounded">Est. cleaning latency: {Math.round((estimateStep('cleaning', { records: generationVolume }).latencyMs||0))} ms • $0</span>
+        </div>
         <div className="mb-3 text-sm text-gray-700 flex items-center gap-3">
           <label className="flex items-center gap-2"><input type="checkbox" checked={cleanBeforeDownload} onChange={(e)=>setCleanBeforeDownload(e.target.checked)} /> Clean synthetic before download</label>
+        <label className="flex items-center gap-2"><input type="checkbox" checked={autoTighten} onChange={(e)=>setAutoTighten(e.target.checked)} /> Auto‑tighten if drift/collapse detected</label>
+          <label className="flex items-center gap-2"><input type="checkbox" checked={useAgo} onChange={(e)=>{ setUseAgo(e.target.checked); try{ localStorage.setItem('aeg_use_ago', e.target.checked?'1':'0'); }catch{} }} /> AGO‑guided generation</label>
+          <label className="flex items-center gap-2"><input type="checkbox" checked={useHarm432} onChange={(e)=>{ setUseHarm432(e.target.checked); try{ localStorage.setItem('aeg_use_432', e.target.checked?'1':'0'); }catch{} }} /> 432 harmonic regularizer</label>
           {isCleaning && <span className="text-xs text-blue-700">Cleaning…</span>}
           {cleaningReport && (
             <span className="text-xs text-gray-500">Cleaned: removed {cleaningReport.rowsRemoved}, dedup {cleaningReport.duplicatesRemoved}, outliers {cleaningReport.outliersCapped}</span>
           )}
+        {driftAlert && (
+          <span className="text-xs text-amber-700">{driftAlert}</span>
+        )}
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">

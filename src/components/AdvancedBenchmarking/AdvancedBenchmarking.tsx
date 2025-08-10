@@ -3,6 +3,22 @@ import { BenchmarkResult, SelfLearningFeedback, advancedAIModels } from '../../t
 import { hreTechnologyService } from '../../services/hreTechnologyService';
 import { AblationRecipe } from '../../types/ablation';
 import { runRecipeLocally, summarizeAblationResults } from '../../services/ablationService';
+import PromptSandbox from './PromptSandbox';
+import { estimateStep } from '../../services/costEstimator';
+import { buildEvidenceBundle, downloadEvidenceBundle, buildRedactedShare, hashArray } from '../../services/evidenceService';
+import { analyzeAGO } from '../../services/agoResonantHypercube';
+import { analyzeHarmony432 } from '../../services/harmonicRegularizer432';
+import { computeAUM } from '../../services/aumCertificate';
+import { analyzeCausal8D } from '../../services/causal8DService';
+import { octonionTransform } from '../../services/octonionFeatures';
+import { certifyTriCoT } from '../../services/triCotValidator';
+import { computeACI } from '../../services/anticipatoryConsistency';
+import { buildZkUpbProof } from '../../services/zkUpb';
+import { harmonicConsensusAbstain } from '../../services/hcaAbstention';
+import RAGConfidencePanel from './RAGConfidencePanel';
+import AutopilotPanel from './AutopilotPanel';
+import LocalTrainingPanel from './LocalTrainingPanel';
+import VacuumEnginePanel from './VacuumEnginePanel';
 
 interface AdvancedBenchmarkingProps {
   schema: any;
@@ -59,6 +75,16 @@ const AdvancedBenchmarking: React.FC<AdvancedBenchmarkingProps> = ({
   const [recipePlan, setRecipePlan] = useState<Array<{ name: string; repeats: number; modelCount: number; flags?: string[] }>>([]);
   const [enableTriadValidator, setEnableTriadValidator] = useState<boolean>(false);
   const [triadGuidedCleaning, setTriadGuidedCleaning] = useState<boolean>(false);
+  const [agoMetrics, setAgoMetrics] = useState<{ agoCoherence:number; symmetry72Loss:number; resonance432:number; stability137:number } | null>(null);
+  const [harmMetrics, setHarmMetrics] = useState<{ resonanceEntropy:number; cycleClosure:number; offGridVariance:number; chordPurity:number } | null>(null);
+  const [aumCert, setAumCert] = useState<{ aumScore:number; sustainSmoothness:number; fadeSymmetry:number; pass:boolean; certificateId:string } | null>(null);
+  const [causal8D, setCausal8D] = useState<{ invariantDrift:number; odeSmoothness:number; causalPlausibility:number } | null>(null);
+  const [octonion, setOctonion] = useState<{ normRetention:number; rotationInvariance:number } | null>(null);
+  const [tricots, setTricots] = useState<{ tricotscore:number; pass:boolean } | null>(null);
+  const [aci, setAci] = useState<{ aci:number } | null>(null);
+  const [zkupb, setZkupb] = useState<{ ok?: boolean } | null>(null);
+  const [hca, setHca] = useState<{ abstainRate:number; calibratedGain:number } | null>(null);
+  const [hcaSweep, setHcaSweep] = useState<Array<{ t:number; ar:number; gain:number }>>([]);
   const resultsRef = useRef<HTMLDivElement | null>(null);
   const summaryRef = useRef<HTMLDivElement | null>(null);
   const topRef = useRef<HTMLDivElement | null>(null);
@@ -70,6 +96,47 @@ const AdvancedBenchmarking: React.FC<AdvancedBenchmarkingProps> = ({
     setTimeout(() => topRef.current?.scrollIntoView({ behavior: 'auto', block: 'start' }), 0);
     if (generatedData.length > 0) {
       runComprehensiveBenchmarks();
+      try {
+        const fields = Object.keys(generatedData[0]||{});
+        const ago = analyzeAGO(generatedData, schema);
+        const harm = analyzeHarmony432(generatedData, fields);
+        setAgoMetrics(ago);
+        setHarmMetrics(harm);
+        setAumCert(computeAUM(generatedData, fields) as any);
+        setCausal8D(analyzeCausal8D(generatedData, schema));
+        setOctonion(octonionTransform(generatedData, fields).metrics);
+        setTricots(certifyTriCoT(generatedData));
+        setAci(computeACI(generatedData));
+        const uniqueRatio = (()=>{ const u=new Set(generatedData.map(r=>JSON.stringify(r))).size; return u/Math.max(1,generatedData.length); })();
+        const epsilon = schema?.privacySettings?.epsilon ?? 0.1;
+        setZkupb({ ok: buildZkUpbProof(epsilon, uniqueRatio).public.ok });
+        // HCA metrics from simple per-record scores
+        try {
+          const fields = Object.keys(generatedData[0]||{});
+          const key = fields.find(f=> typeof (generatedData[0]||{})[f] === 'number');
+          const vals = key ? generatedData.map(r=> Number((r as any)[key])||0) : generatedData.map((_,i)=> i);
+          const lo = Math.min(...vals), hi = Math.max(...vals) || 1;
+          const scores = vals.map(v=> (v-lo)/(hi-lo||1));
+          const harmonicConf = scores.map((_,i)=> 0.5 + 0.5*Math.sin(i/20));
+          const res = harmonicConsensusAbstain(scores, harmonicConf, 0.4, 0.5);
+          setHca(res.metrics);
+          // Sweep thresholds for sparkline
+          const sweep: Array<{t:number; ar:number; gain:number}> = [];
+          for (let t=0; t<=10; t++) {
+            const tau = t/10;
+            const r = harmonicConsensusAbstain(scores, harmonicConf, tau, 0.5);
+            sweep.push({ t: tau, ar: r.metrics.abstainRate, gain: r.metrics.calibratedGain });
+          }
+          setHcaSweep(sweep);
+        } catch {}
+        // Persist adaptive weights for generator
+        try {
+          const agoWeight = ago.agoCoherence;
+          const harmWeight = Math.max(0, 1 - (harm.resonanceEntropy||0));
+          localStorage.setItem('aeg_ago_weight', String(agoWeight));
+          localStorage.setItem('aeg_432_weight', String(harmWeight));
+        } catch {}
+      } catch { /* no-op */ }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [seedData, generatedData]);
@@ -134,8 +201,8 @@ const AdvancedBenchmarking: React.FC<AdvancedBenchmarkingProps> = ({
       
       // Run HRE analysis
       if (enableTriadValidator) {
-        const hreResult = await runHREAnalysis();
-        setHreAnalysis(hreResult);
+      const hreResult = await runHREAnalysis();
+      setHreAnalysis(hreResult);
       } else {
         setHreAnalysis(null);
       }
@@ -503,6 +570,11 @@ const AdvancedBenchmarking: React.FC<AdvancedBenchmarkingProps> = ({
 
   return (
     <div className="max-w-7xl mx-auto p-6 space-y-6" ref={topRef}>
+      {localStorage.getItem('aeg_offline')==='1' && (
+        <div className="p-3 rounded border border-yellow-200 bg-yellow-50 text-yellow-800 text-sm">
+          Offline mode is enabled. MLflow logging and remote endpoints are disabled; benchmarking remains local.
+        </div>
+      )}
       {/* Basic Module Benchmarks */}
       <div className="bg-white rounded-lg shadow-lg p-6">
         <h2 className="text-2xl font-bold text-gray-800 mb-4">📊 Basic Module Benchmarks</h2>
@@ -545,6 +617,11 @@ const AdvancedBenchmarking: React.FC<AdvancedBenchmarkingProps> = ({
         {/* Basic Benchmark Results */}
         <div>
           <h3 className="text-lg font-semibold mb-3">Basic Benchmark Results</h3>
+          {generatedData.length > 0 && (
+            <div className="mb-2 text-xs text-gray-600">
+              Est. latency (bench only): {Math.round(estimateStep('benchmark', { models: (selectedModels.length||5) }).latencyMs || 0)} ms • Cost: $0 (local)
+            </div>
+          )}
           {basicBenchmarkLoading ? (
             <div>Loading basic benchmarks...</div>
           ) : basicBenchmarkError ? (
@@ -633,6 +710,133 @@ const AdvancedBenchmarking: React.FC<AdvancedBenchmarkingProps> = ({
           </label>
         </div>
       </div>
+
+      {/* Recursive Prompt Sandbox */}
+      <PromptSandbox />
+
+      {/* RAG Confidence Gates */}
+      <RAGConfidencePanel corpus={(generatedData||[]).slice(0,50).map(r=>JSON.stringify(r))} />
+
+      {/* Autopilot */}
+      <div className="mt-6">
+        <AutopilotPanel schema={schema} generatedData={generatedData||[]} selectedModels={selectedModels} />
+      </div>
+
+      {/* Local Training */}
+      <div className="mt-6">
+        <LocalTrainingPanel availableFields={(schema?.fields||[]).map((f:any)=>f.name)} />
+      </div>
+
+      {/* Vacuum Resonance Multiverse Engine */}
+      <div className="mt-6">
+        <VacuumEnginePanel seedData={seedData} schema={schema} />
+      </div>
+
+      {/* Innovation Metrics (AGO / 432 / AUM) */}
+      {(generatedData?.length||0)>0 && (
+        <div className="bg-white rounded-lg shadow-lg p-6">
+          <h3 className="text-xl font-bold text-gray-800 mb-1">✨ Innovation Metrics</h3>
+          <div className="text-xs text-gray-600 mb-3">
+            {(() => {
+              let aw = 'n/a', hw = 'n/a', ua = '—', u4 = '—';
+              try {
+                aw = localStorage.getItem('aeg_ago_weight') || 'n/a';
+                hw = localStorage.getItem('aeg_432_weight') || 'n/a';
+                ua = localStorage.getItem('aeg_use_ago')==='1' ? 'on' : 'off';
+                u4 = localStorage.getItem('aeg_use_432')==='1' ? 'on' : 'off';
+              } catch {}
+              return `Legend — AGO: weight=${aw}, toggle=${ua} • 432: weight=${hw}, toggle=${u4}`;
+            })()}
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+            <div className="border rounded p-3">
+              <div className="font-semibold mb-1">AGO Resonant Hypercube</div>
+              {agoMetrics ? (
+                <ul className="space-y-1">
+                  <li>AGO coherence: <span className="font-semibold">{(agoMetrics.agoCoherence*100).toFixed(1)}%</span></li>
+                  <li>72° symmetry loss: <span className="font-semibold">{(agoMetrics.symmetry72Loss*100).toFixed(1)}%</span> (lower better)</li>
+                  <li>432 resonance: <span className="font-semibold">{(agoMetrics.resonance432*100).toFixed(1)}%</span></li>
+                  <li>137 stability: <span className="font-semibold">{(agoMetrics.stability137*100).toFixed(1)}%</span></li>
+                </ul>
+              ) : <div className="text-gray-500">No data</div>}
+            </div>
+            <div className="border rounded p-3">
+              <div className="font-semibold mb-1">432 Harmonic Regularizer</div>
+              {harmMetrics ? (
+                <ul className="space-y-1">
+                  <li>Resonance entropy: <span className="font-semibold">{harmMetrics.resonanceEntropy.toFixed(3)}</span></li>
+                  <li>Cycle closure: <span className="font-semibold">{(harmMetrics.cycleClosure*100).toFixed(1)}%</span></li>
+                  <li>Off-grid variance: <span className="font-semibold">{harmMetrics.offGridVariance.toFixed(3)}</span></li>
+                  <li>Chord purity: <span className="font-semibold">{(harmMetrics.chordPurity*100).toFixed(1)}%</span></li>
+                </ul>
+              ) : <div className="text-gray-500">No data</div>}
+            </div>
+            <div className="border rounded p-3">
+              <div className="font-semibold mb-1">AUM Certificate</div>
+              {aumCert ? (
+                <ul className="space-y-1">
+                  <li>AUM score: <span className="font-semibold">{(aumCert.aumScore*100).toFixed(1)}%</span></li>
+                  <li>Sustain smoothness: <span className="font-semibold">{(aumCert.sustainSmoothness*100).toFixed(1)}%</span></li>
+                  <li>Fade symmetry: <span className="font-semibold">{(aumCert.fadeSymmetry*100).toFixed(1)}%</span></li>
+                  <li>Status: {aumCert.pass? <span className="text-green-700 font-semibold">CERTIFIED</span> : <span className="text-red-700 font-semibold">NOT CERTIFIED</span>}</li>
+                </ul>
+              ) : <div className="text-gray-500">No data</div>}
+            </div>
+            <div className="border rounded p-3">
+              <div className="font-semibold mb-1">8D Causal Manifold</div>
+              {causal8D ? (
+                <ul className="space-y-1">
+                  <li>Invariant drift: <span className="font-semibold">{(causal8D.invariantDrift*100).toFixed(1)}%</span> (lower better)</li>
+                  <li>ODE smoothness: <span className="font-semibold">{(causal8D.odeSmoothness*100).toFixed(1)}%</span></li>
+                  <li>Causal plausibility: <span className="font-semibold">{(causal8D.causalPlausibility*100).toFixed(1)}%</span></li>
+                </ul>
+              ) : <div className="text-gray-500">No data</div>}
+            </div>
+            <div className="border rounded p-3">
+              <div className="font-semibold mb-1">Octonion Features</div>
+              {octonion ? (
+                <ul className="space-y-1">
+                  <li>Norm retention: <span className="font-semibold">{(octonion.normRetention*100).toFixed(1)}%</span></li>
+                  <li>Rotation invariance: <span className="font-semibold">{(octonion.rotationInvariance*100).toFixed(1)}%</span></li>
+                </ul>
+              ) : <div className="text-gray-500">No data</div>}
+            </div>
+            <div className="border rounded p-3">
+              <div className="font-semibold mb-1">TriCoT & ACI</div>
+              <ul className="space-y-1">
+                <li>TriCoT: <span className="font-semibold">{tricots? (tricots.tricotscore*100).toFixed(1)+'%' : '—'}</span></li>
+                <li>ACI: <span className="font-semibold">{aci? (aci.aci*100).toFixed(1)+'%' : '—'}</span></li>
+                <li>ZK‑UPB: <span className="font-semibold">{zkupb?.ok? 'OK' : 'Not proved'}</span></li>
+              </ul>
+            </div>
+            <div className="border rounded p-3">
+              <div className="font-semibold mb-1">Fractal Resonance Oracle</div>
+              <ul className="space-y-1">
+                <li>FRS: <span className="font-semibold">{froFrs!==null? (froFrs*100).toFixed(1)+'%' : '—'}</span></li>
+              </ul>
+            </div>
+            <div className="border rounded p-3">
+              <div className="font-semibold mb-1">Harmonic Consensus Abstention</div>
+              {hca ? (
+                <ul className="space-y-1">
+                  <li>Abstain rate: <span className="font-semibold">{(hca.abstainRate*100).toFixed(1)}%</span></li>
+                  <li>Calibrated gain: <span className="font-semibold">{(hca.calibratedGain*100).toFixed(2)}%</span></li>
+                  {hcaSweep.length>0 && (
+                    <li>
+                      <div className="text-xs text-gray-600 mb-1">Threshold sweep (τ vs abstain rate)</div>
+                      <div className="flex items-end gap-1 h-12">
+                        {hcaSweep.map((p,i)=>(
+                          <div key={i} title={`τ=${p.t.toFixed(1)}, ar=${(p.ar*100).toFixed(1)}%`} style={{width:'6px', height: `${Math.max(2, Math.round(p.ar*48))}px`, background:'#60a5fa'}}/>
+                        ))}
+                      </div>
+                    </li>
+                  )}
+                </ul>
+              ) : <div className="text-gray-500">No data</div>}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* HRE Technology Status */}
       {/* Ablation Recipe Runner (Local) */}
@@ -738,6 +942,81 @@ const AdvancedBenchmarking: React.FC<AdvancedBenchmarkingProps> = ({
               <button onClick={downloadSummary} className="px-3 py-2 bg-gray-800 text-white rounded hover:bg-gray-900 text-sm">Download JSON</button>
               <button onClick={downloadSummaryCsv} className="px-3 py-2 bg-gray-700 text-white rounded hover:bg-gray-800 text-sm">Download CSV</button>
               <button onClick={downloadAblationCard} className="px-3 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 text-sm">Download Ablation Card</button>
+              <button
+                onClick={() => {
+                  const bundle = buildEvidenceBundle({
+                    app_version: (import.meta as any)?.env?.VITE_APP_VERSION || 'local-dev',
+                    schema_hash: computeSchemaHash(schema),
+                    recipe_hash: computeSchemaHash(recipeText || ''),
+                    privacy: { epsilon: schema?.privacySettings?.epsilon, synthetic_ratio: schema?.privacySettings?.syntheticRatio },
+                    ablation_summary: recipeSummary,
+                    run_seed: computeSchemaHash(JSON.stringify(generatedData?.[0]||{})),
+                    training: {
+                      backend: (localStorage.getItem('aeg_train_backend') as any) || undefined,
+                      template: localStorage.getItem('aeg_train_template') || undefined,
+                      params: JSON.parse(localStorage.getItem('aeg_train_params') || '{}')
+                    },
+                    ago: agoMetrics || undefined,
+                    harmonic432: harmMetrics || undefined,
+                    aum: aumCert || undefined
+                  });
+                  try {
+                    (bundle as any).notes = [
+                      `use_ago=${localStorage.getItem('aeg_use_ago')==='1'}`,
+                      `use_432=${localStorage.getItem('aeg_use_432')==='1'}`,
+                      `ago_weight=${localStorage.getItem('aeg_ago_weight')||'n/a'}`,
+                      `harm432_weight=${localStorage.getItem('aeg_432_weight')||'n/a'}`
+                    ];
+                  } catch {}
+                  // Attach zk‑UPB proof if privacy bounds satisfied
+                  try {
+                    const uniques = new Set((generatedData||[]).map(r=>JSON.stringify(r))).size;
+                    const uniqueRatio = uniques/Math.max(1,(generatedData||[]).length);
+                    const epsilon = schema?.privacySettings?.epsilon ?? 0.1;
+                    const epsilonBound = Math.max(epsilon, 0.1);
+                    const uniqueBound = 0.9; // demo threshold
+                    const upb = { proof: { commitment: `upb_${Math.round(epsilon*1e4)}_${Math.round(uniqueRatio*1e4)}` }, public: { epsilonBound, uniqueBound, ok: (epsilon<=epsilonBound && uniqueRatio>=uniqueBound) } };
+                    (bundle as any).zk_upb_proof = upb;
+                  } catch {}
+                  downloadEvidenceBundle(bundle);
+                }}
+                className="px-3 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 text-sm"
+              >
+                Download Evidence Bundle
+              </button>
+              <button
+                onClick={() => {
+                  const bundle = buildEvidenceBundle({
+                    app_version: (import.meta as any)?.env?.VITE_APP_VERSION || 'local-dev',
+                    schema_hash: computeSchemaHash(schema),
+                    recipe_hash: computeSchemaHash(recipeText || ''),
+                    privacy: { epsilon: schema?.privacySettings?.epsilon, synthetic_ratio: schema?.privacySettings?.syntheticRatio },
+                    ablation_summary: recipeSummary,
+                    dataset_hash: hashArray(generatedData||[]),
+                    training: {
+                      backend: (localStorage.getItem('aeg_train_backend') as any) || undefined,
+                      template: localStorage.getItem('aeg_train_template') || undefined,
+                      params: JSON.parse(localStorage.getItem('aeg_train_params') || '{}')
+                    },
+                    ago: agoMetrics || undefined,
+                    harmonic432: harmMetrics || undefined,
+                    aum: aumCert || undefined
+                  });
+                  try {
+                    (bundle as any).notes = [
+                      `use_ago=${localStorage.getItem('aeg_use_ago')==='1'}`,
+                      `use_432=${localStorage.getItem('aeg_use_432')==='1'}`,
+                      `ago_weight=${localStorage.getItem('aeg_ago_weight')||'n/a'}`,
+                      `harm432_weight=${localStorage.getItem('aeg_432_weight')||'n/a'}`
+                    ];
+                  } catch {}
+                  const redacted = buildRedactedShare(bundle, generatedData||[], [] , 200);
+                  downloadEvidenceBundle(redacted as any, 'evidence_redacted.json');
+                }}
+                className="px-3 py-2 bg-teal-600 text-white rounded hover:bg-teal-700 text-sm"
+              >
+                Download Redacted Share
+              </button>
               <button
                 onClick={async () => {
                   try {

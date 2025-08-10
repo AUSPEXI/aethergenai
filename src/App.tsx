@@ -172,7 +172,7 @@ function App() {
 
   return (
     <Layout>
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen">
         {/* Platform Subheader (paywalled) */}
         {canAccessPlatform && (
           <div className="bg-white shadow-sm border-b">

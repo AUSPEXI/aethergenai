@@ -17,8 +17,8 @@
 /* CRITICAL: Prevent flashing while preserving all styling */
 @layer base {
   html {
-    background: #f3f4f6 !important;
-    color: #111827 !important;
+    background: linear-gradient(180deg, #020617 0%, #0b1220 40%, #020617 100%) !important;
+    color: #e5e7eb !important;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
       'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif !important;
     -webkit-font-smoothing: antialiased !important;
@@ -32,8 +32,8 @@
   body {
     margin: 0 !important;
     padding: 0 !important;
-    background: #f3f4f6 !important;
-    color: #111827 !important;
+    background: transparent !important;
+    color: #e5e7eb !important;
     min-height: 100vh !important;
     overflow-x: hidden !important;
     width: 100% !important;
@@ -41,7 +41,7 @@
 
   #root {
     min-height: 100vh !important;
-    background: #f3f4f6 !important;
+    background: transparent !important;
     margin: 0 !important;
     padding: 0 !important;
     width: 100% !important;

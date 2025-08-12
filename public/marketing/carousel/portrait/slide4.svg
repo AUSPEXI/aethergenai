@@ -1,0 +1,11 @@
+<svg width="1080" height="1350" viewBox="0 0 1080 1350" xmlns="http://www.w3.org/2000/svg">
+  <defs><linearGradient id="bgp4" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#0b1020"/><stop offset="100%" stop-color="#0a1a3a"/></linearGradient></defs>
+  <rect width="1080" height="1350" fill="url(#bgp4)"/>
+  <text x="70" y="220" fill="#ffffff" font-size="76" font-weight="800">Healthcare Claims Fraud—minutes, not weeks</text>
+  <text x="70" y="340" fill="#cbd5e1" font-size="44">• Configurable prevalence (default 3%)</text>
+  <text x="70" y="400" fill="#cbd5e1" font-size="44">• Patterns: upcoding, unbundling, phantom, duplicate</text>
+  <text x="70" y="460" fill="#cbd5e1" font-size="44">• Baseline model + ROC/PR; Delta table ready</text>
+  <text x="70" y="1270" fill="#10b981" font-size="40" font-weight="700">Try the Model Lab →</text>
+</svg>
+
+

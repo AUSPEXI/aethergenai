@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Hide scrollbars for horizontal nav overflow on mobile */
+.scrollbar-none::-webkit-scrollbar { display: none; }
+.scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+
 /* Brand utilities */
 .neon-card {
   box-shadow: 0 0 0 1px rgba(16,185,129,0.3), 0 10px 30px rgba(16,185,129,0.15), inset 0 0 40px rgba(59,130,246,0.08);

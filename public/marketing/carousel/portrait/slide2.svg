@@ -1,0 +1,12 @@
+<svg width="1080" height="1350" viewBox="0 0 1080 1350" xmlns="http://www.w3.org/2000/svg">
+  <defs><linearGradient id="bgp2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#0b1020"/><stop offset="100%" stop-color="#0a1a3a"/></linearGradient></defs>
+  <rect width="1080" height="1350" fill="url(#bgp2)"/>
+  <text x="70" y="220" fill="#ffffff" font-size="76" font-weight="800">Evidence‑led, privacy‑preserving training</text>
+  <text x="70" y="300" fill="#34d399" font-size="52" font-weight="800">Databricks‑ready</text>
+  <text x="70" y="420" fill="#cbd5e1" font-size="44">• Generate high‑fidelity synthetic data</text>
+  <text x="70" y="480" fill="#cbd5e1" font-size="44">• Train specialized models fast</text>
+  <text x="70" y="540" fill="#cbd5e1" font-size="44">• Evidence bundle + model card</text>
+  <text x="70" y="1270" fill="#10b981" font-size="40" font-weight="700">Pipeline: Generate → Train → Evidence → Publish (Delta)</text>
+</svg>
+
+

@@ -92,19 +92,20 @@ const LandingPage: React.FC = () => {
   return (
     <div className="text-white">
       {/* Hero */}
-      <section className="max-w-7xl mx-auto px-6 pt-16 pb-10 text-center">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 pt-16 pb-10 text-center">
         <div className="inline-flex items-center gap-2 rounded-2xl px-4 py-1 text-sm bg-emerald-900/30 text-emerald-300 mb-4 neon-ring">
           <Sparkles size={16} /> Evidence‑led. Privacy‑preserving. Databricks‑ready.
         </div>
-        <h1 className="text-4xl md:text-6xl font-extrabold leading-tight tracking-tight mb-4">
+        <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold leading-tight tracking-tight mb-4">
           Unlock the Future of AI Training: AethergenAI – Evidence‑Led Synthetic Data & Models
         </h1>
         <p className="text-slate-300 max-w-3xl mx-auto mb-8">
           Generate high‑fidelity datasets, build specialised models, and optimise with Autopilot—faster, safer, and at a fraction of the cost. Designed for regulated industries, powered by 10 innovations. In a world where AI scaling hits limits, AethergenAI empowers you to innovate without the hefty price tag.
         </p>
-        <div className="flex flex-wrap gap-4 justify-center">
-          <CTAButton label="Explore Resources →" tab="resources" variant="secondary" />
-          <CTAButton label="View Pricing" tab="pricing" />
+        <div className="flex flex-wrap gap-3 sm:gap-4 justify-center">
+          <div className="w-full sm:w-auto"><CTAButton label="Explore Resources →" tab="resources" variant="secondary" /></div>
+          <div className="w-full sm:w-auto"><CTAButton label="View Pricing" tab="pricing" /></div>
+          <div className="w-full sm:w-auto"><CTAButton label="Launch Platform" tab="account" variant="secondary" /></div>
         </div>
       </section>
 

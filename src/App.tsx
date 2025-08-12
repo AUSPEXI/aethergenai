@@ -13,6 +13,7 @@ import LandingPage from './components/Marketing/LandingPage';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
 import NotFound from './pages/NotFound';
+import ModelLab from './components/ModelLab/ModelLab';
 import { assertSupabase } from './services/supabaseClient';
 import { getEntitlements, hasPlatformAccess, Entitlement } from './services/entitlementsClient';
 import { DataSchema, SchemaField, ValidationResult, SyntheticDataResult } from './types/schema';
@@ -25,7 +26,7 @@ function App() {
   const [validationResult, setValidationResult] = useState<ValidationResult | null>(null);
   const [generationResult, setGenerationResult] = useState<SyntheticDataResult | null>(null);
   const [totalGeneratedLastRun, setTotalGeneratedLastRun] = useState<number>(0);
-  type RouteTab = 'home' | 'upload' | 'design' | 'generate' | 'advanced' | 'privacy-metrics' | 'reporting' | 'resources' | 'pricing' | 'account' | 'privacy' | 'terms';
+  type RouteTab = 'home' | 'upload' | 'design' | 'generate' | 'advanced' | 'privacy-metrics' | 'reporting' | 'resources' | 'pricing' | 'account' | 'privacy' | 'terms' | 'modellab';
   const [activeTab, setActiveTab] = useState<RouteTab>('home');
   // Add privacy settings to app state
   const [privacySettings, setPrivacySettings] = useState({
@@ -141,7 +142,7 @@ function App() {
   const tabToHash = (tab: RouteTab) => `#/${tab}`;
   const hashToTab = (hash: string): RouteTab => {
     const cleaned = (hash || '').replace(/^#\//, '');
-    const allowed: RouteTab[] = ['home','upload','design','generate','advanced','privacy-metrics','reporting','resources','pricing','account','privacy','terms'];
+    const allowed: RouteTab[] = ['home','upload','design','generate','advanced','privacy-metrics','reporting','resources','pricing','account','privacy','terms','modellab'];
     return (allowed.includes(cleaned as RouteTab) ? cleaned : 'home') as RouteTab;
   };
 
@@ -348,6 +349,10 @@ function App() {
 
           {activeTab === 'terms' && (
             <TermsOfService />
+          )}
+
+          {activeTab === 'modellab' && (
+            <ModelLab />
           )}
 
           {!(['home','upload','design','generate','advanced','privacy-metrics','reporting','resources','pricing','account','privacy','terms'] as RouteTab[]).includes(activeTab) && (

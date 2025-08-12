@@ -1,0 +1,12 @@
+<svg width="1080" height="1080" viewBox="0 0 1080 1080" xmlns="http://www.w3.org/2000/svg">
+  <defs><linearGradient id="bg6" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#0b1020"/><stop offset="100%" stop-color="#0a1a3a"/></linearGradient></defs>
+  <rect width="1080" height="1080" fill="url(#bg6)"/>
+  <text x="70" y="170" fill="#ffffff" font-size="72" font-weight="800">Early access for regulated teams</text>
+  <text x="70" y="260" fill="#cbd5e1" font-size="40">Healthcare • Finance • Government</text>
+  <rect x="70" y="340" width="460" height="90" rx="14" fill="#10b981"/><text x="95" y="400" fill="#001b12" font-size="40" font-weight="800">Comment “interested”</text>
+  <rect x="70" y="460" width="420" height="90" rx="14" fill="#34d399"/><text x="95" y="520" fill="#001b12" font-size="38" font-weight="800">DM for 20‑min walkthrough</text>
+  <rect x="70" y="580" width="360" height="90" rx="14" fill="#0ea5e9"/><text x="95" y="640" fill="#001b12" font-size="38" font-weight="800">Try the Model Lab</text>
+  <text x="70" y="980" fill="#cbd5e1" font-size="30">AethergenAI • Evidence‑led synthetic data & models • Powered by AUSPEXI</text>
+</svg>
+
+

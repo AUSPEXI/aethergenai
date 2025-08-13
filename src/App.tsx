@@ -425,10 +425,7 @@ function App() {
           )}
 
           {activeTab === 'account' && (
-            <div>
-              <div>🔍 DEBUG: Rendering Account Tab</div>
-              <AuthPage />
-            </div>
+            <AuthPage />
           )}
 
           {activeTab === 'privacy' && (
@@ -439,9 +436,7 @@ function App() {
             <TermsOfService />
           )}
 
-          {activeTab === 'modellab' && (
-            <ModelLab />
-          )}
+
 
           {!(['home','upload','design','generate','advanced','privacy-metrics','reporting','resources','pricing','account','privacy','terms'] as RouteTab[]).includes(activeTab) && (
             <NotFound />

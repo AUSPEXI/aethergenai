@@ -9,6 +9,8 @@ export type RiskLevel = 'green' | 'amber' | 'red';
 export interface AutopilotConfig {
   maxTrials: number;
   timeBudgetMs: number;
+  elasticTransfer?: boolean; // AetherCradle
+  codaScheduler?: boolean;   // Collision-Optimized Data Accelerator
   constraints?: {
     epsilonMax?: number;
     riskAllow?: RiskLevel; // green|amber
@@ -36,6 +38,7 @@ export interface TrialResult {
   latencyMs: number;
   risk: RiskLevel;
   score: number;
+  transferredFrom?: string; // AetherCradle provenance
 }
 
 const cache = new Map<string, TrialResult>();
@@ -74,6 +77,7 @@ export async function runAutopilot(config: AutopilotConfig, schema: any, generat
   const space: TrialConfig[] = buildSearchSpace(schema, selectedModels);
   const weights = { accuracy: 0.4, utility: 0.3, privacy: 0.3, latency: 0.2, ...(config.weights||{}) };
   let i = 0;
+  let previousKey: string | null = null;
   for (const cfg of space) {
     if (i>=config.maxTrials) break;
     if (Date.now() - start > config.timeBudgetMs) break;
@@ -95,7 +99,7 @@ export async function runAutopilot(config: AutopilotConfig, schema: any, generat
       const vacuum = runVRME(generatedData, schema, { scales: 2, variants: 2 }).vacuumScore; // 0..1
       const tricots = tricotsRes.tricotscore; // 0..1
       const score = weights.accuracy*accuracy + weights.utility*utility + weights.privacy*privacy - weights.latency*(latency/2000) + 0.05*aci + 0.05*tricots + 0.05*vacuum;
-      res = { cfg, metrics: { accuracy, utility, privacy }, latencyMs: latency, risk, score };
+      res = { cfg, metrics: { accuracy, utility, privacy }, latencyMs: latency, risk, score, transferredFrom: config.elasticTransfer && previousKey ? previousKey : undefined };
       cache.set(k, res);
     }
     if (config.constraints?.riskAllow === 'green' && res.risk!=='green') { i++; continue; }
@@ -107,6 +111,7 @@ export async function runAutopilot(config: AutopilotConfig, schema: any, generat
       if (aciNow < (config.constraints!.minAci as number)) { i++; continue; }
     }
     trials.push(res);
+    previousKey = key(cfg);
     i++;
   }
   const frontier = paretoFrontier(trials);

@@ -5,7 +5,7 @@
   <text x="70" y="280" fill="#cbd5e1" font-size="40">• Model card (ROC‑AUC, PR‑AUC, prevalence, features)</text>
   <text x="70" y="340" fill="#cbd5e1" font-size="40">• Evidence bundle: data + training provenance</text>
   <text x="70" y="400" fill="#cbd5e1" font-size="40">• Packaged for Databricks Marketplace</text>
-  <text x="70" y="980" fill="#10b981" font-size="36" font-weight="700">Portable proof → faster decisions</text>
+  <text x="70" y="960" fill="#10b981" font-size="34" font-weight="700">Portable proof → faster decisions</text>
 </svg>
 
 

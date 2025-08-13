@@ -6,7 +6,8 @@
   <text x="70" y="210" fill="#ffffff" font-size="76" font-weight="800">AI isn’t starved for compute.</text>
   <text x="70" y="290" fill="#34d399" font-size="76" font-weight="800">It’s starved for usable data.</text>
   <text x="70" y="380" fill="#cbd5e1" font-size="36">Privacy, scarcity, and cost—not FLOPs—block progress.</text>
-  <text x="70" y="980" fill="#10b981" font-size="38" font-weight="700">Meet AethergenAI → Evidence‑led, privacy‑preserving, Databricks‑ready</text>
+  <text x="70" y="960" fill="#10b981" font-size="34" font-weight="700">Meet AethergenAI — Evidence‑led,</text>
+  <text x="70" y="1000" fill="#10b981" font-size="34" font-weight="700">privacy‑preserving, Databricks‑ready</text>
 </svg>
 
 

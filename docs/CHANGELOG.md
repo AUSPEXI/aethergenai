@@ -1,3 +1,8 @@
+## v2.1.0 – Elastic Transfer & CODA
+- Added AetherCradle (elastic transfer) scaffolding and UI visualisations (Energy Ledger, Collision Graph).
+- Added CODA scheduler and trainer wrapper; Model Lab demo with AE and loss chart.
+- PyTorch notebook `notebooks/coda_elastic_pytorch.ipynb` with JSON/Delta export.
+- Updated Technical Overview and Benchmarking Guide.
 ### Changelog
 
 2025-08-10

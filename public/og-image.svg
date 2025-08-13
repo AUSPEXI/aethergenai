@@ -24,7 +24,7 @@
     <text x="16" y="28" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="20" fill="#6ee7b7">Evidence-led. Privacy-preserving. Databricks-ready.</text>
 
     <text x="0" y="120" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="800" font-size="72" fill="#ffffff">AethergenAI</text>
-    <text x="0" y="180" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="800" font-size="54" fill="#ffffff">Evidence-Led Synthetic Data & Models</text>
+    <text x="0" y="180" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="800" font-size="54" fill="#ffffff">Evidence-Led Synthetic Data &amp; Models</text>
 
     <rect x="0" y="220" rx="10" ry="10" width="280" height="50" fill="url(#accent)"/>
     <text x="20" y="252" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="22" font-weight="700" fill="#001b12">Powered by AUSPEXI</text>

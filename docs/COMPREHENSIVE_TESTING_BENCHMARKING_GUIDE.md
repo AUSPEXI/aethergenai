@@ -120,6 +120,12 @@ const optimizeGenerationCost = (schema: any, targetVolume: number) => {
 - **Temporal Pattern Preservation**: Time series pattern consistency
 - **Domain-Specific Metrics**: Industry-specific quality measures
 
+#### **Elastic/Energy Benchmarks (New)**
+- **Energy Ledger completeness**: all collisions/allocations logged; no missing windows.
+- **Steps‑to‑Target reduction**: compare against baseline without AetherCradle (expect 30–60% fewer steps when elastic transfer is enabled).
+- **CODA efficiency**: wall‑clock and step reductions at equal validation metrics when `lrScale` and `sampleWeight` are applied.
+- **DP budget impact**: track ε composition per collision; confirm no overrun of guard thresholds.
+
 ### **3.2 Model-Specific Benchmarks**
 
 #### **Geometric Models (Hypercube, Octonion)**

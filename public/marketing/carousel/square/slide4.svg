@@ -5,7 +5,7 @@
   <text x="70" y="280" fill="#cbd5e1" font-size="40">• Configurable prevalence (default 3%)</text>
   <text x="70" y="340" fill="#cbd5e1" font-size="40">• Patterns: upcoding, unbundling, phantom, duplicate</text>
   <text x="70" y="400" fill="#cbd5e1" font-size="40">• Baseline model + ROC/PR; Delta table ready</text>
-  <text x="70" y="980" fill="#10b981" font-size="36" font-weight="700">Try the Model Lab →</text>
+  <text x="70" y="960" fill="#10b981" font-size="34" font-weight="700">Try the Model Lab →</text>
 </svg>
 
 

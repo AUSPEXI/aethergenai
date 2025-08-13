@@ -76,6 +76,22 @@ Notes
 - Search space over ε, synthetic ratio, IQR k; now innovation‑aware.
 - Score includes ACI and TriCoT; constraints: min ACI, require TriCoT pass. Outputs Pareto frontier.
 
+### 9.1 Elastic Compute & Knowledge Transfer (AetherCradle)
+- Warm‑starts consecutive trials via function‑preserving mappings (Net2Net/LoRA bridge) and clipped optimizer moment projection.
+- Transferables: weights, moments, light curvature sketches, heads/thresholds, curriculum state.
+- Logged as “collisions” in the Energy Ledger with from→to keys and Δmetrics.
+- Code: `src/services/elasticTransfer.ts`, `src/services/loraBridge.ts`. Toggle: `elasticTransfer` in `runAutopilot`.
+
+### 9.2 CODA — Collision‑Optimized Data Accelerator
+- Conserves per‑window “energy” and reallocates to batches with highest information gain.
+- Emits `lrScale` (per‑step) and `sampleWeight` (per‑sample) signals consumable by any trainer.
+- Code: `src/services/codaScheduler.ts`, `src/services/trainerWrapper.ts`. Visualized in Model Lab.
+
+### 9.3 Evidence: Energy Ledger
+- Schema: time, type (`collision`|`allocation`), from, to, ΔEnergy, details JSON.
+- UI: Model Lab Energy Ledger + Collision Graph; export JSON or Delta (`aethergen.energy_ledger`).
+- Notebook: `notebooks/coda_elastic_pytorch.ipynb` demonstrates PyTorch AE with CODA + Elastic Transfer and Delta export.
+
 ## 10. Roadmap → Cloud Beta
 - Databricks runner: map recipes to Jobs API; log to MLflow; write datasets to Delta; Unity Catalog for governance.
 - Evidence bundles: signed lineage (schema hash, ε, proofs, recipe hash) surfaced in UI. Redacted share bundles for external review.

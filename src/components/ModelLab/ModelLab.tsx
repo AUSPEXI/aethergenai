@@ -1,5 +1,12 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { generateHealthcareClaims } from '../../domain/healthcare/claimsGenerator';
+import EnergyLedgerPanel from './EnergyLedgerPanel';
+import { EnergyLedger } from '../../types/energyLedger';
+import { estimateMass, codaStep } from '../../services/codaScheduler';
+import { applyElasticTransfer, TransferState } from '../../services/elasticTransfer';
+import { trainLinearAe, trainDeepAe } from '../../services/demoAutoencoder';
+import LossChart from './LossChart';
+import CollisionGraph from './CollisionGraph';
 
 type LabeledScore = { score: number; label: number };
 
@@ -74,6 +81,37 @@ const ModelLab: React.FC = () => {
   const [data, setData] = useState<any[]>([]);
   const [metrics, setMetrics] = useState<TrainingSummary | null>(null);
   const [busy, setBusy] = useState<boolean>(false);
+  const [ledger, setLedger] = useState<EnergyLedger | null>(null);
+  const [trialKey, setTrialKey] = useState<string>('trial_'+Math.random().toString(36).slice(2,8));
+  const [transferState, setTransferState] = useState<TransferState | null>(null);
+  const [windowEnergy, setWindowEnergy] = useState<number>(1.0);
+  const [allocationEvery, setAllocationEvery] = useState<number>(1); // allocate every N trains
+  const [useElastic, setUseElastic] = useState<boolean>(true);
+  const [useDeepAe, setUseDeepAe] = useState<boolean>(false);
+  const [lossHistory, setLossHistory] = useState<number[] | null>(null);
+
+  // Restore previous session
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem('aeg:modellab:lastRun');
+      if (!raw) return;
+      const saved = JSON.parse(raw);
+      if (saved) {
+        setWindowEnergy(saved.windowEnergy ?? windowEnergy);
+        setAllocationEvery(saved.allocationEvery ?? allocationEvery);
+        setUseElastic(saved.useElastic ?? useElastic);
+        setUseDeepAe(saved.useDeepAe ?? useDeepAe);
+        setLedger(saved.ledger ?? null);
+        setLossHistory(saved.lossHistory ?? null);
+      }
+    } catch {}
+  }, []);
+
+  // Persist session
+  useEffect(() => {
+    const payload = { windowEnergy, allocationEvery, useElastic, useDeepAe, ledger, lossHistory };
+    try { localStorage.setItem('aeg:modellab:lastRun', JSON.stringify(payload)); } catch {}
+  }, [windowEnergy, allocationEvery, useElastic, useDeepAe, ledger, lossHistory]);
 
   const canTrain = data.length > 0 && !busy;
 
@@ -83,6 +121,9 @@ const ModelLab: React.FC = () => {
       const generated = generateHealthcareClaims(rows, { fraud_rate: fraudRate, seed });
       setData(generated);
       setMetrics(null);
+      setLedger({ windowId: new Date().toISOString().slice(11,19), totalEnergy: 1.0, entries: [] });
+      setTrialKey('trial_'+Math.random().toString(36).slice(2,8));
+      setTransferState(null);
     } finally {
       setBusy(false);
     }
@@ -92,6 +133,12 @@ const ModelLab: React.FC = () => {
     if (data.length === 0) return;
     setBusy(true);
     try {
+      // If we have a previous state, simulate elastic transfer collision
+      if (useElastic && transferState && ledger) {
+        const res = await applyElasticTransfer(transferState, trialKey);
+        setLedger({ ...ledger, entries: [...ledger.entries, res.ledgerEntry] });
+      }
+
       // Lightweight heuristic model: combine indicative signals
       const scored: LabeledScore[] = data.map(r => {
         const ratio = r.allowed_amount > 0 ? r.submitted_amount / r.allowed_amount : 1;
@@ -106,9 +153,47 @@ const ModelLab: React.FC = () => {
       const prAuc = computePRAUC(scored);
       const prevalence = data.reduce((s, r) => s + (r.fraud_flag ? 1 : 0), 0) / data.length;
       setMetrics({ auc, prAuc, prevalence });
+
+      // CODA: estimate per-sample info gain proxy and redistribute energy
+      const losses = scored.map(s => Math.max(0, 1 - (s.score))); // proxy
+      const masses = estimateMass(losses);
+      const infoGain = losses.map(l => Math.max(0.001, l));
+      const state = { windowEnergy, mass: masses, velocity: new Array(masses.length).fill(1) };
+      const { update } = codaStep(state, infoGain);
+      setLedger((prev)=> prev? { ...prev, entries: [...prev.entries, { time: new Date().toISOString(), type:'allocation', deltaEnergy: windowEnergy, details: { lrScale_mean: average(update.lrScale), sampleWeight_mean: average(update.sampleWeight), allocationEvery } }] } : prev);
+
+      // Tiny AE demo uses CODA's lrScale & per-sample weights
+      const dim = 4;
+      const X = data.slice(0, Math.min(256, data.length)).map(r => [
+        r.submitted_amount/100,
+        r.allowed_amount/100,
+        r.paid_amount/100,
+        r.claim_lag_days/10
+      ]);
+      const ae = useDeepAe
+        ? trainDeepAe(X, { inputDim: dim, hidden1: 8, latentDim: 3, hidden2: 8, steps: 10, baseLr: 0.01 }, update.lrScale, update.sampleWeight)
+        : trainLinearAe(X, { inputDim: dim, latentDim: 2, steps: 10, baseLr: 0.01 }, update.lrScale, update.sampleWeight);
+      setLossHistory(ae.lossHistory);
+      setLedger((prev)=> prev? { ...prev, entries: [...prev.entries, { time: new Date().toISOString(), type:'allocation', deltaEnergy: 0, details: { ae_loss_before: ae.lossBefore.toFixed(4), ae_loss_after: ae.lossAfter.toFixed(4) } }] } : prev);
+
+      // Update transfer state for next trial
+      setTransferState({ trialKey, weightsHash: Math.random().toString(36).slice(2,10), optimizerHash: Math.random().toString(36).slice(2,10) });
     } finally {
       setBusy(false);
     }
+  };
+
+  const exportEvidence = () => {
+    const bundle = {
+      generated_rows: data.length,
+      fraud_rate_config: fraudRate,
+      metrics,
+      trial_key: trialKey,
+      energy_ledger: ledger,
+      ae_loss_history: metrics ? metrics : null,
+      created_at: new Date().toISOString()
+    };
+    download('evidence_bundle.json', JSON.stringify(bundle, null, 2), 'application/json');
   };
 
   const downloadCSV = () => {
@@ -149,6 +234,20 @@ const ModelLab: React.FC = () => {
         <label className="block">Seed
           <input type="number" className="mt-1 w-full bg-slate-900/70 border border-slate-700 rounded px-3 py-2" value={seed} onChange={e=>setSeed(parseInt(e.target.value||'0',10))} />
         </label>
+        <label className="block">Window Energy
+          <input type="number" className="mt-1 w-full bg-slate-900/70 border border-slate-700 rounded px-3 py-2" value={windowEnergy} min={0.1} step={0.1} onChange={e=>setWindowEnergy(parseFloat(e.target.value||'0'))} />
+        </label>
+        <label className="block">Allocate Every (N trains)
+          <input type="number" className="mt-1 w-full bg-slate-900/70 border border-slate-700 rounded px-3 py-2" value={allocationEvery} min={1} step={1} onChange={e=>setAllocationEvery(parseInt(e.target.value||'1',10))} />
+        </label>
+        <label className="flex items-center gap-2 mt-7">
+          <input type="checkbox" checked={useElastic} onChange={e=>setUseElastic(e.target.checked)} />
+          <span>Use Elastic Transfer</span>
+        </label>
+        <label className="flex items-center gap-2 mt-7">
+          <input type="checkbox" checked={useDeepAe} onChange={e=>setUseDeepAe(e.target.checked)} />
+          <span>Use Deep AE (ReLU)</span>
+        </label>
       </div>
 
       <div className="flex flex-wrap gap-3">
@@ -156,6 +255,7 @@ const ModelLab: React.FC = () => {
         <button disabled={!canTrain} onClick={train} className="px-4 py-2 rounded bg-blue-600 hover:bg-blue-500 disabled:opacity-50">Train Baseline</button>
         <button disabled={data.length===0} onClick={downloadCSV} className="px-4 py-2 rounded bg-slate-700 hover:bg-slate-600 disabled:opacity-50">Download CSV</button>
         <button disabled={!metrics} onClick={downloadModelCard} className="px-4 py-2 rounded bg-slate-700 hover:bg-slate-600 disabled:opacity-50">Download Model Card</button>
+        <button disabled={!ledger} onClick={exportEvidence} className="px-4 py-2 rounded bg-slate-700 hover:bg-slate-600 disabled:opacity-50">Export Evidence</button>
       </div>
 
       <div className="rounded-xl p-4 bg-slate-900/70 border border-slate-700">
@@ -172,6 +272,14 @@ const ModelLab: React.FC = () => {
             <div className="text-sm text-slate-400">ROC‑AUC / PR‑AUC</div>
             <div className="text-xl font-bold">{metrics ? `${metrics.auc.toFixed(3)} / ${metrics.prAuc.toFixed(3)}` : '—'}</div>
           </div>
+        </div>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-4">
+        <EnergyLedgerPanel ledger={ledger} />
+        <div className="space-y-4">
+          <LossChart history={lossHistory} />
+          <CollisionGraph ledger={ledger} />
         </div>
       </div>
     </div>

@@ -20,11 +20,24 @@ const AuthPage: React.FC = () => {
   const sendMagicLink = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      console.log('🔍 Attempting to send magic link to:', email);
       const sb = assertSupabase();
-      const { error } = await sb.auth.signInWithOtp({ email, options: { emailRedirectTo: window.location.origin } });
-      if (error) throw error;
+      console.log('🔍 Supabase client:', !!sb);
+      
+      const { error } = await sb.auth.signInWithOtp({ 
+        email, 
+        options: { emailRedirectTo: window.location.origin } 
+      });
+      
+      if (error) {
+        console.error('🔍 Supabase auth error:', error);
+        throw error;
+      }
+      
+      console.log('🔍 Magic link sent successfully');
       setStatus('Check your email for the login link.');
     } catch (err: any) {
+      console.error('🔍 Full error details:', err);
       setStatus(err?.message || 'Failed to send link');
     }
   };

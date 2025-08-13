@@ -72,4 +72,4 @@ secure/*.key
 secure/*.tmp
 
 # Plaintext manifests (generated)
-docs/ip_manifest.json 
+docs/ip_manifest.json

@@ -33,6 +33,11 @@
   status = 200
 
 [[redirects]]
+  from = "/api/test-entitlements"
+  to = "/.netlify/functions/test-entitlements"
+  status = 200
+
+[[redirects]]
   from = "/trigger-enhanced-collection"
   to = "/.netlify/functions/enhanced-cron-collect"
   status = 200

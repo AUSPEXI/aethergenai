@@ -32,35 +32,7 @@
   to = "/.netlify/functions/get-entitlements"
   status = 200
 
-[[redirects]]
-  from = "/api/entitlements-js"
-  to = "/.netlify/functions/get-entitlements"
-  status = 200
 
-[[redirects]]
-  from = "/api/test-entitlements"
-  to = "/.netlify/functions/test-entitlements"
-  status = 200
-
-[[redirects]]
-  from = "/api/hello"
-  to = "/.netlify/functions/hello"
-  status = 200
-
-[[redirects]]
-  from = "/api/simple"
-  to = "/.netlify/functions/simple"
-  status = 200
-
-[[redirects]]
-  from = "/api/entitlements-copy"
-  to = "/.netlify/functions/entitlements-copy"
-  status = 200
-
-[[redirects]]
-  from = "/api/entitlements-backup"
-  to = "/.netlify/functions/entitlements-backup"
-  status = 200
 
 [[redirects]]
   from = "/trigger-enhanced-collection"

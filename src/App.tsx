@@ -60,6 +60,13 @@ function App() {
     hasPlatformAccess: ents ? hasPlatformAccess(ents, [devhubPrice || '', devhubProPrice || '']) : false
   });
 
+  // Debug activeTab
+  console.log('🔍 Active Tab Debug:', {
+    activeTab,
+    isAccountTab: activeTab === 'account',
+    canAccessPlatform
+  });
+
   const handleSchemaChange = (schema: DataSchema) => {
     setCurrentSchema(schema);
   };
@@ -418,7 +425,10 @@ function App() {
           )}
 
           {activeTab === 'account' && (
-            <AuthPage />
+            <div>
+              <div>🔍 DEBUG: Rendering Account Tab</div>
+              <AuthPage />
+            </div>
           )}
 
           {activeTab === 'privacy' && (

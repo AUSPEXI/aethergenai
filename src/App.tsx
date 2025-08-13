@@ -49,6 +49,16 @@ function App() {
   const devhubPrice = (import.meta as any).env.VITE_PRICE_DEVHUB as string | undefined;
   const devhubProPrice = (import.meta as any).env.VITE_PRICE_DEVHUB_PRO as string | undefined;
   const canAccessPlatform = !!(ents && hasPlatformAccess(ents, [devhubPrice || '', devhubProPrice || '']));
+  
+  // Debug logging
+  console.log('🔍 Platform Access Debug:', {
+    userEmail,
+    ents,
+    devhubPrice,
+    devhubProPrice,
+    canAccessPlatform,
+    hasPlatformAccess: ents ? hasPlatformAccess(ents, [devhubPrice || '', devhubProPrice || '']) : false
+  });
 
   const handleSchemaChange = (schema: DataSchema) => {
     setCurrentSchema(schema);
@@ -254,15 +264,11 @@ function App() {
         )}
 
         {/* Main Content */}
-        <div className="py-8">
-            {/* Removed workflow wizard (duplicate nav) */}
-
-            {/* Main Content */}
-            <div className="py-8">
-          {activeTab === 'home' && (
-            canAccessPlatform ? (
-              <div className="max-w-7xl mx-auto px-6">
-                <div className="text-center py-12">
+        {activeTab === 'home' && (
+          canAccessPlatform ? (
+            <div className="bg-white min-h-screen">
+              <div className="max-w-7xl mx-auto px-6 py-12">
+                <div className="text-center">
                   <h1 className="text-3xl font-bold text-gray-900 mb-4">Welcome to AethergenAI Platform</h1>
                   <p className="text-lg text-gray-600 mb-8">You're now signed in and have access to the platform. Use the navigation above to get started.</p>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
@@ -275,16 +281,24 @@ function App() {
                       <p className="text-gray-600">Define your data structure and privacy settings</p>
                     </div>
                     <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-2">⚙️ Generate Data</h3>
+                                              <h3 className="text-lg font-semibold text-gray-900 mb-2">⚙️ Generate Data</h3>
                       <p className="text-gray-600">Create synthetic data with AI-powered generation</p>
                     </div>
                   </div>
                 </div>
               </div>
-            ) : (
+            </div>
+          ) : (
+            <div className="py-8">
               <LandingPage />
-            )
-          )}
+            </div>
+          )
+        )}
+
+        {/* Platform Components - White Background */}
+        {canAccessPlatform && activeTab !== 'home' && (
+          <div className="bg-white min-h-screen">
+            <div className="max-w-7xl mx-auto px-6 py-8">
 
           {canAccessPlatform && activeTab === 'design' && (
             <SchemaDesigner
@@ -423,7 +437,8 @@ function App() {
             <NotFound />
           )}
             </div>
-        </div>
+          </div>
+        )}
 
         {/* Enhanced Status Bar (paywalled) */}
         {canAccessPlatform && (

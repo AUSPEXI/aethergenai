@@ -65,12 +65,8 @@ const Header: React.FC = () => {
             className="px-3 py-1.5 rounded-md bg-slate-800/60 hover:bg-slate-700/60 border border-slate-700/40 transition-colors"
           >Resources</button>
           <button
-            onClick={() => window.dispatchEvent(new CustomEvent('aeg:navigate', { detail: { tab: 'modellab' } }))}
-            className="px-3 py-1.5 rounded-md bg-slate-800/60 hover:bg-slate-700/60 border border-slate-700/40 transition-colors"
-          >Model Lab</button>
-          <button
             onClick={() => window.dispatchEvent(new CustomEvent('aeg:navigate', { detail: { tab: 'pricing' } }))}
-            className="px-3 py-1.5 rounded-md bg-emerald-700/70 hover:bg-emerald-600/70 border border-emerald-600/50 transition-colors"
+            className="px-3 py-2 rounded-md bg-emerald-700/70 hover:bg-emerald-600/70 border border-emerald-600/50 transition-colors"
           >Pricing</button>
           <button
             onClick={() => window.dispatchEvent(new CustomEvent('aeg:navigate', { detail: { tab: 'account' } }))}
@@ -92,7 +88,6 @@ const Header: React.FC = () => {
           <div className="sm:hidden w-full mt-2 grid grid-cols-2 gap-2">
             <button onClick={() => window.dispatchEvent(new CustomEvent('aeg:navigate', { detail: { tab: 'home' } }))} className="px-3 py-2 rounded-md bg-slate-800/60 border border-slate-700/40 text-sm">Home</button>
             <button onClick={() => window.dispatchEvent(new CustomEvent('aeg:navigate', { detail: { tab: 'resources' } }))} className="px-3 py-2 rounded-md bg-slate-800/60 border border-slate-700/40 text-sm">Resources</button>
-            <button onClick={() => window.dispatchEvent(new CustomEvent('aeg:navigate', { detail: { tab: 'modellab' } }))} className="px-3 py-2 rounded-md bg-slate-800/60 border border-slate-700/40 text-sm">Model Lab</button>
             <button onClick={() => window.dispatchEvent(new CustomEvent('aeg:navigate', { detail: { tab: 'pricing' } }))} className="px-3 py-2 rounded-md bg-emerald-700/70 border border-emerald-600/50 text-sm">Pricing</button>
             <button onClick={() => window.dispatchEvent(new CustomEvent('aeg:navigate', { detail: { tab: 'account' } }))} className="px-3 py-2 rounded-md bg-slate-800/60 border border-slate-700/40 text-sm">Account</button>
           </div>

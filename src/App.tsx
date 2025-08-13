@@ -19,6 +19,13 @@ import { getEntitlements, hasPlatformAccess, Entitlement } from './services/enti
 import { DataSchema, SchemaField, ValidationResult, SyntheticDataResult } from './types/schema';
 import './index.css';
 
+// Debug environment variables
+console.log('🔍 Environment Check:', {
+  VITE_SUPABASE_URL: import.meta.env.VITE_SUPABASE_URL,
+  VITE_SUPABASE_ANON_KEY: import.meta.env.VITE_SUPABASE_ANON_KEY ? 'SET' : 'NOT SET',
+  keyLength: import.meta.env.VITE_SUPABASE_ANON_KEY?.length || 0
+});
+
 function App() {
   const [currentSchema, setCurrentSchema] = useState<DataSchema | null>(null);
   const [seedData, setSeedData] = useState<any[]>([]);
@@ -211,6 +218,7 @@ function App() {
                 <button onClick={() => setActiveTab('advanced')} className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${activeTab === 'advanced' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}>📈 Benchmarks</button>
                 <button onClick={() => setActiveTab('privacy-metrics')} className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${activeTab === 'privacy-metrics' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}>🔒 Privacy Metrics</button>
                 <button onClick={() => setActiveTab('reporting')} className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${activeTab === 'reporting' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}>📊 Reporting</button>
+                <button onClick={() => setActiveTab('modellab')} className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${activeTab === 'modellab' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}>🧠 Model Lab</button>
               </nav>
             </div>
           </div>
@@ -320,6 +328,10 @@ function App() {
               generatedData={generationResult?.records || []}
               validationResult={validationResult}
             />
+          )}
+
+          {canAccessPlatform && activeTab === 'modellab' && (
+            <ModelLab />
           )}
 
           {canAccessPlatform && activeTab === 'privacy-metrics' && (

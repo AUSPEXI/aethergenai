@@ -58,6 +58,11 @@
   status = 200
 
 [[redirects]]
+  from = "/api/entitlements-backup"
+  to = "/.netlify/functions/entitlements-backup"
+  status = 200
+
+[[redirects]]
   from = "/trigger-enhanced-collection"
   to = "/.netlify/functions/enhanced-cron-collect"
   status = 200

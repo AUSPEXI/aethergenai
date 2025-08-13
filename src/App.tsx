@@ -20,10 +20,12 @@ import { DataSchema, SchemaField, ValidationResult, SyntheticDataResult } from '
 import './index.css';
 
 // Debug environment variables
-console.log('🔍 Environment Check:', {
-  VITE_SUPABASE_URL: import.meta.env.VITE_SUPABASE_URL,
-  VITE_SUPABASE_ANON_KEY: import.meta.env.VITE_SUPABASE_ANON_KEY ? 'SET' : 'NOT SET',
-  keyLength: import.meta.env.VITE_SUPABASE_ANON_KEY?.length || 0
+console.log('🔍 Full Debug:', {
+  env: import.meta.env,
+  supabaseUrl: import.meta.env.VITE_SUPABASE_URL,
+  supabaseKey: import.meta.env.VITE_SUPABASE_ANON_KEY ? 'SET' : 'NOT SET',
+  mode: import.meta.env.MODE,
+  dev: import.meta.env.DEV
 });
 
 function App() {

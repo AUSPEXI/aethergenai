@@ -280,43 +280,52 @@ function App() {
         {/* Platform Components - White Background */}
         {canAccessPlatform && activeTab !== 'home' && (
           <div className="bg-white min-h-screen">
-            {/* Welcome Banner for Authenticated Users */}
-            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-blue-200">
-              <div className="max-w-7xl mx-auto px-6 py-6">
-                <div className="text-center">
+            <div className="max-w-7xl mx-auto px-6 py-8">
+
+          {canAccessPlatform && activeTab === 'design' && (
+            <>
+              {/* Welcome Banner for Platform Tabs */}
+              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-blue-200 mb-8">
+                <div className="text-center py-6">
                   <h1 className="text-2xl font-bold text-blue-900 mb-2">Welcome to AethergenAI Platform</h1>
                   <p className="text-blue-700">You're now signed in and have access to the platform. Use the navigation above to get started.</p>
                 </div>
               </div>
-            </div>
-            <div className="max-w-7xl mx-auto px-6 py-8">
-
-          {canAccessPlatform && activeTab === 'design' && (
-            <SchemaDesigner
-              onSchemaChange={handleSchemaChange}
-              initialSchema={currentSchema}
-              seedData={seedData}
-            />
+              <SchemaDesigner
+                onSchemaChange={handleSchemaChange}
+                initialSchema={currentSchema}
+                seedData={seedData}
+              />
+            </>
           )}
           
           {canAccessPlatform && activeTab === 'upload' && (
-            <SeedDataUploader
-              schema={currentSchema || {
-                id: '',
-                name: '',
-                description: '',
-                domain: '',
-                fields: [],
-                targetVolume: 1000,
-                privacySettings: {
-                  differentialPrivacy: true,
-                  epsilon: 0.1,
-                  syntheticRatio: 95
-                }
-              }}
-              onDataUploaded={handleDataUploaded}
-              onValidationComplete={handleValidationComplete}
-            />
+            <>
+              {/* Welcome Banner for Platform Tabs */}
+              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-blue-200 mb-8">
+                <div className="text-center py-6">
+                  <h1 className="text-2xl font-bold text-blue-900 mb-2">Welcome to AethergenAI Platform</h1>
+                  <p className="text-blue-700">You're now signed in and have access to the platform. Use the navigation above to get started.</p>
+                </div>
+              </div>
+              <SeedDataUploader
+                schema={currentSchema || {
+                  id: '',
+                  name: '',
+                  description: '',
+                  domain: '',
+                  fields: [],
+                  targetVolume: 1000,
+                  privacySettings: {
+                    differentialPrivacy: true,
+                    epsilon: 0.1,
+                    syntheticRatio: 95
+                  }
+                }}
+                onDataUploaded={handleDataUploaded}
+                onValidationComplete={handleValidationComplete}
+              />
+            </>
           )}
           
           {canAccessPlatform && activeTab === 'generate' && (

@@ -34,10 +34,10 @@ const marketplaces = {
   }
 };
 
-// Finance Suite pricing structure
+// Finance Suite pricing structure - ALIGNED WITH MAIN PLATFORM
 export const pricingTiers = {
   streaming: {
-    price: 600,
+    price: 2499,
     currency: 'USD',
     period: 'monthly',
     description: 'Finance Suite Streaming',
@@ -53,7 +53,7 @@ export const pricingTiers = {
     ]
   },
   static_credrise: { // Changed from static_changes to static_credrise
-    price: 1800,
+    price: 4999,
     currency: 'USD',
     period: 'one-time',
     description: 'CREDRISE Static Dataset', // Changed to CREDRISE
@@ -496,8 +496,8 @@ export const getMarketplaceStatusOptimized = () => {
       total_suites: 8,
       bundled_addons: 5,
       pricing_model: 'streaming_plus_static',
-      streaming_price: '$600/month',
-      static_price: '$1,800 (CREDRISE only)'
+      streaming_price: '$2,499/month',
+      static_price: '$4,999 (CREDRISE only)'
     },
     performance_info: {
       total_daily_capacity: Object.values(marketplaces).reduce((sum, config) => 

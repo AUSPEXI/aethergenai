@@ -55,7 +55,7 @@ const AuthPage: React.FC = () => {
       <h2 className="text-xl font-semibold mb-4">Account</h2>
       {userEmail ? (
         <div className="space-y-3">
-          <div>Signed in as <span className="font-mono">{userEmail}</span></div>
+          <div className="text-slate-800">Signed in as <span className="font-mono font-semibold">{userEmail}</span></div>
           <button className="px-3 py-1 rounded bg-slate-700 text-white" onClick={logout}>Logout</button>
           <div className="pt-4">
             <PlatformAccess userEmail={userEmail} />
@@ -63,7 +63,7 @@ const AuthPage: React.FC = () => {
         </div>
       ) : (
         <form onSubmit={sendMagicLink} className="space-y-3">
-          <label className="block text-sm">Email</label>
+          <label className="block text-sm text-slate-800 font-medium">Email</label>
           <input
             type="email"
             className="border rounded px-3 py-2 w-full"
@@ -72,7 +72,7 @@ const AuthPage: React.FC = () => {
             required
           />
           <button className="px-3 py-2 rounded bg-blue-600 text-white" type="submit">Send magic link</button>
-          {status && <div className="text-sm text-slate-600">{status}</div>}
+          {status && <div className="text-sm text-slate-700 font-medium">{status}</div>}
         </form>
       )}
     </div>

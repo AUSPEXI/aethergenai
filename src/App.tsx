@@ -230,6 +230,7 @@ function App() {
     { key: 'advanced', label: '4. Benchmarks' },
     { key: 'privacy-metrics', label: '5. Privacy Metrics' },
     { key: 'reporting', label: '6. Reporting' },
+    { key: 'modellab', label: '7. Model Lab' },
   ];
 
   const getStepIndex = (key: string) => workflowSteps.findIndex(step => step.key === key);
@@ -245,6 +246,8 @@ function App() {
         return true; // Accessible after generation
       case 'reporting':
         return true; // Accessible after privacy
+      case 'modellab':
+        return true; // Accessible after privacy metrics and reporting
       default:
         return false;
     }

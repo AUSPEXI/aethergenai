@@ -251,7 +251,7 @@ function App() {
   };
 
   return (
-    <Layout>
+    <Layout canAccessPlatform={canAccessPlatform}>
       <div className="min-h-screen">
         {/* Platform Subheader (paywalled) - Only on Platform Tabs */}
         {canAccessPlatform && activeTab !== 'home' && !['resources', 'pricing', 'account', 'privacy', 'terms'].includes(activeTab) && (
@@ -277,13 +277,10 @@ function App() {
           </div>
         )}
 
-        {/* Platform Components - White Background */}
-        {canAccessPlatform && activeTab !== 'home' && (
+        {/* Platform Components - White Background - Only for Platform Tabs */}
+        {canAccessPlatform && activeTab === 'design' && (
           <div className="bg-white min-h-screen">
             <div className="max-w-7xl mx-auto px-6 py-8">
-
-          {canAccessPlatform && activeTab === 'design' && (
-            <>
               {/* Welcome Banner for Platform Tabs */}
               <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-blue-200 mb-8">
                 <div className="text-center py-6">
@@ -296,11 +293,13 @@ function App() {
                 initialSchema={currentSchema}
                 seedData={seedData}
               />
-            </>
-          )}
-          
-          {canAccessPlatform && activeTab === 'upload' && (
-            <>
+            </div>
+          </div>
+        )}
+        
+        {canAccessPlatform && activeTab === 'upload' && (
+          <div className="bg-white min-h-screen">
+            <div className="max-w-7xl mx-auto px-6 py-8">
               {/* Welcome Banner for Platform Tabs */}
               <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-blue-200 mb-8">
                 <div className="text-center py-6">
@@ -325,13 +324,46 @@ function App() {
                 onDataUploaded={handleDataUploaded}
                 onValidationComplete={handleValidationComplete}
               />
-            </>
-          )}
-          
-          {canAccessPlatform && activeTab === 'generate' && (
-            <SyntheticDataGenerator
-              schema={{
-                ...(currentSchema || {
+            </div>
+          </div>
+        )}
+        
+        {canAccessPlatform && activeTab === 'generate' && (
+          <div className="bg-white min-h-screen">
+            <div className="max-w-7xl mx-auto px-6 py-8">
+              <SyntheticDataGenerator
+                schema={{
+                  ...(currentSchema || {
+                    id: '',
+                    name: '',
+                    description: '',
+                    domain: '',
+                    fields: [],
+                    targetVolume: 1000,
+                    privacySettings: {
+                      differentialPrivacy: true,
+                      epsilon: privacySettings.epsilon,
+                      syntheticRatio: privacySettings.syntheticRatio
+                    }
+                  }),
+                  privacySettings: {
+                    ...(currentSchema?.privacySettings || {}),
+                    epsilon: privacySettings.epsilon,
+                    syntheticRatio: privacySettings.syntheticRatio
+                  }
+                }}
+                seedData={seedData}
+                onGenerationComplete={handleGenerationComplete}
+              />
+            </div>
+          </div>
+        )}
+        
+        {canAccessPlatform && activeTab === 'advanced' && (
+          <div className="bg-white min-h-screen">
+            <div className="max-w-7xl mx-auto px-6 py-8">
+              <AdvancedBenchmarking
+                schema={currentSchema || {
                   id: '',
                   name: '',
                   description: '',
@@ -340,78 +372,59 @@ function App() {
                   targetVolume: 1000,
                   privacySettings: {
                     differentialPrivacy: true,
-                    epsilon: privacySettings.epsilon,
-                    syntheticRatio: privacySettings.syntheticRatio
+                    epsilon: 0.1,
+                    syntheticRatio: 95
                   }
-                }),
-                privacySettings: {
-                  ...(currentSchema?.privacySettings || {}),
-                  epsilon: privacySettings.epsilon,
-                  syntheticRatio: privacySettings.syntheticRatio
-                }
-              }}
-              seedData={seedData}
-              onGenerationComplete={handleGenerationComplete}
-            />
-          )}
-          
-          {canAccessPlatform && activeTab === 'advanced' && (
-            <AdvancedBenchmarking
-              schema={currentSchema || {
-                id: '',
-                name: '',
-                description: '',
-                domain: '',
-                fields: [],
-                targetVolume: 1000,
-                privacySettings: {
-                  differentialPrivacy: true,
-                  epsilon: 0.1,
-                  syntheticRatio: 95
-                }
-              }}
-              seedData={seedData}
-              generatedData={generationResult?.records || []}
-            />
-          )}
+                }}
+                seedData={seedData}
+                generatedData={generationResult?.records || []}
+              />
+            </div>
+          </div>
+        )}
 
-          {canAccessPlatform && activeTab === 'reporting' && (
-            <ReportingDashboard
-              schema={currentSchema || {
-                id: '',
-                name: '',
-                description: '',
-                domain: '',
-                fields: [],
-                targetVolume: 1000,
-                privacySettings: {
-                  differentialPrivacy: true,
-                  epsilon: 0.1,
-                  syntheticRatio: 95
-                }
-              }}
-              seedData={seedData}
-              generatedData={generationResult?.records || []}
-              validationResult={validationResult}
-            />
-          )}
+        {canAccessPlatform && activeTab === 'reporting' && (
+          <div className="bg-white min-h-screen">
+            <div className="max-w-7xl mx-auto px-6 py-8">
+              <ReportingDashboard
+                schema={currentSchema || {
+                  id: '',
+                  name: '',
+                  description: '',
+                  domain: '',
+                  fields: [],
+                  targetVolume: 1000,
+                  privacySettings: {
+                    differentialPrivacy: true,
+                    epsilon: 0.1,
+                    syntheticRatio: 95
+                  }
+                }}
+                seedData={seedData}
+                generatedData={generationResult?.records || []}
+                validationResult={validationResult}
+              />
+            </div>
+          </div>
+        )}
 
-          {canAccessPlatform && activeTab === 'modellab' && (
-            <ModelLab />
-          )}
+        {canAccessPlatform && activeTab === 'modellab' && (
+          <div className="bg-white min-h-screen">
+            <div className="max-w-7xl mx-auto px-6 py-8">
+              <ModelLab />
+            </div>
+          </div>
+        )}
 
-          {canAccessPlatform && activeTab === 'privacy-metrics' && (
-            <PrivacyMetrics
-              seedData={seedData}
-              syntheticData={generationResult?.records || []}
-              privacySettings={privacySettings}
-              onPrivacySettingsChange={handlePrivacySettingsChange}
-            />
-          )}
-
-          {!(['home','upload','design','generate','advanced','privacy-metrics','reporting','resources','pricing','account','privacy','terms','modellab'] as RouteTab[]).includes(activeTab) && (
-            <NotFound />
-          )}
+        {canAccessPlatform && activeTab === 'privacy-metrics' && (
+          <div className="bg-white min-h-screen">
+            <div className="max-w-7xl mx-auto px-6 py-8">
+              <PrivacyMetrics
+                seedData={seedData}
+                syntheticData={generationResult?.records || []}
+                privacySettings={privacySettings}
+                onPrivacySettingsChange={handlePrivacySettingsChange}
+              />
             </div>
           </div>
         )}

@@ -633,11 +633,11 @@ const AdvancedBenchmarking: React.FC<AdvancedBenchmarkingProps> = ({
               {/* Main Benchmark Stats */}
               <div className="flex flex-wrap gap-6">
                 <div className="bg-blue-50 rounded p-4 flex-1 min-w-[180px]">
-                  <div className="text-xs text-gray-500">Accuracy</div>
+                  <div className="text-xs text-gray-700 font-medium">Accuracy</div>
                   <div className="text-2xl font-bold">{(basicBenchmarkSummary.accuracy * 100).toFixed(2)}%</div>
                 </div>
                 <div className="bg-green-50 rounded p-4 flex-1 min-w-[180px]">
-                  <div className="text-xs text-gray-500">Cost Reduction</div>
+                  <div className="text-xs text-gray-700 font-medium">Cost Reduction</div>
                   <div className="text-2xl font-bold">{(basicBenchmarkSummary.cost_reduction * 100).toFixed(2)}%</div>
                 </div>
               </div>
@@ -666,18 +666,18 @@ const AdvancedBenchmarking: React.FC<AdvancedBenchmarkingProps> = ({
               {/* Privacy Metrics */}
               <div className="flex flex-wrap gap-6">
                 <div className="bg-purple-50 rounded p-4 flex-1 min-w-[220px]">
-                  <div className="text-xs text-gray-500">SDGym Synthetic Score</div>
+                  <div className="text-xs text-gray-700 font-medium">SDGym Synthetic Score</div>
                   <div className="text-xl font-bold">{basicBenchmarkSummary.sdgym?.synthetic_score}</div>
-                  <div className="text-xs text-gray-500 mt-1">{basicBenchmarkSummary.sdgym?.description}</div>
+                                      <div className="text-xs text-gray-600 mt-1">{basicBenchmarkSummary.sdgym?.description}</div>
                 </div>
                 <div className="bg-yellow-50 rounded p-4 flex-1 min-w-[220px]">
-                  <div className="text-xs text-gray-500">SDGym Real Score</div>
+                  <div className="text-xs text-gray-700 font-medium">SDGym Real Score</div>
                   <div className="text-xl font-bold">{basicBenchmarkSummary.sdgym?.real_score}</div>
                 </div>
                 <div className="bg-pink-50 rounded p-4 flex-1 min-w-[220px]">
-                  <div className="text-xs text-gray-500">PrivacyRaven Attack Success Rate</div>
+                  <div className="text-xs text-gray-700 font-medium">PrivacyRaven Attack Success Rate</div>
                   <div className="text-xl font-bold">{basicBenchmarkSummary.privacyraven?.attack_success_rate}</div>
-                  <div className="text-xs text-gray-500 mt-1">{basicBenchmarkSummary.privacyraven?.description}</div>
+                                      <div className="text-xs text-gray-600 mt-1">{basicBenchmarkSummary.privacyraven?.description}</div>
                 </div>
               </div>
             </div>
@@ -760,7 +760,7 @@ const AdvancedBenchmarking: React.FC<AdvancedBenchmarkingProps> = ({
                   <li>432 resonance: <span className="font-semibold">{(agoMetrics.resonance432*100).toFixed(1)}%</span></li>
                   <li>137 stability: <span className="font-semibold">{(agoMetrics.stability137*100).toFixed(1)}%</span></li>
                 </ul>
-              ) : <div className="text-gray-500">No data</div>}
+              ) : <div className="text-gray-700">No data</div>}
             </div>
             <div className="border rounded p-3">
               <div className="font-semibold mb-1">432 Harmonic Regularizer</div>
@@ -771,7 +771,7 @@ const AdvancedBenchmarking: React.FC<AdvancedBenchmarkingProps> = ({
                   <li>Off-grid variance: <span className="font-semibold">{harmMetrics.offGridVariance.toFixed(3)}</span></li>
                   <li>Chord purity: <span className="font-semibold">{(harmMetrics.chordPurity*100).toFixed(1)}%</span></li>
                 </ul>
-              ) : <div className="text-gray-500">No data</div>}
+              ) : <div className="text-gray-700">No data</div>}
             </div>
             <div className="border rounded p-3">
               <div className="font-semibold mb-1">AUM Certificate</div>
@@ -782,7 +782,7 @@ const AdvancedBenchmarking: React.FC<AdvancedBenchmarkingProps> = ({
                   <li>Fade symmetry: <span className="font-semibold">{(aumCert.fadeSymmetry*100).toFixed(1)}%</span></li>
                   <li>Status: {aumCert.pass? <span className="text-green-700 font-semibold">CERTIFIED</span> : <span className="text-red-700 font-semibold">NOT CERTIFIED</span>}</li>
                 </ul>
-              ) : <div className="text-gray-500">No data</div>}
+              ) : <div className="text-gray-700">No data</div>}
             </div>
             <div className="border rounded p-3">
               <div className="font-semibold mb-1">8D Causal Manifold</div>
@@ -792,7 +792,7 @@ const AdvancedBenchmarking: React.FC<AdvancedBenchmarkingProps> = ({
                   <li>ODE smoothness: <span className="font-semibold">{(causal8D.odeSmoothness*100).toFixed(1)}%</span></li>
                   <li>Causal plausibility: <span className="font-semibold">{(causal8D.causalPlausibility*100).toFixed(1)}%</span></li>
                 </ul>
-              ) : <div className="text-gray-500">No data</div>}
+              ) : <div className="text-gray-700">No data</div>}
             </div>
             <div className="border rounded p-3">
               <div className="font-semibold mb-1">Octonion Features</div>
@@ -801,7 +801,7 @@ const AdvancedBenchmarking: React.FC<AdvancedBenchmarkingProps> = ({
                   <li>Norm retention: <span className="font-semibold">{(octonion.normRetention*100).toFixed(1)}%</span></li>
                   <li>Rotation invariance: <span className="font-semibold">{(octonion.rotationInvariance*100).toFixed(1)}%</span></li>
                 </ul>
-              ) : <div className="text-gray-500">No data</div>}
+              ) : <div className="text-gray-700">No data</div>}
             </div>
             <div className="border rounded p-3">
               <div className="font-semibold mb-1">TriCoT & ACI</div>
@@ -834,7 +834,7 @@ const AdvancedBenchmarking: React.FC<AdvancedBenchmarkingProps> = ({
                     </li>
                   )}
                 </ul>
-              ) : <div className="text-gray-500">No data</div>}
+              ) : <div className="text-gray-700">No data</div>}
             </div>
           </div>
         </div>

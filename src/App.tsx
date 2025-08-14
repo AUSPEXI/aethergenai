@@ -279,7 +279,7 @@ function App() {
 
         {/* Platform Components - White Background - Only for Platform Tabs */}
         {canAccessPlatform && activeTab === 'design' && (
-          <div className="bg-white min-h-screen">
+          <div className="bg-white min-h-screen pb-20">
             <div className="max-w-7xl mx-auto px-6 py-8">
               {/* Welcome Banner for Platform Tabs */}
               <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-blue-200 mb-8">
@@ -298,7 +298,7 @@ function App() {
         )}
         
         {canAccessPlatform && activeTab === 'upload' && (
-          <div className="bg-white min-h-screen">
+          <div className="bg-white min-h-screen pb-20">
             <div className="max-w-7xl mx-auto px-6 py-8">
               {/* Welcome Banner for Platform Tabs */}
               <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-blue-200 mb-8">
@@ -329,7 +329,7 @@ function App() {
         )}
         
         {canAccessPlatform && activeTab === 'generate' && (
-          <div className="bg-white min-h-screen">
+          <div className="bg-white min-h-screen pb-20">
             <div className="max-w-7xl mx-auto px-6 py-8">
               <SyntheticDataGenerator
                 schema={{
@@ -360,7 +360,7 @@ function App() {
         )}
         
         {canAccessPlatform && activeTab === 'advanced' && (
-          <div className="bg-white min-h-screen">
+          <div className="bg-white min-h-screen pb-20">
             <div className="max-w-7xl mx-auto px-6 py-8">
               <AdvancedBenchmarking
                 schema={currentSchema || {
@@ -384,7 +384,7 @@ function App() {
         )}
 
         {canAccessPlatform && activeTab === 'reporting' && (
-          <div className="bg-white min-h-screen">
+          <div className="bg-white min-h-screen pb-20">
             <div className="max-w-7xl mx-auto px-6 py-8">
               <ReportingDashboard
                 schema={currentSchema || {
@@ -409,7 +409,7 @@ function App() {
         )}
 
         {canAccessPlatform && activeTab === 'modellab' && (
-          <div className="bg-white min-h-screen">
+          <div className="bg-white min-h-screen pb-20">
             <div className="max-w-7xl mx-auto px-6 py-8">
               <ModelLab />
             </div>
@@ -417,7 +417,7 @@ function App() {
         )}
 
         {canAccessPlatform && activeTab === 'privacy-metrics' && (
-          <div className="bg-white min-h-screen">
+          <div className="bg-white min-h-screen pb-20">
             <div className="max-w-7xl mx-auto px-6 py-8">
               <PrivacyMetrics
                 seedData={seedData}
@@ -462,7 +462,7 @@ function App() {
 
         {/* Enhanced Status Bar (paywalled) - Only on Platform Tabs */}
         {canAccessPlatform && activeTab !== 'home' && !['resources', 'pricing', 'account', 'privacy', 'terms'].includes(activeTab) && (
-          <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4">
+          <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 z-0">
             <div className="max-w-7xl mx-auto flex items-center justify-between text-sm text-gray-600">
               <div className="flex items-center space-x-6">
                 <span>Schema: {currentSchema?.name || 'Not defined'}</span>

@@ -261,15 +261,15 @@ const ModelLab: React.FC = () => {
       <div className="rounded-xl p-4 bg-slate-900/70 border border-slate-700">
         <div className="grid sm:grid-cols-3 gap-4 text-slate-200">
           <div>
-            <div className="text-sm text-slate-400">Rows</div>
+            <div className="text-sm text-slate-600 font-medium">Rows</div>
             <div className="text-xl font-bold">{data.length}</div>
           </div>
           <div>
-            <div className="text-sm text-slate-400">Observed prevalence</div>
+            <div className="text-sm text-slate-600 font-medium">Observed prevalence</div>
             <div className="text-xl font-bold">{metrics ? (metrics.prevalence*100).toFixed(2)+'%' : '—'}</div>
           </div>
           <div>
-            <div className="text-sm text-slate-400">ROC‑AUC / PR‑AUC</div>
+            <div className="text-sm text-slate-600 font-medium">ROC‑AUC / PR‑AUC</div>
             <div className="text-xl font-bold">{metrics ? `${metrics.auc.toFixed(3)} / ${metrics.prAuc.toFixed(3)}` : '—'}</div>
           </div>
         </div>

@@ -270,41 +270,25 @@ function App() {
           </div>
         )}
 
-        {/* Main Content */}
+        {/* Main Content - Home Tab Always Shows Sales Landing Page */}
         {activeTab === 'home' && (
-          canAccessPlatform ? (
-            <div className="bg-white min-h-screen">
-              <div className="max-w-7xl mx-auto px-6 py-12">
-                <div className="text-center">
-                  <h1 className="text-3xl font-bold text-gray-900 mb-4">Welcome to AethergenAI Platform</h1>
-                  <p className="text-lg text-gray-600 mb-8">You're now signed in and have access to the platform. Use the navigation above to get started.</p>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-                    <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-2">📤 Upload Data</h3>
-                      <p className="text-gray-600">Start by uploading your seed dataset</p>
-                    </div>
-                    <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-2">📋 Design Schema</h3>
-                      <p className="text-gray-600">Define your data structure and privacy settings</p>
-                    </div>
-                    <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                                              <h3 className="text-lg font-semibold text-gray-900 mb-2">⚙️ Generate Data</h3>
-                      <p className="text-gray-600">Create synthetic data with AI-powered generation</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div className="py-8">
-              <LandingPage />
-            </div>
-          )
+          <div className="py-8">
+            <LandingPage />
+          </div>
         )}
 
         {/* Platform Components - White Background */}
         {canAccessPlatform && activeTab !== 'home' && (
           <div className="bg-white min-h-screen">
+            {/* Welcome Banner for Authenticated Users */}
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-blue-200">
+              <div className="max-w-7xl mx-auto px-6 py-6">
+                <div className="text-center">
+                  <h1 className="text-2xl font-bold text-blue-900 mb-2">Welcome to AethergenAI Platform</h1>
+                  <p className="text-blue-700">You're now signed in and have access to the platform. Use the navigation above to get started.</p>
+                </div>
+              </div>
+            </div>
             <div className="max-w-7xl mx-auto px-6 py-8">
 
           {canAccessPlatform && activeTab === 'design' && (

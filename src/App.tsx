@@ -416,32 +416,41 @@ function App() {
             />
           )}
 
-          {activeTab === 'resources' && (
-            <ResourcesHub />
-          )}
-
-          {activeTab === 'pricing' && (
-            <div id="pricing"><PricingPage /></div>
-          )}
-
-          {activeTab === 'account' && (
-            <AuthPage />
-          )}
-
-          {activeTab === 'privacy' && (
-            <PrivacyPolicy />
-          )}
-
-          {activeTab === 'terms' && (
-            <TermsOfService />
-          )}
-
-
-
-          {!(['home','upload','design','generate','advanced','privacy-metrics','reporting','resources','pricing','account','privacy','terms'] as RouteTab[]).includes(activeTab) && (
+          {!(['home','upload','design','generate','advanced','privacy-metrics','reporting'] as RouteTab[]).includes(activeTab) && (
             <NotFound />
           )}
             </div>
+          </div>
+        )}
+
+        {/* Public Pages - Always Accessible */}
+        {activeTab === 'resources' && (
+          <div className="py-8">
+            <ResourcesHub />
+          </div>
+        )}
+
+        {activeTab === 'pricing' && (
+          <div className="py-8">
+            <div id="pricing"><PricingPage /></div>
+          </div>
+        )}
+
+        {activeTab === 'account' && (
+          <div className="py-8">
+            <AuthPage />
+          </div>
+        )}
+
+        {activeTab === 'privacy' && (
+          <div className="py-8">
+            <PrivacyPolicy />
+          </div>
+        )}
+
+        {activeTab === 'terms' && (
+          <div className="py-8">
+            <TermsOfService />
           </div>
         )}
 

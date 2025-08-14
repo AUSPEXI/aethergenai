@@ -409,7 +409,7 @@ function App() {
             />
           )}
 
-          {!(['home','upload','design','generate','advanced','privacy-metrics','reporting'] as RouteTab[]).includes(activeTab) && (
+          {!(['home','upload','design','generate','advanced','privacy-metrics','reporting','resources','pricing','account','privacy','terms','modellab'] as RouteTab[]).includes(activeTab) && (
             <NotFound />
           )}
             </div>

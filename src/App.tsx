@@ -253,8 +253,8 @@ function App() {
   return (
     <Layout>
       <div className="min-h-screen">
-        {/* Platform Subheader (paywalled) */}
-        {canAccessPlatform && (
+        {/* Platform Subheader (paywalled) - Only on Platform Tabs */}
+        {canAccessPlatform && activeTab !== 'home' && !['resources', 'pricing', 'account', 'privacy', 'terms'].includes(activeTab) && (
           <div className="bg-white shadow-sm border-b">
             <div className="max-w-7xl mx-auto px-6">
               <nav className="flex space-x-8 overflow-x-auto">
@@ -438,8 +438,8 @@ function App() {
           </div>
         )}
 
-        {/* Enhanced Status Bar (paywalled) */}
-        {canAccessPlatform && (
+        {/* Enhanced Status Bar (paywalled) - Only on Platform Tabs */}
+        {canAccessPlatform && activeTab !== 'home' && !['resources', 'pricing', 'account', 'privacy', 'terms'].includes(activeTab) && (
           <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4">
             <div className="max-w-7xl mx-auto flex items-center justify-between text-sm text-gray-600">
               <div className="flex items-center space-x-6">

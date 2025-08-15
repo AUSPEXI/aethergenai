@@ -22,10 +22,10 @@ const Navigation = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-20">
           <div className="flex items-center">
-            <Link to="/" className="flex items-center space-x-3">
+            <button onClick={() => handleNavigation('home')} className="flex items-center space-x-3">
               <Logo className="h-12 w-12" />
               <span className="text-2xl font-bold text-slate-800">Auspexi</span>
-            </Link>
+            </button>
           </div>
           
           {/* Desktop Navigation */}

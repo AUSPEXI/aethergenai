@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Layout from './components/Layout/Layout';
+import Navigation from './components/Navigation';
 import SchemaDesigner from './components/SchemaDesigner/SchemaDesigner';
 import SeedDataUploader from './components/SeedDataUploader/SeedDataUploader';
 import SyntheticDataGenerator from './components/SyntheticDataGenerator/SyntheticDataGenerator';
@@ -255,7 +255,8 @@ function App() {
   };
 
   return (
-    <Layout canAccessPlatform={canAccessPlatform}>
+    <div className="min-h-screen bg-white">
+      <Navigation />
       <div className="min-h-screen">
         {/* Platform Subheader (paywalled) - Only on Platform Tabs */}
         {canAccessPlatform && activeTab !== 'home' && !['resources', 'pricing', 'account', 'privacy', 'terms'].includes(activeTab) && (
@@ -494,7 +495,7 @@ function App() {
           </div>
         )}
       </div>
-    </Layout>
+    </div>
   );
 }
 

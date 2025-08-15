@@ -14,7 +14,15 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "prepare": "husky",
-    "ip:check": "node scripts/prepush-ip-check.mjs"
+    "ip:check": "node scripts/prepush-ip-check.mjs",
+    "test:automotive:quick": "tsx src/test/runQuickTest.ts",
+    "test:automotive:full": "tsx src/test/runFullTest.ts",
+    "test:automotive:ablation": "tsx src/test/runAblationTests.ts",
+    "test:automotive:ablation:full": "tsx src/test/runAutomotiveAblationTests.ts",
+    "test:monitor:validation": "tsx src/test/monitorValidationTest.ts",
+    "test:stress:break": "tsx src/test/systemStressTest.ts",
+    "test:stress:optimized": "tsx src/test/optimizedStressTest.ts",
+    "test:billion:scale": "tsx scripts/test-billion-scale.ts"
   },
   "dependencies": {
     "@aws-sdk/client-dataexchange": "^3.525.0",

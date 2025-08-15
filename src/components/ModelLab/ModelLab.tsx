@@ -11,120 +11,24 @@ import CollisionGraph from './CollisionGraph';
 // Advanced Technology Services
 import { runAblationRecipe } from '../../services/ablationService';
 import { generateEvidenceBundle } from '../../services/evidenceService';
-import { runAGOResonantHypercube } from '../../services/agoResonantHypercube';
-import { runHarmonicRegularizer432 } from '../../services/harmonicRegularizer432';
-import { runAUMCertificate } from '../../services/aumCertificate';
-import { runCausal8DService } from '../../services/causal8DService';
-import { runOctonionFeatures } from '../../services/octonionFeatures';
-import { runTriCotValidator } from '../../services/triCotValidator';
-import { runAnticipatoryConsistency } from '../../services/anticipatoryConsistency';
-import { runZKUPB } from '../../services/zkUpb';
-import { runHCAAbstention } from '../../services/hcaAbstention';
-import { runFractalResonanceOracle } from '../../services/fractalResonanceOracle';
-import { runVacuumResonanceMultiverse } from '../../services/vacuumResonanceMultiverse';
+// TODO: Fix these imports when services are properly implemented
+// import { runAGOResonantHypercube } from '../../services/agoResonantHypercube';
+// import { runHarmonicRegularizer432 } from '../../services/harmonicRegularizer432';
+// import { runAUMCertificate } from '../../services/aumCertificate';
+// import { runCausal8DService } from '../../services/causal8DService';
+// import { runOctonionFeatures } from '../../services/octonionFeatures';
+// import { runTriCotValidator } from '../../services/triCotValidator';
+// import { runAnticipatoryConsistency } from '../../services/anticipatoryConsistency';
+// import { runZKUPB } from '../../services/zkUpb';
+// import { runHCAAbstention } from '../../services/hcaAbstention';
+// import { runFractalResonanceOracle } from '../../services/fractalResonanceOracle';
+// import { runVacuumResonanceMultiverse } from '../../services/vacuumResonanceMultiverse';
 
 // Types
 import { AblationRecipe, AblationResult } from '../../types/ablation';
 import { InnovationMetrics } from '../../types/advancedModels';
 
-// Model template definitions
-interface ModelTemplate {
-  id: string;
-  name: string;
-  description: string;
-  category: string;
-  readyForDatabricks: boolean;
-  bundledWithEvidence: boolean;
-  sampleDataRows: number;
-  features: string[];
-  defaultParams: Record<string, any>;
-  generator: (params: any) => Promise<any[]>;
-  trainer: (params: any) => Promise<any>;
-}
-
 type LabeledScore = { score: number; label: number };
-
-// Available model templates
-const MODEL_TEMPLATES: ModelTemplate[] = [
-  {
-    id: 'healthcare-fraud-v1',
-    name: 'Healthcare Claims Fraud Detection v1',
-    description: 'Baseline heuristic model for detecting fraudulent healthcare claims using ratio analysis and behavioral patterns',
-    category: 'Fraud Detection',
-    readyForDatabricks: true,
-    bundledWithEvidence: true,
-    sampleDataRows: 50000,
-    features: ['submitted/allowed ratio', 'claim_lag_days', 'out_of_state_flag', 'provider_claim_volume_30d', 'unbundling_indicator'],
-    defaultParams: {
-      rows: 50000,
-      fraudRate: 0.03,
-      seed: 42,
-      windowEnergy: 1.0,
-      allocationEvery: 1,
-      useElastic: true,
-      useDeepAe: false
-    },
-    generator: generateHealthcareClaims,
-    trainer: async (params) => {
-      // This would call the actual training function
-      return trainLinearAe([], params);
-    }
-  },
-  {
-    id: 'credit-risk-v1',
-    name: 'Credit Risk Assessment v1',
-    description: 'Machine learning model for credit risk evaluation using financial ratios and payment history',
-    category: 'Financial Risk',
-    readyForDatabricks: false,
-    bundledWithEvidence: false,
-    sampleDataRows: 10000,
-    features: ['credit_utilization', 'payment_history', 'debt_to_income', 'credit_age'],
-    defaultParams: {
-      rows: 10000,
-      riskRate: 0.15,
-      seed: 42,
-      windowEnergy: 1.0,
-      allocationEvery: 1,
-      useElastic: true,
-      useDeepAe: false
-    },
-    generator: async (params) => {
-      // Placeholder for credit risk data generation
-      return [];
-    },
-    trainer: async (params) => {
-      // Placeholder for credit risk training
-      return null;
-    }
-  },
-  {
-    id: 'customer-churn-v1',
-    name: 'Customer Churn Prediction v1',
-    description: 'Predictive model for identifying customers likely to churn based on usage patterns and demographics',
-    category: 'Customer Analytics',
-    readyForDatabricks: false,
-    bundledWithEvidence: false,
-    sampleDataRows: 25000,
-    features: ['usage_frequency', 'support_tickets', 'subscription_length', 'feature_adoption'],
-    defaultParams: {
-      rows: 25000,
-      churnRate: 0.08,
-      seed: 42,
-      windowEnergy: 1.0,
-      allocationEvery: 1,
-      useElastic: true,
-      useDeepAe: false
-    },
-    generator: async (params) => {
-      // Placeholder for customer churn data generation
-      return [];
-    },
-    trainer: async (params) => {
-      // Placeholder for customer churn training
-      return null;
-    }
-  }
-];
 
 // Model template definitions
 interface ModelTemplate {

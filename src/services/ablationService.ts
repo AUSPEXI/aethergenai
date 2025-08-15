@@ -94,7 +94,10 @@ export async function runRecipeLocally(
     if (recipe.cleaning?.triadGuided) {
       // quick triad probe from current data
       const triad = await hreTechnologyService.runHREAnalysis(workingData, schema);
-      cfg = triadGuidedConfig(cfg, { geometricConsistency: triad.triadValidation.metrics?.geometricConsistency ?? 0.9, triadValidationScore: triad.triadValidation?.isValid ? 0.9 : 0.8 });
+      cfg = triadGuidedConfig(cfg, { 
+        geometricConsistency: triad.geometricConsistency ?? 0.9, 
+        triadValidationScore: triad.triadValidationScore ?? 0.8 
+      });
     }
     const { cleaned } = cleanSyntheticData(workingData, schema, cfg);
     workingData = cleaned;

@@ -70,6 +70,10 @@ const Header: React.FC<HeaderProps> = ({ canAccessPlatform = false }) => {
                 className="px-3 py-1.5 rounded-md bg-slate-800/60 hover:bg-slate-700/60 border border-slate-700/40 transition-colors"
               >Home</button>
               <button
+                onClick={() => window.dispatchEvent(new CustomEvent('aeg:navigate', { detail: { tab: 'press' } }))}
+                className="px-3 py-1.5 rounded-md bg-slate-800/60 hover:bg-slate-700/60 border border-slate-700/40 transition-colors"
+              >🏆 Press</button>
+              <button
                 onClick={() => window.dispatchEvent(new CustomEvent('aeg:navigate', { detail: { tab: 'resources' } }))}
                 className="px-3 py-1.5 rounded-md bg-slate-800/60 hover:bg-slate-700/60 border border-slate-700/40 transition-colors"
               >Resources</button>
@@ -102,6 +106,10 @@ const Header: React.FC<HeaderProps> = ({ canAccessPlatform = false }) => {
                 className="px-3 py-1.5 rounded-md bg-blue-700/70 hover:bg-blue-600/70 border border-blue-600/50 transition-colors"
               >🧠 Model Lab</button>
               <button
+                onClick={() => window.dispatchEvent(new CustomEvent('aeg:navigate', { detail: { tab: 'press' } }))}
+                className="px-3 py-1.5 rounded-md bg-blue-700/70 hover:bg-blue-600/70 border border-blue-600/50 transition-colors"
+              >🏆 Press</button>
+              <button
                 onClick={() => window.dispatchEvent(new CustomEvent('aeg:navigate', { detail: { tab: 'account' } }))}
                 className="px-3 py-1.5 rounded-md bg-slate-800/60 hover:bg-slate-700/60 border border-slate-700/40 transition-colors"
               >Account</button>
@@ -130,6 +138,7 @@ const Header: React.FC<HeaderProps> = ({ canAccessPlatform = false }) => {
               // Landing page navigation (for signed-out users)
               <>
                 <button onClick={() => window.dispatchEvent(new CustomEvent('aeg:navigate', { detail: { tab: 'home' } }))} className="px-3 py-2 rounded-md bg-slate-800/60 border border-slate-700/40 text-sm">Home</button>
+                <button onClick={() => window.dispatchEvent(new CustomEvent('aeg:navigate', { detail: { tab: 'press' } }))} className="px-3 py-2 rounded-md bg-slate-800/60 border border-slate-700/40 text-sm">🏆 Press</button>
                 <button onClick={() => window.dispatchEvent(new CustomEvent('aeg:navigate', { detail: { tab: 'resources' } }))} className="px-3 py-2 rounded-md bg-slate-800/60 border border-slate-700/40 text-sm">Resources</button>
                 <button onClick={() => window.dispatchEvent(new CustomEvent('aeg:navigate', { detail: { tab: 'pricing' } }))} className="px-3 py-2 rounded-md bg-emerald-700/70 border border-emerald-600/50 text-sm">Pricing</button>
                 <button onClick={() => window.dispatchEvent(new CustomEvent('aeg:navigate', { detail: { tab: 'account' } }))} className="px-3 py-2 rounded-md bg-slate-800/60 border border-slate-700/40 text-sm">Account</button>
@@ -141,6 +150,7 @@ const Header: React.FC<HeaderProps> = ({ canAccessPlatform = false }) => {
                 <button onClick={() => window.dispatchEvent(new CustomEvent('aeg:navigate', { detail: { tab: 'design' } }))} className="px-3 py-2 rounded-md bg-blue-700/70 border border-blue-600/50 text-sm">📋 Design</button>
                 <button onClick={() => window.dispatchEvent(new CustomEvent('aeg:navigate', { detail: { tab: 'generate' } }))} className="px-3 py-2 rounded-md bg-blue-700/70 border border-blue-600/50 text-sm">⚙️ Generate</button>
                 <button onClick={() => window.dispatchEvent(new CustomEvent('aeg:navigate', { detail: { tab: 'modellab' } }))} className="px-3 py-2 rounded-md bg-blue-700/70 border border-blue-600/50 text-sm">🧠 Model Lab</button>
+                <button onClick={() => window.dispatchEvent(new CustomEvent('aeg:navigate', { detail: { tab: 'press' } }))} className="px-3 py-2 rounded-md bg-blue-700/70 border border-blue-600/50 text-sm">🏆 Press</button>
                 <button onClick={() => window.dispatchEvent(new CustomEvent('aeg:navigate', { detail: { tab: 'account' } }))} className="px-3 py-2 rounded-md bg-slate-800/60 border border-slate-700/40 text-sm">Account</button>
                 <button onClick={() => window.dispatchEvent(new CustomEvent('aeg:navigate', { detail: { tab: 'home' } }))} className="px-3 py-2 rounded-md bg-slate-800/60 border border-slate-700/40 text-sm">Sales</button>
               </>

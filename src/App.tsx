@@ -14,6 +14,7 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
 import NotFound from './pages/NotFound';
 import ModelLab from './components/ModelLab/ModelLab';
+import PressSection from './components/PressSection/PressSection';
 import { assertSupabase } from './services/supabaseClient';
 import { getEntitlements, hasPlatformAccess, Entitlement } from './services/entitlementsClient';
 import { DataSchema, SchemaField, ValidationResult, SyntheticDataResult } from './types/schema';
@@ -35,7 +36,7 @@ function App() {
   const [validationResult, setValidationResult] = useState<ValidationResult | null>(null);
   const [generationResult, setGenerationResult] = useState<SyntheticDataResult | null>(null);
   const [totalGeneratedLastRun, setTotalGeneratedLastRun] = useState<number>(0);
-  type RouteTab = 'home' | 'upload' | 'design' | 'generate' | 'advanced' | 'privacy-metrics' | 'reporting' | 'resources' | 'pricing' | 'account' | 'privacy' | 'terms' | 'modellab';
+  type RouteTab = 'home' | 'upload' | 'design' | 'generate' | 'advanced' | 'privacy-metrics' | 'reporting' | 'resources' | 'pricing' | 'account' | 'privacy' | 'terms' | 'modellab' | 'press';
   const [activeTab, setActiveTab] = useState<RouteTab>('home');
   // Add privacy settings to app state
   const [privacySettings, setPrivacySettings] = useState({
@@ -416,6 +417,12 @@ function App() {
             <div className="max-w-7xl mx-auto px-6 py-8">
               <ModelLab />
             </div>
+          </div>
+        )}
+
+        {activeTab === 'press' && (
+          <div className="min-h-screen">
+            <PressSection onContact={() => setActiveTab('account')} />
           </div>
         )}
 

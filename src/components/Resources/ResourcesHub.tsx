@@ -16,17 +16,17 @@ type DocKey =
   | "guides-getting-started";
 
 const loaders: Record<DocKey, () => Promise<{ default: string }>> = {
-  "getting-started": () => import("../../../docs/PLATFORM_RESOURCES.md?raw"),
-  "platform-resources": () => import("../../../docs/PLATFORM_RESOURCES.md?raw"),
+  "getting-started": () => import("../../../docs/MARKETING_SAFE_SUMMARY.md?raw"),
+  "platform-resources": () => import("../../../docs/MARKETING_SAFE_SUMMARY.md?raw"),
   "product-pricing": () => import("../../../docs/BILLING_AND_ACCESS.md?raw"),
-  "technical-overview": () => import("../../../docs/TECHNICAL_OVERVIEW.md?raw"),
+  "technical-overview": () => import("../../../docs/MARKETING_SAFE_SUMMARY.md?raw"),
   "api-reference": () => import("../../../docs/API_REFERENCE.md?raw"),
   "evidence-spec": () => import("../../../docs/EVIDENCE_BUNDLE_SPEC.md?raw"),
   "compliance-audit": () => import("../../../docs/COMPLIANCE_AND_AUDIT.md?raw"),
   "marketplace": () => import("../../../docs/DATABRICKS_MARKETPLACE_PUBLISHER.md?raw"),
   "billing-access": () => import("../../../docs/BILLING_AND_ACCESS.md?raw"),
   "lm-studio": () => import("../../../docs/LM_STUDIO_SETUP.md?raw"),
-  "changelog": () => import("../../../docs/CHANGELOG.md?raw"),
+  "changelog": () => import("../../../docs/MARKETING_SAFE_SUMMARY.md?raw"),
   "license-terms": () => import("../../../docs/LICENSE_AND_TERMS.md?raw"),
   "guides-getting-started": () => import("../../../docs/guides/GETTING_STARTED.md?raw"),
 };

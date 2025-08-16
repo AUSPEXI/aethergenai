@@ -1,0 +1,19 @@
+[build]
+  publish = "dist"
+  command = "npm run build"
+
+[build.environment]
+  NODE_VERSION = "18"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[context.production.environment]
+  VITE_SUPABASE_URL = "https://jzxhcbhhivsywizbfewe.supabase.co"
+  # Note: Add your VITE_SUPABASE_ANON_KEY in Netlify's environment variables dashboard
+
+[context.deploy-preview.environment]
+  VITE_SUPABASE_URL = "https://jzxhcbhhivsywizbfewe.supabase.co"
+  # Note: Add your VITE_SUPABASE_ANON_KEY in Netlify's environment variables dashboard

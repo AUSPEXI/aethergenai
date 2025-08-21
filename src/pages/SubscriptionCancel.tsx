@@ -103,15 +103,15 @@ const SubscriptionCancel = () => {
             </div>
 
             <div className="bg-white p-6 rounded-xl shadow-md text-center">
-              <h3 className="text-lg font-bold text-slate-900 mb-3">Case Studies</h3>
+              <h3 className="text-lg font-bold text-slate-900 mb-3">Blog</h3>
               <p className="text-slate-600 mb-4">
-                See how organizations are using Auspexi to transform their operations.
+                Read our latest insights on synthetic data, AI innovation, and industry trends.
               </p>
               <Link
-                to="/case-studies"
+                to="/blog"
                 className="text-blue-600 hover:text-blue-700 font-medium"
               >
-                Read Stories →
+                Read Articles →
               </Link>
             </div>
 

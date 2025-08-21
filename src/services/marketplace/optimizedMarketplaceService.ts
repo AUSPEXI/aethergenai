@@ -2,7 +2,7 @@ import axios from 'axios';
 import PQueue from 'p-queue';
 import { ProcessedData } from '../../types';
 
-// Enhanced marketplace configuration with Finance Suite support
+// Enhanced marketplace configuration with multi-industry support
 const marketplaces = {
   databricks: {
     url: import.meta.env.VITE_DATABRICKS_API_URL,
@@ -34,37 +34,97 @@ const marketplaces = {
   }
 };
 
-// Finance Suite pricing structure - ALIGNED WITH MAIN PLATFORM
+// Current multi-industry pricing structure
 export const pricingTiers = {
-  streaming: {
-    price: 2499,
-    currency: 'USD',
-    period: 'monthly',
-    description: 'Finance Suite Streaming',
-    suites: 8,
-    addons: 5,
-    recordsPerDay: 20000,
-    features: [
-      'All 8 Finance suites (INSUREAI, SHIELD, CREDRISE, TRADEMARKET, CASHFLOW, CONSUME, TAXGUARD, RISKSHIELD)',
-      'All 5 addons bundled (Risk Analysis, Fraud Detection, Compliance Monitoring, Market Analysis, Portfolio Optimization)',
-      'Real-time streaming data feeds',
-      'Advanced AI analytics',
-      'Priority support'
-    ]
+  automotive: {
+    self_service: {
+      base_price: 599,
+      range: '£599 - £1,299',
+      currency: 'GBP',
+      period: 'monthly',
+      description: 'Automotive Manufacturing - Self-Service',
+      categories: ['Quality Control', 'Manufacturing Analytics', 'Safety Testing', 'Supply Chain'],
+      features: [
+        'Pre-trained models for automotive applications',
+        'Training datasets with evidence bundles',
+        'Basic API access and documentation',
+        'Customer handles compute and infrastructure'
+      ]
+    },
+    full_service: {
+      base_price: 2799,
+      range: '£2,799 - £3,999',
+      currency: 'GBP',
+      period: 'monthly',
+      description: 'Automotive Manufacturing - Full-Service',
+      categories: ['Quality Control', 'Manufacturing Analytics', 'Safety Testing', 'Supply Chain'],
+      features: [
+        'Everything from self-service',
+        'AWS infrastructure setup',
+        'Compute management and deployment',
+        'SLA guarantees and dedicated support'
+      ]
+    }
   },
-  static_credrise: { // Changed from static_changes to static_credrise
-    price: 4999,
-    currency: 'USD',
-    period: 'one-time',
-    description: 'CREDRISE Static Dataset', // Changed to CREDRISE
-    dataPoints: 600000,
-    features: [
-      'CREDRISE suite historical data',
-      'All 5 addons included',
-      'CSV/JSON export formats',
-      'Comprehensive credit narratives',
-      'Credit scoring simulations'
-    ]
+  healthcare: {
+    self_service: {
+      base_price: 699,
+      range: '£699 - £1,299',
+      currency: 'GBP',
+      period: 'monthly',
+      description: 'Healthcare & NHS - Self-Service',
+      categories: ['Fraud Detection', 'Medical Research', 'Patient Care', 'Operations'],
+      features: [
+        'Pre-trained models for healthcare applications',
+        'Training datasets with evidence bundles',
+        'Basic API access and documentation',
+        'Customer handles compute and infrastructure'
+      ]
+    },
+    full_service: {
+      base_price: 3499,
+      range: '£3,499 - £5,999',
+      currency: 'GBP',
+      period: 'monthly',
+      description: 'Healthcare & NHS - Full-Service',
+      categories: ['Fraud Detection', 'Medical Research', 'Patient Care', 'Operations'],
+      features: [
+        'Everything from self-service',
+        'AWS infrastructure setup',
+        'Compute management and deployment',
+        'SLA guarantees and dedicated support'
+      ]
+    }
+  },
+  financial: {
+    self_service: {
+      base_price: 1299,
+      range: '£1,299 - £1,999',
+      currency: 'GBP',
+      period: 'monthly',
+      description: 'Financial Services - Self-Service',
+      categories: ['Credit Risk', 'Market Risk', 'Compliance', 'Insurance'],
+      features: [
+        'Pre-trained models for financial applications',
+        'Training datasets with evidence bundles',
+        'Basic API access and documentation',
+        'Customer handles compute and infrastructure'
+      ]
+    },
+    full_service: {
+      base_price: 6999,
+      range: '£6,999 - £9,999',
+      currency: 'GBP',
+      period: 'monthly',
+      description: 'Financial Services - Full-Service',
+      categories: ['Credit Risk', 'Market Risk', 'Compliance', 'Insurance'],
+      features: [
+        'Everything from self-service',
+        'AWS infrastructure setup',
+        'Compute management and deployment',
+        'SLA guarantees and dedicated support'
+      ]
+    }
   }
 };
 
@@ -108,40 +168,48 @@ class MarketplaceUploadManager {
 
 const uploadManager = new MarketplaceUploadManager();
 
-// Enhanced data formatting for Finance Suite uploads
+// Enhanced data formatting for multi-industry uploads
 const formatDataForMarketplace = (data: ProcessedData[], platform: string, batchIndex: number = 0) => {
   const config = marketplaces[platform as keyof typeof marketplaces];
   
-  // Separate CREDRISE data for static dataset pricing
-  const credriseData = data.filter(item => item.suite === 'CREDRISE');
-  const otherSuitesData = data.filter(item => item.suite !== 'CREDRISE');
-  
+  // Determine pricing tier based on industry
+  let pricingTier = 'self_service'; // Default to self-service
+  if (data.some(item => item.industry === 'Automotive')) {
+    pricingTier = 'automotive';
+  } else if (data.some(item => item.industry === 'Healthcare')) {
+    pricingTier = 'healthcare';
+  } else if (data.some(item => item.industry === 'Financial')) {
+    pricingTier = 'financial';
+  }
+
   const basePayload = {
-    dataset_name: 'Finance Suite App - Unified Streaming Platform',
-    description: 'Comprehensive Finance data streaming across 8 suites with AI-powered analytics and bundled addons',
-    version: '2.0.0',
+    dataset_name: 'Multi-Industry Unified Dataset',
+    description: 'Comprehensive data streaming across multiple industries with AI-powered analytics',
+    version: '1.0.0',
     provider: 'AUSPEXI',
     contact: 'contact@auspexi.com',
     website: 'https://auspexi.com',
-    demo_url: 'https://finance.auspexi.com',
+    demo_url: 'https://data.auspexi.com',
     pricing: pricingTiers,
     data_format: 'JSON/CSV/Streaming',
     update_frequency: 'Real-time (every 20 minutes)',
-    finance_suites: ['INSUREAI', 'SHIELD', 'CREDRISE', 'TRADEMARKET', 'CASHFLOW', 'CONSUME', 'TAXGUARD', 'RISKSHIELD'],
-    bundled_addons: ['riskAnalysis', 'fraudDetection', 'complianceMonitoring', 'marketAnalysis', 'portfolioOptimization'],
+    industry_coverage: [...new Set(data.map(d => d.industry))],
     batch_info: {
       batch_index: batchIndex,
       batch_size: data.length,
       max_batch_size: config.batchSize,
       timestamp: new Date().toISOString(),
-      credrise_static_records: credriseData.length,
-      streaming_records: otherSuitesData.length
+      records_by_industry: data.reduce((acc, d) => {
+        acc[d.industry] = (acc[d.industry] || 0) + 1;
+        return acc;
+      }, {} as Record<string, number>),
+      pricing_tier: pricingTier
     },
     records: data.map(item => ({
       id: item.id,
       timestamp: item.timestamp,
       location: item.location,
-      suite: item.suite,
+      industry: item.industry,
       event: item.narrative.text.split(' ')[0].toLowerCase(), // Retaining event for narrative
       narrative: item.narrative.text,
       narrative_confidence: item.narrative.confidence,
@@ -150,15 +218,15 @@ const formatDataForMarketplace = (data: ProcessedData[], platform: string, batch
       risk_weight: item.risk_weight, // New field
       addons: item.addons,
       source: item.source,
-      pricing_model: item.suite === 'CREDRISE' ? 'static_dataset' : 'streaming_subscription'
+      pricing_model: pricingTier === 'full_service' ? 'full_service' : 'self_service'
     })),
     metadata: {
       total_records: data.length,
       last_updated: new Date().toISOString(),
       data_quality_score: 0.95,
       geographic_coverage: [...new Set(data.map(d => d.location))],
-      suite_distribution: data.reduce((acc, d) => {
-        acc[d.suite] = (acc[d.suite] || 0) + 1;
+      industry_distribution: data.reduce((acc, d) => {
+        acc[d.industry] = (acc[d.industry] || 0) + 1;
         return acc;
       }, {} as Record<string, number>),
       finance_metric_distribution: { // New distribution for finance metrics
@@ -187,47 +255,48 @@ const formatDataForMarketplace = (data: ProcessedData[], platform: string, batch
         ...basePayload,
         format: 'delta_table',
         schema_version: '2.0',
-        partition_columns: ['suite', 'location', 'timestamp'],
+        partition_columns: ['industry', 'location', 'timestamp'],
         optimization: {
-          z_order: ['timestamp', 'suite', 'location', 'credit_score'],
+          z_order: ['timestamp', 'industry', 'location', 'credit_score'],
           auto_optimize: true,
           auto_compact: true
         },
-        finance_suite_support: true
+        industry_support: true
       };
     
     case 'snowflake':
       return {
         ...basePayload,
-        warehouse: 'FINANCE_SUITE_WH',
-        database: 'FINANCE_DATA',
-        schema: 'UNIFIED_SUITES',
-        table_name: 'finance_suite_streaming',
-        clustering_keys: ['suite', 'timestamp', 'location'],
+        warehouse: 'MULTI_INDUSTRY_WH',
+        database: 'MULTI_INDUSTRY_DATA',
+        schema: 'UNIFIED_INDUSTRIES',
+        table_name: 'multi_industry_streaming',
+        clustering_keys: ['industry', 'timestamp', 'location'],
         time_travel_retention: 7
       };
     
     case 'datarade':
       return {
         ...basePayload,
-        category: 'Finance & Public Sector',
-        subcategory: 'Multi-Suite Analytics',
-        tags: ['finance', 'ai', 'streaming', 'credit', 'trading', 'cashflow', 'risk', 'compliance'],
+        category: 'Multi-Industry Analytics',
+        subcategory: 'Unified Data Stream',
+        tags: ['multi-industry', 'ai', 'streaming', 'credit', 'trading', 'cashflow', 'risk', 'compliance'],
         quality_score: 0.95,
         update_frequency_minutes: 20,
-        suite_coverage: 8
+        industry_coverage: [...new Set(data.map(d => d.industry))],
+        suite_coverage: 8 // This might need adjustment based on actual industry coverage
       };
     
     case 'brightdata':
       return {
         ...basePayload,
-        collection_method: 'MULTI_SUITE_STREAMING',
+        collection_method: 'MULTI_INDUSTRY_STREAMING',
         data_freshness: 'REAL_TIME',
         compliance: ['GDPR', 'CCPA', 'FCA', 'SEC', 'SOC2'],
         delivery_format: ['JSON', 'CSV', 'API', 'STREAMING', 'WEBHOOK'],
         geographic_scope: 'GLOBAL',
         language_support: ['EN'],
-        finance_certified: true
+        industry_certified: true
       };
     
     default:
@@ -475,7 +544,7 @@ export const getMarketplaceStatusOptimized = () => {
     key_set: !!config.key,
     rate_limit: config.rateLimit,
     batch_size: config.batchSize,
-    finance_suite_support: true,
+    industry_support: true,
     queue_stats: uploadManager.getQueue(platform) ? {
       size: uploadManager.getQueue(platform)!.size,
       pending: uploadManager.getQueue(platform)!.pending,

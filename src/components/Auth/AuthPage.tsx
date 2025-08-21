@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { assertSupabase } from '../../services/supabaseClient';
 import PlatformAccess from '../Billing/PlatformAccess';
+import AethergenDashboard from '../Dashboard/AethergenDashboard';
 
 const AuthPage: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -51,29 +52,51 @@ const AuthPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-white border rounded">
-      <h2 className="text-xl font-semibold mb-4">Account</h2>
+    <div>
       {userEmail ? (
-        <div className="space-y-3">
-          <div className="text-slate-800">Signed in as <span className="font-mono font-semibold">{userEmail}</span></div>
-          <button className="px-3 py-1 rounded bg-slate-700 text-white" onClick={logout}>Logout</button>
-          <div className="pt-4">
-            <PlatformAccess userEmail={userEmail} />
+        <AethergenDashboard userEmail={userEmail} onLogout={logout} />
+      ) : (
+        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center">
+          <div className="max-w-md w-full mx-auto p-8 bg-white rounded-2xl shadow-2xl">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold text-gray-900 mb-2">Welcome to Aethergen</h2>
+              <p className="text-gray-600">Sign in to access your synthetic data platform</p>
+            </div>
+            
+            <form onSubmit={sendMagicLink} className="space-y-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                <input
+                  type="email"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter your email address"
+                  required
+                />
+              </div>
+              
+              <button 
+                type="submit" 
+                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold py-3 px-4 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 transform hover:scale-105 shadow-lg"
+              >
+                Send Magic Link
+              </button>
+              
+              {status && (
+                <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                  <p className="text-sm text-blue-800 font-medium">{status}</p>
+                </div>
+              )}
+            </form>
+            
+            <div className="mt-8 text-center">
+              <p className="text-sm text-gray-500">
+                We'll send you a secure login link to your email
+              </p>
+            </div>
           </div>
         </div>
-      ) : (
-        <form onSubmit={sendMagicLink} className="space-y-3">
-          <label className="block text-sm text-slate-800 font-medium">Email</label>
-          <input
-            type="email"
-            className="border rounded px-3 py-2 w-full"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <button className="px-3 py-2 rounded bg-blue-600 text-white" type="submit">Send magic link</button>
-          {status && <div className="text-sm text-slate-700 font-medium">{status}</div>}
-        </form>
       )}
     </div>
   );

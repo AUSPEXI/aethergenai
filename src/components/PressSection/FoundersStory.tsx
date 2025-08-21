@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronLeft, ChevronRight, Calendar, MapPin, TrendingDown, Leaf, Rocket } from 'lucide-react';
 
 interface FoundersStoryProps {
   onContact: () => void;
@@ -13,8 +14,10 @@ const FoundersStory: React.FC<FoundersStoryProps> = ({ onContact }) => {
       title: "The Fall",
       subtitle: "25 Years, Then Everything Changed",
       description: "After a quarter-century relationship and business partnership ended, I needed time to rebuild. The universe had other plans.",
-      image: "/images/founders-story/fall.jpg",
-      icon: "💔",
+      image: "/1000001104 (1).jpg",
+      icon: Calendar,
+      color: "text-red-400",
+      bgColor: "bg-red-500/20",
       details: [
         "25-year relationship and business partnership ending",
         "Need for complete personal and professional reset",
@@ -25,8 +28,10 @@ const FoundersStory: React.FC<FoundersStoryProps> = ({ onContact }) => {
       title: "The Recovery",
       subtitle: "3 Years in Cairo, Finding Myself",
       description: "I moved to Cairo, Egypt for three years. Semi-retired, helping a Norwegian friend with digital marketing, and piecing back the parts of me I had compromised away.",
-      image: "/images/founders-story/cairo.jpg",
-      icon: "🌍",
+      image: "/1000000845.jpg",
+      icon: MapPin,
+      color: "text-blue-400",
+      bgColor: "bg-blue-500/20",
       details: [
         "3 years living in Cairo, Egypt",
         "Semi-retired lifestyle in affordable country",
@@ -34,26 +39,30 @@ const FoundersStory: React.FC<FoundersStoryProps> = ({ onContact }) => {
         "Personal healing and self-discovery journey"
       ]
     },
-    {
-      title: "The Descent",
-      subtitle: "Love, Crypto, and Everything Lost",
-      description: "I met my future wife and got engaged. Around the same time, I went crazy with crypto trading. When the market crashed, I tried to recoup losses with futures trading. In 3 days, I lost everything.",
-      image: "/images/founders-story/crypto.jpg",
-      icon: "📉",
-      details: [
-        "Meeting future wife and getting engaged",
-        "Aggressive cryptocurrency trading strategy",
-        "Market crash and temporary portfolio devastation",
-        "Futures trading attempt to recoup losses",
-        "Complete financial loss in just 3 days"
-      ]
-    },
+         {
+       title: "The Descent",
+       subtitle: "Crypto Madness and Everything Lost",
+       description: "I went crazy with crypto trading. When the market crashed, I tried to recoup losses with futures trading. In 3 days, I lost everything.",
+       image: "/1000000814.jpg",
+       icon: TrendingDown,
+       color: "text-orange-400",
+       bgColor: "bg-orange-500/20",
+       details: [
+         "Aggressive cryptocurrency trading strategy",
+         "Market crash and temporary portfolio devastation",
+         "Futures trading attempt to recoup losses",
+         "Complete financial loss in just 3 days",
+         "Rock bottom financial situation"
+       ]
+     },
     {
       title: "The Grind",
       subtitle: "10 Hours Gardening + 120 Hours Building",
       description: "I had just enough for a flight back to the UK. For over two years, I worked 10 hours a day gardening, then came home and worked on Auspexi for another 10+ hours. 120-hour weeks without complaint.",
-      image: "/images/founders-story/gardening.jpg",
-      icon: "🌱",
+      image: "/20250702_153729.jpg",
+      icon: Leaf,
+      color: "text-green-400",
+      bgColor: "bg-green-500/20",
       details: [
         "Return to UK with only flight money left",
         "2+ years of 10-hour daily gardening work",
@@ -62,20 +71,22 @@ const FoundersStory: React.FC<FoundersStoryProps> = ({ onContact }) => {
         "Facing injuries and pain without complaint"
       ]
     },
-    {
-      title: "The Rise",
-      subtitle: "1 Billion Records, Global Leadership",
-      description: "Today, I've given up gardening and am leading a tech revolution through synthetic data. I've invented 11 proprietary inventions and reinvented the wheel. Now it's time to get capital, support, customers, and show the world what I can do.",
-      image: "/images/founders-story/success.jpg",
-      icon: "🚀",
-      details: [
-        "1 BILLION synthetic records generated",
-        "11 proprietary inventions developed",
-        "Global leadership in synthetic data",
-        "Ready for capital and expansion",
-        "More revolutionary ideas in development"
-      ]
-    }
+         {
+       title: "The Rise",
+       subtitle: "Love, 1 Billion Records, Global Leadership",
+       description: "I met my future wife and got engaged. Today, I've given up gardening and am leading a tech revolution through synthetic data. I've invented 11 proprietary inventions and reinvented the wheel. Now it's time to get capital, support, customers, and show the world what I can do.",
+       image: "/1000001104 (1).jpg",
+       icon: Rocket,
+       color: "text-purple-400",
+       bgColor: "bg-purple-500/20",
+       details: [
+         "Meeting future wife and getting engaged",
+         "1 BILLION synthetic records generated",
+         "11 proprietary inventions developed",
+         "Global leadership in synthetic data",
+         "Ready for capital and expansion"
+       ]
+     }
   ];
 
   const handleChapterChange = (direction: 'next' | 'prev') => {
@@ -110,27 +121,42 @@ const FoundersStory: React.FC<FoundersStoryProps> = ({ onContact }) => {
           </p>
         </motion.div>
 
-        {/* Story Navigation */}
+        {/* Stepper Progress Bar */}
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="flex justify-center mb-12"
+          className="max-w-4xl mx-auto mb-16"
         >
-          <div className="flex space-x-2 bg-white/10 backdrop-blur-lg rounded-full p-2 border border-white/20">
-            {storyChapters.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentChapter(index)}
-                className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                  currentChapter === index ? 'bg-blue-400 scale-125' : 'bg-white/30 hover:bg-white/50'
-                }`}
-              />
+          <div className="flex items-center justify-between">
+            {storyChapters.map((chapter, index) => (
+              <div key={index} className="flex flex-col items-center">
+                <button
+                  onClick={() => setCurrentChapter(index)}
+                  className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 mb-3 ${
+                    index <= currentChapter 
+                      ? 'bg-blue-500 text-white shadow-lg' 
+                      : 'bg-white/20 text-white/60 hover:bg-white/30'
+                  }`}
+                >
+                  <chapter.icon className="w-6 h-6" />
+                </button>
+                <div className={`text-xs text-center max-w-20 ${
+                  index <= currentChapter ? 'text-blue-400' : 'text-white/60'
+                }`}>
+                  {chapter.title}
+                </div>
+                {index < storyChapters.length - 1 && (
+                  <div className={`w-16 h-0.5 mt-3 ${
+                    index < currentChapter ? 'bg-blue-500' : 'bg-white/20'
+                  }`} />
+                )}
+              </div>
             ))}
           </div>
         </motion.div>
 
-        {/* Current Chapter */}
+        {/* Current Chapter Content */}
         <motion.div
           key={currentChapter}
           initial={{ opacity: 0, x: 50 }}
@@ -143,7 +169,9 @@ const FoundersStory: React.FC<FoundersStoryProps> = ({ onContact }) => {
             {/* Story Content */}
             <div className="space-y-6">
               <div className="text-center lg:text-left">
-                <div className="text-6xl mb-4">{currentStory.icon}</div>
+                <div className={`inline-flex items-center justify-center w-16 h-16 rounded-full ${currentStory.bgColor} mb-6`}>
+                  <currentStory.icon className={`w-8 h-8 ${currentStory.color}`} />
+                </div>
                 <h3 className="text-4xl md:text-5xl font-bold mb-4 text-blue-400">
                   {currentStory.title}
                 </h3>
@@ -175,13 +203,17 @@ const FoundersStory: React.FC<FoundersStoryProps> = ({ onContact }) => {
             {/* Story Image */}
             <div className="relative">
               <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-6 border border-white/20">
-                <div className="aspect-square bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-2xl flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="text-8xl mb-4">{currentStory.icon}</div>
-                    <p className="text-gray-300 text-lg">
-                      {currentStory.title} - Chapter {currentChapter + 1}
-                    </p>
-                  </div>
+                <div className="aspect-square rounded-2xl overflow-hidden">
+                  <img 
+                    src={currentStory.image} 
+                    alt={currentStory.title}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="text-center mt-4">
+                  <p className="text-gray-300 text-lg">
+                    Chapter {currentChapter + 1} of {storyChapters.length}
+                  </p>
                 </div>
               </div>
             </div>
@@ -198,94 +230,56 @@ const FoundersStory: React.FC<FoundersStoryProps> = ({ onContact }) => {
           <button
             onClick={() => handleChapterChange('prev')}
             disabled={currentChapter === 0}
-            className={`px-8 py-4 rounded-full text-lg font-bold transition-all duration-300 ${
+            className={`flex items-center px-6 py-3 rounded-lg font-semibold transition-all duration-300 ${
               currentChapter === 0
-                ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
-                : 'bg-white/10 backdrop-blur-lg hover:bg-white/20 text-white border border-white/30 hover:scale-105'
+                ? 'bg-white/10 text-white/40 cursor-not-allowed'
+                : 'bg-white/20 text-white hover:bg-white/30 hover:scale-105'
             }`}
           >
-            ← Previous Chapter
+            <ChevronLeft className="w-5 h-5 mr-2" />
+            Previous
           </button>
 
           <div className="text-center">
-            <p className="text-gray-400 text-sm">Chapter {currentChapter + 1} of {storyChapters.length}</p>
-            <p className="text-white font-semibold">{currentStory.title}</p>
+            <div className="text-2xl font-bold text-blue-400">
+              {currentChapter + 1} / {storyChapters.length}
+            </div>
+            <div className="text-sm text-gray-400">Chapter Progress</div>
           </div>
 
           <button
             onClick={() => handleChapterChange('next')}
             disabled={currentChapter === storyChapters.length - 1}
-            className={`px-8 py-4 rounded-full text-lg font-bold transition-all duration-300 ${
+            className={`flex items-center px-6 py-3 rounded-lg font-semibold transition-all duration-300 ${
               currentChapter === storyChapters.length - 1
-                ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
-                : 'bg-white/10 backdrop-blur-lg hover:bg-white/20 text-white border border-white/30 hover:scale-105'
+                ? 'bg-white/10 text-white/40 cursor-not-allowed'
+                : 'bg-white/20 text-white hover:bg-white/30 hover:scale-105'
             }`}
           >
-            Next Chapter →
+            Next
+            <ChevronRight className="w-5 h-5 ml-2" />
           </button>
-        </motion.div>
-
-        {/* Key Facts */}
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.6 }}
-          className="mt-20"
-        >
-          <h3 className="text-3xl font-bold text-center mb-12 text-white">
-            The Numbers That Define This Journey
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20 text-center">
-              <div className="text-4xl font-bold text-blue-400 mb-2">25</div>
-              <div className="text-lg font-semibold mb-2 text-white">Years Lost</div>
-              <div className="text-sm text-gray-300">Relationship & partnership</div>
-            </div>
-            <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20 text-center">
-              <div className="text-4xl font-bold text-blue-400 mb-2">3</div>
-              <div className="text-lg font-semibold mb-2 text-white">Years in Cairo</div>
-              <div className="text-sm text-gray-300">Healing & self-discovery</div>
-            </div>
-            <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20 text-center">
-              <div className="text-4xl font-bold text-blue-400 mb-2">120</div>
-              <div className="text-lg font-semibold mb-2 text-white">Hour Weeks</div>
-              <div className="text-sm text-gray-300">Gardening + building</div>
-            </div>
-            <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20 text-center">
-              <div className="text-4xl font-bold text-blue-400 mb-2">1B</div>
-              <div className="text-lg font-semibold mb-2 text-white">Records Generated</div>
-              <div className="text-sm text-gray-300">World record achievement</div>
-            </div>
-          </div>
         </motion.div>
 
         {/* Call to Action */}
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.8 }}
+          transition={{ duration: 0.8, delay: 0.6 }}
           className="text-center mt-20"
         >
-          <h3 className="text-3xl font-bold mb-8 text-white">
-            Ready to Invest in This Story of Resilience?
+          <h3 className="text-3xl font-bold text-white mb-6">
+            Ready to Meet the Founder Behind This Story?
           </h3>
-          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-            <button
-              onClick={onContact}
-              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-4 px-8 rounded-full text-lg transition-all duration-300 hover:scale-105 shadow-2xl"
-            >
-              📞 Contact the Founder
-            </button>
-            <button
-              onClick={() => setCurrentChapter(4)}
-              className="bg-white/10 backdrop-blur-lg hover:bg-white/20 text-white font-bold py-4 px-8 rounded-full text-lg border border-white/30 transition-all duration-300 hover:scale-105"
-            >
-              🚀 See the Results
-            </button>
-          </div>
-          <p className="text-gray-400 mt-6 text-sm">
-            This founder has proven they can survive ANYTHING • Ready to build a $500B+ company
+          <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
+            Connect with me to discuss partnerships, investments, or simply to learn more about this incredible journey.
           </p>
+          <button
+            onClick={onContact}
+            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-4 px-8 rounded-full text-lg transition-all duration-300 hover:scale-105 shadow-2xl"
+          >
+            Let's Connect
+          </button>
         </motion.div>
       </div>
     </div>

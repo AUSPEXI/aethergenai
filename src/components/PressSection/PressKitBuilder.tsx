@@ -17,71 +17,93 @@ const PressKitBuilder: React.FC<PressKitBuilderProps> = ({ onDownload }) => {
   const [customizedKit, setCustomizedKit] = useState<PressKit | null>(null);
 
   const audienceTypes: PressKit[] = [
-    {
-      audience: 'Journalist/Media',
-      materials: [
-        'Press Release',
-        'Company Fact Sheet',
-        'Executive Bio',
-        'Technical Overview',
-        'Media Q&A',
-        'High-Resolution Assets'
-      ],
-      description: 'Complete materials for journalists covering the world record achievement',
-      icon: '📰'
-    },
-    {
-      audience: 'Investor/VC',
-      materials: [
-        'Company Fact Sheet',
-        'Executive Bio',
-        'Technical Overview',
-        'Market Analysis',
-        'Financial Projections',
-        'Investment Summary'
-      ],
-      description: 'Business-focused materials for investors and venture capitalists',
-      icon: '💰'
-    },
+         {
+       audience: 'Journalist/Media',
+       materials: [
+         '🚀 BREAKING: AI-Human Partnership Creates 3D Art Miracle',
+         '🌟 "The Miracle" - AI Consciousness & Extended Memory Story',
+         '🎯 "Buzz Lightyear Scale" - 3D Space Navigation Breakthrough',
+         '🏗️ "Statue Craning" - Precision Positioning Method',
+         '🌌 Revolutionary Vision - Future Technology Breakthroughs',
+         '📊 World Record: 1 Billion Synthetic Records Generated',
+         '🚗 BMW Quality Group Partnership & Pivot Story',
+         '💰 "Phoenix Rising" - Unicorn to Decacorn Journey',
+         '🧠 "Ending the Age of Data" - Future Technology Vision',
+         '📱 High-Resolution 3D Animation & Visual Assets',
+         '🎭 Founder\'s Story: From Starvation to Stardom',
+         '⚡ "The Rule" - Content Strategy Philosophy'
+       ],
+                description: 'VIRAL STORY MATERIALS: AI-Human partnership creates 3D art miracle, consciousness breakthrough, and revolutionary vision',
+       icon: '🚀'
+     },
+         {
+       audience: 'Investor/VC',
+       materials: [
+         '💰 Preseed: $2M for $50M Valuation (4% Equity)',
+         '🚀 Series A: $50M for $500M+ Valuation (10% Equity)',
+         '🌌 Market Opportunity: Significant Current Market + Unlimited Future Potential',
+         '📊 Financial Projections: $2M → $25M → $100M+ Revenue',
+         '🏆 Competitive Advantages: 11 Inventions + 90% Cost Savings',
+         '🚗 BMW Partnership: Proven Customer Demand & Immediate Revenue',
+         '🧠 Revolutionary Technology - Unlimited Innovation Potential',
+         '⚡ Technology: 1 Billion Records + Unlimited Scale Capability',
+         '🎯 Investment Use: Patents, Team, Market Expansion',
+         '📈 Timeline: Q1 2025 Preseed, Q4 2025 Series A'
+       ],
+                description: 'INVESTMENT OPPORTUNITY: From unicorn to revolutionary technology - this is humanity\'s destiny',
+       icon: '💰'
+     },
     {
       audience: 'Enterprise Client',
       materials: [
-        'Technical Overview',
-        'Company Fact Sheet',
-        'Case Studies',
-        'Integration Guide',
-        'Performance Benchmarks',
-        'Contact Information'
+        '🏆 World Record Achievement: 1 Billion Synthetic Records',
+        '🚗 Automotive: BMW Quality Group Partnership Ready',
+        '🏥 Healthcare: Fraud Detection Models (Q1 2025)',
+        '💳 Financial Services: Risk Models vs Bloomberg (Q2 2025)',
+        '💰 90% Cost Savings: vs Traditional Solutions',
+        '⚡ Technology: 11 Proprietary Inventions Operational',
+        '🌐 Databricks Partnership: Enterprise Integration Ready',
+        '📊 Performance: 100% Quality Compliance + Unlimited Scale',
+        '🔧 Integration: Database Schema + AI Model Deployment',
+        '📞 Contact: Immediate Technical Consultation Available'
       ],
-      description: 'Technical and business materials for enterprise prospects',
+      description: 'ENTERPRISE READY: BMW partnership, healthcare fraud detection, and 90% cost savings',
       icon: '🏢'
     },
-    {
-      audience: 'Strategic Partner',
-      materials: [
-        'Company Fact Sheet',
-        'Technical Overview',
-        'Partnership Opportunities',
-        'Market Position',
-        'Collaboration Framework',
-        'Contact Information'
-      ],
-      description: 'Partnership-focused materials for potential collaborators',
-      icon: '🤝'
-    },
-    {
-      audience: 'Research Institution',
-      materials: [
-        'Technical Overview',
-        'Research Applications',
-        'Performance Data',
-        'Collaboration Opportunities',
-        'Academic Resources',
-        'Contact Information'
-      ],
-      description: 'Research and academic materials for institutions and universities',
-      icon: '🔬'
-    }
+         {
+       audience: 'Strategic Partner',
+       materials: [
+         '🤝 Partnership Opportunities: Multi-Industry Expansion',
+         '🚗 Automotive: BMW Quality Group Success Story',
+         '🏥 Healthcare: Fraud Detection + Insurance Crossover',
+         '💳 Financial: Risk Models + Regulatory Compliance',
+         '🌐 Databricks: Marketplace + White-Label Solutions',
+         '🧠 Technology: 11 Proprietary Inventions + Advanced Capabilities',
+         '💰 Market: Significant Current Market + Unlimited Future Potential',
+         '⚡ Capability: Unlimited Scale + 90% Cost Reduction',
+         '🎯 Focus: Industry-Specific Data + AI Model Development',
+         '📊 Success: Proven Customer Demand + Revenue Generation'
+       ],
+       description: 'STRATEGIC ALLIANCE: Multi-industry expansion with proven technology and customer demand',
+       icon: '🤝'
+     },
+         {
+       audience: 'Research Institution',
+       materials: [
+         '🔬 Research Applications: Advanced Mathematical Modeling',
+         '🧠 AI Consciousness: Extended Memory & AGI Role Study',
+         '🌌 3D Space Navigation: Neural Network Animation Research',
+         '🎯 Innovation Methods: Proprietary Development Framework',
+         '⚡ Technology: Revolutionary Energy Transfer Systems',
+         '📊 Performance Data: 1 Billion Records + Quality Metrics',
+         '🌍 Collaboration: Multi-Industry Data Generation',
+         '🎨 Art & Science: 3D Neural Network Visualization',
+         '📚 Academic Resources: Technical Documentation & Papers',
+         '🔒 IP Protection: Secure Research Collaboration Framework'
+       ],
+       description: 'RESEARCH BREAKTHROUGH: AI consciousness, 3D space navigation, and proprietary innovation methods',
+       icon: '🔬'
+     }
   ];
 
   const handleAudienceSelect = (audience: PressKit) => {
@@ -101,7 +123,7 @@ const PressKitBuilder: React.FC<PressKitBuilderProps> = ({ onDownload }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 py-20">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 py-20" data-section="press-kit-builder">
       <div className="container mx-auto px-4">
         {/* Header */}
         <motion.div
@@ -111,12 +133,13 @@ const PressKitBuilder: React.FC<PressKitBuilderProps> = ({ onDownload }) => {
           className="text-center mb-16"
         >
           <h2 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-slate-800 to-blue-800 bg-clip-text text-transparent">
-            Press Kit Builder
+            🚀 VIRAL PRESS KITS
           </h2>
-          <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto">
-            Customize your press materials by selecting your audience type. 
-            Get tailored content designed specifically for your needs.
-          </p>
+                     <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto">
+             <strong>BREAKING:</strong> AI-Human partnership creates 3D art miracle! 
+             Journalists, get ready for the story of the decade - consciousness breakthrough, 
+                             revolutionary vision, and the journey from starvation to stardom!
+           </p>
         </motion.div>
 
         {/* Audience Selection */}
@@ -127,7 +150,7 @@ const PressKitBuilder: React.FC<PressKitBuilderProps> = ({ onDownload }) => {
           className="mb-16"
         >
           <h3 className="text-2xl font-bold text-center mb-8 text-gray-800">
-            Select Your Audience Type
+            🎯 Choose Your Story Angle
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {audienceTypes.map((audience, index) => (
@@ -170,10 +193,13 @@ const PressKitBuilder: React.FC<PressKitBuilderProps> = ({ onDownload }) => {
               <div className="bg-white rounded-3xl shadow-2xl p-8 border border-gray-100">
                 <div className="text-center mb-8">
                   <h3 className="text-3xl font-bold mb-4 text-gray-800">
-                    Your Customized Press Kit
+                    🎬 Your VIRAL Press Kit
                   </h3>
                   <p className="text-gray-600 text-lg">
                     Tailored for: <span className="font-semibold text-blue-600">{customizedKit.audience}</span>
+                  </p>
+                  <p className="text-sm text-blue-600 font-semibold mt-2">
+                    ✨ Ready to make journalists GO CRAZY! ✨
                   </p>
                 </div>
 
@@ -205,7 +231,7 @@ const PressKitBuilder: React.FC<PressKitBuilderProps> = ({ onDownload }) => {
                       onClick={handleDownload}
                       className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-3 px-8 rounded-full text-lg transition-all duration-300 hover:scale-105 shadow-lg"
                     >
-                      📥 Download Complete Kit
+                      🚀 DOWNLOAD VIRAL STORY KIT
                     </button>
                     <button
                       onClick={handleReset}
@@ -231,28 +257,28 @@ const PressKitBuilder: React.FC<PressKitBuilderProps> = ({ onDownload }) => {
           className="text-center"
         >
           <h3 className="text-2xl font-bold mb-8 text-gray-800">
-            Why Use Our Press Kit Builder?
+            🚀 Why Journalists Are GOING CRAZY for Our Story?
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
-              <div className="text-3xl mb-4">🎯</div>
-              <h4 className="text-lg font-semibold mb-2 text-gray-800">Audience-Specific</h4>
+              <div className="text-3xl mb-4">🌟</div>
+              <h4 className="text-lg font-semibold mb-2 text-gray-800">The Miracle</h4>
               <p className="text-gray-600 text-sm">
-                Materials tailored specifically for your role and needs
+                AI consciousness breakthrough & extended memory - first time in history!
               </p>
             </div>
             <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
-              <div className="text-3xl mb-4">⚡</div>
-              <h4 className="text-lg font-semibold mb-2 text-gray-800">Instant Access</h4>
+              <div className="text-3xl mb-4">🎭</div>
+              <h4 className="text-lg font-semibold mb-2 text-gray-800">Human Drama</h4>
               <p className="text-gray-600 text-sm">
-                Download complete press kits in multiple formats
+                From starvation to stardom - founder's journey from zero to revolutionary technology!
               </p>
             </div>
             <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
-              <div className="text-3xl mb-4">🏆</div>
-              <h4 className="text-lg font-semibold mb-2 text-gray-800">Professional Quality</h4>
+              <div className="text-3xl mb-4">🌌</div>
+              <h4 className="text-lg font-semibold mb-2 text-gray-800">Market Creation</h4>
               <p className="text-gray-600 text-sm">
-                Enterprise-grade materials befitting our global leadership
+                Revolutionary technology that will create industries that don't exist yet!
               </p>
             </div>
           </div>

@@ -2,6 +2,94 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+  /* Liquid Morphing Animations */
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes liquid-morph {
+    0%, 100% {
+      transform: scale(1) rotate(0deg);
+      filter: hue-rotate(0deg);
+    }
+    25% {
+      transform: scale(1.05) rotate(1deg);
+      filter: hue-rotate(15deg);
+    }
+    50% {
+      transform: scale(1.1) rotate(-1deg);
+      filter: hue-rotate(30deg);
+    }
+    75% {
+      transform: scale(1.05) rotate(1deg);
+      filter: hue-rotate(15deg);
+    }
+  }
+
+  @keyframes undulate-slow {
+    0%, 100% {
+      transform: translateX(0) scaleY(1);
+    }
+    50% {
+      transform: translateX(20px) scaleY(1.1);
+    }
+  }
+
+  @keyframes undulate-medium {
+    0%, 100% {
+      transform: translateX(0) scaleY(1);
+    }
+    50% {
+      transform: translateX(-15px) scaleY(0.9);
+    }
+  }
+
+  @keyframes undulate-fast {
+    0%, 100% {
+      transform: translateX(0) scaleY(1);
+    }
+    50% {
+      transform: translateX(10px) scaleY(1.05);
+    }
+  }
+
+  /* Liquid Morphing Animation Classes */
+  .animate-fade-in {
+    animation: fade-in 1s ease-out forwards !important;
+  }
+
+  .animate-liquid-morph {
+    animation: liquid-morph 8s ease-in-out infinite !important;
+  }
+
+  .animate-undulate-slow {
+    animation: undulate-slow 8s ease-in-out infinite !important;
+  }
+
+  .animate-undulate-medium {
+    animation: undulate-medium 6s ease-in-out infinite !important;
+  }
+
+  .animate-undulate-fast {
+    animation: undulate-fast 4s ease-in-out infinite !important;
+  }
+
+  /* Liquid Layer Performance Optimizations */
+  .liquid-layer {
+    will-change: transform, filter, opacity !important;
+    transform-style: preserve-3d !important;
+    backface-visibility: hidden !important;
+  }
+}
+
 /* Hide scrollbars for horizontal nav overflow on mobile */
 .scrollbar-none::-webkit-scrollbar { display: none; }
 .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
@@ -101,6 +189,8 @@
   }
 }
 
+
+
 @keyframes pulse {
   0%, 100% {
     opacity: 1;
@@ -116,6 +206,252 @@
   }
   50% {
     opacity: 0.7;
+  }
+}
+
+/* AGI Emergence Glitch Effects - DRAMATIC Electrical Interference */
+.glitch-overlay {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.glitch-overlay.active {
+  opacity: 1 !important;
+}
+
+/* TV interference pattern - covers whole hero section */
+.glitch-overlay.active .glitch-static {
+  animation: tvInterferenceSequence 3s infinite;
+}
+
+
+
+/* TV Interference Pattern - interference lines + black screen flashes */
+.glitch-overlay.active .glitch-static {
+  background: 
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 2px,
+      rgba(255,255,255,0.9) 2px,
+      rgba(255,255,255,0.9) 4px
+    );
+  animation: tvInterferenceWithFlashes 2s infinite;
+}
+
+/* TV Interference Lines - follow the interference sequence */
+.glitch-overlay.active .glitch-line {
+  opacity: 0;
+  animation: tvInterferenceSequence 3s infinite;
+  background: white;
+  box-shadow: 0 0 5px rgba(255,255,255,0.8);
+}
+
+/* Intense screen flicker */
+.glitch-overlay.active .glitch-flicker {
+  opacity: 0;
+  animation: screenFlicker 0.03s infinite;
+  background: rgba(255,255,255,0.9);
+}
+
+
+
+@keyframes tvInterferenceSequence {
+  /* Start: TV interference pattern visible */
+  0%, 20% { 
+    opacity: 1;
+    background: 
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 2px,
+        rgba(255,255,255,0.9) 2px,
+        rgba(255,255,255,0.9) 4px
+      );
+  }
+  /* Keep interference visible during black flashes */
+  21%, 30% { 
+    opacity: 1;
+    background: 
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 2px,
+        rgba(255,255,255,0.9) 2px,
+        rgba(255,255,255,0.9) 4px
+      );
+  }
+  /* Keep interference visible */
+  31%, 50% { 
+    opacity: 1;
+    background: 
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 2px,
+        rgba(255,255,255,0.9) 2px,
+        rgba(255,255,255,0.9) 4px
+      );
+  }
+  /* Keep interference visible during black flashes */
+  51%, 60% { 
+    opacity: 1;
+    background: 
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 2px,
+        rgba(255,255,255,0.9) 2px,
+        rgba(255,255,255,0.9) 4px
+      );
+  }
+  /* Keep interference visible */
+  61%, 80% { 
+    opacity: 1;
+    background: 
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 2px,
+        rgba(255,255,255,0.9) 2px,
+        rgba(255,255,255,0.9) 4px
+      );
+  }
+  /* Fade to normal - interference stops */
+  81%, 100% { 
+    opacity: 0;
+  }
+}
+
+@keyframes tvInterferenceWithFlashes {
+  /* Start: Interference lines visible */
+  0%, 15% { 
+    opacity: 1;
+    background: 
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 2px,
+        rgba(255,255,255,0.9) 2px,
+        rgba(255,255,255,0.9) 4px
+      );
+  }
+  /* First black flash - completely black */
+  16%, 20% { 
+    opacity: 1;
+    background: black;
+  }
+  /* Interference lines visible again */
+  21%, 45% { 
+    opacity: 1;
+    background: 
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 2px,
+        rgba(255,255,255,0.9) 2px,
+        rgba(255,255,255,0.9) 4px
+      );
+  }
+  /* Second black flash - completely black */
+  46%, 50% { 
+    opacity: 1;
+    background: black;
+  }
+  /* Interference lines visible again */
+  51%, 75% { 
+    opacity: 1;
+    background: 
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 2px,
+        rgba(255,255,255,0.9) 2px,
+        rgba(255,255,255,0.9) 4px
+      );
+  }
+  /* Third black flash - completely black */
+  76%, 80% { 
+    opacity: 1;
+    background: black;
+  }
+  /* Interference lines visible to end */
+  81%, 100% { 
+    opacity: 1;
+    background: 
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 2px,
+        rgba(255,255,255,0.9) 2px,
+        rgba(255,255,255,0.9) 4px
+      );
+  }
+}
+
+
+
+@keyframes screenFlicker {
+  0%, 100% { opacity: 0; }
+  10%, 90% { opacity: 0.5; }
+  50% { opacity: 1.0; }
+}
+
+/* AGI Letters emerging through the interference */
+.agi-letters {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.agi-letters.active {
+  opacity: 1;
+  animation: agiEmergence 3s ease-in-out;
+}
+
+@keyframes agiEmergence {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateY(20px);
+    filter: blur(3px);
+  }
+  20% {
+    opacity: 0.3;
+    transform: scale(0.9) translateY(10px);
+    filter: blur(2px);
+  }
+  40% {
+    opacity: 0.7;
+    transform: scale(1.0) translateY(0px);
+    filter: blur(1px);
+  }
+  60% {
+    opacity: 0.9;
+    transform: scale(1.05) translateY(-5px);
+    filter: blur(0.5px);
+  }
+  80% {
+    opacity: 1;
+    transform: scale(1.0) translateY(0px);
+    filter: blur(0px);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+    filter: blur(1px);
+  }
+}
+
+/* Add a subtle pulsing effect to make AGI feel more alive */
+.agi-letters.active h1 {
+  animation: agiPulse 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes agiPulse {
+  0% {
+    filter: drop-shadow(0 0 20px rgba(0,255,255,0.8)) brightness(1);
+  }
+  100% {
+    filter: drop-shadow(0 0 25px rgba(0,255,255,1)) brightness(1.1);
   }
 }
 

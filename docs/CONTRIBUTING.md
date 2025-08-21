@@ -137,16 +137,16 @@ VITE_BRIGHTDATA_API_KEY=your_brightdata_key
 ## 📈 Marketplace Integration
 
 ### Supported Platforms
-- **Databricks Marketplace**: $1,800 static, $600/month streaming
+- **Databricks Marketplace**: Enterprise integration with strategic partnership
 - **Snowflake Data Marketplace**: Enterprise pricing
 - **Datarade Platform**: Custom pricing
 - **Bright Data Exchange**: Volume-based pricing
 
 ### Upload Requirements
-- All 8 finance suites supported
-- 5 bundled addons included
-- zk-SNARK proof validation
-- FCA/SEC compliance certification
+- Multi-industry synthetic data support (Automotive, Healthcare, Financial Services)
+- Self-service and full-service deployment options
+- Evidence bundles with business proof validation
+- Enterprise compliance certification
 
 ## 🤝 Community Guidelines
 

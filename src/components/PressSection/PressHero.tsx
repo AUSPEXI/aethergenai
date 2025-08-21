@@ -2,11 +2,21 @@ import React from 'react';
 import { motion } from 'framer-motion';
 
 interface PressHeroProps {
-  onContactPress: () => void;
-  onDownloadPress: () => void;
+  onDownloadPress?: () => void;
+  onContactPress?: () => void;
 }
 
-const PressHero: React.FC<PressHeroProps> = ({ onContactPress, onDownloadPress }) => {
+const PressHero: React.FC<PressHeroProps> = ({ onDownloadPress, onContactPress }) => {
+  const scrollToPressKitBuilder = () => {
+    const pressKitSection = document.querySelector('[data-section="press-kit-builder"]');
+    if (pressKitSection) {
+      pressKitSection.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+  };
+
   const worldRecordMetrics = [
     {
       label: 'Records Generated',
@@ -145,10 +155,10 @@ const PressHero: React.FC<PressHeroProps> = ({ onContactPress, onDownloadPress }
         >
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
             <button
-              onClick={onDownloadPress}
+              onClick={scrollToPressKitBuilder}
               className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-4 px-8 rounded-full text-lg transition-all duration-300 hover:scale-105 shadow-2xl"
             >
-              📥 Download Press Kit
+              🎯 View Press Pack Builder
             </button>
             <button
               onClick={onContactPress}
@@ -158,7 +168,7 @@ const PressHero: React.FC<PressHeroProps> = ({ onContactPress, onDownloadPress }
             </button>
           </div>
           <p className="text-gray-400 mt-6 text-sm">
-            Press materials available immediately • Response within 24 hours
+            Customize your press materials by audience type • Response within 24 hours
           </p>
         </motion.div>
       </div>

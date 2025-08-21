@@ -11,7 +11,7 @@ Usage (in Databricks):
    - Load CSV(s) from landing_uri
    - Write Delta to delta_base_uri/dataset_name/
    - Register table in Unity Catalog
-   - Add comments + properties (ε, synthetic ratio, evidence URI)
+   - Add comments + properties (privacy settings, synthetic ratio, evidence URI)
    - Create a preview table via TABLESAMPLE
    - Emit a lightweight profile JSON (saved to evidence_uri)
 
@@ -25,14 +25,14 @@ Notes:
 
 # Widgets for parameterization
 dbutils.widgets.text("dataset_name", "healthcare_synth_v1", "dataset_name")
-dbutils.widgets.text("landing_uri", "s3://aethergen-landing/healthcare_v1/*.csv", "landing_uri")
-dbutils.widgets.text("delta_base_uri", "s3://aethergen-datasets", "delta_base_uri")
+dbutils.widgets.text("landing_uri", "s3://your-landing-bucket/healthcare_v1/*.csv", "landing_uri")
+dbutils.widgets.text("delta_base_uri", "s3://your-datasets-bucket", "delta_base_uri")
 dbutils.widgets.text("catalog_name", "aethergen", "catalog_name")
 dbutils.widgets.text("schema_name", "public", "schema_name")
 dbutils.widgets.text("version", "v1", "version")
-dbutils.widgets.text("epsilon", "0.1", "epsilon")
+dbutils.widgets.text("privacy_level", "high", "privacy_level")
 dbutils.widgets.text("synthetic_ratio", "0.98", "synthetic_ratio")
-dbutils.widgets.text("evidence_uri", "s3://aethergen-datasets/evidence/healthcare_v1.json", "evidence_uri")
+dbutils.widgets.text("evidence_uri", "s3://your-evidence-bucket/healthcare_v1.json", "evidence_uri")
 dbutils.widgets.text("preview_percent", "1", "preview_percent")
 
 # COMMAND ----------
@@ -46,7 +46,7 @@ delta_base_uri = dbutils.widgets.get("delta_base_uri").strip().rstrip("/")
 catalog_name = dbutils.widgets.get("catalog_name").strip()
 schema_name = dbutils.widgets.get("schema_name").strip()
 version = dbutils.widgets.get("version").strip()
-epsilon = dbutils.widgets.get("epsilon").strip()
+privacy_level = dbutils.widgets.get("privacy_level").strip()
 synthetic_ratio = dbutils.widgets.get("synthetic_ratio").strip()
 evidence_uri = dbutils.widgets.get("evidence_uri").strip()
 preview_percent_str = dbutils.widgets.get("preview_percent").strip()
@@ -73,7 +73,7 @@ print({
     "catalog_name": catalog_name,
     "schema_name": schema_name,
     "version": version,
-    "epsilon": epsilon,
+    "privacy_level": privacy_level,
     "synthetic_ratio": synthetic_ratio,
     "evidence_uri": evidence_uri,
     "preview_percent": preview_percent,

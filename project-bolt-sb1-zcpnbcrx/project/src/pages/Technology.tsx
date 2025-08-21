@@ -217,66 +217,66 @@ const Technology = () => {
       </section>
 
       {/* Current Implementation Notice */}
-      <section className="py-16 bg-gradient-to-br from-green-50 to-blue-50">
+      <section className="py-16 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-white border border-green-200 rounded-xl p-8 shadow-md">
+          <div className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-xl p-8">
             <div className="flex items-start">
               <div className="flex items-center mr-4">
                 <Lock className="h-8 w-8 text-green-600 mr-2" />
                 <Brain className="h-8 w-8 text-green-600" />
               </div>
               <div>
-                <h3 className="text-2xl font-bold text-slate-900 mb-4">Robust AI with Gold-Standard Security</h3>
+                <h3 className="text-2xl font-bold text-white mb-4">Robust AI with Gold-Standard Security</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <h4 className="text-lg font-semibold text-slate-900 mb-3">Current Implementation (v2.0)</h4>
-                    <ul className="space-y-2 text-slate-700">
+                    <h4 className="text-lg font-semibold text-white mb-3">Current Implementation (v2.0)</h4>
+                    <ul className="space-y-2 text-blue-100">
                       <li className="flex items-start">
-                        <CheckCircle className="h-4 w-4 text-green-500 mr-2 mt-0.5" />
+                        <CheckCircle className="h-4 w-4 text-green-400 mr-2 mt-0.5" />
                         <span><strong>Full zk-SNARKs:</strong> Complete zero-knowledge proof system using circom</span>
                       </li>
                       <li className="flex items-start">
-                        <CheckCircle className="h-4 w-4 text-green-500 mr-2 mt-0.5" />
+                        <CheckCircle className="h-4 w-4 text-green-400 mr-2 mt-0.5" />
                         <span><strong>Self-improving AI:</strong> Autonomous quality validation and model refinement</span>
                       </li>
                       <li className="flex items-start">
-                        <CheckCircle className="h-4 w-4 text-green-500 mr-2 mt-0.5" />
+                        <CheckCircle className="h-4 w-4 text-green-400 mr-2 mt-0.5" />
                         <span><strong>Client data integration:</strong> Secure upload/download with full encryption</span>
                       </li>
                       <li className="flex items-start">
-                        <CheckCircle className="h-4 w-4 text-green-500 mr-2 mt-0.5" />
+                        <CheckCircle className="h-4 w-4 text-green-400 mr-2 mt-0.5" />
                         <span><strong>Blind uploads:</strong> Clients can safely upload classified data without exposure</span>
                       </li>
                       <li className="flex items-start">
-                        <CheckCircle className="h-4 w-4 text-green-500 mr-2 mt-0.5" />
+                        <CheckCircle className="h-4 w-4 text-green-400 mr-2 mt-0.5" />
                         <span><strong>2M records/day:</strong> High-volume processing across Government and Finance</span>
                       </li>
                     </ul>
                   </div>
                   <div>
-                    <h4 className="text-lg font-semibold text-slate-900 mb-3">AI System Capabilities</h4>
-                    <ul className="space-y-2 text-slate-700">
+                    <h4 className="text-lg font-semibold text-white mb-3">AI System Capabilities</h4>
+                    <ul className="space-y-2 text-blue-100">
                       <li className="flex items-start">
-                        <Target className="h-4 w-4 text-blue-500 mr-2 mt-0.5" />
+                        <Target className="h-4 w-4 text-blue-400 mr-2 mt-0.5" />
                         <span><strong>Autonomous learning:</strong> AI continuously improves without human intervention</span>
                       </li>
                       <li className="flex items-start">
-                        <Target className="h-4 w-4 text-blue-500 mr-2 mt-0.5" />
+                        <Target className="h-4 w-4 text-blue-400 mr-2 mt-0.5" />
                         <span><strong>Quality validation:</strong> Self-validates synthetic data quality and realism</span>
                       </li>
                       <li className="flex items-start">
-                        <Target className="h-4 w-4 text-blue-500 mr-2 mt-0.5" />
+                        <Target className="h-4 w-4 text-blue-400 mr-2 mt-0.5" />
                         <span><strong>Pattern recognition:</strong> Cross-industry learning and optimization</span>
                       </li>
                       <li className="flex items-start">
-                        <Target className="h-4 w-4 text-blue-500 mr-2 mt-0.5" />
+                        <Target className="h-4 w-4 text-blue-400 mr-2 mt-0.5" />
                         <span><strong>Real-time adaptation:</strong> Models adapt and improve in real-time</span>
                       </li>
                     </ul>
                   </div>
                 </div>
-                <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-                  <p className="text-blue-800">
+                <div className="mt-6 p-4 bg-white/10 rounded-lg border border-white/20">
+                  <p className="text-blue-100">
                     <strong>Key Innovation:</strong> We've built a robust artificial intelligence system with self-improving capabilities 
                     and gold-standard zk-SNARKs encryption. Clients can safely upload their classified data through blind uploads - 
                     we will never be able to know or see that data, yet our models can still do their job to generate realistic synthetic datasets.
@@ -289,14 +289,14 @@ const Technology = () => {
       </section>
 
       {/* AI & Privacy Evolution Timeline */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <div className="flex items-center justify-center mb-4">
-              <Brain className="h-8 w-8 text-blue-600 mr-3" />
-              <h2 className="text-3xl font-bold text-slate-900">AI & Privacy Evolution</h2>
+              <Brain className="h-8 w-8 text-blue-400 mr-3" />
+              <h2 className="text-3xl font-bold text-white">AI & Privacy Evolution</h2>
             </div>
-            <p className="text-xl text-slate-600">
+            <p className="text-xl text-blue-100">
               Our progression from basic synthetic data to self-improving AI with gold-standard privacy
             </p>
           </div>

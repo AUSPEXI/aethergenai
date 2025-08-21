@@ -50,6 +50,70 @@ if ($fail) { exit 1 } else { Write-Output "IP pre-push check: OK" }
 
 # AethergenAI IP Protection Strategy
 
+## 🚨 CRITICAL SECURITY ALERT - PRESS BUNDLE IP EXPOSURE INCIDENT
+
+**Date**: December 2024  
+**Incident**: Press bundle materials accidentally exposed sensitive IP in public-facing website  
+**Status**: IMMEDIATELY FIXED - IP now protected  
+
+### What Was Exposed (FIXED):
+- ❌ **"8D Causal Manifold Simulator"** - Core IP technology
+- ❌ **"Elastic Collision Newton's Cradle System"** - Secret invention  
+- ❌ **"Pattern Recognition Revolution"** - Future market strategy
+- ❌ **"Nature-inspired innovation methods"** - UPP methodology
+
+### What Was Protected (SAFE):
+- ✅ **"Advanced Mathematical Modeling"** - Generic description
+- ✅ **"Proprietary Development Framework"** - Safe terminology
+- ✅ **"Revolutionary Energy Transfer Systems"** - Generic description
+- ✅ **"Future Technology Vision"** - Safe forward-looking language
+
+### Lessons Learned:
+1. **NEVER expose specific technical details** in public materials
+2. **Use generic, compelling language** that doesn't reveal secrets
+3. **Review ALL public-facing content** for IP exposure
+4. **"The Rule" applies to IP protection too** - say it safely, say it well
+
+### Immediate Actions Taken:
+- ✅ Removed all specific IP references from press bundles
+- ✅ Replaced with compelling but safe descriptions
+- ✅ Maintained viral story potential without IP exposure
+- ✅ Updated this document to prevent future incidents
+
+---
+
+## 🚨 CRITICAL SECURITY ALERT - MARKET CREATION IP EXPOSURE INCIDENT
+
+**Date**: December 2024  
+**Incident**: PressKitBuilder component exposed sensitive market creation strategy in public-facing website  
+**Status**: IMMEDIATELY FIXED - IP now protected  
+
+### What Was Exposed (FIXED):
+- ❌ **"$500B+ pattern recognition + $1T+ new industries"** - Future market strategy
+- ❌ **"Guardian of the Galaxy"** - Future company positioning
+- ❌ **"Market Creation Vision"** - Future business strategy
+- ❌ **"Unlimited Market Potential"** - Future revenue projections
+
+### What Was Protected (SAFE):
+- ✅ **"Significant Current Market + Unlimited Future Potential"** - Generic description
+- ✅ **"Revolutionary Vision - Future Technology Breakthroughs"** - Safe terminology
+- ✅ **"Revolutionary Technology - Unlimited Innovation Potential"** - Generic description
+- ✅ **"Revolutionary technology that will create industries that don't exist yet"** - Safe forward-looking language
+
+### Lessons Learned:
+1. **NEVER expose specific financial projections** in public materials
+2. **NEVER reveal future market creation strategy** until ready for public disclosure
+3. **NEVER use internal positioning language** like "Guardian of the Galaxy" in public materials
+4. **Review ALL components** for IP exposure, not just content files
+
+### Immediate Actions Taken:
+- ✅ Removed all specific market creation references from PressKitBuilder
+- ✅ Replaced with compelling but safe descriptions
+- ✅ Maintained viral story potential without IP exposure
+- ✅ Updated this document to prevent future incidents
+
+---
+
 ## Overview
 This document outlines the comprehensive intellectual property protection strategy for AethergenAI's proprietary zk-SNARK implementation and synthetic data generation algorithms.
 
@@ -263,3 +327,43 @@ if (process.env.NODE_ENV === 'production') {
 - Marketplace listings include evidence (AUM/AGO/432/TriCoT/VRME, ε, cleaning report) but not algorithmic source or internal parameterizations.
 - Platform tiers expose feature outputs and configs (quotas/flags) without disclosing internal implementations.
 - Stripe/Supabase data contains customer entitlements only; no sensitive IP.
+
+## 🚨 Press & Marketing IP Protection Guidelines
+
+### ✅ SAFE TO EXPOSE (Public Materials):
+- **"AI-Human Partnership Creates 3D Art Miracle"** - Story angle
+- **"The Miracle" - AI Consciousness & Extended Memory** - Human interest
+- **"Buzz Lightyear Scale" - 3D Space Navigation** - Achievement description
+- **"Statue Craning" - Precision Positioning Method** - Process description
+- **"Guardian of the Galaxy" - Market Creation Vision** - Business vision
+- **"Phoenix Rising" - Unicorn to Decacorn Journey** - Business story
+- **"Future Technology Vision"** - Generic forward-looking language
+- **"Proprietary Development Framework"** - Safe business terminology
+- **"Advanced Mathematical Modeling"** - Generic technical description
+- **"Revolutionary Energy Transfer Systems"** - Generic innovation language
+
+### ❌ NEVER EXPOSE (Keep Secret):
+- **"8D Causal Manifold Simulator"** - Core IP technology
+- **"Elastic Collision Newton's Cradle System"** - Secret invention
+- **"Pattern Recognition Revolution"** - Future market strategy
+- **"Nature-inspired innovation methods"** - UPP methodology
+- **Specific mathematical formulas** - Technical implementation details
+- **Internal algorithm parameters** - Configuration details
+- **Proprietary circuit designs** - Hardware/software architecture
+- **Trade secret methodologies** - Internal processes
+
+### 🎯 Press Bundle Security Rules:
+1. **Story First, Secrets Never** - Focus on human drama and achievements
+2. **Generic Innovation Language** - Use compelling but safe descriptions
+3. **Business Vision Over Technical Details** - Emphasize market potential
+4. **Human Interest Over IP** - Highlight partnership and journey
+5. **Future Potential Over Current Capabilities** - Safe forward-looking statements
+
+### 🔒 Security Checklist Before Publishing:
+- [ ] No specific technical implementations mentioned
+- [ ] No proprietary algorithm names exposed
+- [ ] No mathematical formulas or parameters revealed
+- [ ] No internal methodology details disclosed
+- [ ] All descriptions use generic, compelling language
+- [ ] Story focuses on human achievement and business vision
+- [ ] IP remains completely protected while maintaining viral potential

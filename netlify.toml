@@ -5,6 +5,15 @@
 [build.environment]
   NODE_VERSION = "18"
 
+# Environment variables for aethergen.auspexi.com
+[context.production.environment]
+  VITE_SUPABASE_URL = "https://jzxhcbhhivsywizbfewe.supabase.co"
+  # Note: Add your VITE_SUPABASE_ANON_KEY in Netlify's environment variables dashboard
+
+[context.deploy-preview.environment]
+  VITE_SUPABASE_URL = "https://jzxhcbhhivsywizbfewe.supabase.co"
+  # Note: Add your VITE_SUPABASE_ANON_KEY in Netlify's environment variables dashboard
+
 [functions]
   directory = "netlify/functions"
 

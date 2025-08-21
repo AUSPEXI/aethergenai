@@ -829,22 +829,9 @@ function Title3D() {
     );
   }
 
-// Camera Tracker Component - gets camera position from Canvas context
-function CameraTracker({ onCameraUpdate }: { onCameraUpdate: (pos: [number, number, number], rot: [number, number, number]) => void }) {
-  useFrame(({ camera }) => {
-    onCameraUpdate(
-      [camera.position.x, camera.position.y, camera.position.z],
-      [camera.rotation.x, camera.rotation.y, camera.rotation.z]
-    );
-  });
-  return null;
-}
-
 export default function AethergenHero() {
   const [glitchActive, setGlitchActive] = useState(false);
   const [blackScreenVisible, setBlackScreenVisible] = useState(false);
-  const [cameraPosition, setCameraPosition] = useState<[number, number, number]>([6, 6, 6]);
-  const [cameraRotation, setCameraRotation] = useState<[number, number, number]>([0, 0, 0]);
   
   // Control black screen flashes when glitch is active
   useEffect(() => {
@@ -893,10 +880,6 @@ export default function AethergenHero() {
         <pointLight position={[10, 10, 10]} intensity={1.2} />
         <NeuralNetwork onGlitchChange={setGlitchActive} />
         <Title3D />
-        <CameraTracker onCameraUpdate={(pos, rot) => {
-          setCameraPosition(pos);
-          setCameraRotation(rot);
-        }} />
         <OrbitControls
           enableZoom
           maxDistance={10}
@@ -950,18 +933,6 @@ export default function AethergenHero() {
 
       {/* Black screen overlay - controlled by React state */}
       <div className={`absolute inset-0 pointer-events-none z-[10000] bg-black transition-opacity duration-100 ${blackScreenVisible ? 'opacity-100' : 'opacity-0'}`} />
-      
-      {/* Camera Position Tracker - for perfect positioning */}
-      <div className="absolute top-20 left-4 z-[10001] pointer-events-none bg-black bg-opacity-70 text-white p-3 rounded font-mono text-sm">
-        <div className="font-bold mb-2">Camera Position:</div>
-        <div>X: {cameraPosition[0].toFixed(2)}</div>
-        <div>Y: {cameraPosition[1].toFixed(2)}</div>
-        <div>Z: {cameraPosition[2].toFixed(2)}</div>
-        <div className="font-bold mt-3 mb-2">Camera Rotation:</div>
-        <div>X: {cameraRotation[0].toFixed(3)}</div>
-        <div>Y: {cameraRotation[1].toFixed(3)}</div>
-        <div>Z: {cameraRotation[2].toFixed(3)}</div>
-      </div>
       
     </div>
   );

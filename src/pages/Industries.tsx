@@ -1,377 +1,271 @@
 import React from 'react';
-import { Activity, Shield, Target, Flame, Siren, RotateCcw, FileText, Lock, Truck, GraduationCap, Building, Factory, MapPin, Users, TrendingUp, Scissors, Brain, Database, Globe } from 'lucide-react';
+import { 
+  Factory, 
+  Activity, 
+  TrendingUp, 
+  Database, 
+  Brain, 
+  Globe, 
+  Zap, 
+  Shield, 
+  Target, 
+  Users, 
+  ArrowRight,
+  CheckCircle,
+  Server,
+  Code,
+  Cloud,
+  Rocket
+} from 'lucide-react';
 
 const Industries = () => {
-  const targetIndustries = [
+  const currentIndustries = [
     {
-      name: 'Healthcare',
-      suite: 'CHANGES',
-      icon: Activity,
-      color: 'text-red-500',
-      bgColor: 'bg-red-50',
-      applications: [
-        'Epidemiological research and modeling',
-        'Clinical trial optimization',
-        'Patient outcome prediction',
-        'Healthcare policy analysis',
-        'Medical device testing'
-      ],
-      potential: 'Transform medical research',
-      impact: 'Accelerate discoveries'
-    },
-    {
-      name: 'Law Enforcement',
-      suite: 'POISON',
-      icon: Shield,
-      color: 'text-blue-500',
-      bgColor: 'bg-blue-50',
-      applications: [
-        'Community policing optimization',
-        'Crime pattern analysis',
-        'Resource deployment planning',
-        'Public safety strategy',
-        'Emergency response coordination'
-      ],
-      potential: 'Optimize public safety',
-      impact: 'Improve community relations'
-    },
-    {
-      name: 'Defense & Military',
-      suite: 'STRIVE',
-      icon: Target,
-      color: 'text-green-500',
-      bgColor: 'bg-green-50',
-      applications: [
-        'Strategic planning and simulation',
-        'Tactical decision support',
-        'Intelligence analysis',
-        'Risk assessment modeling',
-        'Mission planning optimization'
-      ],
-      potential: 'Enhance strategic capabilities',
-      impact: 'Improve decision making'
-    },
-    {
-      name: 'Fire & Rescue',
-      suite: 'HYDRA',
-      icon: Flame,
-      color: 'text-orange-500',
-      bgColor: 'bg-orange-50',
-      applications: [
-        'Fire risk assessment and modeling',
-        'Emergency response optimization',
-        'Resource allocation planning',
-        'Hazard prediction and mitigation',
-        'Training and simulation'
-      ],
-      potential: 'Revolutionize fire safety',
-      impact: 'Prevent disasters'
-    },
-    {
-      name: 'Emergency Medical Services',
-      suite: 'SIREN',
-      icon: Siren,
-      color: 'text-purple-500',
+      name: 'Automotive Manufacturing',
+      icon: Factory,
+      color: 'text-purple-600',
       bgColor: 'bg-purple-50',
+      status: 'Primary Focus - Building Now',
+      description: 'Quality control, defect detection, and production optimization',
       applications: [
-        'Response time optimization',
-        'Patient outcome prediction',
-        'Ambulance fleet management',
-        'Call priority classification',
-        'Medical equipment planning'
+        'Quality Control & Defect Detection',
+        'Manufacturing Analytics & Optimization',
+        'Safety & Testing Systems',
+        'Supply Chain & Logistics'
       ],
-      potential: 'Save more lives',
-      impact: 'Faster emergency response'
+      selfService: {
+        price: '£599 - £1,299/month',
+        features: [
+          'Pre-trained models + training data + evidence bundles',
+          'Customer handles compute costs and deployment',
+          'Basic API access and documentation'
+        ]
+      },
+      fullService: {
+        price: '£2,799 - £3,999/month',
+        features: [
+          'Everything from self-service + AWS infrastructure',
+          'Compute management + deployment support',
+          'SLA guarantees + dedicated support'
+        ]
+      },
+      potential: 'Transform automotive quality and efficiency',
+      impact: 'BMW Quality Group partnership ready'
     },
     {
-      name: 'Corrections & Rehabilitation',
-      suite: 'REFORM',
-      icon: RotateCcw,
-      color: 'text-indigo-500',
-      bgColor: 'bg-indigo-50',
+      name: 'Healthcare & NHS',
+      icon: Activity,
+      color: 'text-red-600',
+      bgColor: 'bg-red-50',
+      status: 'Coming Very Soon - Q1 2025',
+      description: 'Medical research, fraud detection, and healthcare analytics',
       applications: [
-        'Recidivism prediction and prevention',
-        'Rehabilitation program optimization',
-        'Facility management analytics',
-        'Behavioral pattern analysis',
-        'Resource allocation planning'
+        'Fraud Detection & Risk Management',
+        'Medical Research & Clinical Trials',
+        'Patient Care & Analytics',
+        'Healthcare Operations & Compliance'
       ],
-      potential: 'Transform rehabilitation',
-      impact: 'Reduce recidivism'
+      selfService: {
+        price: '£699 - £1,299/month',
+        features: [
+          'Pre-trained models + training data + evidence bundles',
+          'Customer handles compute costs and deployment',
+          'Basic API access and documentation'
+        ]
+      },
+      fullService: {
+        price: '£3,499 - £5,999/month',
+        features: [
+          'Everything from self-service + AWS infrastructure',
+          'Compute management + deployment support',
+          'SLA guarantees + dedicated support'
+        ]
+      },
+      potential: 'Revolutionize healthcare fraud detection',
+      impact: 'Insurance and finance crossover ready'
     },
     {
-      name: 'Insurance',
-      suite: 'INSURE',
-      icon: FileText,
-      color: 'text-teal-500',
-      bgColor: 'bg-teal-50',
-      applications: [
-        'Risk assessment and modeling',
-        'Claims prediction and optimization',
-        'Premium calculation analytics',
-        'Fraud detection and prevention',
-        'Portfolio risk management'
-      ],
-      potential: 'Revolutionize risk modeling',
-      impact: 'Reduce costs and fraud'
-    },
-    {
-      name: 'Cybersecurity',
-      suite: 'SHIELD',
-      icon: Lock,
-      color: 'text-slate-500',
-      bgColor: 'bg-slate-50',
-      applications: [
-        'Threat modeling and prediction',
-        'Security vulnerability assessment',
-        'Incident response planning',
-        'Compliance monitoring',
-        'Loss prevention analytics'
-      ],
-      potential: 'Strengthen cyber defenses',
-      impact: 'Prevent security breaches'
-    },
-    {
-      name: 'Finance & Banking',
-      suite: 'CREDRISE',
+      name: 'Financial Services',
       icon: TrendingUp,
       color: 'text-green-600',
       bgColor: 'bg-green-50',
+      status: 'Planned - Q2 2025',
+      description: 'Banking, trading, risk management, and compliance',
       applications: [
-        'Credit scoring and risk assessment',
-        'Trading algorithm optimization',
-        'Market prediction and analysis',
-        'Regulatory compliance monitoring',
-        'Fraud detection and prevention'
+        'Credit Risk & Fraud Detection',
+        'Market Risk & Trading',
+        'Compliance & Regulatory',
+        'Insurance & Risk Transfer'
       ],
-      potential: 'Transform financial services',
-      impact: 'Improve risk management'
+      selfService: {
+        price: '£1,299 - £1,999/month',
+        features: [
+          'Pre-trained models + training data + evidence bundles',
+          'Customer handles compute costs and deployment',
+          'Basic API access and documentation'
+        ]
+      },
+      fullService: {
+        price: '£6,999 - £9,999/month',
+        features: [
+          'Everything from self-service + AWS infrastructure',
+          'Compute management + deployment support',
+          'SLA guarantees + dedicated support'
+        ]
+      },
+      potential: 'Transform financial risk modeling',
+      impact: 'Most in-demand and profitable models'
     }
   ];
 
-  const futureIndustries = [
+  const futureCapabilities = [
     {
-      name: 'Transportation',
-      icon: Truck,
-      description: 'Traffic risk modeling, infrastructure optimization, and autonomous vehicle testing',
+      name: 'Multi-Data Pipeline Infrastructure',
+      icon: Database,
+      color: 'text-blue-600',
+      bgColor: 'bg-blue-50',
+      description: 'Enterprise-scale data synthesis across multiple domains',
       timeline: 'Q2 2025',
-      potential: 'Smart city integration'
+      features: [
+        'Cross-industry data synthesis',
+        'Schema harmonization tools',
+        'Foundation model infrastructure',
+        'Enterprise LLM client capabilities'
+      ],
+      potential: 'Unlock $3.5T+ in new markets',
+      impact: 'Revolutionary market creation'
     },
     {
-      name: 'Education',
-      icon: GraduationCap,
-      description: 'Student behavior datasets, learning outcome prediction, and educational policy analysis',
+      name: 'Foundation Model Delivery',
+      icon: Brain,
+      color: 'text-indigo-600',
+      bgColor: 'bg-indigo-50',
+      description: 'Deliver enterprise-scale AI to privacy-locked industries',
       timeline: 'Q3 2025',
-      potential: 'Personalized learning'
+      features: [
+        'Multi-domain foundation models',
+        'Privacy-safe AI training platform',
+        'Enterprise compliance validation',
+        'Global market expansion'
+      ],
+      potential: 'Democratize enterprise AI',
+      impact: 'Access previously locked industries'
     },
     {
-      name: 'Construction',
-      icon: Building,
-      description: 'Safety risk modeling, project optimization, and infrastructure planning',
+      name: 'Market Creation Engine',
+      icon: Globe,
+      color: 'text-orange-600',
+      bgColor: 'bg-orange-50',
+      description: 'Create industries that don\'t exist yet',
       timeline: 'Q4 2025',
-      potential: 'Predictive maintenance'
-    },
-    {
-      name: 'Manufacturing',
-      icon: Factory,
-      description: 'Quality control optimization, supply chain modeling, and predictive maintenance',
-      timeline: '2026',
-      potential: 'Industry 4.0 integration'
+      features: [
+        'Pattern recognition revolution',
+        'New industry creation',
+        'Unlimited scale capability',
+        'Cosmic stewardship of evolution'
+      ],
+      potential: 'End the age of data',
+      impact: 'Create the future of AI'
     }
   ];
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-slate-900 to-blue-900 py-20">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
-            Industries We Serve
+      {/* Header Section */}
+      <section className="py-16 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h1 className="text-4xl font-bold text-white mb-6">
+            Industry Solutions
           </h1>
-          <p className="text-xl text-blue-100">
-            Transforming critical industries with synthetic data solutions that drive innovation 
-            while preserving privacy and security
+          <p className="text-xl text-blue-100 mb-8 max-w-3xl mx-auto">
+            Revolutionary synthetic data solutions transforming industries with proven 1 billion record generation capability
           </p>
         </div>
       </section>
 
-      {/* Industry Sector Map */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-slate-900 mb-4">
-              Industry Sector Overview
-            </h2>
-            <p className="text-xl text-slate-600">
-              Visual representation of our platform's industry coverage and transformative potential
-            </p>
-          </div>
-          
-          {/* Sector Map Visualization */}
-          <div className="relative bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-8 mb-12">
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-              {targetIndustries.map((industry, index) => (
-                <div key={index} className="text-center group">
-                  <div className={`inline-flex p-4 rounded-xl ${industry.bgColor} mb-3 group-hover:scale-110 transition-transform`}>
-                    <industry.icon className={`h-8 w-8 ${industry.color}`} />
-                  </div>
-                  <h3 className="font-semibold text-slate-900 mb-1">{industry.name}</h3>
-                  <p className="text-sm text-slate-600 mb-1">{industry.suite}</p>
-                  <p className="text-xs text-blue-600 font-medium">{industry.potential}</p>
-                </div>
-              ))}
-            </div>
-            
-            {/* Central Hub */}
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-full p-6 shadow-lg border-4 border-blue-200">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-blue-600">1M+</div>
-                <div className="text-sm text-slate-600">Records/Day</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Target Industries */}
-      <section className="py-20 bg-slate-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-slate-900 mb-4">
-              Industries Ready for Transformation
-            </h2>
-            <p className="text-xl text-slate-600">
-              Nine critical industries positioned to benefit from our synthetic data solutions
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {targetIndustries.map((industry, index) => (
-              <div key={index} className="bg-white rounded-xl p-6 hover:shadow-lg transition-shadow">
-                <div className={`inline-flex p-3 rounded-lg ${industry.bgColor} mb-4`}>
-                  <industry.icon className={`h-6 w-6 ${industry.color}`} />
-                </div>
-                <h3 className="text-xl font-bold text-slate-900 mb-2">{industry.name}</h3>
-                <p className="text-sm text-blue-600 font-medium mb-4">Powered by {industry.suite}</p>
-                
-                {/* Key Potential */}
-                <div className="bg-slate-50 p-3 rounded-lg mb-4">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-sm text-slate-600">Potential:</span>
-                    <span className="font-semibold text-slate-900">{industry.potential}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-slate-600">Impact:</span>
-                    <span className="font-semibold text-green-600">{industry.impact}</span>
-                  </div>
-                </div>
-                
-                <h4 className="font-semibold text-slate-900 mb-2">Key Applications</h4>
-                <ul className="space-y-2">
-                  {industry.applications.slice(0, 3).map((app, appIndex) => (
-                    <li key={appIndex} className="text-sm text-slate-600">
-                      • {app}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Cross-Industry Synergy */}
-      <section className="py-20 bg-white">
+      {/* Current Industries */}
+      <section className="py-16 bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-slate-900 mb-4">
-              Cross-Industry Innovation
-            </h2>
-            <p className="text-xl text-slate-600">
-              Our unique advantage lies in leveraging shared AI infrastructure and methodologies 
-              across industries, creating unprecedented insights and optimization opportunities
-            </p>
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-slate-900 mb-6">Current Focus Industries</h2>
+            <p className="text-xl text-slate-600">Building solutions that transform entire industries</p>
           </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-8 rounded-xl shadow-md">
-              <div className="flex items-center mb-4">
-                <Brain className="h-8 w-8 text-blue-600 mr-3" />
-                <h3 className="text-xl font-bold text-slate-900">Shared Intelligence</h3>
-              </div>
-              <p className="text-slate-600 mb-4">
-                Pattern recognition and optimization techniques developed for one industry 
-                can enhance capabilities across all sectors.
-              </p>
-              <div className="bg-white p-4 rounded-lg">
-                <p className="text-sm text-slate-500 font-medium">Example Potential:</p>
-                <p className="text-sm text-slate-600">Sentiment analysis from POISON could enhance STRIVE's geopolitical modeling</p>
-              </div>
-            </div>
-            
-            <div className="bg-gradient-to-br from-green-50 to-teal-50 p-8 rounded-xl shadow-md">
-              <div className="flex items-center mb-4">
-                <Database className="h-8 w-8 text-green-600 mr-3" />
-                <h3 className="text-xl font-bold text-slate-900">Unified Infrastructure</h3>
-              </div>
-              <p className="text-slate-600 mb-4">
-                Common AI frameworks and data processing pipelines reduce costs while 
-                increasing reliability and performance across all suites.
-              </p>
-              <div className="bg-white p-4 rounded-lg">
-                <p className="text-sm text-slate-500 font-medium">Technical Advantage:</p>
-                <p className="text-sm text-slate-600">Shared models serve both CHANGES and SIREN applications efficiently</p>
-              </div>
-            </div>
-            
-            <div className="bg-gradient-to-br from-purple-50 to-pink-50 p-8 rounded-xl shadow-md">
-              <div className="flex items-center mb-4">
-                <Globe className="h-8 w-8 text-purple-600 mr-3" />
-                <h3 className="text-xl font-bold text-slate-900">Comprehensive Risk Modeling</h3>
-              </div>
-              <p className="text-slate-600 mb-4">
-                INSURE suite can integrate risk data from all industries, providing 
-                unprecedented cross-sector insurance analytics capabilities.
-              </p>
-              <div className="bg-white p-4 rounded-lg">
-                <p className="text-sm text-slate-500 font-medium">Future Possibility:</p>
-                <p className="text-sm text-slate-600">Healthcare + Fire + EMS data could create comprehensive emergency response insurance models</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
-      {/* Future Expansions */}
-      <section className="py-20 bg-slate-50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-slate-900 mb-4">
-              Future Industry Expansions
-            </h2>
-            <p className="text-xl text-slate-600">
-              Planned expansions into new industries, leveraging our proven AI infrastructure 
-              and cross-industry methodologies
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {futureIndustries.map((industry, index) => (
-              <div key={index} className="bg-white p-8 rounded-xl shadow-md hover:shadow-lg transition-shadow">
-                <div className="flex items-center mb-4">
-                  <div className="bg-blue-100 p-3 rounded-lg mr-4">
-                    <industry.icon className="h-6 w-6 text-blue-600" />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {currentIndustries.map((industry, index) => (
+              <div
+                key={index}
+                className="bg-slate-50 border border-slate-200 rounded-xl p-8 hover:border-blue-300 transition-all duration-300 shadow-md"
+              >
+                <div className="flex items-center mb-6">
+                  <div className="p-3 rounded-lg bg-white border border-slate-200 mr-4">
+                    <industry.icon className={`w-8 h-8 ${industry.color}`} />
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold text-slate-900">{industry.name}</h3>
-                    <span className="text-sm text-blue-600 font-medium">Planned: {industry.timeline}</span>
+                    <h3 className="text-2xl font-bold text-slate-900 mb-2">{industry.name}</h3>
+                    <span className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${
+                      industry.status.includes('Primary') ? 'bg-blue-100 text-blue-800' :
+                      industry.status.includes('Coming') ? 'bg-orange-100 text-orange-800' :
+                      'bg-slate-100 text-slate-700'
+                    }`}>
+                      {industry.status}
+                    </span>
                   </div>
                 </div>
-                <p className="text-slate-600 mb-4">{industry.description}</p>
-                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-lg">
-                  <p className="text-sm text-slate-600">
-                    <span className="font-medium text-slate-900">Potential Impact:</span> {industry.potential}
-                  </p>
+
+                <p className="text-slate-600 mb-6">{industry.description}</p>
+
+                <div className="mb-6">
+                  <h4 className="text-lg font-semibold text-slate-900 mb-3">Applications</h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {industry.applications.map((app, appIndex) => (
+                      <div key={appIndex} className="flex items-center text-slate-600">
+                        <CheckCircle className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
+                        <span className="text-sm">{app}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div className="bg-white border border-slate-200 rounded-lg p-4">
+                    <h5 className="font-semibold text-slate-900 mb-2">Self-Service</h5>
+                    <div className="text-2xl font-bold text-blue-600 mb-2">{industry.selfService.price}</div>
+                    <ul className="space-y-1">
+                      {industry.selfService.features.map((feature, featureIndex) => (
+                        <li key={featureIndex} className="text-xs text-slate-600 flex items-start">
+                          <CheckCircle className="w-3 h-3 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
+                          {feature}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div className="bg-white border border-slate-200 rounded-lg p-4">
+                    <h5 className="font-semibold text-slate-900 mb-2">Full Service</h5>
+                    <div className="text-2xl font-bold text-blue-600 mb-2">{industry.fullService.price}</div>
+                    <ul className="space-y-1">
+                      {industry.fullService.features.map((feature, featureIndex) => (
+                        <li key={featureIndex} className="text-xs text-slate-600 flex items-start">
+                          <CheckCircle className="w-3 h-3 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
+                          {feature}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="mt-6 pt-6 border-t border-slate-200">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <h6 className="text-sm font-semibold text-slate-500 mb-1">Potential Impact</h6>
+                      <p className="text-slate-700">{industry.potential}</p>
+                    </div>
+                    <div>
+                      <h6 className="text-sm font-semibold text-slate-500 mb-1">Market Readiness</h6>
+                      <p className="text-slate-700">{industry.impact}</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             ))}
@@ -379,77 +273,122 @@ const Industries = () => {
         </div>
       </section>
 
-      {/* Technology Demonstration */}
-      <section className="py-20 bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-slate-900 mb-4">
-              See Our Technology in Action
-            </h2>
-            <p className="text-xl text-slate-600">
-              Experience how our synthetic data platforms could transform your industry
-            </p>
+      {/* Future Industries */}
+      <section className="py-16 bg-slate-50">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-slate-900 mb-6">Future Industry Expansion</h2>
+            <p className="text-xl text-slate-600">Revolutionary technologies opening new dimensions of exploration</p>
           </div>
-          
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {futureCapabilities.map((capability, index) => (
+              <div
+                key={index}
+                className="bg-white border border-slate-200 rounded-xl p-6 hover:border-blue-300 transition-all duration-300 shadow-md"
+              >
+                <div className="text-center mb-6">
+                  <div className="p-3 rounded-lg bg-slate-50 border border-slate-200 inline-block mb-4">
+                    <capability.icon className={`w-8 h-8 ${capability.color}`} />
+                  </div>
+                  <h3 className="text-xl font-bold text-slate-900 mb-2">{capability.name}</h3>
+                  <span className="inline-block px-3 py-1 rounded-full text-sm font-semibold bg-slate-100 text-slate-700">
+                    {capability.timeline}
+                  </span>
+                </div>
+
+                <p className="text-slate-600 mb-4 text-center">{capability.description}</p>
+
+                <div className="space-y-2">
+                  <div>
+                    <h4 className="font-semibold text-white mb-2">Key Features</h4>
+                    <ul className="space-y-1">
+                      {capability.features.map((feature, idx) => (
+                        <li key={idx} className="text-sm text-blue-100 flex items-start">
+                          <CheckCircle className="h-3 w-3 text-green-400 mr-2 mt-0.5 flex-shrink-0" />
+                          {feature}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  
+                  <div className="border-t border-white/20 pt-4">
+                    <div className="text-sm text-blue-200">
+                      <div className="font-medium mb-1">Potential: {capability.potential}</div>
+                      <div className="font-medium">Impact: {capability.impact}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Strategic Advantage */}
+      <section className="py-20 bg-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl font-bold text-slate-900 mb-8">Strategic Advantage</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="bg-gradient-to-br from-red-50 to-pink-50 p-8 rounded-xl shadow-md">
-              <Activity className="h-12 w-12 text-red-500 mb-4" />
-              <h3 className="text-xl font-bold text-slate-900 mb-3">Healthcare Innovation Potential</h3>
-              <p className="text-slate-600 mb-4">
-                CHANGES could enable privacy-compliant epidemiological research, 
-                potentially accelerating medical discoveries while maintaining 
-                absolute patient privacy protection.
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-8 border border-blue-200">
+              <div className="flex items-center justify-center w-16 h-16 rounded-full bg-blue-100 mx-auto mb-6">
+                <Code className="w-8 h-8 text-blue-600" />
+              </div>
+              <h3 className="text-xl font-bold text-slate-900 mb-4">Self-Service Model</h3>
+              <p className="text-slate-700 mb-4">
+                Lower price point for technical teams with existing infrastructure. 
+                Customer handles compute costs while we provide models, data, and evidence.
               </p>
-              <div className="flex justify-between items-center">
-                <a href="https://government.auspexi.com" target="_blank" rel="noopener noreferrer" className="text-red-600 hover:text-red-700 font-medium">
-                  Explore Healthcare Suite →
-                </a>
-                <div className="text-2xl font-bold text-red-600">CHANGES</div>
+              <div className="text-sm text-slate-600">
+                <strong>Result:</strong> Higher margins for us, lower total cost for customers
               </div>
             </div>
             
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-8 rounded-xl shadow-md">
-              <Shield className="h-12 w-12 text-blue-500 mb-4" />
-              <h3 className="text-xl font-bold text-slate-900 mb-3">Public Safety Transformation</h3>
-              <p className="text-slate-600 mb-4">
-                POISON's community sentiment modeling could help police departments 
-                optimize patrol routes and improve community relations through 
-                data-driven insights while respecting citizen privacy.
-              </p>
-              <div className="flex justify-between items-center">
-                <a href="https://government.auspexi.com" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-700 font-medium">
-                  Explore Public Safety Suite →
-                </a>
-                <div className="text-2xl font-bold text-blue-600">POISON</div>
+            <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-8 border border-purple-200">
+              <div className="flex items-center justify-center w-16 h-16 rounded-full bg-purple-100 mx-auto mb-6">
+                <Server className="w-8 h-8 text-purple-600" />
               </div>
+              <h3 className="text-xl font-bold text-slate-900 mb-4">Full-Service Model</h3>
+              <p className="text-slate-700 mb-4">
+                Premium pricing for managed service and infrastructure. 
+                We handle everything including AWS infrastructure and compute management.
+              </p>
+              <div className="text-sm text-slate-600">
+                <strong>Result:</strong> Premium margins for complex deployments
+              </div>
+            </div>
+          </div>
+          
+          <div className="mt-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 text-white">
+            <h3 className="text-2xl font-bold mb-4">The Path to Foundation Models</h3>
+            <p className="text-blue-100 text-lg mb-6">
+              This dual-model approach eliminates the compute cost burden that kills most AI companies. 
+              Customers choose their comfort level while we maintain healthy margins regardless of their choice.
+            </p>
+            <div className="inline-flex items-center px-6 py-3 bg-white text-blue-600 rounded-lg font-semibold hover:bg-blue-50 transition-colors">
+              Ready to Build the Future
+              <ArrowRight className="ml-2 h-5 w-5" />
             </div>
           </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-20 bg-gradient-to-r from-blue-600 to-indigo-600">
+      {/* CTA Section */}
+      <section className="py-16 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold text-white mb-4">
-            Ready to Transform Your Industry?
-          </h2>
-          <p className="text-xl text-blue-100 mb-8">
-            Discover how synthetic data could revolutionize your sector. 
-            Let's discuss the possibilities for your specific industry needs.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a
-              href="/data-suites"
-              className="bg-white text-blue-600 px-8 py-3 rounded-lg hover:bg-blue-50 transition-colors font-semibold"
-            >
-              Explore Data Suites
-            </a>
-            <a
-              href="/contact"
-              className="border border-white text-white px-8 py-3 rounded-lg hover:bg-white hover:text-blue-600 transition-colors"
-            >
-              Contact Us
-            </a>
+          <div className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-xl p-12">
+            <h2 className="text-3xl font-bold text-white mb-6">Ready to Transform Your Industry?</h2>
+            <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+              Join the revolution in synthetic data generation with proven 1 billion record capability
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button className="bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold hover:bg-blue-50 transition-colors">
+                Contact Sales
+              </button>
+              <button className="border border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors">
+                View Technology
+              </button>
+            </div>
           </div>
         </div>
       </section>

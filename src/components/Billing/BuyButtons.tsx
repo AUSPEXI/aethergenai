@@ -1,70 +1,162 @@
-import React from "react";
+import React, { useState } from "react";
 import { startStripeCheckout } from "../../services/billingClient";
 
+type Industry = 'automotive' | 'healthcare' | 'financial';
+type ServiceLevel = 'self-service' | 'full-service';
+
 type Props = {
-  // Provide your Stripe Price IDs via env or props
-  datasetStandardPriceId?: string;
-  modelSeatPriceId?: string;
-  prediction100kPriceId?: string;
+  industry: Industry;
+  serviceLevel: ServiceLevel;
+  priceId?: string;
+  onServiceLevelChange?: (level: ServiceLevel) => void;
 };
 
 export const BuyButtons: React.FC<Props> = ({
-  datasetStandardPriceId,
-  modelSeatPriceId,
-  prediction100kPriceId,
+  industry,
+  serviceLevel,
+  priceId,
+  onServiceLevelChange,
 }) => {
+  const [selectedServiceLevel, setSelectedServiceLevel] = useState<ServiceLevel>(serviceLevel);
+
   const successUrl = window.location.origin + "/billing/success";
   const cancelUrl = window.location.origin + "/billing/cancel";
 
+  const handleServiceLevelChange = (level: ServiceLevel) => {
+    setSelectedServiceLevel(level);
+    onServiceLevelChange?.(level);
+  };
+
+  const getIndustryDisplayName = (ind: Industry) => {
+    switch (ind) {
+      case 'automotive': return 'Automotive Manufacturing';
+      case 'healthcare': return 'Healthcare & NHS';
+      case 'financial': return 'Financial Services';
+      default: return ind;
+    }
+  };
+
+  const getServiceLevelDescription = (level: ServiceLevel) => {
+    switch (level) {
+      case 'self-service':
+        return 'Lower price, you handle compute and infrastructure';
+      case 'full-service':
+        return 'Premium price, we handle everything including AWS infrastructure';
+      default:
+        return '';
+    }
+  };
+
+  const getPricingInfo = (ind: Industry, level: ServiceLevel) => {
+    const pricing = {
+      automotive: {
+        'self-service': { base: 599, range: '£599 - £1,299' },
+        'full-service': { base: 2799, range: '£2,799 - £3,999' }
+      },
+      healthcare: {
+        'self-service': { base: 699, range: '£699 - £1,299' },
+        'full-service': { base: 3499, range: '£3,499 - £5,999' }
+      },
+      financial: {
+        'self-service': { base: 1299, range: '£1,299 - £1,999' },
+        'full-service': { base: 6999, range: '£6,999 - £9,999' }
+      }
+    };
+    return pricing[ind][level];
+  };
+
+  const pricing = getPricingInfo(industry, selectedServiceLevel);
+
   return (
-    <div className="flex flex-col gap-2">
-      <button
-        className="px-4 py-2 rounded bg-blue-600 text-white"
-        disabled={!datasetStandardPriceId}
-        onClick={() =>
-          datasetStandardPriceId &&
-          startStripeCheckout(datasetStandardPriceId, {
-            mode: "subscription",
-            successUrl,
-            cancelUrl,
-            metadata: { sku: "dataset_standard" },
-          })
-        }
-      >
-        Buy Standard Dataset (Monthly)
-      </button>
+    <div className="space-y-6">
+      {/* Service Level Selection */}
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold text-slate-900">
+          Choose Your Service Level for {getIndustryDisplayName(industry)}
+        </h3>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <button
+            className={`p-4 border-2 rounded-lg text-left transition-all ${
+              selectedServiceLevel === 'self-service'
+                ? 'border-blue-500 bg-blue-50'
+                : 'border-slate-200 hover:border-slate-300'
+            }`}
+            onClick={() => handleServiceLevelChange('self-service')}
+          >
+            <div className="font-semibold text-slate-900 mb-2">Self-Service</div>
+            <div className="text-2xl font-bold text-blue-600 mb-2">{pricing.range}</div>
+            <div className="text-sm text-slate-600">{getServiceLevelDescription('self-service')}</div>
+            <div className="mt-3 text-xs text-slate-500">
+              ✅ Pre-trained models + training data + evidence bundles<br/>
+              ❌ You handle compute costs and deployment
+            </div>
+          </button>
 
-      <button
-        className="px-4 py-2 rounded bg-emerald-600 text-white"
-        disabled={!modelSeatPriceId}
-        onClick={() =>
-          modelSeatPriceId &&
-          startStripeCheckout(modelSeatPriceId, {
-            mode: "subscription",
-            successUrl,
-            cancelUrl,
-            metadata: { sku: "model_seat" },
-          })
-        }
-      >
-        Subscribe to Model (Per Seat)
-      </button>
+          <button
+            className={`p-4 border-2 rounded-lg text-left transition-all ${
+              selectedServiceLevel === 'full-service'
+                ? 'border-purple-500 bg-purple-50'
+                : 'border-slate-200 hover:border-slate-300'
+            }`}
+            onClick={() => handleServiceLevelChange('full-service')}
+          >
+            <div className="font-semibold text-slate-900 mb-2">Full-Service</div>
+            <div className="text-2xl font-bold text-purple-600 mb-2">{pricing.range}</div>
+            <div className="text-sm text-slate-600">{getServiceLevelDescription('full-service')}</div>
+            <div className="mt-3 text-xs text-slate-500">
+              ✅ Everything from self-service + AWS infrastructure<br/>
+              ✅ Compute management + deployment support
+            </div>
+          </button>
+        </div>
+      </div>
 
-      <button
-        className="px-4 py-2 rounded bg-indigo-600 text-white"
-        disabled={!prediction100kPriceId}
-        onClick={() =>
-          prediction100kPriceId &&
-          startStripeCheckout(prediction100kPriceId, {
-            mode: "payment",
-            successUrl,
-            cancelUrl,
-            metadata: { sku: "pred_100k" },
-          })
-        }
-      >
-        Buy 100k Predictions (One-time)
-      </button>
+      {/* Purchase Button */}
+      <div className="text-center">
+        <button
+          className="px-8 py-4 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold text-lg hover:from-blue-700 hover:to-purple-700 transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={!priceId}
+          onClick={() =>
+            priceId &&
+            startStripeCheckout(priceId, {
+              mode: "subscription",
+              successUrl,
+              cancelUrl,
+              metadata: { 
+                sku: `${industry}_${selectedServiceLevel}`,
+                industry,
+                serviceLevel: selectedServiceLevel
+              },
+            })
+          }
+        >
+          {priceId ? (
+            <>
+              Get Started with {getIndustryDisplayName(industry)} {selectedServiceLevel === 'self-service' ? 'Self-Service' : 'Full-Service'}
+              <div className="text-sm opacity-90 mt-1">
+                Starting at £{pricing.base}/month
+              </div>
+            </>
+          ) : (
+            'Contact Sales for Pricing'
+          )}
+        </button>
+        
+        {!priceId && (
+          <div className="mt-3 text-sm text-slate-600">
+            Price IDs not configured. Contact sales@auspexi.com for setup.
+          </div>
+        )}
+      </div>
+
+      {/* Strategic Note */}
+      <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-4 rounded-lg border border-blue-200">
+        <div className="text-sm text-slate-700">
+          <strong>Strategic Advantage:</strong> This dual-model approach eliminates the compute cost burden that kills most AI companies. 
+          Customers choose their comfort level while we maintain healthy margins regardless of their choice.
+        </div>
+      </div>
     </div>
   );
 };

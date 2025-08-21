@@ -6,63 +6,108 @@ const supabase = createClient(
 );
 
 export interface CategoryConfig {
-  static: number;
-  premium: number;
-  enterprise: number;
-  addons: {
-    core: string[];
-    premium: string[];
+  self_service: {
+    base_price: number;
+    range: string;
+    categories: string[];
+    features: string[];
   };
-  suites: string[];
+  full_service: {
+    base_price: number;
+    range: string;
+    categories: string[];
+    features: string[];
+  };
   description: string;
   available: boolean;
 }
 
 export const categories: Record<string, CategoryConfig> = {
-  'Government': {
-    static: 1800,
-    premium: 600,
-    enterprise: 1500,
-    addons: {
-      core: ['sentimentDynamics', 'behaviorPrediction', 'environmentalImpact', 'resourceOptimization'],
-      premium: ['networkAnalysis', 'advancedOptimization', 'patternClustering', 'predictiveForecasting']
+  'Automotive': {
+    self_service: {
+      base_price: 599,
+      range: '£599 - £1,299',
+      categories: ['Quality Control', 'Manufacturing Analytics', 'Safety Testing', 'Supply Chain'],
+      features: [
+        'Pre-trained models for automotive applications',
+        'Training datasets with evidence bundles',
+        'Basic API access and documentation',
+        'Customer handles compute and infrastructure'
+      ]
     },
-    suites: ['CHANGES', 'POISON', 'STRIVE', 'HYDRA', 'SIREN', 'REFORM', 'INSURE', 'SHIELD'],
-    description: 'Healthcare, law enforcement, military, emergency services, corrections, insurance, and cybersecurity',
+    full_service: {
+      base_price: 2799,
+      range: '£2,799 - £3,999',
+      categories: ['Quality Control', 'Manufacturing Analytics', 'Safety Testing', 'Supply Chain'],
+      features: [
+        'Everything from self-service',
+        'AWS infrastructure setup',
+        'Compute management and deployment',
+        'SLA guarantees and dedicated support'
+      ]
+    },
+    description: 'Quality control, defect detection, production optimization, and supply chain analytics',
     available: true
   },
-  'Finance': {
-    static: 2100,
-    premium: 700,
-    enterprise: 1400,
-    addons: {
-      core: ['financialSentiment', 'transactionAnalytics', 'regulatoryCompliance', 'wealthManagement'],
-      premium: ['riskOptimization', 'portfolioAnalytics', 'marketForecasting', 'fraudDetection']
+  'Healthcare': {
+    self_service: {
+      base_price: 699,
+      range: '£699 - £1,299',
+      categories: ['Fraud Detection', 'Medical Research', 'Patient Care', 'Operations'],
+      features: [
+        'Pre-trained models for healthcare applications',
+        'Training datasets with evidence bundles',
+        'Basic API access and documentation',
+        'Customer handles compute and infrastructure'
+      ]
     },
-    suites: ['CREDRISE', 'TRADEMARKET', 'CASHFLOW', 'CONSUME', 'TAXGUARD', 'RISKSHIELD', 'INSURE', 'SHIELD'],
-    description: 'Banking, investment, trading, compliance, risk management, and wealth advisory',
-    available: true // Now available
+    full_service: {
+      base_price: 3499,
+      range: '£3,499 - £5,999',
+      categories: ['Fraud Detection', 'Medical Research', 'Patient Care', 'Operations'],
+      features: [
+        'Everything from self-service',
+        'AWS infrastructure setup',
+        'Compute management and deployment',
+        'SLA guarantees and dedicated support'
+      ]
+    },
+    description: 'Medical research, fraud detection, healthcare analytics, and NHS compliance',
+    available: true
   },
-  'Manufacturing': {
-    static: 2000,
-    premium: 700,
-    enterprise: 1500,
-    addons: {
-      core: ['productionOptimization', 'qualityControl', 'supplyChainAnalytics', 'maintenancePrediction'],
-      premium: ['iotIntegration', 'energyOptimization', 'safetyAnalytics', 'demandForecasting']
+  'Financial': {
+    self_service: {
+      base_price: 1299,
+      range: '£1,299 - £1,999',
+      categories: ['Credit Risk', 'Market Risk', 'Compliance', 'Insurance'],
+      features: [
+        'Pre-trained models for financial applications',
+        'Training datasets with evidence bundles',
+        'Basic API access and documentation',
+        'Customer handles compute and infrastructure'
+      ]
     },
-    suites: ['FORGE', 'ASSEMBLY', 'QUALITY', 'SUPPLY', 'MAINTAIN', 'ENERGY', 'SAFETY', 'THREAD'],
-    description: 'Production optimization, quality control, supply chain, and industrial IoT',
-    available: false // Coming 2026
+    full_service: {
+      base_price: 6999,
+      range: '£6,999 - £9,999',
+      categories: ['Credit Risk', 'Market Risk', 'Compliance', 'Insurance'],
+      features: [
+        'Everything from self-service',
+        'AWS infrastructure setup',
+        'Compute management and deployment',
+        'SLA guarantees and dedicated support'
+      ]
+    },
+    description: 'Banking, trading, risk management, compliance, and insurance applications',
+    available: true
   }
 };
 
 export interface SubscriptionData {
   category: string;
-  type: 'static' | 'premium' | 'enterprise';
+  serviceLevel: 'self_service' | 'full_service';
   price: number;
-  addons: string[];
-  premiumUpgrade: boolean;
+  features: string[];
   customerEmail: string;
   customerName: string;
 }
@@ -99,37 +144,65 @@ export async function createCheckoutSession(subscriptionData: SubscriptionData) 
 
 export async function logSubscriptionAttempt(subscriptionData: SubscriptionData) {
   try {
-    const { error } = await supabase
-      .from('subscription_events')
-      .insert({
-        customer_email: subscriptionData.customerEmail,
-        event_type: 'subscription_attempt',
-        plan_type: `${subscriptionData.category}_${subscriptionData.type}`,
-        amount: calculateTotalPrice(subscriptionData),
-        currency: 'usd',
-        stripe_event_id: `attempt_${Date.now()}`,
-      });
+    const { data, error } = await supabase
+      .from('subscription_attempts')
+      .insert([
+        {
+          category: subscriptionData.category,
+          service_level: subscriptionData.serviceLevel,
+          price: subscriptionData.price,
+          customer_email: subscriptionData.customerEmail,
+          customer_name: subscriptionData.customerName,
+          timestamp: new Date().toISOString()
+        }
+      ]);
 
-    if (error) {
-      console.error('Error logging subscription attempt:', error);
-    }
+    if (error) throw error;
+    return data;
   } catch (error) {
-    console.error('Error logging subscription attempt:', error);
+    console.error('Failed to log subscription attempt:', error);
+    throw error;
   }
 }
 
-export function calculateTotalPrice(subscriptionData: SubscriptionData): number {
-  const categoryConfig = categories[subscriptionData.category];
-  if (!categoryConfig) return 0;
+export async function getSubscriptionHistory(email: string) {
+  try {
+    const { data, error } = await supabase
+      .from('subscription_attempts')
+      .select('*')
+      .eq('customer_email', email)
+      .order('timestamp', { ascending: false });
 
-  let basePrice = categoryConfig[subscriptionData.type];
-  
-  // Add premium upgrade cost for non-enterprise tiers
-  if (subscriptionData.type !== 'enterprise' && subscriptionData.premiumUpgrade) {
-    basePrice += (subscriptionData.type === 'static' ? 2400 : 200); // One-time vs monthly
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    console.error('Failed to get subscription history:', error);
+    throw error;
   }
+}
 
-  return basePrice;
+export function getCategoryPricing(category: string) {
+  return categories[category] || null;
+}
+
+export function getServiceLevelPricing(category: string, serviceLevel: 'self_service' | 'full_service') {
+  const categoryConfig = categories[category];
+  if (!categoryConfig) return null;
+  
+  return categoryConfig[serviceLevel];
+}
+
+export function calculateTotalPrice(category: string, serviceLevel: 'self_service' | 'full_service', addons: string[] = []) {
+  const basePricing = getServiceLevelPricing(category, serviceLevel);
+  if (!basePricing) return 0;
+  
+  // Base price for the service level
+  let total = basePricing.base_price;
+  
+  // Add-on pricing could be implemented here
+  // For now, we're using the base pricing structure
+  
+  return total;
 }
 
 export function getAvailableCategories(): string[] {

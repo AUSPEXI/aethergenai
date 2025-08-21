@@ -1,0 +1,1345 @@
+import React, { useState } from 'react';
+import { CheckCircle, Shield, Database, Zap, Users, Building, Globe, Lock, Award, Star, Rocket, Brain, Eye, Atom, Sparkles, TrendingUp, Target, Check, X, Crown, Star as StarIcon, Code, Server, Cpu, BarChart3, Car, Factory, Gauge, Wrench, Truck, Cog, Bolt, Palette, Activity, Flame, Siren, RotateCcw, FileText, TrendingUp as TrendingUpIcon, GraduationCap, Target as TargetIcon, ChevronDown } from 'lucide-react';
+
+const Pricing = () => {
+  const [selectedIndustry, setSelectedIndustry] = useState<string>('automotive');
+
+  const platformTiers = [
+    {
+      name: 'Developer Hub',
+      description: 'Individual developer access to synthetic data generation',
+      price: {
+        gbp: '£299',
+        usd: '$379'
+      },
+      period: 'per month per seat',
+      features: [
+        '10M synthetic rows/month',
+        '100 ablation runs/month',
+        '2 RPS API cap',
+        'Basic support',
+        'Standard datasets access',
+        'API documentation'
+      ],
+      icon: Code,
+      color: 'blue',
+      popular: false,
+      quotas: {
+        rows: '10M',
+        ablation: '100',
+        api: '2 RPS'
+      }
+    },
+    {
+      name: 'Developer Hub Pro',
+      description: 'Advanced developer access with extended capabilities',
+      price: {
+        gbp: '£499',
+        usd: '$629'
+      },
+      period: 'per month per seat',
+      features: [
+        '50M synthetic rows/month',
+        '500 ablation runs/month',
+        '5 RPS API cap',
+        'VRME/FRO extended variants',
+        'Priority support',
+        'Advanced datasets access',
+        'Custom model training'
+      ],
+      icon: Cpu,
+      color: 'green',
+      popular: true,
+      quotas: {
+        rows: '50M',
+        ablation: '500',
+        api: '5 RPS'
+      }
+    },
+    {
+      name: 'Team Platform',
+      description: 'Small team access with enterprise features',
+      price: {
+        gbp: '£1,299',
+        usd: '$1,649'
+      },
+      period: 'per month (includes 3 seats)',
+      features: [
+        '100M synthetic rows/month',
+        '1,000 ablation runs/month',
+        '10 RPS API cap',
+        'SSO integration',
+        'Priority support',
+        'Advanced datasets access',
+        'Custom model training',
+        'Basic SLA'
+      ],
+      icon: Users,
+      color: 'blue',
+      popular: false,
+      quotas: {
+        rows: '100M',
+        ablation: '1,000',
+        api: '10 RPS'
+      }
+    },
+    {
+      name: 'Enterprise Platform',
+      description: 'Large team access with enterprise-grade features',
+      price: {
+        gbp: '£2,999',
+        usd: '$3,799'
+      },
+      period: 'per month (includes 5 seats)',
+      features: [
+        '500M+ rows/month (negotiated)',
+        'Unlimited ablation runs',
+        'Unlimited API calls',
+        'SSO integration',
+        'SLA guarantees',
+        'Audit exports',
+        'Dedicated support',
+        'White-label capabilities'
+      ],
+      icon: Server,
+      color: 'purple',
+      popular: false,
+      quotas: {
+        rows: '500M+',
+        ablation: 'Unlimited',
+        api: 'Unlimited'
+      }
+    }
+  ];
+
+  const datasetTiers = [
+    {
+      name: 'Small Dataset',
+      price: { gbp: '£399', usd: '$499' },
+      period: 'per month',
+      features: ['Up to 100K records', 'Full Delta table', 'Evidence bundle', 'Monthly refresh', 'Basic support'],
+      icon: Database,
+      color: 'blue'
+    },
+    {
+      name: 'Medium Dataset',
+      price: { gbp: '£799', usd: '$999' },
+      period: 'per month',
+      features: ['Up to 1M records', 'Full Delta table', 'Evidence bundle', 'Monthly refresh', 'Priority support'],
+      icon: BarChart3,
+      color: 'green'
+    },
+    {
+      name: 'Large Dataset',
+      price: { gbp: '£1,499', usd: '$1,899' },
+      period: 'per month',
+      features: ['Up to 10M records', 'Full Delta table', 'Evidence bundle', 'Monthly refresh', 'Priority support'],
+      icon: TrendingUp,
+      color: 'purple'
+    }
+  ];
+
+  const enterpriseTiers = [
+    {
+      name: 'Enterprise Basic',
+      price: { gbp: '£9,999', usd: '$12,999' },
+      period: 'per month',
+      features: ['Up to 100M records', 'Databricks integration', 'Full evidence bundles', 'Dedicated support', 'Custom compliance'],
+      icon: Building,
+      color: 'blue'
+    },
+    {
+      name: 'Enterprise Pro',
+      price: { gbp: '£24,999', usd: '$31,999' },
+      period: 'per month',
+      features: ['Up to 500M records', 'Databricks integration', 'Full evidence bundles', 'Dedicated support', 'Custom compliance'],
+      icon: Crown,
+      color: 'green'
+    },
+    {
+      name: 'Enterprise Ultimate',
+      price: { gbp: '£49,999', usd: '$62,999' },
+      period: 'per month',
+      features: ['Up to 1B records', 'Databricks integration', 'Full evidence bundles', 'Dedicated support', 'SLA guarantees'],
+      icon: Server,
+      color: 'purple'
+    }
+  ];
+
+  const streamingTiers = [
+    {
+      name: 'Basic Stream',
+      price: { gbp: '£2,999', usd: '$3,749' },
+      period: 'per month',
+      features: ['1M rows/day (30M/month)', 'Real-time generation', 'Evidence bundles', 'Basic storage included', 'API access'],
+      icon: Zap,
+      color: 'blue'
+    },
+    {
+      name: 'Professional Stream',
+      price: { gbp: '£7,999', usd: '$9,999' },
+      period: 'per month',
+      features: ['10M rows/day (300M/month)', 'Real-time generation', 'Evidence bundles', 'Extended storage', 'Priority API access'],
+      icon: Bolt,
+      color: 'green'
+    },
+    {
+      name: 'Enterprise Stream',
+      price: { gbp: '£19,999', usd: '$24,999' },
+      period: 'per month',
+      features: ['100M rows/day (3B/month)', 'Real-time generation', 'Evidence bundles', 'Unlimited storage', 'Dedicated support'],
+      icon: Crown,
+      color: 'purple'
+    }
+  ];
+
+  const industrySuites = [
+    {
+      name: 'Automotive Manufacturing',
+      description: 'Quality control, defect detection, and production optimization - Direct response to BMW Quality Group requirements',
+      icon: Factory,
+      color: 'text-purple-600',
+      status: 'Primary Focus - Building Now',
+      recordsPerDay: '1M+',
+      offerings: [
+        {
+          category: 'Quality Control & Defect Detection',
+          models: ['Material Defect Detection v1', 'Production Line Optimization v1', 'Quality Assurance v1', 'Surface Finish Analysis v1'],
+          datasets: ['Automotive Quality Dataset', 'Production Metrics Dataset', 'Defect Analysis Dataset', 'Surface Quality Dataset'],
+          pricing: 'Self-Service: £599/month | Full-Service: £2,999/month',
+          description: 'Self-Service: Pre-trained models + training data + evidence bundles. You handle compute costs and deployment. Full-Service: Everything above + AWS infrastructure + compute management + deployment support.',
+          serviceLevels: {
+            selfService: {
+              included: ['Pre-trained models', 'Training datasets', 'Evidence bundles', 'Basic API access', 'Documentation'],
+              notIncluded: ['Compute costs', 'Model hosting', 'Infrastructure setup', 'Deployment support']
+            },
+            fullService: {
+              included: ['Pre-trained models', 'Training datasets', 'Evidence bundles', 'AWS infrastructure', 'Compute management', 'Deployment support', 'SLA guarantees', 'Dedicated support'],
+              notIncluded: ['None - fully managed service']
+            }
+          }
+        },
+        {
+          category: 'Manufacturing Analytics & Optimization',
+          models: ['Supply Chain Optimization v1', 'Energy Efficiency v1', 'Maintenance Prediction v1', 'Production Planning v1'],
+          datasets: ['Supply Chain Dataset', 'Energy Consumption Dataset', 'Maintenance History Dataset', 'Production Planning Dataset'],
+          pricing: 'Self-Service: £899/month | Full-Service: £3,999/month',
+          description: 'Self-Service: Pre-trained models + training data + evidence bundles. You handle compute costs and deployment. Full-Service: Everything above + AWS infrastructure + compute management + deployment support.',
+          serviceLevels: {
+            selfService: {
+              included: ['Pre-trained models', 'Training datasets', 'Evidence bundles', 'Basic API access', 'Documentation'],
+              notIncluded: ['Compute costs', 'Model hosting', 'Infrastructure setup', 'Deployment support']
+            },
+            fullService: {
+              included: ['Pre-trained models', 'Training datasets', 'Evidence bundles', 'AWS infrastructure', 'Compute management', 'Deployment support', 'SLA guarantees', 'Dedicated support'],
+              notIncluded: ['None - fully managed service']
+            }
+          }
+        },
+        {
+          category: 'Safety & Testing Systems',
+          models: ['Crash Test Simulation v1', 'Safety System Validation v1', 'Component Testing v1', 'Performance Analysis v1'],
+          datasets: ['Safety Testing Dataset', 'Component Dataset', 'Performance Dataset', 'Validation Dataset'],
+          pricing: 'Self-Service: £699/month | Full-Service: £2,799/month',
+          description: 'Self-Service: Pre-trained models + training data + evidence bundles. You handle compute costs and deployment. Full-Service: Everything above + AWS infrastructure + compute management + deployment support.',
+          serviceLevels: {
+            selfService: {
+              included: ['Pre-trained models', 'Training datasets', 'Evidence bundles', 'Basic API access', 'Documentation'],
+              notIncluded: ['Compute costs', 'Model hosting', 'Infrastructure setup', 'Deployment support']
+            },
+            fullService: {
+              included: ['Pre-trained models', 'Training datasets', 'Evidence bundles', 'AWS infrastructure', 'Compute management', 'Deployment support', 'SLA guarantees', 'Dedicated support'],
+              notIncluded: ['None - fully managed service']
+            }
+          }
+        },
+        {
+          category: 'Supply Chain & Logistics',
+          models: ['Inventory Optimization v1', 'Supplier Quality v1', 'Logistics Planning v1', 'Cost Analysis v1'],
+          datasets: ['Inventory Dataset', 'Supplier Dataset', 'Logistics Dataset', 'Cost Dataset'],
+          pricing: 'Self-Service: £799/month | Full-Service: £2,899/month',
+          description: 'Self-Service: Pre-trained models + training data + evidence bundles. You handle compute costs and deployment. Full-Service: Everything above + AWS infrastructure + compute management + deployment support.',
+          serviceLevels: {
+            selfService: {
+              included: ['Pre-trained models', 'Training datasets', 'Evidence bundles', 'Basic API access', 'Documentation'],
+              notIncluded: ['Compute costs', 'Model hosting', 'Infrastructure setup', 'Deployment support']
+            },
+            fullService: {
+              included: ['Pre-trained models', 'Training datasets', 'Evidence bundles', 'AWS infrastructure', 'Compute management', 'Deployment support', 'SLA guarantees', 'Dedicated support'],
+              notIncluded: ['None - fully managed service']
+            }
+          }
+        }
+      ]
+    },
+    {
+      name: 'Healthcare & NHS',
+      description: 'Medical research, fraud detection, and healthcare analytics - Insurance and finance crossover ready',
+      icon: Activity,
+      color: 'text-red-600',
+      status: 'Coming Very Soon - Q1 2025',
+      recordsPerDay: '500K+',
+      offerings: [
+        {
+          category: 'Fraud Detection & Risk Management',
+          models: ['Healthcare Claims Fraud v1', 'Provider Analytics v1', 'Patient Risk Assessment v1', 'Insurance Fraud v1'],
+          datasets: ['Claims Dataset', 'Provider Dataset', 'Patient Dataset', 'Insurance Dataset'],
+          pricing: 'Self-Service: £799/month | Full-Service: £3,999/month',
+          description: 'Self-Service: Pre-trained models + training data + evidence bundles. You handle compute costs and deployment. Full-Service: Everything above + AWS infrastructure + compute management + deployment support.',
+          serviceLevels: {
+            selfService: {
+              included: ['Pre-trained models', 'Training datasets', 'Evidence bundles', 'Basic API access', 'Documentation'],
+              notIncluded: ['Compute costs', 'Model hosting', 'Infrastructure setup', 'Deployment support']
+            },
+            fullService: {
+              included: ['Pre-trained models', 'Training datasets', 'Evidence bundles', 'AWS infrastructure', 'Compute management', 'Deployment support', 'SLA guarantees', 'Dedicated support'],
+              notIncluded: ['None - fully managed service']
+            }
+          }
+        },
+        {
+          category: 'Medical Research & Clinical Trials',
+          models: ['Clinical Trial Optimization v1', 'Drug Discovery v1', 'Patient Outcomes v1', 'Research Analytics v1'],
+          datasets: ['Clinical Data Dataset', 'Research Dataset', 'Outcomes Dataset', 'Analytics Dataset'],
+          pricing: 'Self-Service: £1,299/month | Full-Service: £5,999/month',
+          description: 'Self-Service: Pre-trained models + training data + evidence bundles. You handle compute costs and deployment. Full-Service: Everything above + AWS infrastructure + compute management + deployment support.',
+          serviceLevels: {
+            selfService: {
+              included: ['Pre-trained models', 'Training datasets', 'Evidence bundles', 'Basic API access', 'Documentation'],
+              notIncluded: ['Compute costs', 'Model hosting', 'Infrastructure setup', 'Deployment support']
+            },
+            fullService: {
+              included: ['Pre-trained models', 'Training datasets', 'Evidence bundles', 'AWS infrastructure', 'Compute management', 'Deployment support', 'SLA guarantees', 'Dedicated support'],
+              notIncluded: ['None - fully managed service']
+            }
+          }
+        },
+        {
+          category: 'Patient Care & Analytics',
+          models: ['Patient Risk Stratification v1', 'Treatment Optimization v1', 'Population Health v1', 'Predictive Care v1'],
+          datasets: ['Patient Dataset', 'Treatment Dataset', 'Population Dataset', 'Predictive Dataset'],
+          pricing: 'Self-Service: £899/month | Full-Service: £4,499/month',
+          description: 'Self-Service: Pre-trained models + training data + evidence bundles. You handle compute costs and deployment. Full-Service: Everything above + AWS infrastructure + compute management + deployment support.',
+          serviceLevels: {
+            selfService: {
+              included: ['Pre-trained models', 'Training datasets', 'Evidence bundles', 'Basic API access', 'Documentation'],
+              notIncluded: ['Compute costs', 'Model hosting', 'Infrastructure setup', 'Deployment support']
+            },
+            fullService: {
+              included: ['Pre-trained models', 'Training datasets', 'Evidence bundles', 'AWS infrastructure', 'Compute management', 'Deployment support', 'SLA guarantees', 'Dedicated support'],
+              notIncluded: ['None - fully managed service']
+            }
+          }
+        },
+        {
+          category: 'Healthcare Operations & Compliance',
+          models: ['HIPAA Compliance v1', 'Operational Efficiency v1', 'Resource Optimization v1', 'Quality Metrics v1'],
+          datasets: ['Compliance Dataset', 'Operations Dataset', 'Resource Dataset', 'Quality Dataset'],
+          pricing: 'Self-Service: £699/month | Full-Service: £3,499/month',
+          description: 'Self-Service: Pre-trained models + training data + evidence bundles. You handle compute costs and deployment. Full-Service: Everything above + AWS infrastructure + compute management + deployment support.',
+          serviceLevels: {
+            selfService: {
+              included: ['Pre-trained models', 'Training datasets', 'Evidence bundles', 'Basic API access', 'Documentation'],
+              notIncluded: ['Compute costs', 'Model hosting', 'Infrastructure setup', 'Deployment support']
+            },
+            fullService: {
+              included: ['Pre-trained models', 'Training datasets', 'Evidence bundles', 'AWS infrastructure', 'Compute management', 'Deployment support', 'SLA guarantees', 'Dedicated support'],
+              notIncluded: ['None - fully managed service']
+            }
+          }
+        }
+      ]
+    },
+    {
+      name: 'Financial Services',
+      description: 'Banking, trading, risk management, and compliance - Insurance and healthcare fraud crossover',
+      icon: TrendingUpIcon,
+      color: 'text-green-600',
+      status: 'Planned - Q2 2025',
+      recordsPerDay: '2M+',
+      offerings: [
+        {
+          category: 'Credit Risk & Fraud Detection',
+          models: ['Credit Risk Assessment v1', 'Transaction Fraud Detection v1', 'Identity Verification v1'],
+          datasets: ['Credit History Dataset', 'Transaction Patterns Dataset', 'Identity Risk Dataset'],
+          pricing: 'Self-Service: £1,299/month | Full-Service: £6,999/month',
+          description: 'Self-Service: Pre-trained models + training data + evidence bundles. You handle compute costs and deployment. Full-Service: Everything above + AWS infrastructure + compute management + deployment support.',
+          serviceLevels: {
+            selfService: {
+              included: ['Pre-trained models', 'Training datasets', 'Evidence bundles', 'Basic API access', 'Documentation'],
+              notIncluded: ['Compute costs', 'Model hosting', 'Infrastructure setup', 'Deployment support']
+            },
+            fullService: {
+              included: ['Pre-trained models', 'Training datasets', 'Evidence bundles', 'AWS infrastructure', 'Compute management', 'Deployment support', 'SLA guarantees', 'Dedicated support'],
+              notIncluded: ['None - fully managed service']
+            }
+          }
+        },
+        {
+          category: 'Market Risk & Trading',
+          models: ['Market Risk Modeling v1', 'Portfolio Optimization v1', 'Algorithmic Trading v1'],
+          datasets: ['Market Volatility Dataset', 'Portfolio Performance Dataset', 'Trading Signals Dataset'],
+          pricing: 'Self-Service: £1,999/month | Full-Service: £9,999/month',
+          description: 'Self-Service: Pre-trained models + training data + evidence bundles. You handle compute costs and deployment. Full-Service: Everything above + AWS infrastructure + compute management + deployment support.',
+          serviceLevels: {
+            selfService: {
+              included: ['Pre-trained models', 'Training datasets', 'Evidence bundles', 'Basic API access', 'Documentation'],
+              notIncluded: ['Compute costs', 'Model hosting', 'Infrastructure setup', 'Deployment support']
+            },
+            fullService: {
+              included: ['Pre-trained models', 'Training datasets', 'Evidence bundles', 'AWS infrastructure', 'Compute management', 'Deployment support', 'SLA guarantees', 'Dedicated support'],
+              notIncluded: ['None - fully managed service']
+            }
+          }
+        },
+        {
+          category: 'Compliance & Regulatory',
+          models: ['AML Monitoring v1', 'KYC Automation v1', 'Regulatory Reporting v1'],
+          datasets: ['Compliance Dataset', 'KYC Dataset', 'Regulatory Dataset'],
+          pricing: 'Self-Service: £1,599/month | Full-Service: £7,999/month',
+          description: 'Self-Service: Pre-trained models + training data + evidence bundles. You handle compute costs and deployment. Full-Service: Everything above + AWS infrastructure + compute management + deployment support.',
+          serviceLevels: {
+            selfService: {
+              included: ['Pre-trained models', 'Training datasets', 'Evidence bundles', 'Basic API access', 'Documentation'],
+              notIncluded: ['Compute costs', 'Model hosting', 'Infrastructure setup', 'Deployment support']
+            },
+            fullService: {
+              included: ['Pre-trained models', 'Training datasets', 'Evidence bundles', 'AWS infrastructure', 'Compute management', 'Deployment support', 'SLA guarantees', 'Dedicated support'],
+              notIncluded: ['None - fully managed service']
+            }
+          }
+        },
+        {
+          category: 'Insurance & Risk Transfer',
+          models: ['Insurance Risk Assessment v1', 'Claims Fraud Detection v1', 'Risk Transfer Modeling v1'],
+          datasets: ['Insurance Claims Dataset', 'Risk Profile Dataset', 'Transfer Dataset'],
+          pricing: 'Self-Service: £1,799/month | Full-Service: £8,999/month',
+          description: 'Self-Service: Pre-trained models + training data + evidence bundles. You handle compute costs and deployment. Full-Service: Everything above + AWS infrastructure + compute management + deployment support.',
+          serviceLevels: {
+            selfService: {
+              included: ['Pre-trained models', 'Training datasets', 'Evidence bundles', 'Basic API access', 'Documentation'],
+              notIncluded: ['Compute costs', 'Model hosting', 'Infrastructure setup', 'Deployment support']
+            },
+            fullService: {
+              included: ['Pre-trained models', 'Training datasets', 'Evidence bundles', 'AWS infrastructure', 'Compute management', 'Deployment support', 'SLA guarantees', 'Dedicated support'],
+              notIncluded: ['None - fully managed service']
+            }
+          }
+        }
+      ]
+    }
+  ];
+
+  const whiteLabelTiers = [
+    {
+      name: 'White Label Basic',
+      price: { gbp: '£4,999', usd: '$6,249' },
+      period: 'per month',
+      features: ['Custom branding', 'Up to 50M records/mo', 'Basic API access', 'Standard support', 'Custom compliance'],
+      icon: Palette,
+      color: 'blue'
+    },
+    {
+      name: 'White Label Pro',
+      price: { gbp: '£12,999', usd: '$16,249' },
+      period: 'per month',
+      features: ['Custom branding', 'Up to 500M records/mo', 'Advanced API access', 'Priority support', 'Custom compliance'],
+      icon: Crown,
+      color: 'purple'
+    },
+    {
+      name: 'Enterprise Platform',
+      price: { gbp: 'Contact Sales', usd: 'Contact Sales' },
+      period: '',
+      features: ['Full platform licensing', 'Unlimited records', 'Custom integrations', 'Dedicated team', 'SLA guarantees'],
+      icon: Server,
+      color: 'green'
+    }
+  ];
+
+  const modelTiers = [
+    {
+      name: 'Model Seat',
+      price: { gbp: '£149', usd: '$199' },
+      period: 'per seat/month',
+      features: ['Access to one niche model', 'Per-seat rate', 'Evidence-backed', 'Basic support'],
+      icon: Brain,
+      color: 'blue'
+    },
+    {
+      name: 'Prediction Credits 100k',
+      price: { gbp: '£49', usd: '$59' },
+      period: 'one-time',
+      features: ['100k prediction credits', 'Usage-based', 'No expiration', 'Basic support'],
+      icon: Target,
+      color: 'green'
+    },
+    {
+      name: 'Prediction Credits 1M',
+      price: { gbp: '£399', usd: '$499' },
+      period: 'one-time',
+      features: ['1M prediction credits', 'Usage-based', 'No expiration', 'Priority support'],
+      icon: TrendingUp,
+      color: 'purple'
+    }
+  ];
+
+  const worldRecordFeatures = [
+    {
+      title: '1 BILLION Records Generated',
+              description: 'Revolutionary achievement proving unlimited scale capability',
+      icon: Award,
+      status: 'Completed'
+    },
+    {
+      title: '11 Proprietary Inventions',
+      description: 'Revolutionary technologies including Elastic Collision Newton\'s Cradle',
+      icon: Rocket,
+      status: 'Operational'
+    },
+    {
+      title: '100% Quality Compliance',
+      description: 'Perfect quality maintained across all scales from 1K to 1B records',
+      icon: CheckCircle,
+      status: 'Proven'
+    },
+    {
+      title: 'Unlimited Scale',
+      description: 'Revolutionary technology enabling unlimited synthetic data generation',
+      icon: Globe,
+      status: 'Achieved'
+    }
+  ];
+
+  const innovationPipeline = [
+    {
+      category: 'Revolutionary Technologies',
+      description: 'Advanced innovations in development that will transform multiple industries',
+      icon: Sparkles,
+      hint: 'Beyond synthetic data - new dimensions'
+    },
+    {
+      category: 'Market Creation',
+      description: 'Technologies that will create industries that don\'t exist yet',
+      icon: TrendingUp,
+      hint: 'Market-creating innovations'
+    },
+    {
+      category: 'Human Exploration',
+      description: 'Opening new dimensions of human exploration and understanding',
+      icon: Users,
+      hint: 'New worlds of exploration'
+    },
+    {
+      category: 'Cosmic Patterns',
+      description: 'Advanced mathematical modeling of universal processes',
+      icon: Atom,
+      hint: 'Cosmic pattern recognition'
+    }
+  ];
+
+  return (
+    <div className="min-h-screen">
+      {/* Hero Section */}
+      <section className="bg-gradient-to-br from-slate-900 to-blue-900 py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
+              AethergenAI Platform Pricing
+            </h1>
+            <p className="text-xl text-blue-100 mb-8 max-w-4xl mx-auto">
+              Revolutionary technology accessible to developers and enterprises. From individual access to team-scale 
+              unlimited synthetic data generation with advanced proprietary technology.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20">
+                <div className="text-3xl font-bold text-blue-400 mb-2">Unlimited</div>
+                <div className="text-white">Scale Generation</div>
+              </div>
+              <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20">
+                <div className="text-3xl font-bold text-green-400 mb-2">Advanced</div>
+                <div className="text-white">Proprietary Tech</div>
+              </div>
+              <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20">
+                <div className="text-3xl font-bold text-purple-400 mb-2">100%</div>
+                <div className="text-white">Quality Compliance</div>
+              </div>
+            </div>
+            <div className="mt-6">
+              <a href="/about" className="text-blue-200 hover:text-white font-medium">
+                View complete story and achievements →
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Revolutionary Achievement */}
+      <section className="py-20 bg-gradient-to-br from-orange-50 to-red-50">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <div className="flex items-center justify-center mb-4">
+              <Award className="h-8 w-8 text-orange-600 mr-3" />
+              <h2 className="text-3xl font-bold text-slate-900">Revolutionary Technology</h2>
+            </div>
+            <p className="text-xl text-slate-600">
+              Our breakthrough system has achieved what was previously considered impossible in synthetic data generation
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {worldRecordFeatures.map((feature, index) => (
+              <div key={index} className="bg-white rounded-xl p-6 shadow-lg border border-orange-200 text-center hover:shadow-xl transition-shadow">
+                <div className="flex items-center justify-center mb-4">
+                  <feature.icon className="h-12 w-12 text-orange-600" />
+                </div>
+                <h3 className="text-lg font-bold text-slate-900 mb-3">{feature.title}</h3>
+                <p className="text-slate-600 mb-4 text-sm">{feature.description}</p>
+                <div className="bg-orange-50 p-3 rounded-lg">
+                  <p className="text-sm text-orange-700 font-medium">{feature.status}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Databricks Integration Reference */}
+      <section className="py-16 bg-gradient-to-br from-blue-50 to-slate-100">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 mb-4">
+            <Database className="w-6 h-6 text-blue-600" />
+          </div>
+          <h3 className="text-2xl font-bold text-slate-900 mb-4">
+            Enterprise Databricks Integration
+          </h3>
+          <p className="text-lg text-slate-600 mb-6 max-w-3xl mx-auto">
+            All enterprise packages include seamless Databricks marketplace integration, validated through our strategic partnership 
+            with the $6B+ leader in data platforms.
+          </p>
+          <a
+            href="/"
+            className="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium text-lg"
+          >
+            Learn more about our Databricks partnership →
+          </a>
+        </div>
+      </section>
+
+      {/* Service Level Explanation */}
+      <section className="py-16 bg-gradient-to-br from-blue-50 to-slate-100">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-slate-900 mb-6">
+              Choose Your Service Level
+            </h2>
+            <p className="text-xl text-slate-600 max-w-4xl mx-auto">
+              We offer two service levels to match your infrastructure needs and budget requirements
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="bg-white rounded-2xl p-8 shadow-lg border border-blue-200">
+              <div className="flex items-center mb-6">
+                <div className="bg-blue-100 rounded-full p-3 mr-4">
+                  <Code className="h-6 w-6 text-blue-600" />
+                </div>
+                <h3 className="text-2xl font-bold text-slate-900">Self-Service</h3>
+              </div>
+              <p className="text-slate-600 mb-6">
+                Perfect for teams with existing infrastructure and DevOps capabilities
+              </p>
+              <div className="space-y-4">
+                <h4 className="font-semibold text-slate-900 text-lg">✅ What's Included:</h4>
+                <ul className="space-y-2 text-slate-700">
+                  <li className="flex items-start">
+                    <CheckCircle className="h-4 w-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
+                    Pre-trained AI models
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle className="h-4 w-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
+                    Training datasets
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle className="h-4 w-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
+                    Evidence bundles
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle className="h-4 w-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
+                    Basic API access
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle className="h-4 w-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
+                    Documentation
+                  </li>
+                </ul>
+                <h4 className="font-semibold text-slate-900 text-lg">❌ What You Handle:</h4>
+                <ul className="space-y-2 text-slate-700">
+                  <li className="flex items-start">
+                    <X className="h-4 w-4 text-red-500 mr-2 mt-0.5 flex-shrink-0" />
+                    Compute costs
+                  </li>
+                  <li className="flex items-start">
+                    <X className="h-4 w-4 text-red-500 mr-2 mt-0.5 flex-shrink-0" />
+                    Model hosting
+                  </li>
+                  <li className="flex items-start">
+                    <X className="h-4 w-4 text-red-500 mr-2 mt-0.5 flex-shrink-0" />
+                    Infrastructure setup
+                  </li>
+                  <li className="flex items-start">
+                    <X className="h-4 w-4 text-red-500 mr-2 mt-0.5 flex-shrink-0" />
+                    Deployment support
+                  </li>
+                </ul>
+              </div>
+            </div>
+            
+            <div className="bg-white rounded-2xl p-8 shadow-lg border border-purple-200">
+              <div className="flex items-center mb-6">
+                <div className="bg-purple-100 rounded-full p-3 mr-4">
+                  <Server className="h-6 w-6 text-purple-600" />
+                </div>
+                <h3 className="text-2xl font-bold text-slate-900">Full-Service</h3>
+              </div>
+              <p className="text-slate-600 mb-6">
+                Complete managed service for teams that want to focus on business outcomes
+              </p>
+              <div className="space-y-4">
+                <h4 className="font-semibold text-slate-900 text-lg">✅ What's Included:</h4>
+                <ul className="space-y-2 text-slate-700">
+                  <li className="flex items-start">
+                    <CheckCircle className="h-4 w-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
+                    Everything from Self-Service
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle className="h-4 w-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
+                    AWS infrastructure setup
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle className="h-4 w-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
+                    Compute management
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle className="h-4 w-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
+                    Deployment support
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle className="h-4 w-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
+                    SLA guarantees
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle className="h-4 w-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
+                    Dedicated support
+                  </li>
+                </ul>
+                <h4 className="font-semibold text-slate-900 text-lg">❌ What You Handle:</h4>
+                <ul className="space-y-2 text-slate-700">
+                  <li className="flex items-start">
+                    <X className="h-4 w-4 text-red-500 mr-2 mt-0.5 flex-shrink-0" />
+                    Nothing - fully managed service
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Industry Solutions & Models */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold text-slate-900 mb-4">
+              Industry Solutions & Models
+            </h2>
+            <p className="text-xl text-slate-600 mb-6">
+              Specialized AI models and synthetic data solutions for automotive, healthcare, and financial services
+            </p>
+            
+            {/* Strategic Note */}
+            <div className="max-w-4xl mx-auto bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-xl border border-blue-200">
+              <div className="flex items-start">
+                <div className="flex-shrink-0 mr-4">
+                  <Target className="h-6 w-6 text-blue-600" />
+                </div>
+                <div className="text-left">
+                  <h4 className="font-semibold text-slate-900 mb-2">Strategic Industry Focus</h4>
+                  <p className="text-slate-700 text-sm leading-relaxed">
+                    <strong>Automotive First:</strong> Direct response to BMW Quality Group requirements - building database schema functionality on Aethergen for immediate deployment. 
+                    <strong>Healthcare Second:</strong> Fraud detection models with insurance/finance crossover ready for Q1 2025. 
+                    <strong>Financial Services:</strong> Planned for Q2 2025 with healthcare fraud detection integration.
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            {/* Cost Savings Note */}
+            <div className="max-w-4xl mx-auto bg-gradient-to-r from-green-50 to-blue-50 p-6 rounded-xl border border-green-200 mt-6">
+              <div className="flex items-start">
+                <div className="flex-shrink-0 mr-4">
+                  <TrendingUp className="h-6 w-6 text-green-600" />
+                </div>
+                <div className="text-left">
+                  <h4 className="font-semibold text-slate-900 mb-2">Revolutionary Cost Savings</h4>
+                  <p className="text-slate-700 text-sm leading-relaxed">
+                    <strong>90% Cost Reduction:</strong> Our industry solutions deliver the same capabilities as traditional providers at a fraction of the cost. 
+                    <strong>Automotive Quality Control:</strong> £599/month vs traditional $5,000-10,000/month solutions. 
+                    <strong>Healthcare Fraud Detection:</strong> £799/month vs traditional $3,000-8,000/month systems. 
+                    <strong>Financial Risk Models:</strong> £1,299/month vs Bloomberg $2,000-5,000/month per seat.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          {/* Industry Dropdown */}
+          <div className="max-w-md mx-auto mb-12">
+            <div className="relative">
+              <select
+                value={selectedIndustry}
+                onChange={(e) => setSelectedIndustry(e.target.value)}
+                className="w-full px-4 py-3 text-lg font-medium text-slate-900 bg-white border-2 border-blue-200 rounded-xl shadow-md focus:border-blue-500 focus:outline-none appearance-none cursor-pointer hover:border-blue-300 transition-colors"
+              >
+                <option value="automotive">🚗 Automotive Manufacturing - Primary Focus (Building Now)</option>
+                <option value="healthcare">🏥 Healthcare & NHS - Coming Very Soon (Q1 2025)</option>
+                <option value="finance">💰 Financial Services - Planned (Q2 2025)</option>
+              </select>
+              <ChevronDown className="absolute right-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-slate-400 pointer-events-none" />
+            </div>
+          </div>
+          
+          {/* Selected Industry Display */}
+          <div className="max-w-4xl mx-auto">
+            {(() => {
+              const industry = industrySuites.find(i => 
+                i.name.toLowerCase().includes(selectedIndustry)
+              );
+              
+              if (!industry) return null;
+              
+              return (
+                <div className="bg-gradient-to-br from-slate-50 to-blue-50 p-8 rounded-xl shadow-md border-2 border-blue-200">
+                  <div className="flex items-center mb-6">
+                    <industry.icon className={`h-8 w-8 ${industry.color} mr-3`} />
+                    <h3 className="text-2xl font-bold text-slate-900">{industry.name}</h3>
+                    <div className="ml-auto">
+                      <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                        industry.status === 'Primary Focus' ? 'bg-green-100 text-green-800' :
+                        industry.status === 'Coming Soon' ? 'bg-yellow-100 text-yellow-800' :
+                        'bg-blue-100 text-blue-800'
+                      }`}>
+                        {industry.status}
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <p className="text-slate-600 mb-8 text-lg">{industry.description}</p>
+                  
+                  <div className="mb-8">
+                    <h4 className="text-xl font-semibold text-slate-900 mb-4">Available Solutions ({industry.offerings.length} categories)</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {industry.offerings.map((offering, offeringIndex) => (
+                        <div key={offeringIndex} className="bg-white p-6 rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                          <h5 className="font-semibold text-slate-900 mb-3 text-base">{offering.category}</h5>
+                          
+                          {/* Description */}
+                          {offering.description && (
+                            <p className="text-sm text-slate-600 mb-4 italic border-l-2 border-blue-200 pl-3">
+                              {offering.description}
+                            </p>
+                          )}
+                          
+                          <div className="space-y-3 text-sm text-slate-600">
+                            <div>
+                              <span className="font-medium text-blue-600">🤖 AI Models:</span>
+                              <div className="mt-1 ml-4">
+                                {offering.models.map((model, idx) => (
+                                  <div key={idx} className="text-slate-700">• {model}</div>
+                                ))}
+                              </div>
+                            </div>
+                            <div>
+                              <span className="font-medium text-green-600">📊 Datasets:</span>
+                              <div className="mt-1 ml-4">
+                                {offering.datasets.map((dataset, idx) => (
+                                  <div key={idx} className="text-slate-700">• {dataset}</div>
+                                ))}
+                              </div>
+                            </div>
+                            <div className="pt-2 border-t border-slate-200">
+                              <span className="font-medium text-purple-600">💳 Pricing:</span>
+                              <div className="mt-1 ml-4 text-slate-700 font-medium">{offering.pricing}</div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center justify-between pt-6 border-t border-blue-200">
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-blue-600 mb-1">{industry.recordsPerDay}</div>
+                      <div className="text-sm text-slate-600">Records/Day Capacity</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-green-600 mb-1">{industry.offerings.length}</div>
+                      <div className="text-sm text-slate-600">Solution Categories</div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
+          </div>
+        </div>
+      </section>
+
+      {/* Platform Tiers */}
+      <section className="py-20 bg-slate-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold text-slate-900 mb-4">
+              Platform Access Tiers
+            </h2>
+            <p className="text-xl text-slate-600 mb-6">
+              Choose the tier that fits your development and enterprise needs
+            </p>
+            
+            {/* Cost Savings Banner */}
+            <div className="max-w-4xl mx-auto bg-gradient-to-r from-green-50 to-blue-50 p-6 rounded-xl border border-green-200 mb-8">
+              <div className="flex items-center justify-center mb-4">
+                <div className="bg-green-100 rounded-full p-3 mr-4">
+                  <TrendingUp className="h-6 w-6 text-green-600" />
+                </div>
+                <h3 className="text-2xl font-bold text-green-800">90% Cost Savings vs Traditional Solutions</h3>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                <div>
+                  <div className="text-3xl font-bold text-green-600 mb-1">81%</div>
+                  <div className="text-sm text-slate-700">vs Bloomberg Terminal</div>
+                  <div className="text-xs text-slate-500">$2,000 → $379/month</div>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold text-blue-600 mb-1">90%+</div>
+                  <div className="text-sm text-slate-700">vs Traditional Data</div>
+                  <div className="text-xs text-slate-500">$5,000 → £599/month</div>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold text-purple-600 mb-1">75%+</div>
+                  <div className="text-sm text-slate-700">vs Enterprise Solutions</div>
+                  <div className="text-xs text-slate-500">$20,000 → £4,999/month</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {platformTiers.map((tier, index) => (
+              <div key={index} className={`relative rounded-2xl p-8 shadow-lg border-2 ${
+                tier.popular 
+                  ? 'bg-gradient-to-br from-green-50 to-blue-50 border-green-200 scale-105' 
+                  : 'bg-white border-slate-200'
+              }`}>
+                {tier.popular && (
+                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                    <div className="bg-green-600 text-white px-4 py-2 rounded-full text-sm font-semibold">
+                      Most Popular
+                    </div>
+                  </div>
+                )}
+                
+                <div className="text-center mb-6">
+                  <div className="flex items-center justify-center mb-4">
+                    <tier.icon className={`h-12 w-12 text-${tier.color}-600`} />
+                  </div>
+                  <h3 className="text-2xl font-bold text-slate-900 mb-2">{tier.name}</h3>
+                  <p className="text-slate-600 mb-4">{tier.description}</p>
+                </div>
+                
+                <div className="text-center mb-6">
+                  <div className="mb-2">
+                    <span className="text-4xl font-bold text-slate-900">{tier.price.gbp}</span>
+                    <span className="text-slate-600 ml-2">{tier.period}</span>
+                  </div>
+                  <div className="text-sm text-slate-500">{tier.price.usd} USD equivalent</div>
+                </div>
+                
+                <div className="mb-6">
+                  <h4 className="font-semibold text-slate-900 mb-3">Monthly Quotas</h4>
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-slate-600">Synthetic Rows:</span>
+                      <span className="font-medium text-slate-900">{tier.quotas.rows}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-slate-600">Ablation Runs:</span>
+                      <span className="font-medium text-slate-900">{tier.quotas.ablation}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-slate-600">API Rate Limit:</span>
+                      <span className="font-medium text-slate-900">{tier.quotas.api}</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <ul className="space-y-3 mb-8">
+                  {tier.features.map((feature, featureIndex) => (
+                    <li key={featureIndex} className="flex items-start">
+                      <Check className="h-5 w-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
+                      <span className="text-slate-700 text-sm">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+                
+                <button className={`w-full py-3 px-6 rounded-lg font-semibold transition-colors ${
+                  tier.popular
+                    ? 'bg-green-600 text-white hover:bg-green-700'
+                    : 'bg-slate-100 text-slate-900 hover:bg-slate-200'
+                }`}>
+                  {tier.popular ? 'Get Started' : 'Contact Sales'}
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Dataset Tiers */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold text-slate-900 mb-4">
+              SMB & Startup Plans
+            </h2>
+            <p className="text-xl text-slate-600">
+              Perfect for growing businesses and research projects
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {datasetTiers.map((tier, index) => (
+              <div key={index} className="bg-white rounded-xl p-8 shadow-lg border border-slate-200 hover:shadow-xl transition-shadow">
+                <div className="text-center mb-6">
+                  <div className="flex items-center justify-center mb-4">
+                    <tier.icon className={`h-12 w-12 text-${tier.color}-600`} />
+                  </div>
+                  <h3 className="text-2xl font-bold text-slate-900 mb-2">{tier.name}</h3>
+                </div>
+                
+                <div className="text-center mb-6">
+                  <div className="mb-2">
+                    <span className="text-4xl font-bold text-slate-900">{tier.price.gbp}</span>
+                    <span className="text-slate-600 ml-2">{tier.period}</span>
+                  </div>
+                  <div className="text-sm text-slate-500">{tier.price.usd} USD equivalent</div>
+                </div>
+                
+                <ul className="space-y-3 mb-8">
+                  {tier.features.map((feature, featureIndex) => (
+                    <li key={featureIndex} className="flex items-start">
+                      <Check className="h-5 w-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
+                      <span className="text-slate-700 text-sm">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+                
+                <button className="w-full py-3 px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold">
+                  Get Started
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Enterprise Plans */}
+      <section className="py-20 bg-slate-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold text-slate-900 mb-4">
+              Enterprise Plans (Databricks)
+            </h2>
+            <p className="text-xl text-slate-600">
+              Enterprise-scale solutions with Databricks integration
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {enterpriseTiers.map((tier, index) => (
+              <div key={index} className="bg-white rounded-xl p-8 shadow-lg border border-slate-200 hover:shadow-xl transition-shadow">
+                <div className="text-center mb-6">
+                  <div className="flex items-center justify-center mb-4">
+                    <tier.icon className={`h-12 w-12 text-${tier.color}-600`} />
+                  </div>
+                  <h3 className="text-2xl font-bold text-slate-900 mb-2">{tier.name}</h3>
+                </div>
+                
+                <div className="text-center mb-6">
+                  <div className="mb-2">
+                    <span className="text-4xl font-bold text-slate-900">{tier.price.gbp}</span>
+                    <span className="text-slate-600 ml-2">{tier.period}</span>
+                  </div>
+                  <div className="text-sm text-slate-500">{tier.price.usd} USD equivalent</div>
+                </div>
+                
+                <ul className="space-y-3 mb-8">
+                  {tier.features.map((feature, featureIndex) => (
+                    <li key={featureIndex} className="flex items-start">
+                      <Check className="h-5 w-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
+                      <span className="text-slate-700 text-sm">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+                
+                <button className="w-full py-3 px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold">
+                  Contact Sales
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Streaming Data */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold text-slate-900 mb-4">
+              Continuous Data Streams
+            </h2>
+            <p className="text-xl text-slate-600">
+              Real-time synthetic data generation for continuous applications
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {streamingTiers.map((tier, index) => (
+              <div key={index} className="bg-white rounded-xl p-8 shadow-lg border border-slate-200 hover:shadow-xl transition-shadow">
+                <div className="text-center mb-6">
+                  <div className="flex items-center justify-center mb-4">
+                    <tier.icon className={`h-12 w-12 text-${tier.color}-600`} />
+                  </div>
+                  <h3 className="text-2xl font-bold text-slate-900 mb-2">{tier.name}</h3>
+                </div>
+                
+                <div className="text-center mb-6">
+                  <div className="mb-2">
+                    <span className="text-4xl font-bold text-slate-900">{tier.price.gbp}</span>
+                    <span className="text-slate-600 ml-2">{tier.period}</span>
+                  </div>
+                  <div className="text-sm text-slate-500">{tier.price.usd} USD equivalent</div>
+                </div>
+                
+                <ul className="space-y-3 mb-8">
+                  {tier.features.map((feature, featureIndex) => (
+                    <li key={featureIndex} className="flex items-start">
+                      <Check className="h-5 w-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
+                      <span className="text-slate-700 text-sm">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+                
+                <button className="w-full py-3 px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold">
+                  Get Started
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* White Label & Enterprise */}
+      <section className="py-20 bg-slate-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold text-slate-900 mb-4">
+              White Label & Enterprise Solutions
+            </h2>
+            <p className="text-xl text-slate-600">
+              Custom branding and enterprise-scale solutions for large organizations
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {whiteLabelTiers.map((tier, index) => (
+              <div key={index} className="bg-white rounded-xl p-8 shadow-lg border border-slate-200 hover:shadow-xl transition-shadow">
+                <div className="text-center mb-6">
+                  <div className="flex items-center justify-center mb-4">
+                    <tier.icon className={`h-12 w-12 text-${tier.color}-600`} />
+                  </div>
+                  <h3 className="text-2xl font-bold text-slate-900 mb-2">{tier.name}</h3>
+                </div>
+                
+                <div className="text-center mb-6">
+                  <div className="mb-2">
+                    <span className="text-4xl font-bold text-slate-900">{tier.price.gbp}</span>
+                    <span className="text-slate-600 ml-2">{tier.period}</span>
+                  </div>
+                  {tier.price.gbp !== 'Contact Sales' && (
+                    <div className="text-sm text-slate-500">{tier.price.usd} USD equivalent</div>
+                  )}
+                </div>
+                
+                <ul className="space-y-3 mb-8">
+                  {tier.features.map((feature, featureIndex) => (
+                    <li key={featureIndex} className="flex items-start">
+                      <Check className="h-5 w-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
+                      <span className="text-slate-700 text-sm">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+                
+                <button className={`w-full py-3 px-6 rounded-lg font-semibold transition-colors ${
+                  tier.price.gbp === 'Contact Sales' 
+                    ? 'bg-green-600 text-white hover:bg-green-700'
+                    : 'bg-blue-600 text-white hover:bg-blue-700'
+                }`}>
+                  {tier.price.gbp === 'Contact Sales' ? 'Contact Sales' : 'Get Started'}
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Models & Predictions */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold text-slate-900 mb-4">
+              AI Models & Predictions
+            </h2>
+            <p className="text-xl text-slate-600">
+              Access to trained models and prediction credits for immediate use
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {modelTiers.map((tier, index) => (
+              <div key={index} className="bg-white rounded-xl p-8 shadow-lg border border-slate-200 hover:shadow-xl transition-shadow">
+                <div className="text-center mb-6">
+                  <div className="flex items-center justify-center mb-4">
+                    <tier.icon className={`h-12 w-12 text-${tier.color}-600`} />
+                  </div>
+                  <h3 className="text-2xl font-bold text-slate-900 mb-2">{tier.name}</h3>
+                </div>
+                
+                <div className="text-center mb-6">
+                  <div className="mb-2">
+                    <span className="text-4xl font-bold text-slate-900">{tier.price.gbp}</span>
+                    <span className="text-slate-600 ml-2">{tier.period}</span>
+                  </div>
+                  <div className="text-sm text-slate-500">{tier.price.usd} USD equivalent</div>
+                </div>
+                
+                <ul className="space-y-3 mb-8">
+                  {tier.features.map((feature, featureIndex) => (
+                    <li key={featureIndex} className="flex items-start">
+                      <Check className="h-5 w-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
+                      <span className="text-slate-700 text-sm">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+                
+                <button className="w-full py-3 px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold">
+                  Get Started
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Innovation Pipeline */}
+      <section className="py-20 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+              Innovation Pipeline
+            </h2>
+            <p className="text-xl md:text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
+              Revolutionary technologies in development that will transform industries and open new worlds of exploration
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {innovationPipeline.map((innovation, index) => (
+              <div key={index} className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20">
+                <div className="flex items-center mb-4">
+                  <innovation.icon className="h-8 w-8 text-blue-400 mr-3" />
+                  <h3 className="text-xl font-bold text-white">{innovation.category}</h3>
+                </div>
+                <p className="text-gray-300 mb-4">{innovation.description}</p>
+                <div className="bg-white/10 backdrop-blur-lg rounded-lg p-4 border border-white/20">
+                  <p className="text-sm text-blue-300 font-medium">Innovation Hint:</p>
+                  <p className="text-gray-200 italic">"{innovation.hint}"</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          
+          <div className="text-center mt-16">
+            <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20 max-w-4xl mx-auto">
+              <h3 className="text-2xl font-bold mb-4 text-white">
+                Future Innovation Access
+              </h3>
+              <p className="text-gray-300 mb-6">
+                Our innovation pipeline includes technologies that will:
+              </p>
+              <ul className="space-y-3 text-gray-300 text-left max-w-2xl mx-auto">
+                <li className="flex items-center">
+                  <Rocket className="h-5 w-5 text-blue-400 mr-3" />
+                  Transform multiple industries through breakthrough innovations
+                </li>
+                <li className="flex items-center">
+                  <Globe className="h-5 w-5 text-green-400 mr-3" />
+                  Open new dimensions of human exploration and understanding
+                </li>
+                <li className="flex items-center">
+                  <Brain className="h-5 w-5 text-purple-400 mr-3" />
+                  Create markets that don't exist yet
+                </li>
+                <li className="flex items-center">
+                  <Atom className="h-5 w-5 text-pink-400 mr-3" />
+                  Revolutionize our understanding of data and computation
+                </li>
+              </ul>
+              <p className="text-gray-400 mt-6 text-sm">
+                Specific details are protected for future revelation and market impact
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl font-bold text-white mb-4">
+                          Ready to Access Revolutionary Technology?
+          </h2>
+          <p className="text-xl text-blue-100 mb-8">
+            Join the synthetic data revolution with unlimited-scale capabilities and 11 proprietary inventions
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <a
+              href="/press"
+              className="bg-white/10 backdrop-blur-lg border border-white/20 text-white px-8 py-3 rounded-lg hover:bg-white/20 transition-all font-semibold inline-flex items-center justify-center"
+            >
+                              View Our Story
+              <Award className="ml-2 h-5 w-5" />
+            </a>
+            <a
+              href="/contact"
+              className="border border-white text-white px-8 py-3 rounded-lg hover:bg-white hover:text-slate-900 transition-colors font-semibold"
+            >
+              Contact Sales
+            </a>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+};
+
+export default Pricing;

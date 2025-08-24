@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import SEO from '../components/SEO';
 import { CheckCircle, Shield, Database, Zap, Users, Building, Globe, Lock, Award, Star, Rocket, Brain, Eye, Atom, Sparkles, TrendingUp, Target, Check, X, Crown, Star as StarIcon, Code, Server, Cpu, BarChart3, Car, Factory, Gauge, Wrench, Truck, Cog, Bolt, Palette, Activity, Flame, Siren, RotateCcw, FileText, TrendingUp as TrendingUpIcon, GraduationCap, Target as TargetIcon, ChevronDown } from 'lucide-react';
 
 const Pricing = () => {
@@ -576,6 +577,20 @@ const Pricing = () => {
 
   return (
     <div className="min-h-screen">
+      <SEO
+        title="Pricing – AethergenPlatform"
+        description="Transparent pricing for AethergenPlatform: platform access, datasets, streams, and services. Databricks-ready with evidence bundles and enterprise support."
+        canonical="https://auspexi.com/pricing"
+        ogImage="/og-image.svg?v=2"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [
+            {"@type": "Question", "name": "What does AethergenPlatform include?", "acceptedAnswer": {"@type": "Answer", "text": "Synthetic data generation, evidence bundles, and Databricks autoship for datasets/models."}},
+            {"@type": "Question", "name": "Can I bring my own cloud?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Self-host or choose managed AWS. Billing and entitlements are handled via Stripe/Supabase."}}
+          ]
+        }}
+      />
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-slate-900 to-blue-900 py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

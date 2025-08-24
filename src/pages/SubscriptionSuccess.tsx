@@ -175,7 +175,7 @@ const SubscriptionSuccess = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a
-              href="mailto:support@auspexi.com"
+              href="mailto:sales@auspexi.com"
               className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold inline-flex items-center justify-center"
             >
               Email Support

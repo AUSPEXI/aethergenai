@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import SEO from '../components/SEO';
 import { User, Target, Globe, Lightbulb, ArrowRight, Eye, Award, Brain, Lock, Database, Building, CheckCircle, Sparkles, Rocket, Shield, Zap, Atom, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Logo from '../components/Logo';
@@ -300,6 +301,40 @@ const About = () => {
         return (
           <>
             <FoundersStory onContact={() => setActiveTab('mission')} />
+            {/* The Quiet Constant - Support Section */}
+            <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-3xl p-8 border border-blue-200 mt-12">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div>
+                  <img
+                    src="/images/support.jpg"
+                    alt="Founder's support portrait"
+                    className="w-full rounded-2xl border border-slate-200 shadow-sm object-cover"
+                  />
+                  <div className="text-sm text-slate-500 mt-2">Work is measured in milestones; progress is carried by people.</div>
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold text-slate-900 mb-3">The Quiet Constant</h3>
+                  <p className="text-slate-700 leading-relaxed mb-4">
+                    There’s a part of this story that isn’t captured in benchmarks or records: the quiet, consistent
+                    support behind the work. For nine months of 120‑hour weeks, while I built and rebuilt until the
+                    platform held its shape, Nicola kept everything that mattered steady.
+                  </p>
+                  <p className="text-slate-700 leading-relaxed mb-4">
+                    She made sure I ate well when I would have skipped meals, kept perspective when I was buried in
+                    edge cases, and absorbed the inevitable frustration that comes with trying to do something new. I
+                    didn’t need pep talks—I needed a runway. She gave me one.
+                  </p>
+                  <p className="text-slate-700 leading-relaxed">
+                    That kind of support doesn’t ask for credit and rarely shows up in a metrics table, but it’s a real
+                    part of how AethergenPlatform got here. Investors will measure us by the repeatability of our
+                    results; customers will measure us by the reliability of our delivery. I measure us by the people who
+                    make both possible. This platform isn’t the product of a single founder with a lucky break—it’s a
+                    disciplined build supported by someone who never blinked at the hard parts. That quiet certainty is
+                    now part of our culture. It’s why we will keep shipping, and why we’ll do it with care.
+                  </p>
+                </div>
+              </div>
+            </div>
             
             {/* Phoenix Rising Journey */}
             <div className="bg-gradient-to-r from-orange-900/20 to-red-900/20 backdrop-blur-lg rounded-3xl p-8 border border-orange-300/30 mt-12">
@@ -868,6 +903,12 @@ const About = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
+      <SEO
+        title="About – AethergenPlatform"
+        description="About Auspexi and AethergenPlatform: evidence-led, privacy-preserving synthetic data and AI model training with enterprise-first compliance."
+        canonical="https://auspexi.com/about"
+        ogImage="/og-image.svg?v=2"
+      />
       {/* Hero Section */}
       <section className="py-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">

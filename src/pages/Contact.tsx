@@ -6,7 +6,7 @@ const Contact = () => {
     {
       icon: Mail,
       title: 'Email',
-      details: ['hello@auspexi.com', 'press@auspexi.com'],
+      details: ['sales@auspexi.com'],
       description: 'Direct communication with our team'
     },
     {

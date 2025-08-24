@@ -25,7 +25,7 @@ const Footer: React.FC = () => {
               <Github className="h-6 w-6" />
             </a>
             <a 
-              href="mailto:contact@auspexi.com" 
+              href="mailto:sales@auspexi.com" 
               className="text-white hover:text-yellow-400 transition-colors"
             >
               <Mail className="h-6 w-6" />

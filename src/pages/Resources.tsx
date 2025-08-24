@@ -56,6 +56,39 @@ const Resources = () => {
         <ResourcesHub />
       </section>
 
+      {/* Featured Product Explainers */}
+      <section className="py-8">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h3 className="text-2xl font-bold text-white mb-4">Featured Product Explainers</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <a href="/blog/evidence-led-ai-regulated-industries" className="bg-white/10 rounded-xl p-5 border border-white/10 hover:bg-white/20 transition">
+              <div className="text-white font-semibold">Evidence‑Led AI in Regulated Industries</div>
+              <div className="text-blue-200 text-sm">Deploy with privacy, auditability, and scale</div>
+            </a>
+            <a href="/blog/databricks-marketplace-lab-to-revenue" className="bg-white/10 rounded-xl p-5 border border-white/10 hover:bg-white/20 transition">
+              <div className="text-white font-semibold">Databricks Marketplace: Lab → Revenue</div>
+              <div className="text-blue-200 text-sm">Package datasets/models with evidence</div>
+            </a>
+            <a href="/blog/pricing-and-entitlements-explained" className="bg-white/10 rounded-xl p-5 border border-white/10 hover:bg-white/20 transition">
+              <div className="text-white font-semibold">Pricing & Entitlements Explained</div>
+              <div className="text-blue-200 text-sm">Self‑Service vs Full‑Service, compute ownership</div>
+            </a>
+            <a href="/blog/synthetic-data-lifecycle" className="bg-white/10 rounded-xl p-5 border border-white/10 hover:bg-white/20 transition">
+              <div className="text-white font-semibold">Synthetic Data Lifecycle</div>
+              <div className="text-blue-200 text-sm">From schema design to evidence bundling</div>
+            </a>
+            <a href="/blog/evidence-bundles-and-testing" className="bg-white/10 rounded-xl p-5 border border-white/10 hover:bg-white/20 transition">
+              <div className="text-white font-semibold">Evidence Bundles & Testing</div>
+              <div className="text-blue-200 text-sm">Ablations, NN checks, collapse‑risk mitigation</div>
+            </a>
+            <a href="/blog/schema-designer-multi-data-llm" className="bg-white/10 rounded-xl p-5 border border-white/10 hover:bg-white/20 transition">
+              <div className="text-white font-semibold">Schema Designer & Multi‑Data LLM Pipelines</div>
+              <div className="text-blue-200 text-sm">Harmonise domains; scale to billions; train models</div>
+            </a>
+          </div>
+        </div>
+      </section>
+
       {/* IP-Safe Note */}
       <section className="py-6">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">

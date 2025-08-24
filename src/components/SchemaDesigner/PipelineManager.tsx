@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { CheckCircle, GitBranch, Play, RefreshCw, Download, Settings, Database } from 'lucide-react';
+import { getAutomotiveSeedSchema, generateSeedRecords, generateInChunks } from '../../services/seedSchemaService';
 import MultiDataPipelineService, { MultiDataPipelineConfig, SchemaHarmonizationResult, CrossDomainSynthesisResult, FoundationModelInfrastructure } from '../../services/multiDataPipelineService';
 
 type ComputeMode = 'self-service' | 'full-service';
@@ -18,6 +19,7 @@ const PipelineManager: React.FC = () => {
   const [synthResult, setSynthResult] = useState<CrossDomainSynthesisResult | null>(null);
   const [infraPlan, setInfraPlan] = useState<FoundationModelInfrastructure | null>(null);
   const [busy, setBusy] = useState<'harmonize' | 'synthesize' | 'plan' | null>(null);
+  const [seedBusy, setSeedBusy] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   const domains = useMemo(() => domainsText.split(',').map(d => d.trim()).filter(Boolean), [domainsText]);
@@ -89,6 +91,48 @@ const PipelineManager: React.FC = () => {
     }
   };
 
+  const onLoadAutomotive = () => {
+    setDomainsText('automotive');
+    setDomainDataText(JSON.stringify({
+      automotive: generateSeedRecords(getAutomotiveSeedSchema(), 5)
+    }, null, 2));
+  };
+
+  const onGenerateSeed = () => {
+    try {
+      setSeedBusy(true);
+      const schema = getAutomotiveSeedSchema();
+      const seed = generateSeedRecords(schema, 5000);
+      const blob = new Blob([JSON.stringify(seed, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'automotive_seed_5k.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    } finally {
+      setSeedBusy(false);
+    }
+  };
+
+  const onGenerateLarge = async () => {
+    const schema = getAutomotiveSeedSchema();
+    // Example: stream 1,000,000 rows in 50k chunks; replace with backend upload if needed
+    const total = 1000000;
+    const chunkSize = 50000;
+    let part = 1;
+    for (const chunk of generateInChunks(schema, total, chunkSize)) {
+      const blob = new Blob([JSON.stringify(chunk)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `automotive_synth_part_${part}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      part += 1;
+    }
+  };
+
   const downloadJson = (obj: unknown, filename: string) => {
     const blob = new Blob([JSON.stringify(obj, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -140,6 +184,15 @@ const PipelineManager: React.FC = () => {
           </button>
           <button onClick={onSynthesize} disabled={!harmonizeResult || busy==='synthesize'} className="inline-flex items-center px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 disabled:opacity-50">
             <Play className="h-4 w-4 mr-2" /> {busy==='synthesize' ? 'Synthesizing…' : 'Synthesize Cross‑Domain'}
+          </button>
+          <button onClick={onLoadAutomotive} className="inline-flex items-center px-4 py-2 bg-slate-800 text-white rounded hover:bg-slate-900">
+            Load Automotive Sample
+          </button>
+          <button onClick={onGenerateSeed} disabled={seedBusy} className="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 disabled:opacity-50">
+            Download Seed (5k)
+          </button>
+          <button onClick={onGenerateLarge} className="inline-flex items-center px-4 py-2 bg-fuchsia-600 text-white rounded hover:bg-fuchsia-700">
+            Download 1M (chunks)
           </button>
           {harmonizeResult && (
             <button onClick={() => downloadJson(harmonizeResult, 'harmonized_schema.json')} className="inline-flex items-center px-4 py-2 bg-slate-100 text-slate-800 rounded hover:bg-slate-200">

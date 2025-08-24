@@ -152,6 +152,17 @@ const PressKitBuilder: React.FC<PressKitBuilderProps> = ({ onDownload }) => {
           <h3 className="text-2xl font-bold text-center mb-8 text-gray-800">
             🎯 Choose Your Story Angle
           </h3>
+          <div className="flex flex-wrap justify-center gap-3 mb-6">
+            <a className="px-3 py-1.5 rounded border border-gray-300 text-gray-700 hover:bg-gray-50" href="/auspexi.svg" download>
+              Download logo (SVG)
+            </a>
+            <a className="px-3 py-1.5 rounded border border-gray-300 text-gray-700 hover:bg-gray-50" href="/og-image.svg" download>
+              Download OG image
+            </a>
+            <a className="px-3 py-1.5 rounded border border-gray-300 text-gray-700 hover:bg-gray-50" href="/press/manifest.json" target="_blank" rel="noreferrer">
+              View media manifest
+            </a>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {audienceTypes.map((audience, index) => (
               <motion.div

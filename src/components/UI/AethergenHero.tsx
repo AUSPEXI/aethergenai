@@ -132,7 +132,7 @@ function FlyToCamera({ controlsRef, toPos, toTarget, durationMs, onDone, startAt
 }
 
 // Allow zoom to pass through the target by nudging camera + target forward when very close
-function PassThroughZoom({ controlsRef, localBoundaryDistance, deepSpaceEnterDistance, deepSpaceExitDistance, center, baseRadius, recenterSuspendUntilRef }: { controlsRef: React.MutableRefObject<any>, localBoundaryDistance: number, deepSpaceEnterDistance: number, deepSpaceExitDistance: number, center: [number, number, number], baseRadius: number, recenterSuspendUntilRef: React.MutableRefObject<number> }) {
+function PassThroughZoom({ controlsRef, localBoundaryDistance, deepSpaceEnterDistance, deepSpaceExitDistance, center, baseRadius, recenterSuspendUntilRef, isMobile }: { controlsRef: React.MutableRefObject<any>, localBoundaryDistance: number, deepSpaceEnterDistance: number, deepSpaceExitDistance: number, center: [number, number, number], baseRadius: number, recenterSuspendUntilRef: React.MutableRefObject<number>, isMobile: boolean }) {
   const { camera, gl } = useThree();
   const modeRef = useRef<'local' | 'outer'>('local');
   useEffect(() => {
@@ -185,23 +185,24 @@ function PassThroughZoom({ controlsRef, localBoundaryDistance, deepSpaceEnterDis
       controls.zoomSpeed = zs;
 
       // Symmetric pass-through near the target to eliminate sticky wall
-      const passThreshold = inLocal ? (insideCore ? 0.35 : 1.6) : 0.45;
+      const mobileBoost = isMobile ? 1.7 : 1.0;
+      const passThreshold = inLocal ? (insideCore ? 0.35 * mobileBoost : 1.6 * mobileBoost) : 0.45;
       if (distTarget <= passThreshold) {
         const step = inLocal
           ? (insideCore
-              ? Math.min(0.28, Math.max(0.05, distTarget * 0.75))
-              : Math.min(1.0, Math.max(0.28, distTarget * 1.1)))
+              ? Math.min(0.28 * mobileBoost, Math.max(0.05, distTarget * 0.75 * mobileBoost))
+              : Math.min(1.0 * mobileBoost, Math.max(0.28, distTarget * 1.1 * mobileBoost)))
           : Math.min(0.5, Math.max(0.2, distTarget * 1.2));
         if (e.deltaY < 0) {
           camera.position.addScaledVector(dir, step);
           target.addScaledVector(dir, step);
           controls.update?.();
-          recenterSuspendUntilRef.current = performance.now() + 1600;
+          recenterSuspendUntilRef.current = performance.now() + (isMobile ? 2200 : 1600);
         } else if (e.deltaY > 0) {
           camera.position.addScaledVector(dir, -step);
           target.addScaledVector(dir, -step);
           controls.update?.();
-          recenterSuspendUntilRef.current = performance.now() + 1200;
+          recenterSuspendUntilRef.current = performance.now() + (isMobile ? 1800 : 1200);
         }
       }
     };
@@ -285,8 +286,9 @@ function TitlePositionTracker({ position }: { position: [number, number, number]
 }
 
 // Title3D with grabber
-function Title3D({ position, onPositionChange, onDragStart, onDragEnd, isPickedUp, setIsPickedUp, onCubePose, onSubtitleBoundsWorld }: {
+function Title3D({ position, scale = 1, onPositionChange, onDragStart, onDragEnd, isPickedUp, setIsPickedUp, onCubePose, onSubtitleBoundsWorld }: {
   position: [number, number, number];
+  scale?: number;
   onPositionChange: (p: [number, number, number]) => void;
   onDragStart: () => void; onDragEnd: () => void;
   isPickedUp: boolean; setIsPickedUp: (p: boolean) => void;
@@ -373,7 +375,7 @@ function Title3D({ position, onPositionChange, onDragStart, onDragEnd, isPickedU
   };
 
   return (
-    <group position={position}>
+    <group position={position} scale={[scale, scale, scale]}>
       <Text3D font="/fonts/helvetiker_regular.typeface.json" size={0.8} height={0.15} curveSegments={12} bevelEnabled bevelThickness={0.015} bevelSize={0.008} bevelOffset={0} bevelSegments={5}>
         Global Leaders in
         <meshStandardMaterial color="#ffffff" metalness={0.05} roughness={0.2} emissive="#ffffff" emissiveIntensity={0.1} />
@@ -650,6 +652,7 @@ function NeuralNetwork({ sceneRef, onGlitchChange, networkPosition, networkRotat
     last.current = ts;
     const elapsed = ts - t0.current;
     const sElapsed = sentientStartMs.current !== null ? (ts - sentientStartMs.current) : 0;
+    const boundSpeed = CFG.photons.speedBound * (networkScale / 1.6);
 
     // Adaptive FPS governor (auto scale caps 0.6x..1.0x)
     const instFPS = 1000 / Math.max(1, (dt * 16.67));
@@ -777,7 +780,7 @@ function NeuralNetwork({ sceneRef, onGlitchChange, networkPosition, networkRotat
       const updated = prev
         .map((p, i) => {
           if (p.mode === "bound") {
-            let t = clamp(p.t + CFG.photons.speedBound * dt, 0, 1);
+            let t = clamp(p.t + boundSpeed * dt, 0, 1);
             if (t >= 1) {
               const here = Math.random() < 0.5 ? p.edge[1] : p.edge[0];
               const nextEdges = edgesByNodeRef.current[here] || [];
@@ -1038,6 +1041,11 @@ export default function AethergenHero() {
   const controlsRef = useRef<any>(null);
   const heroRef = useRef<HTMLDivElement | null>(null);
   const recenterSuspendUntilRef = useRef<number>(0);
+  const canvasElRef = useRef<HTMLCanvasElement | null>(null);
+  const [pressMsg, setPressMsg] = useState<string>("");
+  const showPressTools = (() => {
+    try { return new URLSearchParams(window.location.search).get('press') === '1'; } catch { return false; }
+  })();
   const [titlePosition, setTitlePosition] = useState<[number, number, number]>(() => {
     try {
       const saved = localStorage.getItem('hero.titlePosition');
@@ -1053,7 +1061,8 @@ export default function AethergenHero() {
   });
   const [networkPosition, setNetworkPosition] = useState<[number, number, number]>([0,0,0]);
   const [networkRotation, setNetworkRotation] = useState<[number, number, number]>([0,0,0]);
-  const [networkScale, setNetworkScale] = useState(1.6);
+  const isMobile = (() => { try { return window.matchMedia && window.matchMedia('(max-width: 768px)').matches; } catch { return false; } })();
+  const [networkScale, setNetworkScale] = useState(isMobile ? 1.35 : 1.6);
   const [cubePose, setCubePose] = useState({ pos: [0,0,0] as [number,number,number], rot: [0,0,0] as [number,number,number], quat: [0,0,0,1] as [number,number,number,number] });
   const [subtitleBoundsWorld, setSubtitleBoundsWorld] = useState<{min:[number,number,number], max:[number,number,number]}|null>(null);
   const [anchorTargetsLocal, setAnchorTargetsLocal] = useState<[number,number,number][]>([]);
@@ -1140,10 +1149,10 @@ export default function AethergenHero() {
       onMouseLeave={() => { setShowHint(false); clearHintTimer(); }}
       onPointerDown={() => dismissHint()}
       onWheel={() => dismissHint()}
-      className="w-full h-[78vh] min-h-[520px] bg-[#0b1120] overflow-hidden relative"
+      className="w-full h-[70vh] md:h-[78vh] min-h-[400px] md:min-h-[520px] bg-[#0b1120] overflow-hidden relative"
     >
               <Canvas 
-        camera={{ position: [0, 0, 10.8], fov: CFG.camera.fov }} 
+        camera={{ position: [0, 0, (isMobile ? 14.5 : 10.8)], fov: CFG.camera.fov }} 
         style={{ position: "absolute", inset: 0, zIndex: 1, cursor: 'grab' }}
         onContextMenu={(e)=>{ e.preventDefault(); e.stopPropagation(); }}
         onPointerDown={(e:any)=>{
@@ -1151,8 +1160,9 @@ export default function AethergenHero() {
             setIsPickedUp(false); setIsDraggingTitle(false); document.body.style.cursor='default';
           }
         }}
-        onCreated={({ scene }) => {
+        onCreated={({ scene, gl }) => {
           sceneRef.current = scene;
+          canvasElRef.current = gl.domElement as HTMLCanvasElement;
         }}
       >
         <color attach="background" args={[CFG.colors.bg]} />
@@ -1193,7 +1203,7 @@ export default function AethergenHero() {
           const enter = baseRadius * 6.0;    // enter deep space much farther out
           const exit = baseRadius * 3.0;     // revert to local once back near boundary
           return <>
-            <PassThroughZoom controlsRef={controlsRef} localBoundaryDistance={boundary} deepSpaceEnterDistance={enter} deepSpaceExitDistance={exit} center={networkPosition} baseRadius={baseRadius} recenterSuspendUntilRef={recenterSuspendUntilRef} />
+            <PassThroughZoom controlsRef={controlsRef} localBoundaryDistance={boundary} deepSpaceEnterDistance={enter} deepSpaceExitDistance={exit} center={networkPosition} baseRadius={baseRadius} recenterSuspendUntilRef={recenterSuspendUntilRef} isMobile={isMobile} />
             <RecenterTarget controlsRef={controlsRef} center={networkPosition} boundary={boundary} recenterSuspendUntilRef={recenterSuspendUntilRef} />
             <ControlTuner controlsRef={controlsRef} center={networkPosition} boundary={boundary} />
           </>;
@@ -1202,6 +1212,7 @@ export default function AethergenHero() {
         {/* Title at origin */}
         <Title3D 
           position={titlePosition}
+          scale={isMobile ? 0.78 : 1}
           onPositionChange={(p)=>{ if (!isTitleLocked) setTitlePosition(p); }}
           onDragStart={()=>{ if (!isTitleLocked) setIsDraggingTitle(true); }}
           onDragEnd={()=>{ if (!isTitleLocked) setIsDraggingTitle(false); }}
@@ -1314,12 +1325,12 @@ export default function AethergenHero() {
           // Suspend recenter while flying
           recenterSuspendUntilRef.current = now + 2600 + 5200; // include pause window
         }}
-        className="absolute bottom-4 left-4 z-[10003] bg-white/20 hover:bg-white/30 text-white text-xs px-3 py-1.5 rounded-md border border-white/30 backdrop-blur-sm shadow"
+        className="hidden md:block absolute bottom-4 left-4 z-[10003] bg-white/20 hover:bg-white/30 text-white text-xs px-3 py-1.5 rounded-md border border-white/30 backdrop-blur-sm shadow"
       >
         Find easter egg
       </button>
       {/* Interaction hint (self-dismissing) */}
-      <div className={`absolute bottom-4 right-4 z-[10002] transition-opacity duration-500 pointer-events-none ${showHint ? 'opacity-100' : 'opacity-0'}`}>
+      <div className={`absolute bottom-2 right-2 md:bottom-4 md:right-4 z-[10002] transition-opacity duration-500 pointer-events-none ${showHint ? 'opacity-100' : 'opacity-0'}`}>
         <div className="flex items-center gap-2 bg-black/60 backdrop-blur-sm text-white rounded px-2.5 py-1.5 text-[12px] leading-none pointer-events-none select-none border border-white/10 shadow-lg">
           {/* Drag icon */}
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="opacity-90"><path d="M8 12h8M12 8v8"/><circle cx="12" cy="12" r="9"/></svg>
@@ -1330,6 +1341,62 @@ export default function AethergenHero() {
           <span className="opacity-95">Scroll</span>
         </div>
       </div>
+
+      {/* Maintainer press tools (gated via ?press=1) */}
+      {showPressTools && (
+        <div className="absolute top-20 right-4 z-[10005] bg-white/90 backdrop-blur-sm border border-slate-200 rounded-md shadow p-3 text-slate-700 w-64">
+          <div className="text-sm font-semibold mb-2">Press Tools</div>
+          <div className="flex flex-col gap-2">
+            <button
+              type="button"
+              className="px-3 py-1.5 rounded bg-slate-900 text-white hover:bg-slate-800 text-sm"
+              onClick={() => {
+                try {
+                  const el = canvasElRef.current;
+                  if (!el) { setPressMsg('Canvas not ready'); return; }
+                  const dataURL = el.toDataURL('image/png');
+                  const ts = new Date().toISOString().replace(/[:.]/g, '').replace('T','-').slice(0,15);
+                  const filename = `hero-${ts}.png`;
+                  const a = document.createElement('a');
+                  a.href = dataURL; a.download = filename; a.click();
+                  const entry = { type: 'image', src: `/press/${filename}`, alt: 'Hero screenshot', caption: `Hero ${ts}` };
+                  navigator.clipboard?.writeText(JSON.stringify(entry)).catch(()=>{});
+                  setPressMsg('Captured PNG; manifest entry copied to clipboard');
+                } catch (e) { setPressMsg('Capture failed'); }
+              }}
+            >Capture hero (PNG)</button>
+            <button
+              type="button"
+              className="px-3 py-1.5 rounded bg-slate-900 text-white hover:bg-slate-800 text-sm"
+              onClick={async () => {
+                try {
+                  const el = canvasElRef.current; if (!el) { setPressMsg('Canvas not ready'); return; }
+                  const stream = (el as any).captureStream ? (el as any).captureStream(60) : null;
+                  if (!stream) { setPressMsg('captureStream not supported'); return; }
+                  const recorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+                  const chunks: Blob[] = [];
+                  recorder.ondataavailable = (e) => { if (e.data && e.data.size) chunks.push(e.data); };
+                  recorder.onstop = () => {
+                    const blob = new Blob(chunks, { type: 'video/webm' });
+                    const url = URL.createObjectURL(blob);
+                    const ts = new Date().toISOString().replace(/[:.]/g, '').replace('T','-').slice(0,15);
+                    const a = document.createElement('a'); a.href = url; a.download = `hero-fly-${ts}.webm`; a.click();
+                    const entry = { type: 'video', src: `/press/hero-fly-${ts}.webm`, caption: `Flythrough ${ts}` } as any;
+                    navigator.clipboard?.writeText(JSON.stringify(entry)).catch(()=>{});
+                    setPressMsg('Recorded 10s; manifest entry copied to clipboard');
+                    setTimeout(()=>URL.revokeObjectURL(url), 2000);
+                  };
+                  recorder.start();
+                  setPressMsg('Recording 10s...');
+                  setTimeout(()=> recorder.stop(), 10000);
+                } catch { setPressMsg('Record failed'); }
+              }}
+            >Record 10s flythrough</button>
+            {pressMsg && <div className="text-xs text-slate-600">{pressMsg}</div>}
+            <div className="text-[11px] text-slate-500">Tip: move downloaded files to <code>/public/press</code> and rebuild manifest if needed.</div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

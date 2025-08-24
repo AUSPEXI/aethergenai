@@ -11,6 +11,7 @@ import BlogPost from './pages/BlogPost';
 import Contact from './pages/Contact';
 import Press from './pages/Press';
 import Resources from './pages/Resources';
+import HeroArt from './pages/HeroArt';
 import Funding from './pages/Funding';
 import AuthPage from './components/Auth/AuthPage';
 
@@ -44,6 +45,7 @@ function App() {
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/funding" element={<Funding />} />
             <Route path="/resources" element={<Resources />} />
+            <Route path="/hero-art" element={<HeroArt />} />
             <Route path="/press" element={<Press />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/account" element={<AuthPage />} />

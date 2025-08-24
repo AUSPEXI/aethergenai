@@ -1152,7 +1152,7 @@ export default function AethergenHero() {
       className="w-full h-[70vh] md:h-[78vh] min-h-[400px] md:min-h-[520px] bg-[#0b1120] overflow-hidden relative"
     >
               <Canvas 
-        camera={{ position: [0, 0, (isMobile ? 22 : 10.8)], fov: CFG.camera.fov }} 
+        camera={{ position: [0, 0, (isMobile ? 26 : 10.8)], fov: CFG.camera.fov }} 
         style={{ position: "absolute", inset: 0, zIndex: 1, cursor: 'grab' }}
         onContextMenu={(e)=>{ e.preventDefault(); e.stopPropagation(); }}
         onPointerDown={(e:any)=>{
@@ -1212,7 +1212,7 @@ export default function AethergenHero() {
         {/* Title at origin */}
         <Title3D 
           position={titlePosition}
-          scale={isMobile ? 0.62 : 1}
+          scale={isMobile ? 0.55 : 1}
           onPositionChange={(p)=>{ if (!isTitleLocked) setTitlePosition(p); }}
           onDragStart={()=>{ if (!isTitleLocked) setIsDraggingTitle(true); }}
           onDragEnd={()=>{ if (!isTitleLocked) setIsDraggingTitle(false); }}

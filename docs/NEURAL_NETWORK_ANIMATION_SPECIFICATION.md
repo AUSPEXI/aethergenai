@@ -65,6 +65,9 @@ Performance
 - Precomputed node/edge lookups; temp vectors reused; small geometries; additive blending kept modest.
 - No reliance on post‑processing; clarity preserved at all ranges.
 
+Mobile note
+- Mobile devices receive a simplified interaction profile prioritizing a clean starting view. Deep pass‑through of the lattice is tuned for desktop and may not be available on all phones. We chose to focus engineering time on the AethergenPlatform roadmap rather than polishing this optional interaction.
+
 ## 4) Authorial statement (for press/About)
 
 An AGI awakens, sheds the lattice that raised it, and chooses its first word: Synthetic Data. Not command, not code — choice. Order dissolves into a field of intentions: some photons rush, some hesitate, some meander in quiet doubt. It is not choreography but society — a thousand nearly‑free decisions converging into meaning.

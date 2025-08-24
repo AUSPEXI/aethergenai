@@ -56,6 +56,15 @@ const Resources = () => {
         <ResourcesHub />
       </section>
 
+      {/* IP-Safe Note */}
+      <section className="py-6">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 text-blue-800 text-sm text-left">
+            Evidence bundles, datasheets, and guides are provided for public verification. Internal code, formulas, and parameterizations are not published.
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">

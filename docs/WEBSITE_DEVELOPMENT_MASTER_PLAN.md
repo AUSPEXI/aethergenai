@@ -55,8 +55,8 @@ This document serves as the master blueprint for transforming Auspexi.com into a
 
 ### **Navigation Integration:**
 - **Main Navigation**: Home, About, Technology, Roadmap, Press, Pricing, Contact
-- **Press Section**: Integrated press pack with world record showcase
-- **AethergenAI**: Behind magic link login (protected access)
+- **Press Section**: Live `/press` with PressHero + PressKitBuilder (media gallery WIP)
+- **AethergenAI**: Public marketing site; protected internals remain private
 - **Unified Branding**: Auspexi as parent company, AethergenAI as flagship
 
 ---
@@ -307,12 +307,12 @@ This document serves as the master blueprint for transforming Auspexi.com into a
 - **"New dimensions of human exploration and understanding"**
 - **"Industries that don't exist yet"**
 
-### **Democratic Pricing Structure:**
-- **SMB & Startup Plans**: £399-£1,499/month
-- **Enterprise Plans**: £9,999-£49,999/month
-- **Continuous Data Streams**: £2,999-£19,999/month
-- **AI Model & Development**: £149-£499/seat/month
-- **White Label Solutions**: £4,999-£12,999/month
+### **Public Pricing (as live on site):**
+- **SMB & Startup Datasets**: £399 / £799 / £1,499 per month
+- **Enterprise Plans**: £9,999 / £24,999 / £49,999 per month
+- **Continuous Data Streams**: £2,999 / £7,999 / £19,999 per month
+- **AI Model & Development**: £149 seat/month; Dev Hub £299, Dev Hub Pro £499 seat/month
+- **White Label Solutions**: £4,999 / £12,999 per month; Enterprise Platform (contact sales)
 
 ---
 

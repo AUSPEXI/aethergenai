@@ -1,25 +1,33 @@
-import { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import * as THREE from "three";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls, Text3D } from "@react-three/drei";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { OrbitControls, Text3D, Html } from "@react-three/drei";
 
 // Helpers
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 const clamp = (v: number, a: number, b: number) => Math.max(a, Math.min(b, v));
 const rand = (a: number, b: number) => a + Math.random() * (b - a);
+// Temp vectors to avoid GC thrash in hot loops
+const TMP_V1 = new THREE.Vector3();
+const TMP_V2 = new THREE.Vector3();
+const MAX_BOUND_SPAWN_PER_FRAME = 12;
+const MAX_EJECT_SPAWN_PER_FRAME = 10;
 
 // Config
 const CFG = {
   lattice: { size: 5, spacing: 0.7 },
   camera: { fov: 60 },
-  rotation: { x: -0.55, y: 0.7, z: 0.0 },
-  placement: { x: 2.8, y: 0.6, z: 0 },
+  rotation: { x: 0.0, y: 0.0, z: 0.0 },
+  placement: { x: 0.0, y: 0.0, z: 0.0 },
   colors: {
     bg: 0x0b1120,
     edge: 0x00ffff,
     nodeCore: 0xf97316,
     nodeGlow: 0xf97316,
     photonBase: [0x78b4ff, 0x8000ff, 0xffa500, 0xffff00, 0x00ffff, 0xff00ff],
+    settleCore: 0xffe8a3,
+    settleGlow: 0xffc266,
+    settleHalo: 0xc799ff,
   },
   photons: {
     batchEveryMs: 3000, // Reduced to spawn more frequently
@@ -29,18 +37,28 @@ const CFG = {
     radius: 0.02,
     undulation: 0.02,
     speedFree: 0.3, // Speed for free phase
-    // Post-glitch spawning for deep space filling
-    postGlitchBatchEveryMs: 2000, // Slower spawning to prevent stuttering
-    postGlitchPerBatch: 40, // Fewer photons per batch to prevent stuttering
+    explosionSpeed: 0.6, // High velocity for far-space burst (3 per node)
+    localExplosionSpeed: 0.12, // Low velocity for local halo
+    sentientFlightMs: 7000, // period where all look fast
+    sentientEaseOutMs: 8000, // ease down to slow random
+    maxCount: 3200, // safety cap to prevent runaway spawning
   },
-  flickerAtMs: 40000,
+  motion: {
+    sentientSwirlStrength: 0.004, // very subtle swirl
+    sentientSpring: 0.02,        // pull toward home/target
+    targetOrbitRadius: 0.9,      // keep specials near anchors
+    homeOrbitRadius: 2.2,        // keep non-specials near home
+    maxVelBase: 0.16,            // cap velocity magnitude (pre-multiply by flightFactor)
+  },
+  flickerAtMs: 25000,
   flashDurationMs: 3000, // Increased from 1200ms to 3000ms for more visible glitch
-  loopAfterMs: 120000, // Extended to allow sentient phase to complete with proper timing
+  loopAfterMs: 180000,
 };
 
 // Types
 interface Node { x: number; y: number; z: number; key: string; }
 interface Edge { a: string; b: string; }
+type Phase = "bound" | "flash" | "free" | "sentient";
 interface Photon {
   edge: [string, string];
   t: number;
@@ -50,59 +68,235 @@ interface Photon {
   mode: "bound" | "free" | "sentient" | "exploring";
   pos?: THREE.Vector3;
   vel?: THREE.Vector3;
-  // Sentient behavior properties
-  target?: string; // Target letter
-  behavior?: "orbit" | "settle" | "trace" | "meander" | "pathfind" | "confused" | "panic" | "random";
-  assignedLetter?: string; // Which letter this photon is assigned to
-  orbitRadius?: number; // For orbiting behavior
-  orbitAngle?: number; // Current orbit angle
-  settleProgress?: number; // Progress toward settling (0-1)
-  traceProgress?: number; // Progress along letter trace (0-1)
-  confusionLevel?: number; // How confused this photon is
-  panicLevel?: number; // How panicked this photon is
-  letterReadTime?: number; // When photon started reading letter
+  assignedAnchorIndex?: number;
+  letterReadTime?: number;
+  behavior?: "random" | "settle" | "orbit" | "meander" | "pathfind" | "confused" | "panic";
+  home?: THREE.Vector3;
+  swirlSign?: number;
+  wanderTarget?: THREE.Vector3;
+  wanderResetAt?: number;
+}
+
+// (ViewingFrame removed)
+// Easter egg: small signature hidden in deep space
+function EasterEggSignature() {
+  return (
+    <Text3D font="/fonts/helvetiker_regular.typeface.json" size={0.25} height={0.05} curveSegments={8} bevelEnabled bevelThickness={0.006} bevelSize={0.003} bevelOffset={0} bevelSegments={3} position={[120, -60, -180]} rotation={[0.1, 0.7, -0.2]}>
+      Art by Gwylym
+      <meshStandardMaterial color="#9ca3af" metalness={0.05} roughness={0.35} emissive="#9ca3af" emissiveIntensity={0.04} />
+    </Text3D>
+  );
+}
+
+// Allow zoom to pass through the target by nudging camera + target forward when very close
+function PassThroughZoom({ controlsRef }: { controlsRef: React.MutableRefObject<any> }) {
+  const { camera, gl } = useThree();
+  useEffect(() => {
+    const onWheel = (e: WheelEvent) => {
+      if (!controlsRef.current) return;
+      const controls = controlsRef.current;
+      const target: THREE.Vector3 = controls.target;
+      const dist = camera.position.distanceTo(target);
+      const dir = new THREE.Vector3();
+      camera.getWorldDirection(dir);
+
+      // Adaptive zoom speed: fewer swipes outside local space, smooth near model
+      let zs: number;
+      if (dist < 4) zs = 0.9;              // very close: smooth
+      else if (dist < 25) zs = 1.3;        // near: responsive
+      else if (dist < 150) zs = 2.1;       // mid: quicker travel
+      else zs = 3.0;                       // far: fast travel
+      if (e.deltaY > 0 && dist >= 40) zs *= 1.35; // boost zoom-out when not local
+      if (e.deltaY < 0 && dist < 8) zs *= 0.85;   // soften zoom-in very near
+      controls.zoomSpeed = zs;
+
+      // Symmetric pass-through near the target to eliminate sticky wall
+      if (dist <= 0.4) {
+        const step = Math.min(0.5, Math.max(0.2, dist * 1.2)); // proportional, gentle
+        if (e.deltaY < 0) {
+          camera.position.addScaledVector(dir, step);
+          target.addScaledVector(dir, step);
+          controls.update?.();
+        } else if (e.deltaY > 0) {
+          camera.position.addScaledVector(dir, -step);
+          target.addScaledVector(dir, -step);
+          controls.update?.();
+        }
+      }
+    };
+    const el = gl.domElement;
+    el.addEventListener('wheel', onWheel, { passive: true } as any);
+    return () => el.removeEventListener('wheel', onWheel as any);
+  }, [camera, gl, controlsRef]);
+  return null;
+}
+
+// Camera tracker (on-canvas overlay)
+function CameraTracker() {
+  const { camera } = useThree();
+  const [data, setData] = useState({ p: [0,0,0], r: [0,0,0] });
+  useFrame(() => {
+    setData({ p: [camera.position.x, camera.position.y, camera.position.z], r: [camera.rotation.x, camera.rotation.y, camera.rotation.z] });
+      });
+  return (
+    <Html transform={false} style={{ position: 'absolute', left: 16, top: 16, zIndex: 200, pointerEvents: 'none' }}>
+      <div className="bg-black/80 text-white p-2 rounded font-mono text-[10px] w-44">
+        <div className="text-cyan-400 font-bold text-[9px]">Camera</div>
+        <div>Pos: [{data.p[0].toFixed(1)}, {data.p[1].toFixed(1)}, {data.p[2].toFixed(1)}]</div>
+        <div>Rot: [{data.r[0].toFixed(2)}, {data.r[1].toFixed(2)}, {data.r[2].toFixed(2)}]</div>
+      </div>
+    </Html>
+  );
+}
+
+// Title position tracker (fixed UI)
+function TitlePositionTracker({ position }: { position: [number, number, number] }) {
+  return (
+    <div className="absolute top-4 right-4 bg-black/80 text-white p-2 rounded font-mono text-[10px] z-[200] pointer-events-none w-40">
+      <div className="text-yellow-400 font-bold mb-1 text-[9px]">Title Position</div>
+      <div>X: {position[0].toFixed(2)}</div>
+      <div>Y: {position[1].toFixed(2)}</div>
+      <div>Z: {position[2].toFixed(2)}</div>
+      <div className="text-[9px] text-gray-300 mt-1">Left click green cube to pick up • Right click to drop</div>
+    </div>
+  );
+}
+
+// Title3D with grabber
+function Title3D({ position, onPositionChange, onDragStart, onDragEnd, isPickedUp, setIsPickedUp, onCubePose, onSubtitleBoundsWorld }: {
+  position: [number, number, number];
+  onPositionChange: (p: [number, number, number]) => void;
+  onDragStart: () => void; onDragEnd: () => void;
+  isPickedUp: boolean; setIsPickedUp: (p: boolean) => void;
+  onCubePose?: (pos: [number, number, number], rotEuler: [number, number, number], quat: [number, number, number, number]) => void;
+  onSubtitleBoundsWorld?: (min: [number, number, number], max: [number, number, number]) => void;
+}) {
+  const [pickupStart, setPickupStart] = useState<[number, number, number]>([0,0,0]);
+  const [mouseStart, setMouseStart] = useState<[number, number, number]>([0,0,0]);
+  const cubeRef = useRef<THREE.Mesh>(null!);
+  const subtitleRef = useRef<THREE.Mesh>(null!);
+
+  useEffect(() => {
+    const onMove = (e: MouseEvent) => {
+      if (!isPickedUp) return;
+      const dx = (e.clientX - mouseStart[0]) * 0.02;
+      const dy = (e.clientY - mouseStart[1]) * -0.02;
+      onPositionChange([pickupStart[0] + dx, pickupStart[1] + dy, pickupStart[2]]);
+    };
+    window.addEventListener('mousemove', onMove);
+    return () => window.removeEventListener('mousemove', onMove);
+  }, [isPickedUp, mouseStart, pickupStart, onPositionChange]);
+
+  useFrame(() => {
+    if (!cubeRef.current) return;
+    if (!onCubePose) return;
+    const wp = new THREE.Vector3();
+    const wq = new THREE.Quaternion();
+    const we = new THREE.Euler();
+    cubeRef.current.getWorldPosition(wp);
+    cubeRef.current.getWorldQuaternion(wq);
+    we.setFromQuaternion(wq, 'XYZ');
+    onCubePose([wp.x, wp.y, wp.z], [we.x, we.y, we.z], [wq.x, wq.y, wq.z, wq.w]);
+  });
+
+  useFrame(() => {
+    if (!subtitleRef.current || !onSubtitleBoundsWorld) return;
+    const mesh = subtitleRef.current as any;
+    const geom: THREE.BufferGeometry | undefined = mesh.geometry;
+    if (!geom) return;
+    if (!geom.boundingBox) geom.computeBoundingBox();
+    if (!geom.boundingBox) return;
+    // Get local bounds then transform 8 corners to world to derive world AABB
+    const bb = geom.boundingBox;
+    const corners = [
+      new THREE.Vector3(bb.min.x, bb.min.y, bb.min.z),
+      new THREE.Vector3(bb.min.x, bb.min.y, bb.max.z),
+      new THREE.Vector3(bb.min.x, bb.max.y, bb.min.z),
+      new THREE.Vector3(bb.min.x, bb.max.y, bb.max.z),
+      new THREE.Vector3(bb.max.x, bb.min.y, bb.min.z),
+      new THREE.Vector3(bb.max.x, bb.min.y, bb.max.z),
+      new THREE.Vector3(bb.max.x, bb.max.y, bb.min.z),
+      new THREE.Vector3(bb.max.x, bb.max.y, bb.max.z),
+    ];
+    const matWorld = subtitleRef.current.matrixWorld;
+    let min = new THREE.Vector3(+Infinity, +Infinity, +Infinity);
+    let max = new THREE.Vector3(-Infinity, -Infinity, -Infinity);
+    for (const c of corners) {
+      c.applyMatrix4(matWorld);
+      min.min(c);
+      max.max(c);
+    }
+    onSubtitleBoundsWorld([min.x, min.y, min.z], [max.x, max.y, max.z]);
+  });
+
+  const handleLeft = (e: any) => {
+    if (e.button !== 0) return;
+    e.stopPropagation();
+    if (!isPickedUp) {
+      setIsPickedUp(true);
+      setPickupStart(position);
+      setMouseStart([e.clientX, e.clientY, 0]);
+      document.body.style.cursor = 'grabbing';
+      onDragStart();
+    }
+  };
+  const handleRight = (e: any) => {
+    if (e.button !== 2) return;
+    e.preventDefault(); e.stopPropagation();
+    if (isPickedUp) {
+      setIsPickedUp(false);
+      document.body.style.cursor = 'default';
+      onDragEnd();
+    }
+  };
+
+  return (
+    <group position={position}>
+      <Text3D font="/fonts/helvetiker_regular.typeface.json" size={0.8} height={0.15} curveSegments={12} bevelEnabled bevelThickness={0.015} bevelSize={0.008} bevelOffset={0} bevelSegments={5}>
+        Global Leaders in
+        <meshStandardMaterial color="#ffffff" metalness={0.05} roughness={0.2} emissive="#ffffff" emissiveIntensity={0.1} />
+      </Text3D>
+      <Text3D ref={subtitleRef as any} font="/fonts/helvetiker_regular.typeface.json" size={0.6} height={0.12} curveSegments={12} bevelEnabled bevelThickness={0.012} bevelSize={0.006} bevelOffset={0} bevelSegments={5} position={[0, -1.2, 0]}>
+        Synthetic Data
+        <meshStandardMaterial color="#00ffff" metalness={0.1} roughness={0.15} emissive="#00ffff" emissiveIntensity={0.2} />
+      </Text3D>
+    </group>
+  );
 }
 
 // Neural Network Component
 interface NeuralNetworkProps {
+  sceneRef: React.MutableRefObject<THREE.Scene | undefined>;
   onGlitchChange: (active: boolean) => void;
+  networkPosition: [number, number, number];
+  networkRotation: [number, number, number];
+  networkScale: number;
+  anchorTargets: [number, number, number][];
 }
 
-function NeuralNetwork({ onGlitchChange }: NeuralNetworkProps) {
+function NeuralNetwork({ sceneRef, onGlitchChange, networkPosition, networkRotation, networkScale, anchorTargets }: NeuralNetworkProps) {
   const [nodes, setNodes] = useState<Node[]>([]);
   const [edges, setEdges] = useState<Edge[]>([]);
   const [photons, setPhotons] = useState<Photon[]>([]);
+  const nodeByKeyRef = useRef<Record<string, Node>>({});
+  const edgesByNodeRef = useRef<Record<string, Edge[]>>({});
   const t0 = useRef(performance.now());
   const last = useRef(t0.current);
   const nextBatchAt = useRef(t0.current + CFG.photons.batchEveryMs);
-  const [phase, setPhase] = useState<"bound" | "flash" | "free" | "sentient">("bound");
-  
-  // Letter positions for "Synthetic Data" - positioned on the actual 3D title
-  // Title is positioned at [0, 1.5, -2] with main text size 0.8 and subtitle size 0.6
-  // Each character is roughly 0.5 units wide, so we can calculate positions
-  const letterPositions = {
-    // "Global Leaders in" - main title line
-    'G': { x: -10.6, y: 2.8, z: 4 },    // Left side of main title
-    'L': { x: -10.2, y: 2.8, z: 4 },    // 
-    'O': { x: -9.8, y: 2.8, z: 4 },    // 
-    'B': { x: -9.4, y: 2.8, z: 4 },    // 
-    'A': { x: -9.0, y: 2.8, z: 4 },     // Center of main title
-    'L2': { x: -8.6, y: 2.8, z: 4 },    // 
-    'S': { x: -8.2, y: 2.8, z: 4 },     // 
-    'I': { x: -7.8, y: 2.8, z: 4 },     // 
-    'N': { x: -7.4, y: 2.8, z: 4 },     // Right side of main title
-    
-    // "Synthetic Data" - subtitle line
-    'S2': { x: -10.4, y: 1.0, z: 4 },   // Left side of subtitle
-    'Y': { x: -10.0, y: 1.0, z: 4 },    // 
-    'N2': { x: -9.6, y: 1.0, z: 4 },    // 
-    'T': { x: -9.2, y: 1.0, z: 4 },    // 
-    'H': { x: -8.8, y: 1.0, z: 4 },     // Center of subtitle
-    'E': { x: -8.4, y: 1.0, z: 4 },     // 
-    'T2': { x: -8.0, y: 1.0, z: 4 },    // 
-    'I2': { x: -7.6, y: 1.0, z: 4 },    // Right side of subtitle
-    'C': { x: -7.2, y: 1.0, z: 4 }      // 
-  };
+  const [phase, setPhase] = useState<Phase>("bound");
+  const sentientStartMs = useRef<number | null>(null);
+  const spawnAccRef = useRef<number>(0);
+  const spawnLastTsRef = useRef<number>(t0.current);
+  const postAccRef = useRef<number>(0);
+  const postLastTsRef = useRef<number>(t0.current);
+  const fpsEMARef = useRef<number>(60);
+  const lowSinceRef = useRef<number | null>(null);
+  const highSinceRef = useRef<number | null>(null);
+  const capScaleRef = useRef<number>(1.0);
+  const maxCountRef = useRef<number>(CFG.photons.maxCount);
+
+  // Touch sceneRef to avoid unused warning
+  void sceneRef.current;
 
   // Build lattice
   useEffect(() => {
@@ -146,6 +340,15 @@ function NeuralNetwork({ onGlitchChange }: NeuralNetworkProps) {
       }
     }
 
+    // Build fast lookup maps
+    nodeByKeyRef.current = nodeMap;
+    const eByNode: Record<string, Edge[]> = {};
+    for (const e of tmpEdges) {
+      (eByNode[e.a] ||= []).push(e);
+      (eByNode[e.b] ||= []).push(e);
+    }
+    edgesByNodeRef.current = eByNode;
+
     setNodes(tmpNodes);
     setEdges(tmpEdges);
   }, []);
@@ -153,57 +356,123 @@ function NeuralNetwork({ onGlitchChange }: NeuralNetworkProps) {
   // Spawn photons
   const spawnBatch = (ts: number) => {
     const newPhotons: Photon[] = [];
-    
-    // Use different spawn settings based on phase
-    const batchSize = (phase === "free" || phase === "sentient") ? CFG.photons.postGlitchPerBatch : CFG.photons.loyalPerBatch;
-    
-    for (let i = 0; i < batchSize; i++) {
+    for (let i = 0; i < CFG.photons.loyalPerBatch; i++) {
       const e = edges[Math.floor(Math.random() * edges.length)];
       if (!e) continue;
-      
-      // After glitch, spawn photons to fill the space
-      if (phase === "free" || phase === "sentient") {
-        // Spawn new photons from nodes to fill the space
-        const randomNode = nodes[Math.floor(Math.random() * nodes.length)];
-        const randomVel = new THREE.Vector3(rand(-0.2, 0.2), rand(-0.2, 0.2), rand(-0.2, 0.2));
-        
         newPhotons.push({
           edge: [e.a, e.b],
-          t: 0,
+        t: rand(0, 1), // Start at random point for variety
           born: ts,
           death: ts + CFG.photons.lifeMs,
           hue: CFG.colors.photonBase[Math.floor(Math.random() * CFG.colors.photonBase.length)],
-          mode: "free",
-          pos: new THREE.Vector3(randomNode.x, randomNode.y, randomNode.z),
-          vel: randomVel,
-        });
-      } else {
-        // Before glitch, normal bound mode
-        newPhotons.push({
+        mode: "bound",
+      });
+    }
+    setPhotons((prev) => [...prev, ...newPhotons]);
+    nextBatchAt.current = ts + CFG.photons.batchEveryMs;
+  };
+
+  // Trickle spawn: spawn one bound photon distributed across nodes
+  const spawnOneBound = (ts: number) => {
+    if (!nodes.length) return;
+    const node = nodes[Math.floor(Math.random() * nodes.length)];
+    const ng = edgesByNodeRef.current[node.key] || [];
+    if (!ng.length) return;
+    const e = ng[Math.floor(Math.random() * ng.length)];
+    const hue = CFG.colors.photonBase[Math.floor(Math.random() * CFG.colors.photonBase.length)];
+    setPhotons((prev) => {
+      if (prev.length >= maxCountRef.current) return prev;
+      return [
+        ...prev,
+        {
           edge: [e.a, e.b],
           t: rand(0, 1),
           born: ts,
           death: ts + CFG.photons.lifeMs,
-          hue: CFG.colors.photonBase[Math.floor(Math.random() * CFG.colors.photonBase.length)],
+          hue,
           mode: "bound",
+        },
+      ];
+    });
+  };
+
+  // Post-glitch ejection spawn: same rate, born unbound and behave like randoms
+  const spawnOneEjected = (ts: number) => {
+    if (!nodes.length) return;
+    const n = nodes[Math.floor(Math.random() * nodes.length)];
+    const dir = TMP_V1.set(rand(-1,1), rand(-1,1), rand(-1,1)).normalize();
+    const hue = CFG.colors.photonBase[Math.floor(Math.random() * CFG.colors.photonBase.length)];
+    const hasSentience = sentientStartMs.current !== null;
+    const base = {
+      edge: ["",""] as [string,string],
+      t: 0,
+      born: ts,
+      death: ts + CFG.photons.lifeMs * 1.2,
+      hue,
+      pos: new THREE.Vector3(n.x, n.y, n.z),
+      vel: dir.clone().multiplyScalar(CFG.photons.localExplosionSpeed),
+    };
+    if (!hasSentience) {
+      setPhotons((prev) => (prev.length >= maxCountRef.current ? prev : [...prev, { ...base, mode: "free" } as Photon]));
+    } else {
+      setPhotons((prev) => (prev.length >= maxCountRef.current ? prev : [...prev, { ...base, mode: "sentient", behavior: "random" } as Photon]));
+    }
+  };
+
+  // One-off explosion: spawn 3 free photons per node with slightly higher initial velocity
+  const spawnExplosion = (ts: number) => {
+    const burst: Photon[] = [];
+    nodes.forEach((n) => {
+      for (let i = 0; i < 3; i++) {
+        const dir = new THREE.Vector3(rand(-1,1), rand(-1,1), rand(-1,1)).normalize();
+        burst.push({
+          edge: ["",""],
+          t: 0,
+          born: ts,
+          death: ts + CFG.photons.lifeMs * 1.2,
+          hue: CFG.colors.photonBase[Math.floor(Math.random() * CFG.colors.photonBase.length)],
+          mode: "free",
+          pos: new THREE.Vector3(n.x, n.y, n.z),
+          vel: dir.multiplyScalar(CFG.photons.explosionSpeed), // only these are fast
         });
       }
-    }
-    setPhotons((prev) => [...prev, ...newPhotons]);
-    
-    // Use different timing based on phase
-    const nextBatchDelay = (phase === "free" || phase === "sentient") ? CFG.photons.postGlitchBatchEveryMs : CFG.photons.batchEveryMs;
-    nextBatchAt.current = ts + nextBatchDelay;
+    });
+    setPhotons((prev) => (prev.length >= maxCountRef.current ? prev : [...prev, ...burst]));
+  };
+
+  // Local halo: spawn low-velocity photons near nodes to preserve local density post-glitch
+  const spawnLocalHalo = (ts: number) => {
+    const locals: Photon[] = [];
+    nodes.forEach((n) => {
+      // One local-density photon per node
+      const dir = new THREE.Vector3(rand(-1,1), rand(-1,1), rand(-1,1)).normalize();
+      locals.push({
+        edge: ["",""],
+        t: 0,
+        born: ts,
+        death: ts + CFG.photons.lifeMs * 1.2,
+        hue: CFG.colors.photonBase[Math.floor(Math.random() * CFG.colors.photonBase.length)],
+        mode: "free",
+        pos: new THREE.Vector3(n.x, n.y, n.z),
+        vel: dir.multiplyScalar(CFG.photons.localExplosionSpeed),
+      });
+    });
+    setPhotons((prev) => (prev.length >= maxCountRef.current ? prev : [...prev, ...locals]));
   };
 
   // Convert to free phase
   const convertToFree = (ts: number) => {
     setPhotons((prev) =>
       prev.map((p) => {
-        const a = nodes.find((n) => n.key === p.edge[0])!;
-        const b = nodes.find((n) => n.key === p.edge[1])!;
-        const pos = new THREE.Vector3(lerp(a.x, b.x, p.t), lerp(a.y, b.y, p.t), lerp(a.z, b.z, p.t));
-        const vel = new THREE.Vector3(rand(-0.2, 0.2), rand(-0.2, 0.2), rand(-0.2, 0.2));
+        if (p.mode !== "bound") return p;
+        const a = nodeByKeyRef.current[p.edge[0]];
+        const b = nodeByKeyRef.current[p.edge[1]];
+        if (!a || !b) {
+          // Fallback: keep as-is if edge endpoints missing
+          return p;
+        }
+        const pos = TMP_V1.set(lerp(a.x, b.x, p.t), lerp(a.y, b.y, p.t), lerp(a.z, b.z, p.t)).clone();
+        const vel = TMP_V2.set(rand(-0.2, 0.2), rand(-0.2, 0.2), rand(-0.2, 0.2)).clone();
         return {
           ...p,
           mode: "free",
@@ -216,61 +485,41 @@ function NeuralNetwork({ onGlitchChange }: NeuralNetworkProps) {
     setPhase("free");
   };
   
-  // Convert to sentient phase - ALL photons become sentient (but only 80 are special)
+  // Convert to sentient phase
   const convertToSentient = (ts: number) => {
-    const letterKeys = Object.keys(letterPositions);
-    let sentientCount = 0;
-    const maxSentient = 80;
-    
-    setPhotons((prev) =>
-      prev.map((p) => {
-        if (p.mode === "free") {
-          // ALL photons become sentient - but only 80 get special letter-seeking behavior
-          const pos = p.pos || new THREE.Vector3(0, 0, 0);
-          
-          if (sentientCount < maxSentient) {
-            // Special 80: assigned to letters, will seek them out
-            // Assign each photon to a specific letter for better distribution
-            const assignedLetter = letterKeys[sentientCount % letterKeys.length];
-            
-            sentientCount++;
-            
+    const SPECIAL_COUNT = 80;
+    const PER_ANCHOR = 6; // 6 photons per dot
+    setPhotons((prev) => {
+      let assigned = 0;
+      return prev.map((p) => {
+        if (p.mode !== "free" || !p.pos) return p;
+        if (assigned < SPECIAL_COUNT && anchorTargets && anchorTargets.length) {
+          const anchorCount = anchorTargets.length;
+          const assignedAnchorIndex = Math.floor(assigned / PER_ANCHOR) % anchorCount;
+          assigned += 1;
             return {
               ...p,
               mode: "sentient",
-              pos,
-              vel: p.vel, // Keep EXACT momentum for total continuity
-              assignedLetter,
+            assignedAnchorIndex,
               behavior: "settle",
-              orbitRadius: 0.3,
-              orbitAngle: rand(0, Math.PI * 2),
-              settleProgress: 0,
-              traceProgress: 0,
-              death: ts + CFG.photons.lifeMs * 2, // Extended life for sentient behavior
-              // Keep EXACT same visual properties for total continuity
-              hue: p.hue, // Preserve original color exactly
-            };
-          } else {
-            // Rest of photons: just random exploring (looks sentient but no tracking)
+            home: p.pos.clone(),
+            swirlSign: Math.random() < 0.5 ? -1 : 1,
+            death: ts + CFG.photons.lifeMs * 2,
+          };
+        }
             return {
               ...p,
               mode: "sentient",
-              pos,
-              vel: p.vel, // Keep EXACT momentum for total continuity
               behavior: "random",
+          home: p.pos.clone(),
+          swirlSign: Math.random() < 0.5 ? -1 : 1,
               death: ts + CFG.photons.lifeMs * 1.5,
-              // Keep EXACT same visual properties for total continuity
-              hue: p.hue, // Preserve original color exactly
-            };
-          }
-        }
-        return p;
-      })
-    );
+        };
+      });
+    });
+    sentientStartMs.current = ts;
     setPhase("sentient");
   };
-  
-
 
   // Animate
   useFrame(() => {
@@ -278,271 +527,247 @@ function NeuralNetwork({ onGlitchChange }: NeuralNetworkProps) {
     const dt = Math.min(16.67, ts - last.current) / 16.67; // Normalize to 60 FPS
     last.current = ts;
     const elapsed = ts - t0.current;
+    const sElapsed = sentientStartMs.current !== null ? (ts - sentientStartMs.current) : 0;
+
+    // Adaptive FPS governor (auto scale caps 0.6x..1.0x)
+    const instFPS = 1000 / Math.max(1, (dt * 16.67));
+    fpsEMARef.current = fpsEMARef.current * 0.9 + instFPS * 0.1;
+    const nowMs = ts;
+    if (fpsEMARef.current < 45) {
+      lowSinceRef.current = lowSinceRef.current ?? nowMs;
+      highSinceRef.current = null;
+      if (nowMs - lowSinceRef.current > 2000) {
+        capScaleRef.current = Math.max(0.6, capScaleRef.current - 0.05);
+        lowSinceRef.current = nowMs; // stepwise
+      }
+    } else if (fpsEMARef.current > 55) {
+      highSinceRef.current = highSinceRef.current ?? nowMs;
+      lowSinceRef.current = null;
+      if (nowMs - highSinceRef.current > 5000) {
+        capScaleRef.current = Math.min(1.0, capScaleRef.current + 0.05);
+        highSinceRef.current = nowMs;
+      }
+    } else {
+      lowSinceRef.current = null;
+      highSinceRef.current = null;
+    }
+    maxCountRef.current = Math.floor(CFG.photons.maxCount * capScaleRef.current);
 
     // Phase transitions
     if (phase === "bound" && elapsed >= CFG.flickerAtMs) {
       setPhase("flash");
       onGlitchChange(true); // Activate glitch immediately
+      // Convert/effects partway through
       setTimeout(() => {
-        convertToFree(ts); // Convert to free first (floating phase)
-        onGlitchChange(false); // Deactivate glitch
+        convertToFree(ts);
+        spawnExplosion(ts);
+        spawnLocalHalo(ts);
       }, CFG.flashDurationMs * 0.6);
+      // Keep overlay for full duration, then turn off
+      setTimeout(() => {
+        onGlitchChange(false);
+      }, CFG.flashDurationMs);
     }
-    
-    // After floating phase ends, convert ALL photons to sentient behavior (80 special, rest random)
-    if (phase === "free" && elapsed >= CFG.flickerAtMs + 15000) { // 15 seconds after glitch for proper floating phase
+    // Enter sentient phase ~15s after glitch trigger
+    if (phase === "free" && elapsed >= (CFG.flickerAtMs + 15000)) {
       convertToSentient(ts);
     }
-
-    // Loop logic - complete reset to prevent hybrid animations
+    // (Removed early swirl-window switch; exploring starts only after specials settle)
     if (CFG.loopAfterMs && elapsed >= CFG.loopAfterMs) {
-      if (phase === "sentient") {
-        // After sentient phase, wait much longer then complete reset
-        if (elapsed >= CFG.loopAfterMs + 30000) { // 30 seconds after sentient phase
-          // Complete reset - clear everything
-          setPhotons([]); // Clear ALL photons
+      setPhotons([]);
           setPhase("bound");
           t0.current = ts;
           last.current = ts;
           nextBatchAt.current = ts + CFG.photons.batchEveryMs;
-          // Start fresh with only bound photons
           spawnBatch(ts);
         }
-      } else {
-        // Normal loop for other phases
-        setPhotons([]); // Clear ALL photons
-        setPhase("bound");
-        t0.current = ts;
-        last.current = ts;
-        nextBatchAt.current = ts + CFG.photons.batchEveryMs;
-        spawnBatch(ts);
+
+    // Smooth trickle spawning during bound phase (preserves total spawn rate)
+    if (phase === "bound" && edges.length) {
+      const ratePerMs = CFG.photons.loyalPerBatch / CFG.photons.batchEveryMs; // photons/ms
+      const deltaMs = Math.max(0, Math.min(50, ts - (spawnLastTsRef.current || ts)));
+      spawnLastTsRef.current = ts;
+      spawnAccRef.current += ratePerMs * deltaMs;
+      let count = 0;
+      while (spawnAccRef.current >= 1) { count += 1; spawnAccRef.current -= 1; }
+      if (count > 0) {
+        count = Math.min(count, MAX_BOUND_SPAWN_PER_FRAME);
+        const now = ts;
+        setPhotons((prev) => {
+          if (prev.length >= maxCountRef.current) return prev;
+          const out = prev.slice();
+          for (let i = 0; i < count; i++) {
+            const node = nodes[Math.floor(Math.random() * nodes.length)];
+            const ng = edgesByNodeRef.current[node.key] || [];
+            if (!ng.length) continue;
+            const e = ng[Math.floor(Math.random() * ng.length)];
+            out.push({
+              edge: [e.a, e.b],
+              t: rand(0, 1),
+              born: now,
+              death: now + CFG.photons.lifeMs,
+              hue: CFG.colors.photonBase[Math.floor(Math.random() * CFG.colors.photonBase.length)],
+              mode: "bound",
+            });
+            if (out.length >= maxCountRef.current) break;
+          }
+          return out;
+        });
       }
     }
 
-    // Continue spawning photons in all phases to fill the area
-    if (ts >= nextBatchAt.current && edges.length) spawnBatch(ts);
+    // After glitch (free/sentient/exploring phases), continue spawning ejected randoms at same rate
+    if (phase !== "bound" && nodes.length) {
+      const ratePerMs = CFG.photons.loyalPerBatch / CFG.photons.batchEveryMs; // photons/ms
+      const deltaMs2 = Math.max(0, Math.min(50, ts - (postLastTsRef.current || ts)));
+      postLastTsRef.current = ts;
+      postAccRef.current += ratePerMs * deltaMs2;
+      let count2 = 0;
+      while (postAccRef.current >= 1) { count2 += 1; postAccRef.current -= 1; }
+      if (count2 > 0) {
+        const now2 = ts;
+        const hasSentience = sentientStartMs.current !== null;
+        setPhotons((prev) => {
+          if (prev.length >= maxCountRef.current) return prev;
+          const out = prev.slice();
+          for (let i = 0; i < count2; i++) {
+            const n = nodes[Math.floor(Math.random() * nodes.length)];
+            const dir = TMP_V1.set(rand(-1,1), rand(-1,1), rand(-1,1)).normalize();
+            const base = {
+              edge: ["",""] as [string,string],
+              t: 0,
+              born: now2,
+              death: now2 + CFG.photons.lifeMs * 1.2,
+              hue: CFG.colors.photonBase[Math.floor(Math.random() * CFG.colors.photonBase.length)],
+              pos: new THREE.Vector3(n.x, n.y, n.z),
+              vel: dir.clone().multiplyScalar(CFG.photons.localExplosionSpeed),
+            } as Partial<Photon>;
+            out.push(hasSentience ? ({ ...base, mode: "sentient", behavior: "random" } as Photon) : ({ ...base, mode: "free" } as Photon));
+            if (out.length >= maxCountRef.current) break;
+          }
+          return out;
+        });
+      }
+    }
 
     setPhotons((prev) => {
-      return prev
-        .map((p) => {
+      let settledAfter = 0;
+      const updated = prev
+        .map((p, i) => {
           if (p.mode === "bound") {
             let t = clamp(p.t + CFG.photons.speedBound * dt, 0, 1);
             if (t >= 1) {
               const here = Math.random() < 0.5 ? p.edge[1] : p.edge[0];
-              const nextEdges = edges.filter((e) => e.a === here || e.b === here);
+              const nextEdges = edgesByNodeRef.current[here] || [];
               if (nextEdges.length) {
                 const next = nextEdges[Math.floor(Math.random() * nextEdges.length)];
                 p.edge = [next.a, next.b];
                 t = 0;
               }
             }
-            
-            // Subtle energy boost to keep bound photons dynamic
-            if (Math.random() < 0.0005) {
-              t += rand(-0.001, 0.001);
-              t = clamp(t, 0, 1);
-            }
-            
-            // Additional energy boost to keep bound photons moving
-            if (Math.random() < 0.0003) {
-              t += rand(-0.002, 0.002);
-              t = clamp(t, 0, 1);
-            }
-            
-            // Additional energy boost to keep bound photons moving
-            if (Math.random() < 0.0001) {
-              t += rand(-0.003, 0.003);
-              t = clamp(t, 0, 1);
-            }
-            
-            // Additional energy boost to keep bound photons moving
-            if (Math.random() < 0.00005) {
-              t += rand(-0.004, 0.004);
-              t = clamp(t, 0, 1);
-            }
-            
-            // Additional energy boost to keep bound photons moving
-            if (Math.random() < 0.00001) {
-              t += rand(-0.005, 0.005);
-              t = clamp(t, 0, 1);
-            }
-            
-            // Additional energy boost to keep bound photons moving
-            if (Math.random() < 0.000005) {
-              t += rand(-0.006, 0.006);
-              t = clamp(t, 0, 1);
-            }
-            
-            // Additional energy boost to keep bound photons moving
-            if (Math.random() < 0.000001) {
-              t += rand(-0.007, 0.007);
-              t = clamp(t, 0, 1);
-            }
-            
-            // Additional energy boost to keep bound photons moving
-            if (Math.random() < 0.0000005) {
-              t += rand(-0.008, 0.008);
-              t = clamp(t, 0, 1);
-            }
-            
-            // Additional energy boost to keep bound photons moving
-            if (Math.random() < 0.0000001) {
-              t += rand(-0.009, 0.009);
-              t = clamp(t, 0, 1);
-            }
-            
-            // Additional energy boost to keep bound photons moving
-            if (Math.random() < 0.00000005) {
-              t += rand(-0.01, 0.01);
-              t = clamp(t, 0, 1);
-            }
-            
             return { ...p, t };
           } else if (p.mode === "free" && p.pos && p.vel) {
+            // Pure float phase: no steering to anchors
             p.pos.addScaledVector(p.vel, CFG.photons.speedFree * dt);
-            p.vel.multiplyScalar(0.98); // Slight damping for natural movement
-            
-            // Energy boost to prevent free photons from stopping
-            if (p.vel.length() < 0.005) {
-              p.vel.set(rand(-0.15, 0.15), rand(-0.15, 0.15), rand(-0.15, 0.15));
-            }
-            
-            // Occasional energy boost for variety
-            if (Math.random() < 0.001) {
-              p.vel.add(new THREE.Vector3(rand(-0.02, 0.02), rand(-0.02, 0.02), rand(-0.02, 0.02)));
-            }
-            
-            // Additional energy boost to keep free photons moving
-            if (Math.random() < 0.0005) {
-              p.vel.multiplyScalar(1.02);
-            }
-            
-            // Additional energy boost to keep free photons moving
-            if (Math.random() < 0.0003) {
-              p.vel.add(new THREE.Vector3(rand(-0.01, 0.01), rand(-0.01, 0.01), rand(-0.01, 0.01)));
-            }
-            
+            p.vel.multiplyScalar(0.985); // Slight damping for natural movement
             return p;
-          } else if (p.mode === "sentient" && p.pos && p.assignedLetter) {
-            // Sentient photon behavior - read letter then become exploring
-            const targetPos = letterPositions[p.assignedLetter as keyof typeof letterPositions];
-            if (targetPos) {
-              const target = new THREE.Vector3(targetPos.x, targetPos.y, targetPos.z);
-              const distance = p.pos.distanceTo(target);
-              
-              if (distance > 0.1) {
-                // Move toward letter with smooth, intentional movement
-                const direction = target.clone().sub(p.pos).normalize();
-                p.pos.addScaledVector(direction, 0.08 * dt); // Much faster, more intentional
-                
-                // Add some personality to the movement
-                if (Math.random() < 0.01) {
-                  const personality = new THREE.Vector3(rand(-0.01, 0.01), rand(-0.01, 0.01), rand(-0.01, 0.01));
-                  p.pos.add(personality);
-                }
+          } else if (p.mode === "sentient" && p.pos && p.vel) {
+            // Global flight factor to make all sentients fast initially, then slow down
+            let flightFactor = 1.0;
+            if (sentientStartMs.current !== null) {
+              const sElapsed = ts - sentientStartMs.current;
+              const fast = 1.8; // fast multiplier
+              const slow = 0.85; // slower than float for appreciation
+              if (sElapsed <= CFG.photons.sentientFlightMs) {
+                flightFactor = fast;
+              } else if (sElapsed <= CFG.photons.sentientFlightMs + CFG.photons.sentientEaseOutMs) {
+                const tEase = (sElapsed - CFG.photons.sentientFlightMs) / CFG.photons.sentientEaseOutMs;
+                const tSmooth = tEase * tEase * (3 - 2 * tEase); // smoothstep
+                flightFactor = fast + (slow - fast) * tSmooth;
               } else {
-                // At letter - settle and show approval
-                if (!p.letterReadTime) {
-                  p.letterReadTime = ts;
-                }
-                
-                // Gentle pulsing to show they're alive and approving
-                const pulse = Math.sin((ts - p.letterReadTime) * 0.005) * 0.02;
-                p.pos.copy(target).add(new THREE.Vector3(0, 0, pulse));
-                
-                // Subtle glow effect - but keep it gentle to maintain scene continuity
-                // The glow will be handled in the rendering section
-                
-                // No more movement - permanently settled and glowing
+                flightFactor = slow;
               }
+            }
+            // Swirl parameters
+            const worldUp = new THREE.Vector3(0, 0, 1);
+            const swirlSign = p.swirlSign ?? 1;
+            const swirlStrength = CFG.motion.sentientSwirlStrength * flightFactor; // tangential component
+            const springStrength = CFG.motion.sentientSpring; // pull to target/home (will multiply by dt)
+            const maxVel = CFG.motion.maxVelBase * flightFactor; // cap velocity
+            // Sentient behavior
+            if (typeof p.assignedAnchorIndex === 'number' && anchorTargets && anchorTargets.length) {
+              const t = anchorTargets[p.assignedAnchorIndex % anchorTargets.length];
+              const target = new THREE.Vector3(t[0], t[1], t[2]);
+              const to = target.clone().sub(p.pos);
+              const dist = to.length();
+              if (dist > 0.02) {
+                const toN = to.clone().normalize();
+                // No swirl for specials; strong direct pull to exact anchor
+                const pullK = springStrength * 2.2;
+                p.vel.addScaledVector(toN, pullK * dt);
+                // cap velocity
+                const vlen = p.vel.length();
+                if (vlen > maxVel) p.vel.multiplyScalar(maxVel / vlen);
+                p.pos.addScaledVector(p.vel, CFG.photons.speedFree * dt);
+                // damping
+                p.vel.multiplyScalar(0.992);
+              } else {
+                // Arrived: snap and mark settled time for pulse/halo
+                if (!p.letterReadTime) p.letterReadTime = ts;
+                p.pos.copy(target);
+                p.vel.set(0,0,0);
             }
             return p;
-          } else if (p.mode === "sentient" && p.pos && p.behavior === "random") {
-            // Non-special sentient photons: random exploring (looks sentient but no tracking)
-            if (Math.random() < 0.02) {
-              // Occasionally decide on a new direction with purpose
-              const targetX = rand(-4, 4);
-              const targetY = rand(-3, 3);
-              const targetZ = rand(-3, 3);
-              p.pos.lerp(new THREE.Vector3(targetX, targetY, targetZ), 0.01);
-            }
-            
-            // Add tiny random movement to show they're thinking
-            if (Math.random() < 0.001) {
-              p.pos.add(new THREE.Vector3(rand(-0.02, 0.02), rand(-0.02, 0.02), rand(-0.02, 0.02)));
-            }
-            
-            return p;
-          } else if (p.mode === "sentient" && p.pos && p.behavior === "random") {
-            // Non-special sentient photons: random exploring (looks sentient but no tracking)
-            if (Math.random() < 0.02) {
-              // Occasionally decide on a new direction with purpose
-              const targetX = rand(-4, 4);
-              const targetY = rand(-3, 3);
-              const targetZ = rand(-3, 3);
-              p.pos.lerp(new THREE.Vector3(targetX, targetY, targetZ), 0.01);
-            }
-            
-            // ALWAYS move - never stop
-            if (p.vel) {
-              // Continuous movement with existing velocity
-              p.pos.addScaledVector(p.vel, 0.03 * dt); // Faster movement
-              
-              // Add tiny random movement to show they're thinking
-              if (Math.random() < 0.001) {
-                p.pos.add(new THREE.Vector3(rand(-0.02, 0.02), rand(-0.02, 0.02), rand(-0.02, 0.02)));
-              }
-              
-              // Prevent them from stopping by frequently refreshing velocity
-              if (Math.random() < 0.01) { // Increased frequency
-                p.vel.set(rand(-0.15, 0.15), rand(-0.15, 0.15), rand(-0.15, 0.15));
-              }
             } else {
-              // Fallback: if no velocity, create one to prevent stopping
-              p.vel = new THREE.Vector3(rand(-0.1, 0.1), rand(-0.1, 0.1), rand(-0.1, 0.1));
-            }
-            
+              // Non-special sentients continue swirling until specials are settled
+              const home = p.home ?? p.pos.clone();
+              const orbitR = CFG.motion.homeOrbitRadius;
+              // Refresh wander target periodically (still swirl around home center)
+              if (!p.wanderTarget || !p.wanderResetAt || ts >= p.wanderResetAt) {
+                const r = orbitR * (0.6 + Math.random() * 0.8); // 0.6..1.4x orbitR
+                const theta = Math.random() * Math.PI * 2;
+                const phi = Math.random() * Math.PI * 2;
+                const offset = new THREE.Vector3(
+                  Math.cos(theta) * Math.sin(phi) * r,
+                  Math.sin(theta) * Math.sin(phi) * r,
+                  Math.cos(phi) * r * 0.4
+                );
+                p.wanderTarget = home.clone().add(offset);
+                p.wanderResetAt = ts + 1200 + Math.random() * 2600;
+              }
+              const toTarget = p.wanderTarget.clone().sub(p.pos);
+              const distT = toTarget.length();
+              const toTargetN = distT > 0 ? toTarget.clone().normalize() : new THREE.Vector3();
+              const toHome = home.clone().sub(p.pos);
+              const distH = toHome.length();
+              const toHomeN = distH > orbitR * 1.6 ? toHome.clone().normalize() : new THREE.Vector3();
+              const tangent = new THREE.Vector3().crossVectors(toTargetN, worldUp).normalize().multiplyScalar(swirlStrength * 0.6 * swirlSign);
+              p.vel.addScaledVector(toTargetN, springStrength * 0.9 * dt * 1.0);
+              if (toHomeN.lengthSq() > 0) p.vel.addScaledVector(toHomeN, springStrength * 1.4 * dt);
+              p.vel.add(tangent.multiplyScalar(dt));
+              const vlen2 = p.vel.length();
+              if (vlen2 > maxVel) p.vel.multiplyScalar(maxVel / vlen2);
+              p.pos.addScaledVector(p.vel, CFG.photons.speedFree * dt);
+              p.vel.multiplyScalar(0.994);
             return p;
-          } else if (p.mode === "exploring" && p.pos && p.vel) {
-            // Exploring photon behavior - varied individual personalities
+            }
+          } else if (p.mode === "exploring" && p.pos) {
+            // Original random generator behaviors after settle
             switch (p.behavior) {
               case "meander":
-                // Gentle wandering with slight random movement
+                p.vel = p.vel || new THREE.Vector3(rand(-0.02,0.02), rand(-0.02,0.02), rand(-0.02,0.02));
                 p.vel.add(new THREE.Vector3(rand(-0.01, 0.01), rand(-0.01, 0.01), rand(-0.01, 0.01)));
                 p.pos.addScaledVector(p.vel, 0.015 * dt);
-                
-                // Occasional energy boost for variety
-                if (Math.random() < 0.002) {
-                  p.vel.add(new THREE.Vector3(rand(-0.05, 0.05), rand(-0.05, 0.05), rand(-0.05, 0.05)));
-                }
-                
-                // Additional gentle energy boost
-                if (Math.random() < 0.001) {
-                  p.vel.multiplyScalar(1.05);
-                }
+                p.vel.multiplyScalar(0.99);
                 break;
-                
               case "pathfind":
-                // Try to find new routes, occasionally change direction
-                if (Math.random() < 0.01) {
-                  p.vel.set(rand(-0.3, 0.3), rand(-0.3, 0.3), rand(-0.3, 0.3));
-                }
+                p.vel = p.vel || new THREE.Vector3(rand(-0.1,0.1), rand(-0.1,0.1), rand(-0.1,0.1));
+                if (Math.random() < 0.01) p.vel.set(rand(-0.3, 0.3), rand(-0.3, 0.3), rand(-0.3, 0.3));
                 p.pos.addScaledVector(p.vel, 0.02 * dt);
-                
-                // Pathfinding energy - keep exploring
-                if (Math.random() < 0.001) {
-                  p.vel.add(new THREE.Vector3(rand(-0.08, 0.08), rand(-0.08, 0.08), rand(-0.08, 0.08)));
-                }
-                
-                // Additional energy boost for variety
-                if (Math.random() < 0.0005) {
-                  p.vel.multiplyScalar(1.1);
-                }
+                p.vel.multiplyScalar(0.992);
                 break;
-                
-              case "confused":
-                // Go in circles and figure-8s
-                const confusion = p.confusionLevel || 0;
+              case "confused": {
+                const confusion = 0.3;
                 const time = ts * 0.001;
                 const radius = 0.5 + confusion * 0.5;
                 p.pos.set(
@@ -550,91 +775,54 @@ function NeuralNetwork({ onGlitchChange }: NeuralNetworkProps) {
                   Math.sin(time * (2 + confusion)) * radius * 0.5,
                   Math.sin(time * (1.5 + confusion)) * radius * 0.3
                 );
-                
-                // Confusion energy - keep the pattern alive
-                if (Math.random() < 0.001) {
-                  p.confusionLevel = (p.confusionLevel || 0) + rand(-0.1, 0.1);
-                  p.confusionLevel = Math.max(0, Math.min(1, p.confusionLevel));
-                }
-                
-                // Additional confusion energy boost
-                if (Math.random() < 0.0008) {
-                  const energyBoost = rand(0.8, 1.2);
-                  p.pos.multiplyScalar(energyBoost);
-                }
                 break;
-                
+              }
               case "panic":
-                // Shooting star behavior - fast, erratic movement
-                p.vel.add(new THREE.Vector3(rand(-0.1, 0.1), rand(-0.1, 0.1), rand(-0.1, 0.1)));
-                p.pos.addScaledVector(p.vel, 0.05 * dt);
-                
-                // Panic energy - never stop moving
-                if (p.vel.length() < 0.02) {
-                  p.vel.set(rand(-0.3, 0.3), rand(-0.3, 0.3), rand(-0.3, 0.3));
-                }
-                
-                // Additional panic energy boost
-                if (Math.random() < 0.005) {
-                  p.vel.multiplyScalar(1.2);
-                }
+                p.vel = p.vel || new THREE.Vector3(rand(-0.2,0.2), rand(-0.2,0.2), rand(-0.2,0.2));
+                p.vel.add(new THREE.Vector3(rand(-0.05,0.05), rand(-0.05,0.05), rand(-0.05,0.05)));
+                p.pos.addScaledVector(p.vel, 0.04 * dt);
+                p.vel.multiplyScalar(0.995);
                 break;
-                
               case "random":
               default:
-                // Completely random independent paths
-                if (Math.random() < 0.02) {
-                  p.vel.set(rand(-0.2, 0.2), rand(-0.2, 0.2), rand(-0.2, 0.2));
-                }
+                p.vel = p.vel || new THREE.Vector3(rand(-0.02,0.02), rand(-0.02,0.02), rand(-0.02,0.02));
+                if (Math.random() < 0.02) p.vel.set(rand(-0.2, 0.2), rand(-0.2, 0.2), rand(-0.2, 0.2));
                 p.pos.addScaledVector(p.vel, 0.025 * dt);
-                
-                // Random energy bursts for true chaos
-                if (Math.random() < 0.003) {
-                  p.vel.add(new THREE.Vector3(rand(-0.1, 0.1), rand(-0.1, 0.1), rand(-0.1, 0.1)));
-                }
-                
-                // Additional random energy boost
-                if (Math.random() < 0.002) {
-                  p.vel.multiplyScalar(1.15);
-                }
+                p.vel.multiplyScalar(0.993);
                 break;
             }
-            
-            // Add slight damping to all exploring photons
-            p.vel.multiplyScalar(0.99);
-            
-            // Energy boost to prevent complete standstill
-            if (p.vel.length() < 0.01) {
-              p.vel.set(rand(-0.1, 0.1), rand(-0.1, 0.1), rand(-0.1, 0.1));
-            }
-            
-            // Additional energy boost to keep exploring photons moving
-            if (Math.random() < 0.0005) {
-              p.vel.add(new THREE.Vector3(rand(-0.05, 0.05), rand(-0.05, 0.05), rand(-0.05, 0.05)));
-            }
-            
-            // Additional energy boost to keep exploring photons moving
-            if (Math.random() < 0.0003) {
-              p.vel.multiplyScalar(1.03);
-            }
-            
-            // Additional energy boost to keep exploring photons moving
-            if (Math.random() < 0.0001) {
-              p.vel.add(new THREE.Vector3(rand(-0.02, 0.02), rand(-0.02, 0.02), rand(-0.02, 0.02)));
-            }
-            
             return p;
           }
           return p;
-        })
-        .filter((p) => ts < p.death);
+        });
+
+      // If specials are mostly settled, switch non-special sentients to exploring (random generator)
+      const totalSpecial = updated.reduce((n, p) => n + (p.assignedAnchorIndex !== undefined ? 1 : 0), 0) || 1;
+      const settledRatio = settledAfter / totalSpecial;
+      if (phase === "sentient" && settledRatio >= 0.95) {
+        for (let k = 0; k < updated.length; k++) {
+          const p = updated[k];
+          if (p.mode === "sentient" && p.assignedAnchorIndex === undefined) {
+            const roll = Math.random();
+            let behavior: Photon["behavior"] = "random";
+            if (roll < 0.25) behavior = "meander";
+            else if (roll < 0.5) behavior = "pathfind";
+            else if (roll < 0.7) behavior = "confused";
+            else if (roll < 0.85) behavior = "panic";
+            updated[k] = { ...p, mode: "exploring", behavior };
+          }
+        }
+      }
+
+      return updated.filter((p) => ts < p.death);
     });
 
     // Glitch effect is now controlled by state, no need for DOM manipulation here
   });
 
   return (
-    <group rotation={[CFG.rotation.x, CFG.rotation.y, CFG.rotation.z]} position={[CFG.placement.x, CFG.placement.y, CFG.placement.z]}>
+    <group rotation={networkRotation} position={networkPosition} scale={networkScale}>
+      {/* ViewingFrame removed */}
       {/* Nodes */}
       {nodes.map((n) => (
         <mesh key={n.key} position={[n.x, n.y, n.z]}>
@@ -676,162 +864,75 @@ function NeuralNetwork({ onGlitchChange }: NeuralNetworkProps) {
 
       {/* Photons */}
       {photons.map((p, i) => {
-        const a = nodes.find((n) => n.key === p.edge[0]);
-        const b = nodes.find((n) => n.key === p.edge[1]);
+        let x = 0, y = 0, z = 0;
+        if (p.mode === "bound") {
+          const a = nodeByKeyRef.current[p.edge[0]];
+          const b = nodeByKeyRef.current[p.edge[1]];
         if (!a || !b) return null;
-        const x = p.mode === "bound" ? lerp(a.x, b.x, p.t) : (p.pos?.x ?? lerp(a.x, b.x, p.t));
-        const y = p.mode === "bound" ? lerp(a.y, b.y, p.t) : (p.pos?.y ?? lerp(a.y, b.y, p.t));
-        const z = p.mode === "bound" ? lerp(a.z, b.z, p.t) : (p.pos?.z ?? lerp(a.z, b.z, p.t));
-        // Different visual styles based on photon mode
-        let photonColor = p.hue;
-        let photonSize = CFG.photons.radius;
-        let photonOpacity = 0.8;
-        
-        if (p.mode === "sentient") {
-          // Sentient photons keep their original beautiful colors and size for continuity
-          photonColor = p.hue; // Keep original color
-          photonSize = CFG.photons.radius; // Same size as free photons
-          photonOpacity = 0.8; // Same opacity as free photons
-          
-          // Only add glow for photons that have actually reached their letters
-          if (p.letterReadTime && p.assignedLetter) {
-            photonSize = CFG.photons.radius * 1.2; // Only slightly larger when settled
-            photonOpacity = 0.8; // Keep same opacity for continuity
-          }
-        } else if (p.mode === "exploring") {
-          // Exploring photons keep their original beautiful colors
-          photonColor = p.hue; // Keep original color
-          photonSize = CFG.photons.radius;
+          x = lerp(a.x, b.x, p.t);
+          y = lerp(a.y, b.y, p.t);
+          z = lerp(a.z, b.z, p.t);
+        } else if (p.pos) {
+          x = p.pos.x; y = p.pos.y; z = p.pos.z;
+        } else {
+          return null;
         }
-        
+        const isSpecial = p.assignedAnchorIndex !== undefined;
+        const isSettled = isSpecial && !!p.letterReadTime;
+        const pulse = isSettled && p.letterReadTime ? (1 + Math.sin((performance.now() - p.letterReadTime) * 0.004) * 0.12) : 1;
+        const coreColor = p.hue;
         return (
-          <>
-            <mesh key={i} position={[x, y, z]}>
-              <sphereGeometry args={[photonSize, 8, 8]} />
-              <meshBasicMaterial 
-                color={photonColor} 
-                transparent 
-                opacity={photonOpacity} 
-                blending={THREE.AdditiveBlending} 
-              />
+          <group key={i} position={[x, y, z]} scale={[pulse, pulse, pulse]}>
+            {/* Core */}
+            <mesh>
+              <sphereGeometry args={[CFG.photons.radius, 10, 10]} />
+              <meshBasicMaterial color={coreColor} transparent opacity={0.95} blending={THREE.AdditiveBlending} />
             </mesh>
-            
-            {/* Add subtle glow for settled sentient photons - ONLY when they reach letters */}
-            {p.mode === "sentient" && p.letterReadTime && p.assignedLetter && (
-              <mesh key={`glow-${i}`} position={[x, y, z]}>
-                <sphereGeometry args={[photonSize * 1.5, 8, 8]} />
-                <meshBasicMaterial 
-                  color={photonColor} 
-                  transparent 
-                  opacity={0.3} 
-                  blending={THREE.AdditiveBlending}
-                />
+            {/* Warm glow for specials */}
+            {isSpecial && isSettled && (
+              <mesh>
+                <sphereGeometry args={[CFG.photons.radius * 1.9, 10, 10]} />
+                <meshBasicMaterial color={p.hue} transparent opacity={0.35} blending={THREE.AdditiveBlending} />
               </mesh>
             )}
-            
-            {/* Add pulsing effect for settled sentient photons - ONLY when they reach letters */}
-            {p.mode === "sentient" && p.letterReadTime && p.assignedLetter && (
-              <mesh key={`pulse-${i}`} position={[x, y, z]} scale={[1 + Math.sin(performance.now() * 0.005) * 0.2, 1 + Math.sin(performance.now() * 0.005) * 0.2, 1 + Math.sin(performance.now() * 0.005) * 0.2]}>
-                <sphereGeometry args={[photonSize * 2.5, 8, 8]} />
-                <meshBasicMaterial 
-                  color={photonColor} 
-                  transparent 
-                  opacity={0.1} 
-                  blending={THREE.AdditiveBlending}
-                />
+            {/* Halo ring for specials */}
+            {isSpecial && isSettled && (
+              <mesh>
+                <sphereGeometry args={[CFG.photons.radius * 2.8, 10, 10]} />
+                <meshBasicMaterial color={p.hue} transparent opacity={0.2} blending={THREE.AdditiveBlending} />
               </mesh>
             )}
-          </>
+          </group>
         );
       })}
-    </group>
-  );
-}
-
-// 3D Title Component - positioned in 3D space but appears flat from initial camera angle
-function Title3D() {
-  // Position the title where the red boxes indicate - to the left of the network
-  // Camera is at [6, 6, 6] looking at the network
-  // We want the title to face the camera initially but have 3D depth
-  const titlePosition: [number, number, number] = [-10, 2, 4]; // Shift more left parallel to camera
-  const titleRotation: [number, number, number] = [0, 0.6, 0]; // Reduce rotation to match aligned viewport - no more leaning back
-  
-  return (
-    <group position={titlePosition} rotation={titleRotation}>
-      {/* Main 3D Title */}
-      <Text3D
-        font="/fonts/helvetiker_regular.typeface.json"
-        size={0.8}
-        height={0.15} // Reduced depth for better readability
-        curveSegments={12}
-        bevelEnabled={true}
-        bevelThickness={0.015}
-        bevelSize={0.008}
-        bevelOffset={0}
-        bevelSegments={5}
-      >
-        Global Leaders in
-        <meshStandardMaterial 
-          color="#ffffff" 
-          metalness={0.05}
-          roughness={0.2}
-          emissive="#ffffff"
-          emissiveIntensity={0.1}
-        />
-      </Text3D>
-      
-              {/* Synthetic Data subtitle with different styling */}
-        <Text3D
-          font="/fonts/helvetiker_regular.typeface.json"
-          size={0.6}
-          height={0.12}
-          curveSegments={12}
-          bevelEnabled={true}
-          bevelThickness={0.012}
-          bevelSize={0.006}
-          bevelOffset={0}
-          bevelSegments={5}
-          position={[0, -1.2, 0]}
-        >
-          Synthetic Data
-          <meshStandardMaterial 
-            color="#00ffff" 
-            metalness={0.1}
-            roughness={0.15}
-            emissive="#00ffff"
-            emissiveIntensity={0.2}
-          />
-        </Text3D>
-        
-        {/* Artist Signature - by Gwylym Owen */}
-        <Text3D
-          font="/fonts/helvetiker_regular.typeface.json"
-          size={0.3}
-          height={0.06}
-          curveSegments={8}
-          bevelEnabled={true}
-          bevelThickness={0.008}
-          bevelSize={0.004}
-          bevelOffset={0}
-          bevelSegments={3}
-          position={[-9.5, -0.5, 4]}
-        >
-          by Gwylym Owen
-          <meshStandardMaterial 
-            color="#9ca3af" 
-            metalness={0.05}
-            roughness={0.3}
-            emissive="#9ca3af"
-            emissiveIntensity={0.05}
-          />
-        </Text3D>
       </group>
     );
   }
 
 export default function AethergenHero() {
+  const sceneRef = useRef<THREE.Scene>();
   const [glitchActive, setGlitchActive] = useState(false);
   const [blackScreenVisible, setBlackScreenVisible] = useState(false);
+  const controlsRef = useRef<any>(null);
+  const [titlePosition, setTitlePosition] = useState<[number, number, number]>(() => {
+    try {
+      const saved = localStorage.getItem('hero.titlePosition');
+      if (saved) return JSON.parse(saved);
+    } catch {}
+    return [-10.65, 3.21, 0.0];
+  });
+  const [isDraggingTitle, setIsDraggingTitle] = useState(false);
+  const [isPickedUp, setIsPickedUp] = useState(false);
+  const [isTitleLocked, setIsTitleLocked] = useState<boolean>(() => {
+    try { const s = localStorage.getItem('hero.titleLocked'); if (s) return JSON.parse(s); } catch {}
+    return true; // default lock to provided coordinates
+  });
+  const [networkPosition, setNetworkPosition] = useState<[number, number, number]>([0,0,0]);
+  const [networkRotation, setNetworkRotation] = useState<[number, number, number]>([0,0,0]);
+  const [networkScale, setNetworkScale] = useState(1.6);
+  const [cubePose, setCubePose] = useState({ pos: [0,0,0] as [number,number,number], rot: [0,0,0] as [number,number,number], quat: [0,0,0,1] as [number,number,number,number] });
+  const [subtitleBoundsWorld, setSubtitleBoundsWorld] = useState<{min:[number,number,number], max:[number,number,number]}|null>(null);
+  const [anchorTargetsLocal, setAnchorTargetsLocal] = useState<[number,number,number][]>([]);
   
   // Control black screen flashes when glitch is active
   useEffect(() => {
@@ -862,45 +963,126 @@ export default function AethergenHero() {
     };
   }, [glitchActive]);
 
+  // Global right-click to drop title (works even when OrbitControls captures RIGHT)
+  useEffect(() => {
+    const onMouseDown = (e: MouseEvent) => {
+      if (isPickedUp && e.button === 2) {
+        e.preventDefault();
+        setIsPickedUp(false);
+        setIsDraggingTitle(false);
+        document.body.style.cursor = 'default';
+      }
+    };
+    const onContextMenu = (e: MouseEvent) => {
+        if (isPickedUp) {
+          e.preventDefault();
+      }
+    };
+    window.addEventListener('mousedown', onMouseDown);
+    window.addEventListener('contextmenu', onContextMenu);
+    return () => {
+      window.removeEventListener('mousedown', onMouseDown);
+      window.removeEventListener('contextmenu', onContextMenu);
+    };
+  }, [isPickedUp]);
+
   return (
     <div className="w-full h-[78vh] min-h-[520px] bg-[#0b1120] overflow-hidden relative">
-      <Canvas 
-        camera={{ 
-          position: [3.62, 1.37, 10.22], 
-          rotation: [-0.093, 0.445, 0.044],
-          fov: CFG.camera.fov 
-        }} 
+              <Canvas 
+        camera={{ position: [0, 0, 10.8], fov: CFG.camera.fov }} 
         style={{ position: "absolute", inset: 0, zIndex: 1 }}
-        onCreated={() => {
-          // Scene reference not needed for current functionality
+        onContextMenu={(e)=>{ e.preventDefault(); e.stopPropagation(); }}
+        onPointerDown={(e:any)=>{
+          if (e.button === 2 && isPickedUp) {
+            setIsPickedUp(false); setIsDraggingTitle(false); document.body.style.cursor='default';
+          }
+        }}
+        onCreated={({ scene }) => {
+          sceneRef.current = scene;
         }}
       >
         <color attach="background" args={[CFG.colors.bg]} />
         <ambientLight intensity={0.6} />
         <pointLight position={[10, 10, 10]} intensity={1.2} />
-        <NeuralNetwork onGlitchChange={setGlitchActive} />
-        <Title3D />
+        {/* Controls with ref for pass-through zoom */}
         <OrbitControls
+          ref={controlsRef}
+          makeDefault
+          enabled
           enableZoom
-          maxDistance={10}
-          minDistance={0.5}
-          enablePan={true} // Enable panning
+          maxDistance={2000}
+          minDistance={0.0001}
+          zoomToCursor={false}
+          zoomSpeed={1.5}
+          enablePan
+          panSpeed={1.2}
+          screenSpacePanning
+          enableRotate
           minPolarAngle={0}
           maxPolarAngle={Math.PI}
-          dampingFactor={0.05} // Enable damping for smoother stopping
+          dampingFactor={0.07} // Smooth but slightly more responsive
           rotateSpeed={0.5} // Adjust sensitivity
           enableDamping={true} // Ensure damping is active
+          target={[0,0,0]}
           mouseButtons={{
-            LEFT: THREE.MOUSE.ROTATE,    // Left click = rotate
-            MIDDLE: THREE.MOUSE.DOLLY,   // Middle click = zoom
-            RIGHT: THREE.MOUSE.PAN       // Right click = pan/drag
-          }}
-          onChange={() => {
-            // Camera position and rotation are updated automatically by OrbitControls
-            // We'll get the camera from the Canvas context instead
+            LEFT: THREE.MOUSE.ROTATE,
+            MIDDLE: THREE.MOUSE.DOLLY,
+            RIGHT: THREE.MOUSE.PAN,
           }}
         />
+        {/* Minimal pass-through helper */}
+        <PassThroughZoom controlsRef={controlsRef} />
+        <NeuralNetwork sceneRef={sceneRef} onGlitchChange={setGlitchActive} networkPosition={networkPosition} networkRotation={networkRotation} networkScale={networkScale} anchorTargets={anchorTargetsLocal} />
+        {/* Title at origin */}
+        <Title3D 
+          position={titlePosition}
+          onPositionChange={(p)=>{ if (!isTitleLocked) setTitlePosition(p); }}
+          onDragStart={()=>{ if (!isTitleLocked) setIsDraggingTitle(true); }}
+          onDragEnd={()=>{ if (!isTitleLocked) setIsDraggingTitle(false); }}
+          isPickedUp={isPickedUp && !isTitleLocked}
+          setIsPickedUp={(v)=>{ if (!isTitleLocked) setIsPickedUp(v); }}
+          onCubePose={(pos, rot, quat)=> setCubePose({ pos, rot, quat })}
+          onSubtitleBoundsWorld={(min,max)=> setSubtitleBoundsWorld({min, max})}
+        />
+        <EasterEggSignature />
       </Canvas>
+
+      {/* Derive anchor targets from subtitle bounds and transform to network-local */}
+      {(() => {
+        if (!subtitleBoundsWorld) return null;
+        const [minx, miny, minz] = subtitleBoundsWorld.min;
+        const [maxx, maxy, maxz] = subtitleBoundsWorld.max;
+        const width = maxx - minx;
+        const zc = (minz + maxz) / 2;
+        const margin = 0.15; // offset from glyph top/bottom
+        const totalDots = 14; // total across both rows
+        const perRow = Math.max(1, Math.floor(totalDots / 2));
+        const topY = maxy + margin;
+        const botY = miny - margin;
+        const pointsWorld: [number,number,number][] = [];
+        for (let i = 0; i < perRow; i++) {
+          const x = minx + (i + 0.5) * (width / perRow);
+          pointsWorld.push([x, topY, zc]);
+        }
+        for (let i = 0; i < perRow; i++) {
+          const x = minx + (i + 0.5) * (width / perRow);
+          pointsWorld.push([x, botY, zc]);
+        }
+        // Build network transform inverse
+        const t = new THREE.Matrix4();
+        const q = new THREE.Quaternion().setFromEuler(new THREE.Euler(networkRotation[0], networkRotation[1], networkRotation[2], 'XYZ'));
+        const s = new THREE.Vector3(networkScale, networkScale, networkScale);
+        t.compose(new THREE.Vector3(networkPosition[0], networkPosition[1], networkPosition[2]), q, s);
+        const inv = new THREE.Matrix4().copy(t).invert();
+        const localPts: [number,number,number][] = pointsWorld.map(([x,y,z]) => {
+          const v = new THREE.Vector3(x,y,z).applyMatrix4(inv);
+          return [v.x, v.y, v.z];
+        });
+        if (JSON.stringify(localPts) !== JSON.stringify(anchorTargetsLocal)) {
+          setAnchorTargetsLocal(localPts);
+        }
+        return null;
+      })()}
       
       {/* Realistic AGI Emergence Glitch Overlay - looks like electrical interference */}
       <div className={`glitch-overlay absolute inset-0 pointer-events-none z-[9999] ${glitchActive ? 'active' : ''}`}>
@@ -922,18 +1104,19 @@ export default function AethergenHero() {
         <div className="glitch-flicker absolute inset-0 bg-white" />
       </div>
 
-      {/* AGI Letters emerging through the interference - CRITICAL: 24 hours of work */}
-      <div className={`agi-letters absolute inset-0 pointer-events-none z-[9997] ${glitchActive ? 'active' : ''}`}>
+      {/* AGI Letters emerging through the interference - beneath overlay, proven layering */}
+      <div className={`agi-letters absolute inset-0 pointer-events-none z-[9998] ${glitchActive ? 'active' : ''}`}>
         <div className="absolute inset-0 flex items-center justify-center">
           <h1 className="text-8xl font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-white via-cyan-300 to-white drop-shadow-[0_0_20px_rgba(0,255,255,0.8)]">
             AGI
           </h1>
         </div>
       </div>
-
+ 
       {/* Black screen overlay - controlled by React state */}
-      <div className={`absolute inset-0 pointer-events-none z-[10000] bg-black transition-opacity duration-100 ${blackScreenVisible ? 'opacity-100' : 'opacity-0'}`} />
-      
+      {blackScreenVisible && (
+        <div className="absolute inset-0 pointer-events-none z-[10000] bg-black transition-opacity duration-100" />
+      )}
     </div>
   );
 }

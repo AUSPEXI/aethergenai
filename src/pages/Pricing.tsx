@@ -1,8 +1,23 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CheckCircle, Shield, Database, Zap, Users, Building, Globe, Lock, Award, Star, Rocket, Brain, Eye, Atom, Sparkles, TrendingUp, Target, Check, X, Crown, Star as StarIcon, Code, Server, Cpu, BarChart3, Car, Factory, Gauge, Wrench, Truck, Cog, Bolt, Palette, Activity, Flame, Siren, RotateCcw, FileText, TrendingUp as TrendingUpIcon, GraduationCap, Target as TargetIcon, ChevronDown } from 'lucide-react';
 
 const Pricing = () => {
   const [selectedIndustry, setSelectedIndustry] = useState<string>('automotive');
+  const [pricingCatalog, setPricingCatalog] = useState<any | null>(null);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch('/api/pricing');
+        if (res.ok) {
+          const data = await res.json();
+          setPricingCatalog(data);
+        }
+      } catch (_) {
+        // fallback to static
+      }
+    })();
+  }, []);
 
   const platformTiers = [
     {
@@ -196,7 +211,7 @@ const Pricing = () => {
   const industrySuites = [
     {
       name: 'Automotive Manufacturing',
-      description: 'Quality control, defect detection, and production optimization - Direct response to BMW Quality Group requirements',
+      description: 'Quality control, defect detection, and production optimization for automotive manufacturing',
       icon: Factory,
       color: 'text-purple-600',
       status: 'Primary Focus - Building Now',
@@ -484,6 +499,27 @@ const Pricing = () => {
     }
   ];
 
+  const storageTiers = [
+    {
+      name: 'Hot Storage',
+      price: { gbp: '£99', usd: '$129' },
+      period: 'per TB/month',
+      features: ['Frequently accessed data', 'Fast retrieval', 'High availability', 'SLA guarantee']
+    },
+    {
+      name: 'Warm Storage',
+      price: { gbp: '£49', usd: '$69' },
+      period: 'per TB/month',
+      features: ['Occasionally accessed data', 'Balanced performance', 'Cost optimization']
+    },
+    {
+      name: 'Cold Storage',
+      price: { gbp: '£19', usd: '$29' },
+      period: 'per TB/month',
+      features: ['Rarely accessed data', 'Maximum cost savings', 'Long-term retention']
+    }
+  ];
+
   const worldRecordFeatures = [
     {
       title: '1 BILLION Records Generated',
@@ -766,7 +802,7 @@ const Pricing = () => {
                 <div className="text-left">
                   <h4 className="font-semibold text-slate-900 mb-2">Strategic Industry Focus</h4>
                   <p className="text-slate-700 text-sm leading-relaxed">
-                    <strong>Automotive First:</strong> Direct response to BMW Quality Group requirements - building database schema functionality on Aethergen for immediate deployment. 
+                    <strong>Automotive First:</strong> Direct response to industry quality and production requirements — building database schema functionality on Aethergen for rapid deployment.
                     <strong>Healthcare Second:</strong> Fraud detection models with insurance/finance crossover ready for Q1 2025. 
                     <strong>Financial Services:</strong> Planned for Q2 2025 with healthcare fraud detection integration.
                   </p>
@@ -931,10 +967,17 @@ const Pricing = () => {
                 </div>
               </div>
             </div>
+
+            {/* Entitlements note */}
+            <div className="max-w-3xl mx-auto bg-blue-50 border border-blue-200 text-blue-800 rounded-xl p-4">
+              <p className="text-sm">
+                Platform tiers provide tooling quotas (generator, benchmarks, privacy, evidence). <strong>Datasets are sold separately</strong> and are not bundled with platform seats.
+              </p>
+            </div>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {platformTiers.map((tier, index) => (
+            {(pricingCatalog?.platform || platformTiers).map((tier: any, index: number) => (
               <div key={index} className={`relative rounded-2xl p-8 shadow-lg border-2 ${
                 tier.popular 
                   ? 'bg-gradient-to-br from-green-50 to-blue-50 border-green-200 scale-105' 
@@ -949,9 +992,11 @@ const Pricing = () => {
                 )}
                 
                 <div className="text-center mb-6">
-                  <div className="flex items-center justify-center mb-4">
-                    <tier.icon className={`h-12 w-12 text-${tier.color}-600`} />
-                  </div>
+                  {tier.icon ? (
+                    <div className="flex items-center justify-center mb-4">
+                      <tier.icon className={`h-12 w-12 text-${tier.color}-600`} />
+                    </div>
+                  ) : null}
                   <h3 className="text-2xl font-bold text-slate-900 mb-2">{tier.name}</h3>
                   <p className="text-slate-600 mb-4">{tier.description}</p>
                 </div>
@@ -1017,12 +1062,14 @@ const Pricing = () => {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {datasetTiers.map((tier, index) => (
+            {(pricingCatalog?.datasets || datasetTiers).map((tier: any, index: number) => (
               <div key={index} className="bg-white rounded-xl p-8 shadow-lg border border-slate-200 hover:shadow-xl transition-shadow">
                 <div className="text-center mb-6">
-                  <div className="flex items-center justify-center mb-4">
-                    <tier.icon className={`h-12 w-12 text-${tier.color}-600`} />
-                  </div>
+                  {tier.icon ? (
+                    <div className="flex items-center justify-center mb-4">
+                      <tier.icon className={`h-12 w-12 text-${tier.color}-600`} />
+                    </div>
+                  ) : null}
                   <h3 className="text-2xl font-bold text-slate-900 mb-2">{tier.name}</h3>
                 </div>
                 
@@ -1110,15 +1157,22 @@ const Pricing = () => {
             <p className="text-xl text-slate-600">
               Real-time synthetic data generation for continuous applications
             </p>
+            <div className="mt-4 max-w-3xl mx-auto bg-slate-50 border border-slate-200 text-slate-700 rounded-xl p-3">
+              <p className="text-sm">
+                Streams are a managed generation service. <strong>Historical dataset SKUs are not included</strong> and can be purchased separately.
+              </p>
+            </div>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {streamingTiers.map((tier, index) => (
+            {(pricingCatalog?.streams || streamingTiers).map((tier: any, index: number) => (
               <div key={index} className="bg-white rounded-xl p-8 shadow-lg border border-slate-200 hover:shadow-xl transition-shadow">
                 <div className="text-center mb-6">
-                  <div className="flex items-center justify-center mb-4">
-                    <tier.icon className={`h-12 w-12 text-${tier.color}-600`} />
-                  </div>
+                  {tier.icon ? (
+                    <div className="flex items-center justify-center mb-4">
+                      <tier.icon className={`h-12 w-12 text-${tier.color}-600`} />
+                    </div>
+                  ) : null}
                   <h3 className="text-2xl font-bold text-slate-900 mb-2">{tier.name}</h3>
                 </div>
                 
@@ -1158,15 +1212,22 @@ const Pricing = () => {
             <p className="text-xl text-slate-600">
               Custom branding and enterprise-scale solutions for large organizations
             </p>
+            <div className="mt-4 max-w-3xl mx-auto bg-amber-50 border border-amber-200 text-amber-800 rounded-xl p-3">
+              <p className="text-sm">
+                White‑label packages are <strong>capped</strong> and do not include unlimited rights. For unlimited entitlements and custom integrations, use Enterprise Platform.
+              </p>
+            </div>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {whiteLabelTiers.map((tier, index) => (
+            {(pricingCatalog?.whiteLabel || whiteLabelTiers).map((tier: any, index: number) => (
               <div key={index} className="bg-white rounded-xl p-8 shadow-lg border border-slate-200 hover:shadow-xl transition-shadow">
                 <div className="text-center mb-6">
-                  <div className="flex items-center justify-center mb-4">
-                    <tier.icon className={`h-12 w-12 text-${tier.color}-600`} />
-                  </div>
+                  {tier.icon ? (
+                    <div className="flex items-center justify-center mb-4">
+                      <tier.icon className={`h-12 w-12 text-${tier.color}-600`} />
+                    </div>
+                  ) : null}
                   <h3 className="text-2xl font-bold text-slate-900 mb-2">{tier.name}</h3>
                 </div>
                 
@@ -1212,15 +1273,22 @@ const Pricing = () => {
             <p className="text-xl text-slate-600">
               Access to trained models and prediction credits for immediate use
             </p>
+            <div className="mt-4 max-w-3xl mx-auto bg-purple-50 border border-purple-200 text-purple-800 rounded-xl p-3">
+              <p className="text-sm">
+                <strong>Model Seat is inference‑only</strong>: no dataset downloads, no training pipelines, no fine‑tuning rights. Prediction credits are usage‑based inference only.
+              </p>
+            </div>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {modelTiers.map((tier, index) => (
+            {(pricingCatalog?.models || modelTiers).map((tier: any, index: number) => (
               <div key={index} className="bg-white rounded-xl p-8 shadow-lg border border-slate-200 hover:shadow-xl transition-shadow">
                 <div className="text-center mb-6">
-                  <div className="flex items-center justify-center mb-4">
-                    <tier.icon className={`h-12 w-12 text-${tier.color}-600`} />
-                  </div>
+                  {tier.icon ? (
+                    <div className="flex items-center justify-center mb-4">
+                      <tier.icon className={`h-12 w-12 text-${tier.color}-600`} />
+                    </div>
+                  ) : null}
                   <h3 className="text-2xl font-bold text-slate-900 mb-2">{tier.name}</h3>
                 </div>
                 
@@ -1246,6 +1314,159 @@ const Pricing = () => {
                 </button>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Storage Add-ons */}
+      <section className="py-20 bg-slate-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold text-slate-900 mb-4">Storage Add‑ons</h2>
+            <p className="text-xl text-slate-600">Tiered storage options for cost‑optimized retention</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {(pricingCatalog?.storage || storageTiers).map((tier: any, index: number) => (
+              <div key={index} className="bg-white rounded-xl p-8 shadow-lg border border-slate-200 hover:shadow-xl transition-shadow">
+                <div className="text-center mb-6">
+                  <h3 className="text-2xl font-bold text-slate-900 mb-2">{tier.name}</h3>
+                </div>
+                <div className="text-center mb-6">
+                  <div className="mb-2">
+                    <span className="text-3xl font-bold text-slate-900">{tier.price.gbp}</span>
+                    <span className="text-slate-600 ml-2">{tier.period}</span>
+                  </div>
+                  <div className="text-sm text-slate-500">{tier.price.usd} USD equivalent</div>
+                </div>
+                <ul className="space-y-3 mb-8">
+                  {tier.features.map((feature: string, featureIndex: number) => (
+                    <li key={featureIndex} className="flex items-start">
+                      <Check className="h-5 w-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
+                      <span className="text-slate-700 text-sm">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+                <button className="w-full py-3 px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold">
+                  Add Storage
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* LLM Training Packages */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold text-slate-900 mb-4">LLM Training Packages</h2>
+            <p className="text-xl text-slate-600 max-w-3xl mx-auto">
+              Two clear options for enterprise LLM training: Self‑Hosted (you run compute) or Full‑Service AWS (we run and manage your stack).
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="bg-white rounded-2xl p-8 shadow-lg border border-blue-200">
+              <h3 className="text-2xl font-bold text-slate-900 mb-3">Self‑Hosted</h3>
+              <p className="text-slate-600 mb-6">You operate compute and cloud resources. We provide pipelines, datasets, and support.</p>
+              <ul className="space-y-3 text-slate-700 text-sm">
+                <li>• Multi‑schema designer and multi‑pipeline orchestration</li>
+                <li>• Training/eval recipes, ablations, and evidence bundles</li>
+                <li>• Your AWS credits/tenancy; we assist with deploy scripts</li>
+                <li>• Optional Databricks marketplace publication</li>
+              </ul>
+              <div className="mt-6 text-slate-600 text-sm">Compute responsibility: Customer</div>
+            </div>
+
+            <div className="bg-white rounded-2xl p-8 shadow-lg border border-purple-200">
+              <h3 className="text-2xl font-bold text-slate-900 mb-3">Full‑Service AWS</h3>
+              <p className="text-slate-600 mb-6">We deploy and manage the complete stack in your AWS or our managed account.</p>
+              <ul className="space-y-3 text-slate-700 text-sm">
+                <li>• Everything in Self‑Hosted, plus managed training & scaling</li>
+                <li>• MLOps, observability, cost controls, and SLAs</li>
+                <li>• Security hardening and compliance reporting</li>
+                <li>• Databricks publishing workflow included</li>
+              </ul>
+              <div className="mt-6 text-slate-600 text-sm">Compute responsibility: Managed by Auspexi</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Entitlements Matrix */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl font-bold text-slate-900 mb-3">Entitlements Matrix (Summary)</h2>
+            <p className="text-slate-600">High‑level capabilities by package (detailed contracts govern final scope)</p>
+          </div>
+          <div className="overflow-x-auto">
+            <div className="min-w-[900px] grid grid-cols-7 gap-2 text-sm">
+              <div></div>
+              <div className="font-semibold text-slate-700">Model Seat</div>
+              <div className="font-semibold text-slate-700">Predictions</div>
+              <div className="font-semibold text-slate-700">Datasets</div>
+              <div className="font-semibold text-slate-700">Streams</div>
+              <div className="font-semibold text-slate-700">Platform (Dev/Team)</div>
+              <div className="font-semibold text-slate-700">White‑Label / Enterprise</div>
+
+              <div className="font-medium text-slate-800">Inference</div>
+              <div>✓</div>
+              <div>✓</div>
+              <div>—</div>
+              <div>—</div>
+              <div>✓ (tools)</div>
+              <div>✓</div>
+
+              <div className="font-medium text-slate-800">Dataset download</div>
+              <div>✕</div>
+              <div>✕</div>
+              <div>✓ (per SKU)</div>
+              <div>✕</div>
+              <div>✕ (tools only)</div>
+              <div>Optional (contract)</div>
+
+              <div className="font-medium text-slate-800">Training pipelines</div>
+              <div>✕</div>
+              <div>✕</div>
+              <div>✕</div>
+              <div>Service runtime</div>
+              <div>✓ (quotas)</div>
+              <div>✓</div>
+
+              <div className="font-medium text-slate-800">Historical datasets</div>
+              <div>✕</div>
+              <div>✕</div>
+              <div>✓</div>
+              <div>✕</div>
+              <div>✕</div>
+              <div>Optional (contract)</div>
+
+              <div className="font-medium text-slate-800">SLA & Support</div>
+              <div>Basic</div>
+              <div>Basic</div>
+              <div>Standard/Priority</div>
+              <div>Priority</div>
+              <div>Basic→SLA (by tier)</div>
+              <div>Priority/SLA</div>
+
+              <div className="font-medium text-slate-800">Records cap</div>
+              <div>—</div>
+              <div>—</div>
+              <div>Up to 10M/sku</div>
+              <div>1M/10M/100M per day</div>
+              <div>10M/50M/100M+/Unlimited*</div>
+              <div>50M/500M (WL) / Unlimited (Enterprise)</div>
+
+              <div className="font-medium text-slate-800">Compute responsibility</div>
+              <div>Platform</div>
+              <div>Platform</div>
+              <div>N/A</div>
+              <div>Managed service</div>
+              <div>Customer (self‑host) or Managed (Enterprise)</div>
+              <div>Managed (Full‑Service) or Customer (Self‑Hosted)</div>
+            </div>
+            <p className="mt-3 text-xs text-slate-500">*Unlimited subject to negotiated contract and fair use.</p>
           </div>
         </div>
       </section>

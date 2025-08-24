@@ -26,7 +26,7 @@ const PressKitBuilder: React.FC<PressKitBuilderProps> = ({ onDownload }) => {
          '🏗️ "Statue Craning" - Precision Positioning Method',
          '🌌 Revolutionary Vision - Future Technology Breakthroughs',
          '📊 World Record: 1 Billion Synthetic Records Generated',
-         '🚗 BMW Quality Group Partnership & Pivot Story',
+         '🚗 Automotive Partnerships & Strategic Pivot Story',
          '💰 "Phoenix Rising" - Unicorn to Decacorn Journey',
          '🧠 "Ending the Age of Data" - Future Technology Vision',
          '📱 High-Resolution 3D Animation & Visual Assets',
@@ -44,7 +44,7 @@ const PressKitBuilder: React.FC<PressKitBuilderProps> = ({ onDownload }) => {
          '🌌 Market Opportunity: Significant Current Market + Unlimited Future Potential',
          '📊 Financial Projections: $2M → $25M → $100M+ Revenue',
          '🏆 Competitive Advantages: 11 Inventions + 90% Cost Savings',
-         '🚗 BMW Partnership: Proven Customer Demand & Immediate Revenue',
+         '🚗 Automotive Partnerships: Proven Customer Demand & Revenue Traction',
          '🧠 Revolutionary Technology - Unlimited Innovation Potential',
          '⚡ Technology: 1 Billion Records + Unlimited Scale Capability',
          '🎯 Investment Use: Patents, Team, Market Expansion',
@@ -57,7 +57,7 @@ const PressKitBuilder: React.FC<PressKitBuilderProps> = ({ onDownload }) => {
       audience: 'Enterprise Client',
       materials: [
         '🏆 World Record Achievement: 1 Billion Synthetic Records',
-        '🚗 Automotive: BMW Quality Group Partnership Ready',
+        '🚗 Automotive: Strategic Partnerships Ready',
         '🏥 Healthcare: Fraud Detection Models (Q1 2025)',
         '💳 Financial Services: Risk Models vs Bloomberg (Q2 2025)',
         '💰 90% Cost Savings: vs Traditional Solutions',
@@ -67,14 +67,14 @@ const PressKitBuilder: React.FC<PressKitBuilderProps> = ({ onDownload }) => {
         '🔧 Integration: Database Schema + AI Model Deployment',
         '📞 Contact: Immediate Technical Consultation Available'
       ],
-      description: 'ENTERPRISE READY: BMW partnership, healthcare fraud detection, and 90% cost savings',
+      description: 'ENTERPRISE READY: Automotive partnerships, healthcare fraud detection, and 90% cost savings',
       icon: '🏢'
     },
          {
        audience: 'Strategic Partner',
        materials: [
          '🤝 Partnership Opportunities: Multi-Industry Expansion',
-         '🚗 Automotive: BMW Quality Group Success Story',
+         '🚗 Automotive: Strategic Partnerships Success Story',
          '🏥 Healthcare: Fraud Detection + Insurance Crossover',
          '💳 Financial: Risk Models + Regulatory Compliance',
          '🌐 Databricks: Marketplace + White-Label Solutions',

@@ -372,21 +372,21 @@ const blogPostsData = {
   },
   
   'bmw-pivot-strategy': {
-    title: '🚗 The BMW Pivot: How Customer Demand Shapes Innovation',
-    excerpt: 'The strategic masterstroke that changed everything: pivoting from healthcare to automotive when BMW Quality Group showed us exactly what they needed. This is real business strategy.',
+    title: '🚗 The Automotive Pivot: How Customer Demand Shapes Innovation',
+    excerpt: 'The strategic shift from healthcare to automotive when leading manufacturers outlined urgent quality and production needs. This is real business strategy.',
     author: 'Gwylym Owen',
     date: 'January 5, 2025',
     readTime: '8 min read',
     category: 'Business Strategy',
     content: `
       <h2>The Strategic Masterstroke That Changed Everything</h2>
-      <p>Pivoting from healthcare to automotive when BMW Quality Group showed us exactly what they needed. This is real business strategy in action.</p>
+      <p>Pivoting from healthcare to automotive when leading manufacturers outlined exactly what they needed. This is real business strategy in action.</p>
       
       <h2>Customer-Driven Innovation</h2>
       <p>Sometimes the best innovation comes from listening to what customers actually want, not what we think they need.</p>
       
-      <h2>The BMW Connection</h2>
-      <p>When BMW Quality Group reached out with a specific need, we realized that automotive was actually a better market for our technology than healthcare.</p>
+      <h2>Industry Signals</h2>
+      <p>When multiple automotive quality leaders outlined specific needs, we realized that automotive was actually a better market for our technology than healthcare.</p>
       
       <h2>The Pivot</h2>
       <p>We pivoted our entire strategy, focusing on automotive quality and testing systems. The result? A much clearer path to market and revenue.</p>

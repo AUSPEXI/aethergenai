@@ -50,7 +50,7 @@ const Industries = () => {
         ]
       },
       potential: 'Transform automotive quality and efficiency',
-      impact: 'BMW Quality Group partnership ready'
+      impact: 'Automotive partnerships ready'
     },
     {
       name: 'Healthcare & NHS',

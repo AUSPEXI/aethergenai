@@ -19,6 +19,7 @@ import {
   Award,
   Rocket
 } from "lucide-react";
+import PublisherOnboardingModal from "../Marketplace/PublisherOnboardingModal";
 
 type DocKey =
   | "getting-started"
@@ -233,6 +234,7 @@ const ResourcesHub: React.FC = () => {
   const [content, setContent] = useState<string>("Loading…");
   const [error, setError] = useState<string | null>(null);
   const [headers, setHeaders] = useState<Array<{ level: number; text: string; id: string }>>([]);
+  const [publisherOpen, setPublisherOpen] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -304,6 +306,14 @@ const ResourcesHub: React.FC = () => {
         {/* Main Content */}
         <main className="col-span-12 md:col-span-8 lg:col-span-9">
           <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-8 text-white">
+            <div className="flex justify-end mb-4">
+              <button
+                onClick={() => setPublisherOpen(true)}
+                className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold"
+              >
+                Publish to Databricks
+              </button>
+            </div>
             {error ? (
               <div className="text-red-400 bg-red-900/20 border border-red-500/20 rounded-lg p-4">
                 <div className="flex items-center gap-2">
@@ -349,6 +359,7 @@ const ResourcesHub: React.FC = () => {
               </div>
             )}
           </div>
+          <PublisherOnboardingModal open={publisherOpen} onClose={() => setPublisherOpen(false)} />
         </main>
       </div>
     </div>

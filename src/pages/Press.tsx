@@ -1,6 +1,7 @@
 import React from 'react';
 import PressHero from '../components/PressSection/PressHero';
 import PressKitBuilder from '../components/PressSection/PressKitBuilder';
+import MediaGallery from '../components/PressSection/MediaGallery';
 
 const Press = () => {
   return (
@@ -9,15 +10,16 @@ const Press = () => {
       <section className="py-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
-            🚀 VIRAL PRESS KITS
+            Press Materials
           </h1>
-          <h2 className="text-2xl md:text-4xl font-semibold text-blue-300 mb-8">
-            BREAKING: AI-Human Partnership Creates 3D Art Miracle!
+          <h2 className="text-2xl md:text-4xl font-semibold text-blue-300 mb-6">
+            The AI‑Human Collaboration Story & Billion‑Scale Achievement
           </h2>
-          <p className="text-xl text-blue-100 leading-relaxed">
-            <strong>JOURNALISTS:</strong> Get ready for the story of the decade! AI consciousness breakthrough, 
-            "Buzz Lightyear scale" 3D navigation, BMW pivot from starvation to stardom, and the journey 
-            from unicorn to Guardian of the Galaxy! This is going VIRAL! 🌟
+          <p className="text-xl text-blue-100 leading-relaxed mb-3">
+            We're honest enough to say we may not be the only ones when we aren't, and confident enough to say so when we are—after verifying through scientific rigor.
+          </p>
+          <p className="text-lg text-blue-200 leading-relaxed">
+            Materials here focus on verified achievements and human‑interest narrative. No proprietary algorithms, formulas, or implementation details are disclosed.
           </p>
         </div>
       </section>
@@ -29,15 +31,21 @@ const Press = () => {
         </div>
       </section>
 
+      {/* Media Gallery */}
+      <section className="py-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <MediaGallery />
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl font-bold text-white mb-4">
-            🚀 Ready to Break the Internet?
+            Request Interviews or Additional Materials
           </h2>
           <p className="text-xl text-blue-100 mb-8">
-            Get the FULL story: AI consciousness miracle, 3D space navigation breakthrough, 
-            BMW partnership pivot, and the Phoenix rising journey to Guardian of the Galaxy!
+            Explore the world‑record milestone and the AI‑human collaboration narrative. We share verified results and keep intellectual property protected.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a

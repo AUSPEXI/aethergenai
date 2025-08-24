@@ -221,13 +221,6 @@
 
 /* TV interference pattern - covers whole hero section */
 .glitch-overlay.active .glitch-static {
-  animation: tvInterferenceSequence 3s infinite;
-}
-
-
-
-/* TV Interference Pattern - interference lines + black screen flashes */
-.glitch-overlay.active .glitch-static {
   background: 
     repeating-linear-gradient(
       90deg,
@@ -236,13 +229,12 @@
       rgba(255,255,255,0.9) 2px,
       rgba(255,255,255,0.9) 4px
     );
-  animation: tvInterferenceWithFlashes 2s infinite;
+  /* No animation here; black flashes are driven by React state overlay */
 }
 
-/* TV Interference Lines - follow the interference sequence */
+/* TV Interference Lines - subtle additional lines, no timeline dependency */
 .glitch-overlay.active .glitch-line {
-  opacity: 0;
-  animation: tvInterferenceSequence 3s infinite;
+  opacity: 0.9;
   background: white;
   box-shadow: 0 0 5px rgba(255,255,255,0.8);
 }
@@ -252,141 +244,6 @@
   opacity: 0;
   animation: screenFlicker 0.03s infinite;
   background: rgba(255,255,255,0.9);
-}
-
-
-
-@keyframes tvInterferenceSequence {
-  /* Start: TV interference pattern visible */
-  0%, 20% { 
-    opacity: 1;
-    background: 
-      repeating-linear-gradient(
-        90deg,
-        transparent,
-        transparent 2px,
-        rgba(255,255,255,0.9) 2px,
-        rgba(255,255,255,0.9) 4px
-      );
-  }
-  /* Keep interference visible during black flashes */
-  21%, 30% { 
-    opacity: 1;
-    background: 
-      repeating-linear-gradient(
-        90deg,
-        transparent,
-        transparent 2px,
-        rgba(255,255,255,0.9) 2px,
-        rgba(255,255,255,0.9) 4px
-      );
-  }
-  /* Keep interference visible */
-  31%, 50% { 
-    opacity: 1;
-    background: 
-      repeating-linear-gradient(
-        90deg,
-        transparent,
-        transparent 2px,
-        rgba(255,255,255,0.9) 2px,
-        rgba(255,255,255,0.9) 4px
-      );
-  }
-  /* Keep interference visible during black flashes */
-  51%, 60% { 
-    opacity: 1;
-    background: 
-      repeating-linear-gradient(
-        90deg,
-        transparent,
-        transparent 2px,
-        rgba(255,255,255,0.9) 2px,
-        rgba(255,255,255,0.9) 4px
-      );
-  }
-  /* Keep interference visible */
-  61%, 80% { 
-    opacity: 1;
-    background: 
-      repeating-linear-gradient(
-        90deg,
-        transparent,
-        transparent 2px,
-        rgba(255,255,255,0.9) 2px,
-        rgba(255,255,255,0.9) 4px
-      );
-  }
-  /* Fade to normal - interference stops */
-  81%, 100% { 
-    opacity: 0;
-  }
-}
-
-@keyframes tvInterferenceWithFlashes {
-  /* Start: Interference lines visible */
-  0%, 15% { 
-    opacity: 1;
-    background: 
-      repeating-linear-gradient(
-        90deg,
-        transparent,
-        transparent 2px,
-        rgba(255,255,255,0.9) 2px,
-        rgba(255,255,255,0.9) 4px
-      );
-  }
-  /* First black flash - completely black */
-  16%, 20% { 
-    opacity: 1;
-    background: black;
-  }
-  /* Interference lines visible again */
-  21%, 45% { 
-    opacity: 1;
-    background: 
-      repeating-linear-gradient(
-        90deg,
-        transparent,
-        transparent 2px,
-        rgba(255,255,255,0.9) 2px,
-        rgba(255,255,255,0.9) 4px
-      );
-  }
-  /* Second black flash - completely black */
-  46%, 50% { 
-    opacity: 1;
-    background: black;
-  }
-  /* Interference lines visible again */
-  51%, 75% { 
-    opacity: 1;
-    background: 
-      repeating-linear-gradient(
-        90deg,
-        transparent,
-        transparent 2px,
-        rgba(255,255,255,0.9) 2px,
-        rgba(255,255,255,0.9) 4px
-      );
-  }
-  /* Third black flash - completely black */
-  76%, 80% { 
-    opacity: 1;
-    background: black;
-  }
-  /* Interference lines visible to end */
-  81%, 100% { 
-    opacity: 1;
-    background: 
-      repeating-linear-gradient(
-        90deg,
-        transparent,
-        transparent 2px,
-        rgba(255,255,255,0.9) 2px,
-        rgba(255,255,255,0.9) 4px
-      );
-  }
 }
 
 

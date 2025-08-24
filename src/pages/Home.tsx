@@ -63,6 +63,14 @@ const Home = () => {
     <div className="min-h-screen">
       {/* Hero Section with Neural Network Animation */}
       <AethergenHero />
+      {/* IP-Safe Summary */}
+      <section className="py-4 bg-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 text-blue-800 text-sm">
+            The metrics below reflect verified results. Proprietary algorithms and implementation details are intentionally omitted; public evidence is available via Resources.
+          </div>
+        </div>
+      </section>
       
       {/* Key Metrics Section */}
       <section className="py-16 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white">

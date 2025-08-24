@@ -1062,7 +1062,7 @@ export default function AethergenHero() {
   const [networkPosition, setNetworkPosition] = useState<[number, number, number]>([0,0,0]);
   const [networkRotation, setNetworkRotation] = useState<[number, number, number]>([0,0,0]);
   const isMobile = (() => { try { return window.matchMedia && window.matchMedia('(max-width: 768px)').matches; } catch { return false; } })();
-  const [networkScale, setNetworkScale] = useState(isMobile ? 1.35 : 1.6);
+  const [networkScale, setNetworkScale] = useState(isMobile ? 1.2 : 1.6);
   const [cubePose, setCubePose] = useState({ pos: [0,0,0] as [number,number,number], rot: [0,0,0] as [number,number,number], quat: [0,0,0,1] as [number,number,number,number] });
   const [subtitleBoundsWorld, setSubtitleBoundsWorld] = useState<{min:[number,number,number], max:[number,number,number]}|null>(null);
   const [anchorTargetsLocal, setAnchorTargetsLocal] = useState<[number,number,number][]>([]);
@@ -1152,7 +1152,7 @@ export default function AethergenHero() {
       className="w-full h-[70vh] md:h-[78vh] min-h-[400px] md:min-h-[520px] bg-[#0b1120] overflow-hidden relative"
     >
               <Canvas 
-        camera={{ position: [0, 0, (isMobile ? 14.5 : 10.8)], fov: CFG.camera.fov }} 
+        camera={{ position: [0, 0, (isMobile ? 22 : 10.8)], fov: CFG.camera.fov }} 
         style={{ position: "absolute", inset: 0, zIndex: 1, cursor: 'grab' }}
         onContextMenu={(e)=>{ e.preventDefault(); e.stopPropagation(); }}
         onPointerDown={(e:any)=>{
@@ -1212,7 +1212,7 @@ export default function AethergenHero() {
         {/* Title at origin */}
         <Title3D 
           position={titlePosition}
-          scale={isMobile ? 0.78 : 1}
+          scale={isMobile ? 0.62 : 1}
           onPositionChange={(p)=>{ if (!isTitleLocked) setTitlePosition(p); }}
           onDragStart={()=>{ if (!isTitleLocked) setIsDraggingTitle(true); }}
           onDragEnd={()=>{ if (!isTitleLocked) setIsDraggingTitle(false); }}

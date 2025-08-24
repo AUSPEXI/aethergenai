@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { getPriceIdBySku, type PriceSku } from "../../services/stripePriceMap";
 import { startStripeCheckout } from "../../services/billingClient";
 
 type Industry = 'automotive' | 'healthcare' | 'financial';
@@ -8,6 +9,7 @@ type Props = {
   industry: Industry;
   serviceLevel: ServiceLevel;
   priceId?: string;
+  priceSku?: PriceSku;
   onServiceLevelChange?: (level: ServiceLevel) => void;
 };
 
@@ -15,6 +17,7 @@ export const BuyButtons: React.FC<Props> = ({
   industry,
   serviceLevel,
   priceId,
+  priceSku,
   onServiceLevelChange,
 }) => {
   const [selectedServiceLevel, setSelectedServiceLevel] = useState<ServiceLevel>(serviceLevel);
@@ -66,6 +69,7 @@ export const BuyButtons: React.FC<Props> = ({
   };
 
   const pricing = getPricingInfo(industry, selectedServiceLevel);
+  const resolvedPriceId = priceId || (priceSku ? getPriceIdBySku(priceSku) : undefined);
 
   return (
     <div className="space-y-6">
@@ -116,10 +120,10 @@ export const BuyButtons: React.FC<Props> = ({
       <div className="text-center">
         <button
           className="px-8 py-4 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold text-lg hover:from-blue-700 hover:to-purple-700 transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
-          disabled={!priceId}
+          disabled={!resolvedPriceId}
           onClick={() =>
-            priceId &&
-            startStripeCheckout(priceId, {
+            resolvedPriceId &&
+            startStripeCheckout(resolvedPriceId, {
               mode: "subscription",
               successUrl,
               cancelUrl,
@@ -131,7 +135,7 @@ export const BuyButtons: React.FC<Props> = ({
             })
           }
         >
-          {priceId ? (
+          {resolvedPriceId ? (
             <>
               Get Started with {getIndustryDisplayName(industry)} {selectedServiceLevel === 'self-service' ? 'Self-Service' : 'Full-Service'}
               <div className="text-sm opacity-90 mt-1">
@@ -143,7 +147,7 @@ export const BuyButtons: React.FC<Props> = ({
           )}
         </button>
         
-        {!priceId && (
+        {!resolvedPriceId && (
           <div className="mt-3 text-sm text-slate-600">
             Price IDs not configured. Contact sales@auspexi.com for setup.
           </div>

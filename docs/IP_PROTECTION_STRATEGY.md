@@ -114,6 +114,16 @@ if ($fail) { exit 1 } else { Write-Output "IP pre-push check: OK" }
 
 ---
 
+## Public Messaging Alignment (Aug 2025)
+
+The live site uses some invention names and narrative phrases at a high level (e.g., "8D Causal Manifold Simulator", "Elastic Collision Newton's Cradle", "Radioactive Decay Universe Model", and metaphorical story language). Policy:
+
+- Allowed: High‑level, non‑technical naming to describe achievements and vision on public pages (Home, Technology, About, Press).
+- Prohibited: Algorithms, formulas, implementation details, parameters, circuit paths, internal datasets, or reproducible procedures.
+- Required: Prefer Honest Framework phrasing (e.g., "we may not be the only ones…") and avoid exclusivity unless independently verifiable.
+
+This policy supersedes older instructions that forbade mentioning names entirely.
+
 ## Overview
 This document outlines the comprehensive intellectual property protection strategy for AethergenAI's proprietary zk-SNARK implementation and synthetic data generation algorithms.
 
@@ -343,14 +353,12 @@ if (process.env.NODE_ENV === 'production') {
 - **"Revolutionary Energy Transfer Systems"** - Generic innovation language
 
 ### ❌ NEVER EXPOSE (Keep Secret):
-- **"8D Causal Manifold Simulator"** - Core IP technology
-- **"Elastic Collision Newton's Cradle System"** - Secret invention
-- **"Pattern Recognition Revolution"** - Future market strategy
-- **"Nature-inspired innovation methods"** - UPP methodology
-- **Specific mathematical formulas** - Technical implementation details
-- **Internal algorithm parameters** - Configuration details
-- **Proprietary circuit designs** - Hardware/software architecture
-- **Trade secret methodologies** - Internal processes
+- Specific mathematical formulas or algorithmic steps
+- Internal parameters, configs, circuit paths, or reproducible procedures
+- Proprietary circuit designs or source code
+- Confidential customer/partner information
+- Forward‑looking revenue projections or dated timelines
+- Trade secret methodologies and internal processes
 
 ### 🎯 Press Bundle Security Rules:
 1. **Story First, Secrets Never** - Focus on human drama and achievements

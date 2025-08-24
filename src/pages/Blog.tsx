@@ -285,8 +285,8 @@ const Blog = () => {
       slug: 'recursive-nightmare-navigator'
     },
     {
-      title: '🚗 The BMW Pivot: How Customer Demand Shapes Innovation',
-      excerpt: 'The strategic masterstroke that changed everything: pivoting from healthcare to automotive when BMW Quality Group showed us exactly what they needed. This is real business strategy.',
+      title: '🚗 The Automotive Pivot: How Customer Demand Shapes Innovation',
+      excerpt: 'The strategic shift from healthcare to automotive when leading manufacturers outlined urgent quality and production needs. This is real business strategy.',
       author: 'Gwylym Owen',
       date: 'January 5, 2025',
       readTime: '8 min read',
@@ -336,8 +336,8 @@ const Blog = () => {
         category: 'Vision & Strategy'
       },
     {
-      title: '🚗 BMW Partnership: From Pivot to Profit',
-      description: 'How we turned a LinkedIn conversation into a strategic partnership that changed everything',
+      title: '🚗 Automotive Partnerships: From Pivot to Traction',
+      description: 'How industry signals turned into a strategic focus that changed everything',
       category: 'Business Strategy'
     },
           {

@@ -15,6 +15,7 @@
     "preview": "vite preview",
     "prepare": "husky",
     "ip:check": "node scripts/prepush-ip-check.mjs",
+    "test:pricing": "node ./scripts/test-pricing.cjs",
     "test:automotive:quick": "tsx src/test/runQuickTest.ts",
     "test:automotive:full": "tsx src/test/runFullTest.ts",
     "test:automotive:ablation": "tsx src/test/runAblationTests.ts",

@@ -7,6 +7,7 @@
 
 ## Overview
 Base: browser app via Netlify. All endpoints proxied under `/api/*`.
+Public site routes include `/press`, `/pricing`, `/about`, `/technology`, `/resources`.
 
 ## Notes
 - Offline mode disables remote calls in the app.
@@ -81,6 +82,11 @@ Base: browser app via Netlify. All endpoints proxied under `/api/*`.
   - Purpose: fetch active entitlements.
   - Returns: `{ entitlements: [{ stripe_price, quantity, subscription_id, active, updated_at }] }`
   - Use case: Feature gating and access control
+
+### Pricing Catalog (optional)
+- GET `/api/pricing`
+  - Purpose: return public pricing tiers aligned with live site (platform tiers, datasets, streams, white‑label, models)
+  - Returns: `{ platform: [...], datasets: [...], streams: [...], whiteLabel: [...], models: [...] }`
 
 ## Response Codes
 - 200: Success

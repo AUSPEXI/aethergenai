@@ -31,9 +31,9 @@ AethergenAI is an enterprise-grade platform for synthetic data generation and AI
 ## 🚀 **GETTING STARTED**
 
 ### **Step 1: Platform Access**
-1. Contact our sales team for platform access
-2. Complete enterprise authentication setup
-3. Access the platform dashboard
+1. Visit the public site and review pricing at `/pricing`
+2. Use Buy buttons (Stripe) or contact sales for Enterprise
+3. Access features based on entitlements; no general login required for marketing pages
 
 ### **Step 2: First Project**
 1. **Upload Data**: Import your dataset (CSV, JSON, or database connections)
@@ -111,9 +111,9 @@ AethergenAI is an enterprise-grade platform for synthetic data generation and AI
 
 ### **System Requirements**
 - **Browser**: Modern web browser (Chrome, Firefox, Safari, Edge)
-- **Network**: Stable internet connection for platform access
-- **Authentication**: Enterprise SSO or platform-specific credentials
-- **Storage**: Cloud-based storage with enterprise security
+- **Network**: Stable internet connection
+- **Authentication**: Only for protected functions; marketing pages are public
+- **Storage**: Cloud-based storage for enterprise deployments
 
 ### **Data Requirements**
 - **Format Support**: CSV, JSON, database connections

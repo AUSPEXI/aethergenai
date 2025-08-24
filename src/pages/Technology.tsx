@@ -1,4 +1,5 @@
 import React from 'react';
+import PipelinesOverview from '../components/SchemaDesigner/PipelinesOverview';
 import { Cpu, Database, Shield, Zap, Globe, Code, Brain, Lock, GitBranch, Calendar, TrendingUp, CheckCircle, Clock, Target, AlertTriangle, Rss, Download, Users, Rocket, Sparkles, Eye, Atom, Layers, Award, Star, Flame, Siren, RotateCcw, FileText, BarChart3, ExternalLink, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -203,13 +204,22 @@ const Technology = () => {
         </div>
       </section>
 
+      {/* IP-Safe Summary */}
+      <section className="py-4 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 text-blue-800 text-sm">
+            High‑level capabilities only. No proprietary algorithms, formulas, or implementation details are disclosed here. Verified results are available via evidence bundles in Resources.
+          </div>
+        </div>
+      </section>
+
       {/* Current Capabilities */}
       <section className="py-20 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-white mb-6">Current Capabilities</h2>
             <p className="text-xl text-blue-100 max-w-3xl mx-auto">
-              Our revolutionary platform has achieved what was once thought impossible - unlimited scale synthetic data generation with perfect quality compliance.
+              Our platform demonstrates billion‑scale synthetic data generation with rigorously validated quality metrics. Detailed implementation remains private; evidence bundles substantiate results.
             </p>
           </div>
           
@@ -224,6 +234,13 @@ const Technology = () => {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Pipelines Overview */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <PipelinesOverview />
         </div>
       </section>
 

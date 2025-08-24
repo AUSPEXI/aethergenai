@@ -12,9 +12,12 @@ import {
   LogOut,
   User
 } from 'lucide-react';
+import { getEntitlements } from '../../services/entitlementsClient';
+import { entitlementsToRole, roleHas } from '../../services/rbacService';
 import ReportingDashboard from '../ReportingDashboard/ReportingDashboard';
 import SyntheticDataGenerator from '../SyntheticDataGenerator/SyntheticDataGenerator';
 import SchemaDesigner from '../SchemaDesigner/SchemaDesigner';
+import PipelineManager from '../SchemaDesigner/PipelineManager';
 import DataCleaner from '../DataCleaner/DataCleaner';
 import PrivacyMetrics from '../PrivacyMetrics/PrivacyMetrics';
 import ModelCollapseRiskDial from '../ModelCollapseRiskDial/ModelCollapseRiskDial';
@@ -25,16 +28,45 @@ interface AethergenDashboardProps {
   onLogout: () => void;
 }
 
-type DashboardTab = 'overview' | 'generate' | 'schema' | 'clean' | 'privacy' | 'risk' | 'billing' | 'settings';
+type DashboardTab = 'overview' | 'generate' | 'schema' | 'pipelines' | 'clean' | 'privacy' | 'risk' | 'billing' | 'settings';
 
 const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLogout }) => {
   const [activeTab, setActiveTab] = useState<DashboardTab>('overview');
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [role, setRole] = useState<'viewer'|'developer'|'team'|'enterprise'|'admin'>('viewer');
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        // Load cached role first
+        const cached = localStorage.getItem(`aeg:role:${userEmail}`);
+        if (cached && mounted) setRole(cached as any);
+
+        const ents = await getEntitlements({ email: userEmail });
+        const prices = ents.filter(e=>e.active).map(e=>e.stripe_price);
+        let computed = entitlementsToRole(prices);
+        // Admin override via env allowlist
+        const admins = (import.meta.env.VITE_ADMIN_EMAILS as any || '').toString().split(',').map((s:string)=>s.trim().toLowerCase()).filter(Boolean);
+        if (admins.includes(userEmail.toLowerCase())) {
+          computed = 'admin';
+        }
+        if (mounted) {
+          setRole(computed);
+          try { localStorage.setItem(`aeg:role:${userEmail}`, computed); } catch {}
+        }
+      } catch {
+        // default viewer
+      }
+    })();
+    return () => { mounted = false; };
+  }, [userEmail]);
 
   const dashboardTabs = [
     { id: 'overview', name: 'Overview', icon: BarChart3, description: 'Platform metrics and performance' },
     { id: 'generate', name: 'Generate', icon: Database, description: 'Create synthetic datasets' },
     { id: 'schema', name: 'Schema Designer', icon: Settings, description: 'Design data schemas' },
+    { id: 'pipelines', name: 'Pipelines', icon: GitBranch, description: 'Multi‑schema pipeline manager' },
     { id: 'clean', name: 'Data Cleaner', icon: Activity, description: 'Clean and prepare data' },
     { id: 'privacy', name: 'Privacy Metrics', icon: Shield, description: 'Privacy and compliance tools' },
     { id: 'risk', name: 'Risk Assessment', icon: Activity, description: 'Model collapse risk analysis' },
@@ -149,12 +181,18 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
         return <SyntheticDataGenerator />;
 
       case 'schema':
+        if (!roleHas(role, 'design_schema')) return <UpgradeGate feature="Schema Designer" />;
         return <SchemaDesigner />;
+
+      case 'pipelines':
+        if (!roleHas(role, 'manage_pipelines')) return <UpgradeGate feature="Pipelines" />;
+        return <PipelineManager />;
 
       case 'clean':
         return <DataCleaner />;
 
       case 'privacy':
+        if (!roleHas(role, 'run_privacy')) return <UpgradeGate feature="Privacy Metrics" />;
         return <PrivacyMetrics />;
 
       case 'risk':
@@ -168,6 +206,7 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
         );
 
       case 'billing':
+        if (!roleHas(role, 'view_billing')) return <UpgradeGate feature="Billing" />;
         return (
           <div className="space-y-6">
             <div className="bg-white rounded-lg shadow-sm border p-6">

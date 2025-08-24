@@ -902,6 +902,15 @@ const About = () => {
         </div>
       </section>
 
+      {/* IP-Safe Summary */}
+      <section className="py-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 text-blue-800 text-sm">
+            This page shares the founder story and verified achievements. Proprietary algorithms and implementation details are intentionally omitted to protect IP; see Resources for public evidence.
+          </div>
+        </div>
+      </section>
+
       {/* Tab Navigation */}
       <section className="py-8 bg-white/10 backdrop-blur-lg border-b border-white/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

@@ -36,7 +36,7 @@ const Funding = () => {
       highlights: [
         '1 billion synthetic records generated',
         '11 proprietary inventions operational',
-        'BMW Quality Group partnership ready',
+        'Automotive quality and production partnerships ready',
         'Clear service model established',
         'Multi-industry offerings defined'
       ]
@@ -105,8 +105,8 @@ const Funding = () => {
       impact: 'Immediate market disruption'
     },
     {
-      title: 'Strategic BMW Partnership',
-      description: 'Direct response to BMW Quality Group requirements',
+      title: 'Strategic Automotive Partnerships',
+      description: 'Direct response to leading automotive quality and production requirements',
       icon: Factory,
       impact: 'Proven customer demand'
     },
@@ -123,7 +123,7 @@ const Funding = () => {
       year: '2025',
       revenue: '$2M',
       customers: '50+',
-      description: 'BMW partnership, healthcare fraud detection launch'
+      description: 'Automotive partnerships, healthcare fraud detection launch'
     },
     {
       year: '2026',

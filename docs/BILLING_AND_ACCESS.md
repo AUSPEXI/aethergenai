@@ -67,21 +67,27 @@ This document outlines our dual-service model for charging customers: **Self-Ser
   - Self-Service: £1,799/month
   - Full-Service: £8,999/month
 
-## Platform Access Tiers (Legacy - Being Phased Out)
+## Platform Access Tiers (Aligned with Live Site)
 
-### Current Platform Tiers (For Existing Customers)
-- **Developer Hub:** £299/month
+### Current Platform Tiers (Public Pricing)
+- **Developer Hub:** £299/month per seat
   - Quotas: 10M synthetic rows/month, 100 ablation runs/month, 2 RPS API cap
-- **Developer Hub Pro:** £499/month
+- **Developer Hub Pro:** £499/month per seat
   - Quotas: 50M rows/month, 500 ablation runs/month, 5 RPS, VRME/FRO extended variants
 - **Team Platform:** £1,299/month (includes 3 seats)
   - Quotas: 100M rows/month, 1,000 ablation runs/month, 10 RPS, SSO integration
 - **Enterprise Platform:** £2,999/month (includes 5 seats; extra seats £199)
   - Quotas negotiated (e.g., 500M+ rows/month), SSO, SLA, audit exports
 
-### Add-ons (Legacy)
-- +10M synthetic rows: £49
-- +100 ablation runs: £39
+### Dataset Plans (SMB & Startup)
+- Small: £399/month (up to 100K records)
+- Medium: £799/month (up to 1M records)
+- Large: £1,499/month (up to 10M records)
+
+### Continuous Data Streams
+- Basic Stream: £2,999/month (1M rows/day)
+- Professional Stream: £7,999/month (10M rows/day)
+- Enterprise Stream: £19,999/month (100M rows/day)
 
 ## Strategic Pricing Notes
 

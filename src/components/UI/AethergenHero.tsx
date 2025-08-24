@@ -89,7 +89,7 @@ function EasterEggSignature() {
 }
 
 // Allow zoom to pass through the target by nudging camera + target forward when very close
-function PassThroughZoom({ controlsRef }: { controlsRef: React.MutableRefObject<any> }) {
+function PassThroughZoom({ controlsRef, localBoundaryDistance }: { controlsRef: React.MutableRefObject<any>, localBoundaryDistance: number }) {
   const { camera, gl } = useThree();
   useEffect(() => {
     const onWheel = (e: WheelEvent) => {
@@ -100,19 +100,35 @@ function PassThroughZoom({ controlsRef }: { controlsRef: React.MutableRefObject<
       const dir = new THREE.Vector3();
       camera.getWorldDirection(dir);
 
-      // Adaptive zoom speed: fewer swipes outside local space, smooth near model
+      const inLocal = dist <= localBoundaryDistance;
+
+      // Toggle zoomToCursor dynamically based on space
+      if (typeof controls.zoomToCursor === 'boolean') {
+        controls.zoomToCursor = inLocal;
+      }
+
+      // Adaptive zoom speed tuned per space
       let zs: number;
-      if (dist < 4) zs = 0.9;              // very close: smooth
-      else if (dist < 25) zs = 1.3;        // near: responsive
-      else if (dist < 150) zs = 2.1;       // mid: quicker travel
-      else zs = 3.0;                       // far: fast travel
-      if (e.deltaY > 0 && dist >= 40) zs *= 1.35; // boost zoom-out when not local
-      if (e.deltaY < 0 && dist < 8) zs *= 0.85;   // soften zoom-in very near
+      if (inLocal) {
+        if (dist < 2) zs = 0.8;              // ultra close: buttery
+        else if (dist < 6) zs = 1.05;        // close
+        else if (dist < 12) zs = 1.2;        // local mid
+        else zs = 1.35;                      // local edge
+        if (e.deltaY < 0 && dist < 3) zs *= 0.85; // soften zoom-in when very close
+      } else {
+        if (dist < 25) zs = 1.6;             // just outside boundary
+        else if (dist < 150) zs = 2.2;       // mid space
+        else zs = 3.2;                       // far fast travel
+        if (e.deltaY > 0 && dist >= 40) zs *= 1.25; // boost zoom-out
+      }
       controls.zoomSpeed = zs;
 
       // Symmetric pass-through near the target to eliminate sticky wall
-      if (dist <= 0.4) {
-        const step = Math.min(0.5, Math.max(0.2, dist * 1.2)); // proportional, gentle
+      const passThreshold = inLocal ? 1.8 : 0.45;
+      if (dist <= passThreshold) {
+        const step = inLocal
+          ? Math.min(1.1, Math.max(0.3, dist * 1.3))
+          : Math.min(0.5, Math.max(0.2, dist * 1.2));
         if (e.deltaY < 0) {
           camera.position.addScaledVector(dir, step);
           target.addScaledVector(dir, step);
@@ -1012,7 +1028,7 @@ export default function AethergenHero() {
           enableZoom
           maxDistance={2000}
           minDistance={0.0001}
-          zoomToCursor={false}
+          zoomToCursor={true}
           zoomSpeed={1.5}
           enablePan
           panSpeed={1.2}
@@ -1030,8 +1046,14 @@ export default function AethergenHero() {
             RIGHT: THREE.MOUSE.PAN,
           }}
         />
-        {/* Minimal pass-through helper */}
-        <PassThroughZoom controlsRef={controlsRef} />
+        {/* Minimal pass-through helper with dynamic local boundary */}
+        {(() => {
+          // Compute local-space boundary from lattice extents and current networkScale
+          const half = ((CFG.lattice.size - 1) * CFG.lattice.spacing) / 2; // ~1.4
+          const baseRadius = Math.sqrt(3) * half * networkScale; // ~3.9 at scale 1.6
+          const boundary = baseRadius * 2.6; // push outer-space barrier far out
+          return <PassThroughZoom controlsRef={controlsRef} localBoundaryDistance={boundary} />;
+        })()}
         <NeuralNetwork sceneRef={sceneRef} onGlitchChange={setGlitchActive} networkPosition={networkPosition} networkRotation={networkRotation} networkScale={networkScale} anchorTargets={anchorTargetsLocal} />
         {/* Title at origin */}
         <Title3D 

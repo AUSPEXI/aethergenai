@@ -77,15 +77,58 @@ interface Photon {
   wanderResetAt?: number;
 }
 
+// Easter egg location
+const EGG_POS: [number, number, number] = [120, -60, -180];
+const HOME_POS: [number, number, number] = [0, 0, 10.8];
+const HOME_TARGET: [number, number, number] = [0, 0, 0];
+
 // (ViewingFrame removed)
 // Easter egg: small signature hidden in deep space
 function EasterEggSignature() {
   return (
-    <Text3D font="/fonts/helvetiker_regular.typeface.json" size={0.25} height={0.05} curveSegments={8} bevelEnabled bevelThickness={0.006} bevelSize={0.003} bevelOffset={0} bevelSegments={3} position={[120, -60, -180]} rotation={[0.1, 0.7, -0.2]}>
-      Art by Gwylym
-      <meshStandardMaterial color="#9ca3af" metalness={0.05} roughness={0.35} emissive="#9ca3af" emissiveIntensity={0.04} />
-    </Text3D>
+    <group position={EGG_POS} rotation={[0.1, 0.7, -0.2]}>
+      <Text3D font="/fonts/helvetiker_regular.typeface.json" size={0.25} height={0.05} curveSegments={8} bevelEnabled bevelThickness={0.006} bevelSize={0.003} bevelOffset={0} bevelSegments={3}>
+        Art by Gwylym
+        <meshStandardMaterial color="#9ca3af" metalness={0.05} roughness={0.35} emissive="#9ca3af" emissiveIntensity={0.04} />
+      </Text3D>
+      <Text3D font="/fonts/helvetiker_regular.typeface.json" size={0.16} height={0.035} curveSegments={8} bevelEnabled bevelThickness={0.004} bevelSize={0.002} bevelOffset={0} bevelSegments={3} position={[0.1, -0.5, 0]}>
+        sales@auspexi.com
+        <meshStandardMaterial color="#cbd5e1" metalness={0.04} roughness={0.4} emissive="#cbd5e1" emissiveIntensity={0.03} />
+      </Text3D>
+    </group>
   );
+}
+
+// Smooth camera flight to a target position/target
+function FlyToCamera({ controlsRef, toPos, toTarget, durationMs, onDone, startAt }: { controlsRef: React.MutableRefObject<any>, toPos: [number,number,number], toTarget: [number,number,number], durationMs: number, onDone: () => void, startAt: number }) {
+  const { camera } = useThree();
+  const startRef = useRef<{ p: THREE.Vector3; t: THREE.Vector3 } | null>(null);
+  useFrame(() => {
+    const controls = controlsRef.current;
+    if (!controls) return;
+    if (!startRef.current) {
+      startRef.current = { p: camera.position.clone(), t: (controls.target as THREE.Vector3).clone() };
+    }
+    const now = performance.now();
+    const t = Math.min(1, (now - startAt) / durationMs);
+    // cubic ease in-out
+    const tt = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    const sp = startRef.current.p; const st = startRef.current.t;
+    camera.position.set(
+      sp.x + (toPos[0] - sp.x) * tt,
+      sp.y + (toPos[1] - sp.y) * tt,
+      sp.z + (toPos[2] - sp.z) * tt,
+    );
+    const tgt = controls.target as THREE.Vector3;
+    tgt.set(
+      st.x + (toTarget[0] - st.x) * tt,
+      st.y + (toTarget[1] - st.y) * tt,
+      st.z + (toTarget[2] - st.z) * tt,
+    );
+    controls.update?.();
+    if (t >= 1) onDone();
+  });
+  return null;
 }
 
 // Allow zoom to pass through the target by nudging camera + target forward when very close
@@ -142,24 +185,23 @@ function PassThroughZoom({ controlsRef, localBoundaryDistance, deepSpaceEnterDis
       controls.zoomSpeed = zs;
 
       // Symmetric pass-through near the target to eliminate sticky wall
-      const passThreshold = inLocal ? (insideCore ? 0.3 : 1.6) : 0.45;
+      const passThreshold = inLocal ? (insideCore ? 0.35 : 1.6) : 0.45;
       if (distTarget <= passThreshold) {
         const step = inLocal
           ? (insideCore
-              ? Math.min(0.25, Math.max(0.05, distTarget * 0.7))
+              ? Math.min(0.28, Math.max(0.05, distTarget * 0.75))
               : Math.min(1.0, Math.max(0.28, distTarget * 1.1)))
           : Math.min(0.5, Math.max(0.2, distTarget * 1.2));
         if (e.deltaY < 0) {
           camera.position.addScaledVector(dir, step);
           target.addScaledVector(dir, step);
           controls.update?.();
-          // Temporarily suspend recentering to allow escaping through the far side
-          recenterSuspendUntilRef.current = performance.now() + 1200;
+          recenterSuspendUntilRef.current = performance.now() + 1600;
         } else if (e.deltaY > 0) {
           camera.position.addScaledVector(dir, -step);
           target.addScaledVector(dir, -step);
           controls.update?.();
-          recenterSuspendUntilRef.current = performance.now() + 900;
+          recenterSuspendUntilRef.current = performance.now() + 1200;
         }
       }
     };
@@ -182,8 +224,11 @@ function RecenterTarget({ controlsRef, center, boundary, recenterSuspendUntilRef
     const distCenter = camera.position.distanceTo(centerVec.current);
     if (distCenter <= boundary * 1.25) {
       const tgt: THREE.Vector3 = controls.target;
-      if (tgt.distanceTo(centerVec.current) > 1e-3) {
-        tgt.lerp(centerVec.current, 0.1);
+      // Lerp only horizontally (x,z). Preserve current y to avoid upward pull.
+      const desired = new THREE.Vector3(centerVec.current.x, tgt.y, centerVec.current.z);
+      const horizDist = Math.hypot(desired.x - tgt.x, desired.z - tgt.z);
+      if (horizDist > 1e-3) {
+        tgt.lerp(desired, 0.08);
         controls.update?.();
       }
     }
@@ -1012,6 +1057,8 @@ export default function AethergenHero() {
   const [cubePose, setCubePose] = useState({ pos: [0,0,0] as [number,number,number], rot: [0,0,0] as [number,number,number], quat: [0,0,0,1] as [number,number,number,number] });
   const [subtitleBoundsWorld, setSubtitleBoundsWorld] = useState<{min:[number,number,number], max:[number,number,number]}|null>(null);
   const [anchorTargetsLocal, setAnchorTargetsLocal] = useState<[number,number,number][]>([]);
+  const [flyTo, setFlyTo] = useState<{ startAt: number; toPos: [number,number,number]; toTarget: [number,number,number]; durationMs: number } | null>(null);
+  const flyTimerRef = useRef<number | null>(null);
   // Interaction hint: show on hero hover; hide on first interaction or when leaving hero
   const [showHint, setShowHint] = useState<boolean>(false);
   const hintTimerRef = useRef<number | null>(null);
@@ -1164,6 +1211,25 @@ export default function AethergenHero() {
           onSubtitleBoundsWorld={(min,max)=> setSubtitleBoundsWorld({min, max})}
         />
         <EasterEggSignature />
+        {/* Flight animator (must be inside Canvas) */}
+        {flyTo && (
+          <FlyToCamera
+            controlsRef={controlsRef}
+            toPos={flyTo.toPos}
+            toTarget={flyTo.toTarget}
+            durationMs={flyTo.durationMs}
+            startAt={flyTo.startAt}
+            onDone={() => {
+              setFlyTo(null);
+              if (flyTimerRef.current) clearTimeout(flyTimerRef.current);
+              flyTimerRef.current = window.setTimeout(() => {
+                const start = performance.now();
+                setFlyTo({ startAt: start, toPos: HOME_POS, toTarget: HOME_TARGET, durationMs: 2600 });
+                recenterSuspendUntilRef.current = start + 2600;
+              }, 5000) as unknown as number;
+            }}
+          />
+        )}
       </Canvas>
 
       {/* Derive anchor targets from subtitle bounds and transform to network-local */}
@@ -1221,7 +1287,7 @@ export default function AethergenHero() {
           ))}
         </div>
         <div className="glitch-flicker absolute inset-0 bg-white" />
-      </div>
+        </div>
 
       {/* AGI Letters emerging through the interference - beneath overlay, proven layering */}
       <div className={`agi-letters absolute inset-0 pointer-events-none z-[9998] ${glitchActive ? 'active' : ''}`}>
@@ -1230,12 +1296,28 @@ export default function AethergenHero() {
             AGI
           </h1>
         </div>
-      </div>
- 
+        </div>
+
       {/* Black screen overlay - controlled by React state */}
       {blackScreenVisible && (
         <div className="absolute inset-0 pointer-events-none z-[10000] bg-black transition-opacity duration-100" />
       )}
+      {/* Find Easter Egg button */}
+      <button
+        type="button"
+        onClick={() => {
+          // Place camera near the signature and look at it
+          const toTarget: [number,number,number] = EGG_POS;
+          const toPos: [number,number,number] = [EGG_POS[0] + 2.6, EGG_POS[1] + 1.2, EGG_POS[2] + 4.2];
+          const now = performance.now();
+          setFlyTo({ startAt: now, toPos, toTarget, durationMs: 2600 });
+          // Suspend recenter while flying
+          recenterSuspendUntilRef.current = now + 2600 + 5200; // include pause window
+        }}
+        className="absolute bottom-4 left-4 z-[10003] bg-white/20 hover:bg-white/30 text-white text-xs px-3 py-1.5 rounded-md border border-white/30 backdrop-blur-sm shadow"
+      >
+        Find easter egg
+      </button>
       {/* Interaction hint (self-dismissing) */}
       <div className={`absolute bottom-4 right-4 z-[10002] transition-opacity duration-500 pointer-events-none ${showHint ? 'opacity-100' : 'opacity-0'}`}>
         <div className="flex items-center gap-2 bg-black/60 backdrop-blur-sm text-white rounded px-2.5 py-1.5 text-[12px] leading-none pointer-events-none select-none border border-white/10 shadow-lg">

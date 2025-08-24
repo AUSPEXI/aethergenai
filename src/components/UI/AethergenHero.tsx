@@ -89,18 +89,30 @@ function EasterEggSignature() {
 }
 
 // Allow zoom to pass through the target by nudging camera + target forward when very close
-function PassThroughZoom({ controlsRef, localBoundaryDistance }: { controlsRef: React.MutableRefObject<any>, localBoundaryDistance: number }) {
+function PassThroughZoom({ controlsRef, localBoundaryDistance, deepSpaceEnterDistance, deepSpaceExitDistance, center, baseRadius }: { controlsRef: React.MutableRefObject<any>, localBoundaryDistance: number, deepSpaceEnterDistance: number, deepSpaceExitDistance: number, center: [number, number, number], baseRadius: number }) {
   const { camera, gl } = useThree();
+  const modeRef = useRef<'local' | 'outer'>('local');
   useEffect(() => {
     const onWheel = (e: WheelEvent) => {
       if (!controlsRef.current) return;
       const controls = controlsRef.current;
       const target: THREE.Vector3 = controls.target;
-      const dist = camera.position.distanceTo(target);
+      const distTarget = camera.position.distanceTo(target);
+      const centerVec = new THREE.Vector3(center[0], center[1], center[2]);
+      const distCenter = camera.position.distanceTo(centerVec);
+      const insideCore = distCenter <= baseRadius * 1.05; // within cube extent
       const dir = new THREE.Vector3();
       camera.getWorldDirection(dir);
 
-      const inLocal = dist <= localBoundaryDistance;
+      // Hysteresis: only enter outer space when far beyond local, and only exit when well inside local
+      // Absolute guard: if within local boundary, always use local
+      if (distCenter <= localBoundaryDistance) {
+        modeRef.current = 'local';
+      } else {
+        if (modeRef.current === 'local' && distCenter >= deepSpaceEnterDistance) modeRef.current = 'outer';
+        else if (modeRef.current === 'outer' && distCenter <= deepSpaceExitDistance) modeRef.current = 'local';
+      }
+      const inLocal = modeRef.current === 'local';
 
       // Toggle zoomToCursor dynamically based on space
       if (typeof controls.zoomToCursor === 'boolean') {
@@ -110,25 +122,33 @@ function PassThroughZoom({ controlsRef, localBoundaryDistance }: { controlsRef: 
       // Adaptive zoom speed tuned per space
       let zs: number;
       if (inLocal) {
-        if (dist < 2) zs = 0.8;              // ultra close: buttery
-        else if (dist < 6) zs = 1.05;        // close
-        else if (dist < 12) zs = 1.2;        // local mid
-        else zs = 1.35;                      // local edge
-        if (e.deltaY < 0 && dist < 3) zs *= 0.85; // soften zoom-in when very close
+        if (insideCore) {
+          if (distTarget < 1.2) zs = 0.78;        // very close in core
+          else if (distTarget < 3) zs = 0.9;      // close in core
+          else zs = 1.1;                          // core edge
+        } else {
+          if (distTarget < 2) zs = 0.8;           // ultra close
+          else if (distTarget < 6) zs = 1.05;     // close
+          else if (distTarget < 12) zs = 1.2;     // local mid
+          else zs = 1.35;                         // local edge
+        }
+        if (e.deltaY < 0 && distTarget < 3) zs *= 0.85; // soften zoom-in when very close
       } else {
-        if (dist < 25) zs = 1.6;             // just outside boundary
-        else if (dist < 150) zs = 2.2;       // mid space
+        if (distCenter < 25) zs = 1.6;             // just outside boundary
+        else if (distCenter < 150) zs = 2.2;       // mid space
         else zs = 3.2;                       // far fast travel
-        if (e.deltaY > 0 && dist >= 40) zs *= 1.25; // boost zoom-out
+        if (e.deltaY > 0 && distCenter >= 40) zs *= 1.25; // boost zoom-out
       }
       controls.zoomSpeed = zs;
 
       // Symmetric pass-through near the target to eliminate sticky wall
-      const passThreshold = inLocal ? 1.8 : 0.45;
-      if (dist <= passThreshold) {
+      const passThreshold = inLocal ? (insideCore ? 0.18 : 1.4) : 0.45;
+      if (distTarget <= passThreshold) {
         const step = inLocal
-          ? Math.min(1.1, Math.max(0.3, dist * 1.3))
-          : Math.min(0.5, Math.max(0.2, dist * 1.2));
+          ? (insideCore
+              ? Math.min(0.18, Math.max(0.04, distTarget * 0.6))
+              : Math.min(1.0, Math.max(0.28, distTarget * 1.1)))
+          : Math.min(0.5, Math.max(0.2, distTarget * 1.2));
         if (e.deltaY < 0) {
           camera.position.addScaledVector(dir, step);
           target.addScaledVector(dir, step);
@@ -1046,13 +1066,15 @@ export default function AethergenHero() {
             RIGHT: THREE.MOUSE.PAN,
           }}
         />
-        {/* Minimal pass-through helper with dynamic local boundary */}
+        {/* Minimal pass-through helper with dynamic local boundary and hysteresis */}
         {(() => {
           // Compute local-space boundary from lattice extents and current networkScale
           const half = ((CFG.lattice.size - 1) * CFG.lattice.spacing) / 2; // ~1.4
           const baseRadius = Math.sqrt(3) * half * networkScale; // ~3.9 at scale 1.6
-          const boundary = baseRadius * 2.6; // push outer-space barrier far out
-          return <PassThroughZoom controlsRef={controlsRef} localBoundaryDistance={boundary} />;
+          const boundary = baseRadius * 3.2; // broaden local boundary
+          const enter = baseRadius * 6.0;    // enter deep space much farther out
+          const exit = baseRadius * 3.0;     // revert to local once back near boundary
+          return <PassThroughZoom controlsRef={controlsRef} localBoundaryDistance={boundary} deepSpaceEnterDistance={enter} deepSpaceExitDistance={exit} center={networkPosition} baseRadius={baseRadius} />;
         })()}
         <NeuralNetwork sceneRef={sceneRef} onGlitchChange={setGlitchActive} networkPosition={networkPosition} networkRotation={networkRotation} networkScale={networkScale} anchorTargets={anchorTargetsLocal} />
         {/* Title at origin */}

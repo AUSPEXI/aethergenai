@@ -1319,7 +1319,8 @@ export default function AethergenHero() {
         onClick={() => {
           // Place camera near the signature and look at it
           const toTarget: [number,number,number] = EGG_POS;
-          const toPos: [number,number,number] = [EGG_POS[0] + 2.6, EGG_POS[1] + 1.2, EGG_POS[2] + 4.2];
+          const xOffset = isMobile ? 4.0 : 2.6;
+          const toPos: [number,number,number] = [EGG_POS[0] + xOffset, EGG_POS[1] + 1.2, EGG_POS[2] + 5.2];
           const now = performance.now();
           setFlyTo({ startAt: now, toPos, toTarget, durationMs: 2600 });
           // Suspend recenter while flying

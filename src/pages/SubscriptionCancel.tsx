@@ -57,7 +57,7 @@ const SubscriptionCancel = () => {
               </p>
               <div className="space-y-3">
                 <a
-                  href="mailto:support@auspexi.com"
+                  href="mailto:sales@auspexi.com"
                   className="flex items-center text-blue-600 hover:text-blue-700 font-medium"
                 >
                   <Mail className="h-4 w-4 mr-2" />

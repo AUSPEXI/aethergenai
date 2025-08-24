@@ -1,4 +1,5 @@
 import React from 'react';
+import SEO from '../components/SEO';
 import PipelinesOverview from '../components/SchemaDesigner/PipelinesOverview';
 import { Cpu, Database, Shield, Zap, Globe, Code, Brain, Lock, GitBranch, Calendar, TrendingUp, CheckCircle, Clock, Target, AlertTriangle, Rss, Download, Users, Rocket, Sparkles, Eye, Atom, Layers, Award, Star, Flame, Siren, RotateCcw, FileText, BarChart3, ExternalLink, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -170,6 +171,20 @@ const Technology = () => {
 
   return (
     <div className="min-h-screen">
+      <SEO
+        title="Technology – AethergenPlatform"
+        description="Explore AethergenPlatform technology: streaming architecture, reproducible evidence bundles, Databricks autoship, and enterprise privacy controls."
+        canonical="https://auspexi.com/technology"
+        ogImage="/og-image.svg?v=2"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [
+            {"@type": "Question", "name": "How does AethergenPlatform scale?", "acceptedAnswer": {"@type": "Answer", "text": "Streaming generation with adaptive governors supports billion-scale while preserving quality and privacy."}},
+            {"@type": "Question", "name": "What is an evidence bundle?", "acceptedAnswer": {"@type": "Answer", "text": "A reproducible package of metrics, ablations, and artifacts that substantiates results for audits and buyers."}}
+          ]
+        }}
+      />
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

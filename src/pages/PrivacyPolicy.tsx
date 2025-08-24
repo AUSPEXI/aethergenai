@@ -75,7 +75,7 @@ const PrivacyPolicy = () => (
           <h2 className="text-xl font-semibold text-slate-900 mb-2">4. Global Compliance</h2>
           <p className="text-slate-700">Our synthetic-first approach ensures compliance with:</p>
           <ul className="list-disc list-inside text-slate-700 ml-4">
-            <li>UK GDPR/EU GDPR: Lawful basis (legitimate interests for public data, consent/contract for user data), user rights, Data Protection Officer (privacy@auspexi.com).</li>
+            <li>UK GDPR/EU GDPR: Lawful basis (legitimate interests for public data, consent/contract for user data), user rights, Data Protection Officer (sales@auspexi.com).</li>
             <li>HIPAA: No PHI; public health data (e.g., WHO) is non-identifiable.</li>
             <li>CCPA: No personal data sales; disclosure/deletion rights.</li>
             <li>ISO 27001: Information security management for all suites.</li>
@@ -109,14 +109,19 @@ const PrivacyPolicy = () => (
             <li>Objection: Object to processing.</li>
             <li>Restriction: Limit processing.</li>
           </ul>
-          <p className="text-slate-700 mt-2">Contact: privacy@auspexi.com for rights requests.</p>
+          <p className="text-slate-700 mt-2">Contact: sales@auspexi.com for rights requests.</p>
         </section>
 
         <section className="mb-6">
           <h2 className="text-xl font-semibold text-slate-900 mb-2">7. Contact Information</h2>
-          <p className="text-slate-700">Data Protection Officer: privacy@auspexi.com</p>
-          <p className="text-slate-700">General Inquiries: hello@auspexi.com</p>
+          <p className="text-slate-700">Data Protection Lead: sales@auspexi.com</p>
+          <p className="text-slate-700">General Inquiries: sales@auspexi.com</p>
           <p className="text-slate-700">Address: Auspexi Ltd, London, United Kingdom</p>
+        </section>
+
+        <section className="mb-6">
+          <h2 className="text-xl font-semibold text-slate-900 mb-2">8. Data Processing Addendum (DPA)</h2>
+          <p className="text-slate-700">For enterprise customers where we act as a Processor, our <a href="/dpa" className="text-blue-600 underline">Data Processing Addendum</a> applies. It includes SCCs (EU), UK IDTA addendum, subprocessor list on request, data transfer mechanisms, security measures, and incident response.</p>
         </section>
       </div>
     </div>

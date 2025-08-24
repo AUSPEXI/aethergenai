@@ -47,7 +47,7 @@ const TermsOfUse = () => (
             <li>AI model/application development, compliant with Terms.</li>
             <li>Commercial use, subject to restrictions.</li>
           </ul>
-          <p className="text-slate-700 mt-2">Delivery: Static CSVs ($1,800/suite) or streaming ($600/month premium, $1,500/month + $200 enterprise).</p>
+          <p className="text-slate-700 mt-2">Delivery: Static datasets, streaming subscriptions, or hosted platform access. Self‑service (customer‑managed compute) and full‑service (we deploy/manage in customer AWS) options available.</p>
           <p className="text-slate-700 mt-2">Attribution: Credit Auspexi in public outputs.</p>
         </section>
 
@@ -60,33 +60,30 @@ const TermsOfUse = () => (
             <li>Reverse-engineer to extract real data.</li>
             <li>Alter metadata (e.g., hash logs).</li>
             <li>Compete with Auspexi's services.</li>
+            <li>For Full‑Service deployments: attempt to access underlying infrastructure, platform code, or managed secrets beyond the agreed scope.</li>
           </ul>
         </section>
 
         <section className="mb-6">
           <h2 className="text-xl font-semibold text-slate-900 mb-2">5. Pricing and Payment</h2>
-          <p className="text-slate-700">Pricing:</p>
-          <ul className="list-disc list-inside text-slate-700 ml-4">
-            <li>Static: $1,800/suite (~1M data points).</li>
-            <li>Premium: $600/month/suite (~30M/month).</li>
-            <li>Enterprise: $1,500/month/suite + $200 for premium add-ons.</li>
-          </ul>
-          <p className="text-slate-700 mt-2">Payment: Via Stripe or marketplaces, due within 30 days.</p>
+          <p className="text-slate-700">Pricing is published on the Pricing page and/or in marketplace listings. Enterprise and Full‑Service deployments are quoted separately and may include setup fees, minimum terms, and managed infrastructure costs.</p>
+          <p className="text-slate-700 mt-2">Payment: Via Stripe or marketplaces, or invoice (enterprise). Taxes, duties, and withholding are your responsibility.</p>
           <p className="text-slate-700 mt-2">Taxes: Your responsibility.</p>
           <p className="text-slate-700 mt-2">Refunds: Non-refundable, except for delivery failures within 7 days.</p>
         </section>
 
         <section className="mb-6">
           <h2 className="text-xl font-semibold text-slate-900 mb-2">6. Intellectual Property</h2>
-          <p className="text-slate-700">Ownership: Auspexi owns datasets, AI models, pipeline (data_pipeline.py, enhanced-cron-collect.ts).</p>
+          <p className="text-slate-700">Ownership: Auspexi owns datasets, AI models, pipelines and platform code (including managed deployments). White‑label source code access is available only under a separate license agreement.</p>
           <p className="text-slate-700 mt-2">Your Data: You own derived outputs, compliant with Terms.</p>
           <p className="text-slate-700 mt-2">Feedback: Becomes Auspexi's property.</p>
         </section>
 
         <section className="mb-6">
           <h2 className="text-xl font-semibold text-slate-900 mb-2">7. Compliance</h2>
-          <p className="text-slate-700">Our Compliance: Datasets meet UK GDPR, EU GDPR, HIPAA, CCPA, ISO 27001, NIST, MoD, CISA, with no PII/PHI and synthetic focus.</p>
-          <p className="text-slate-700 mt-2">Your Responsibility: Use datasets legally, per export controls and data protection laws.</p>
+          <p className="text-slate-700">Our Compliance: Synthetic‑first architecture with hashed public seeds, optional zk‑proof workflows, and no PHI/PII processing by default. Designed to support UK/EU GDPR, HIPAA, CCPA/CPRA, ISO 27001, NIST SP 800‑53, MoD JSP 440. Specific certifications and attestations available on request.</p>
+          <p className="text-slate-700 mt-2">Customer Compliance: You are responsible for your regulatory posture and end‑use. We provide a <a href="/dpa" className="text-blue-600 underline">DPA</a> for Processor scenarios and will cooperate on customer‑specific security questionnaires and reasonable audits (with NDAs, scheduling, and scope limits).</p>
+          <p className="text-slate-700 mt-2">White‑Label & Sovereign Deployments: For sensitive customers (e.g., MoD), we can license and ship code for review and deployment in customer‑owned secure networks under a separate agreement (license terms, IP protection, escrow optional).</p>
         </section>
 
         <section className="mb-6">
@@ -104,9 +101,14 @@ const TermsOfUse = () => (
         </section>
 
         <section className="mb-6">
+          <h2 className="text-xl font-semibold text-slate-900 mb-2">11. Data Protection Addendum</h2>
+          <p className="text-slate-700">If we process personal data on your behalf, our <a href="/dpa" className="text-blue-600 underline">Data Processing Addendum</a> applies and forms part of these Terms.</p>
+        </section>
+
+        <section className="mb-6">
           <h2 className="text-xl font-semibold text-slate-900 mb-2">10. Contact Information</h2>
-          <p className="text-slate-700">Legal: legal@auspexi.com</p>
-          <p className="text-slate-700">General: hello@auspexi.com</p>
+          <p className="text-slate-700">Legal/Privacy: sales@auspexi.com</p>
+          <p className="text-slate-700">General/Support: sales@auspexi.com</p>
           <p className="text-slate-700">Address: Auspexi Ltd, London, United Kingdom</p>
         </section>
       </div>

@@ -14,6 +14,10 @@ import Resources from './pages/Resources';
 import HeroArt from './pages/HeroArt';
 import Funding from './pages/Funding';
 import AuthPage from './components/Auth/AuthPage';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsOfUse from './pages/TermsOfUse';
+import DPA from './pages/DPA';
+import Subprocessors from './pages/Subprocessors';
 
 import Footer from './components/Footer';
 
@@ -49,6 +53,10 @@ function App() {
             <Route path="/press" element={<Press />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/account" element={<AuthPage />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/terms" element={<TermsOfUse />} />
+            <Route path="/dpa" element={<DPA />} />
+            <Route path="/subprocessors" element={<Subprocessors />} />
           </Routes>
         </div>
         <Footer />

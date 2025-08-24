@@ -32,7 +32,7 @@ const TermsOfService: React.FC = () => {
 
       <h2 className="text-xl font-semibold mt-8 mb-2">Contact</h2>
       <p className="mb-2">AUSPEXI Ltd, 123 Data Lane, London EC1A 1AA, UK</p>
-      <p>Email: <a className="text-emerald-400 underline" href="mailto:legal@auspexi.com">legal@auspexi.com</a></p>
+      <p>Email: <a className="text-emerald-400 underline" href="mailto:sales@auspexi.com">sales@auspexi.com</a></p>
     </div>
   );
 };

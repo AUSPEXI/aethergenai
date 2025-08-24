@@ -32,8 +32,7 @@ const Footer = () => (
           
           <div className="text-blue-200 text-sm">
             <p>London, United Kingdom</p>
-            <p>hello@auspexi.com</p>
-            <p>press@auspexi.com</p>
+            <p>sales@auspexi.com</p>
           </div>
         </div>
 
@@ -118,6 +117,12 @@ const Footer = () => (
             </Link>
             <Link to="/terms" className="text-blue-200 hover:text-white transition-colors text-sm">
               Terms of Use
+            </Link>
+            <Link to="/dpa" className="text-blue-200 hover:text-white transition-colors text-sm">
+              DPA
+            </Link>
+            <Link to="/subprocessors" className="text-blue-200 hover:text-white transition-colors text-sm">
+              Subprocessors
             </Link>
           </div>
         </div>

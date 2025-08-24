@@ -1,22 +1,13 @@
 import { Link } from 'react-router-dom';
-import { Calendar, User, ArrowRight, Shield, Database, Brain, Lightbulb, TrendingUp } from 'lucide-react';
+import { ArrowRight, Shield, Database, Brain, Lightbulb, TrendingUp } from 'lucide-react';
 
 const Blog = () => {
-  const featuredPost = {
-    title: '🌟 The Miracle: How an AI-Human Partnership Created 3D Art History',
-    excerpt: 'The incredible story of how an AI-human partnership defied the laws of physics, broke through AI memory limitations, and created the first 3D neural network animation in human history. This is the story that will change everything.',
-    author: 'Gwylym Owen',
-    date: 'January 15, 2025',
-    readTime: '15 min read',
-    image: 'https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=800',
-    category: 'AI & Innovation',
-    slug: 'the-miracle-ai-human-partnership'
-  };
+  // reserved: featuredPost (not used currently)
 
 
 
   // Article content for "AethergenAI Shipped"
-  const aethergenaiShippedContent = {
+  /* reserved: aethergenaiShippedContent
     title: '🚀 We Just Shipped AethergenAI: The Future of Evidence-Led, Privacy-Preserving AI Training',
     content: `
       <h2>What We Built</h2>
@@ -43,10 +34,10 @@ const Blog = () => {
     readTime: '4 min read',
     category: 'Technology',
     slug: 'aethergenai-shipped-evidence-led-ai-training'
-  };
+  }; */
 
   // Article content for "Democratising AI: Post-Moore's Law Revolution"
-  const democratisingAIContent = {
+  /* reserved: democratisingAIContent
     title: '🌍 Democratising AI: The Post-Moore\'s Law Revolution That Will Change Everything',
     content: `
       <h2>The End of an Era: When Moore\'s Law Meets Reality</h2>
@@ -87,7 +78,7 @@ const Blog = () => {
       <h2>Join the Revolution</h2>
       <p>Have you faced AI cost barriers? Want to co-design features or explore rental models? This isn\'t just about technology—it\'s about democratizing the future.</p>
       
-      <p>Drop a comment or email me at contact@auspexi.com. Let\'s build the future of AI together.</p>
+      <p>Drop a comment or email me at sales@auspexi.com. Let\'s build the future of AI together.</p>
       
       <p><strong>Because in the post-Moore\'s Law world, the future belongs to those who optimize, not those who scale. And AethergenAI is the optimization platform that will change everything.</strong></p>
     `,
@@ -96,10 +87,10 @@ const Blog = () => {
     readTime: '8 min read',
     category: 'Technology',
     slug: 'democratising-ai-post-moores-law-revolution'
-  };
+  }; */
 
   // Article content for "The Triumph of Preparation"
-  const triumphOfPreparationContent = {
+  /* reserved: triumphOfPreparationContent
     title: '🎯 The Triumph of Preparation: How Strategic Planning Eliminates Development Chaos',
     content: `
       <h2>The Moment of Triumph: When Everything Clicks Into Place</h2>
@@ -149,7 +140,7 @@ const Blog = () => {
     readTime: '6 min read',
     category: 'Technology',
     slug: 'triumph-of-preparation-strategic-planning'
-  };
+  }; */
 
   const blogPosts = [
     {
@@ -162,6 +153,72 @@ const Blog = () => {
       icon: TrendingUp,
       published: true,
       slug: 'phoenix-rising-journey'
+    },
+    {
+      title: '📜 Evidence‑Led AI in Regulated Industries: A Practical Guide',
+      excerpt: 'Deploy synthetic‑first, evidence‑led AI in finance, healthcare, and government with privacy, auditability, and scale.',
+      author: 'Gwylym Owen',
+      date: 'January 16, 2025',
+      readTime: '9 min read',
+      category: 'Technology',
+      icon: Shield,
+      published: true,
+      slug: 'evidence-led-ai-regulated-industries'
+    },
+    {
+      title: '🧪➡️💸 Databricks Marketplace: From Lab to Revenue in Days',
+      excerpt: 'Turn synthetic datasets and niche models into marketplace listings with evidence and enterprise‑ready packaging.',
+      author: 'Gwylym Owen',
+      date: 'January 17, 2025',
+      readTime: '8 min read',
+      category: 'Business Strategy',
+      icon: Database,
+      published: true,
+      slug: 'databricks-marketplace-lab-to-revenue'
+    },
+    {
+      title: '💡 Pricing & Entitlements Explained: Self‑Service vs Full‑Service',
+      excerpt: 'How our tiers map to real‑world needs, prevent cannibalisation, and clarify compute ownership.',
+      author: 'Gwylym Owen',
+      date: 'January 18, 2025',
+      readTime: '7 min read',
+      category: 'Business Strategy',
+      icon: Shield,
+      published: true,
+      slug: 'pricing-and-entitlements-explained'
+    },
+    {
+      title: '🔁 The Synthetic Data Lifecycle: From Seeds to Evidence',
+      excerpt: 'A practical tour from schema design to generation, validation, and evidence bundling—no PHI/PII.',
+      author: 'Gwylym Owen',
+      date: 'January 18, 2025',
+      readTime: '8 min read',
+      category: 'Technology',
+      icon: Brain,
+      published: true,
+      slug: 'synthetic-data-lifecycle'
+    },
+    {
+      title: '📦 Evidence Bundles & Testing: Trustworthy AI Without Exposing IP',
+      excerpt: 'What we publish (and what we deliberately withhold) to satisfy risk teams and protect core IP.',
+      author: 'Gwylym Owen',
+      date: 'January 19, 2025',
+      readTime: '9 min read',
+      category: 'Technology',
+      icon: Shield,
+      published: true,
+      slug: 'evidence-bundles-and-testing'
+    },
+    {
+      title: '🧱 Schema Designer & Multi‑Data Pipelines for LLMs',
+      excerpt: 'Design schemas, harmonise multi‑domain data, and scale generation to billions—then train niche or large models.',
+      author: 'Gwylym Owen',
+      date: 'January 19, 2025',
+      readTime: '10 min read',
+      category: 'Technology',
+      icon: Database,
+      published: true,
+      slug: 'schema-designer-multi-data-llm'
     },
     {
       title: '⚖️ The Weight of Destiny: A Founder\'s Reflection on Change and Responsibility',
@@ -319,38 +376,9 @@ const Blog = () => {
     }
   ];
 
-  const categories = [
-    'All Posts',
-    'AI & Innovation',
-    'Founder Story',
-    'Technology',
-    'Vision & Strategy',
-    'Business Strategy',
-    'Competitive Advantage'
-  ];
+  // reserved: categories
 
-  const upcomingTopics = [
-          {
-        title: '🌌 Revolutionary Vision: Future Technology Breakthroughs',
-        description: 'The complete vision: revolutionary technology that will create industries that don\'t exist yet and change human history',
-        category: 'Vision & Strategy'
-      },
-    {
-      title: '🚗 Automotive Partnerships: From Pivot to Traction',
-      description: 'How industry signals turned into a strategic focus that changed everything',
-      category: 'Business Strategy'
-    },
-          {
-        title: '💰 Investment Rounds: From Unicorn to Revolutionary',
-        description: 'The complete investment story: preseed, Series A, and building the war chest',
-        category: 'Business Strategy'
-      },
-          {
-        title: '🧠 Revolutionary Technology: Ending the Age of Data',
-        description: 'How our technology will create industries that don\'t exist yet',
-        category: 'AI & Innovation'
-      }
-  ];
+  // reserved: upcomingTopics
 
   return (
     <div className="min-h-screen">

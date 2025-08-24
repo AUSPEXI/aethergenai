@@ -187,7 +187,7 @@ const formatDataForMarketplace = (data: ProcessedData[], platform: string, batch
     description: 'Comprehensive data streaming across multiple industries with AI-powered analytics',
     version: '1.0.0',
     provider: 'AUSPEXI',
-    contact: 'contact@auspexi.com',
+    contact: 'sales@auspexi.com',
     website: 'https://auspexi.com',
     demo_url: 'https://data.auspexi.com',
     pricing: pricingTiers,

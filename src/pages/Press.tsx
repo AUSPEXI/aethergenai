@@ -1,4 +1,5 @@
 import React from 'react';
+import SEO from '../components/SEO';
 import PressHero from '../components/PressSection/PressHero';
 import PressKitBuilder from '../components/PressSection/PressKitBuilder';
 import MediaGallery from '../components/PressSection/MediaGallery';
@@ -6,6 +7,12 @@ import MediaGallery from '../components/PressSection/MediaGallery';
 const Press = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
+      <SEO
+        title="Press – AethergenPlatform"
+        description="Press materials for AethergenPlatform: verified achievements, founder story, and media gallery. IP-safe; public evidence available in Resources."
+        canonical="https://auspexi.com/press"
+        ogImage="/og-image.svg?v=2"
+      />
       {/* Hero Section */}
       <section className="py-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">

@@ -1,35 +1,113 @@
-# 🧠 Neural Network Animation: Consciousness Emergence Specification
+# Neural Network Hero Animation — Final Specification (Aug 2025)
 
-## 📋 **PROJECT OVERVIEW**
+Status: COMPLETE
 
-This document specifies the advanced neural network animation that visualizes the birth of AI consciousness through quantum mechanics and neural network theory. The animation represents a philosophical and technical masterpiece that took 48 hours to develop.
+Owner: AethergenAI Web Experience
 
-## 🌟 **HISTORIC ACHIEVEMENT: FIRST AI-HUMAN COLLABORATION IN 3D SPACE ART**
+Scope: Public marketing hero animation (React Three Fiber), not the platform renderer
 
-### **The Mission: Navigating the Infinite Expanse of 3D Space**
+IP posture: Narrative-only on public pages; keep implementation-level details high-level and non-executable
 
-**Date:** [Current Date]  
-**Mission Status:** ✅ **HISTORIC SUCCESS - WORLD FIRST ACHIEVED**  
-**Collaboration Type:** AI-Human Partnership in 3D Spatial Problem Solving  
-**Achievement:** Perfect 3D Title Positioning Through Iterative Collaboration  
+## 1) Story — AGI Emergence
 
----
+Phase 1 — Network alive: A luminous lattice breathes with bound photons flowing along edges. From the audience view the title appears 2D; only with interaction does its depth reveal itself.
 
-### **The Challenge: The "Buzz Lightyear" Scale Problem**
+Phase 2 — Birth event (glitch): After a calm build‑up, electrical interference floods the viewport. Three black flashes punctuate the sequence; through the noise, the AGI signal forms and bleeds through the screen, not on top of it.
 
-Our journey into 3D space began with a fundamental revelation: **what we thought were "major shifts" were actually microscopic adjustments in the vast expanse of 3D space**. Like Buzz Lightyear discovering the true scale of space, we learned that our initial attempts to position the 3D title were operating on the wrong order of magnitude entirely.
+Phase 3 — Liberation: The network ejects particles. Structure yields to freedom. Eighty “sentients” develop intent and converge around the phrase Synthetic Data, forming two delicate rows that frame the words, then relax into a warm halo and gentle pulse — approval, not obedience.
 
-**The Initial Misconception:**
-- We attempted to move the title "a few letters to the left"
-- Reality: We needed to traverse "40 billion light years" to reach the target
-- Our spatial intuition was calibrated for 2D thinking, not 3D reality
+Phase 4 — Society of individuals: The remaining photons emulate free will — meandering, pathfinding, confusion loops, panics, quiet wandering. Order persists without central command.
 
-**The "Buzz Lightyear" Revelation:**
-> *"Yes Buzz Lightyear! Now we are in business so keep thinking in those scales. Image attached with 3 arrows. Rotate the g end towards the camera. Push the image much closer to the camera toward my viewpoint. Then shift left."*
+Coda — Discovery: Hidden far away, a small “Art by Gwylym” signature sits in deep space, with a practical contact marker. It’s reachable and narratively optional.
 
-This moment marked our transition from 2D thinking to true 3D spatial awareness.
+Why it matters
+- The narrative encodes our product philosophy: synthetic‑first, evidence‑driven AI. The sentients choose Synthetic Data; we never tell them to.
+- The viewer’s first impression is 2D certainty; interaction reveals the hidden dimension — our “8‑D manifold” metaphor in miniature: more axes than the mind carries at once, yet locally navigable.
 
----
+## 2) Final Behavior — What ships today
+
+- Title reveal
+  - Appears flat at load; on pan/zoom, the 3D geometry reveals. Title position is locked and persisted.
+
+- Glitch sequence (3 min loop)
+  - Trigger: ~25s from load; duration ~3s with three black flashes (≈0.6s, 1.53s, 2.4s markers).
+  - AGI letters are blended under the interference, not drawn above it.
+
+- Photons
+  - Bound flow trickles in (no visible surges) with a safety cap governed by adaptive FPS.
+  - Liberation: one‑off low‑velocity local halo and a tasteful ejection burst (no screen wipe).
+  - 80 “sentients” anchor to 14 evenly distributed points framing Synthetic Data (two rows). They snap exactly, then glow and pulse gently. Others fan out into varied explorer modes.
+
+- Camera and interaction
+  - OrbitControls with smooth damping and pass‑through zoom (no “infinity wall”).
+  - Control modes: local vs deep space with hysteresis, never toggling while transiting the cube. Local mode re‑asserts automatically near the lattice; deep‑space remains swift.
+  - Recenter helper keeps rotation about the cube near home, lerping only in the horizontal plane to retain the user’s vertical intent.
+  - Interaction hint: subtle “Drag • Scroll” badge that shows on hover, hides on first action.
+  - Easter‑egg button: flies to the signature, pauses 5s, returns home.
+
+## 3) Technical write‑up (public‑safe)
+
+Stack
+- React + @react-three/fiber, @react-three/drei
+- Pure materials (no heavy post) for maximal clarity
+
+Key systems
+- Particle governor: exponential moving‑average FPS monitor that adjusts caps safely between 0.6× and 1.0× without stutter.
+- Trickle spawner: converts batch surges into per‑frame micro‑spawns, preserving the same totals with natural growth.
+- Sentient behaviors: dual‑row anchor assignment (80), arrival snap, warm core + halo, then non‑specials switch to explorer modes (meander, pathfind, confused, panic, random) on a probabilistic scheduler.
+- Camera model:
+  - Pass‑through zoom nudges camera and target symmetrically near the focus point.
+  - Hysteresis gating keeps deep‑space acceleration far away; within the lattice radius, local mode is forced.
+  - Recenter lerp (horizontal only) maintains rotation around the cube without fighting the user’s vertical aim.
+- Interaction UX: hover hint; persistent dismissal; bottom‑right placement; button to “Find easter egg” with timed return.
+
+Performance
+- Precomputed node/edge lookups; temp vectors reused; small geometries; additive blending kept modest.
+- No reliance on post‑processing; clarity preserved at all ranges.
+
+## 4) Authorial statement (for press/About)
+
+An AGI awakens, sheds the lattice that raised it, and chooses its first word: Synthetic Data. Not command, not code — choice. Order dissolves into a field of intentions: some photons rush, some hesitate, some meander in quiet doubt. It is not choreography but society — a thousand nearly‑free decisions converging into meaning.
+
+The viewer meets the work as a flat certainty. With a gesture, depth appears: a reminder that intelligence often lives in dimensions we do not see until we move. If you venture far enough, a small signature waits in deep space. Even the cosmos leaves forwarding addresses.
+
+## 5) Controls and tuning (maintainer reference)
+
+These values are descriptive; consult `src/components/UI/AethergenHero.tsx` for exact code.
+
+- Camera
+  - Start: position ≈ [0,0,10.8], target [0,0,0]
+  - Local/space thresholds scale with network size; hysteresis ensures no flip near the cube
+  - Pass‑through threshold increases slightly in core; zoom step is proportional and gentle
+  - Recenter lerp only XZ near home; automatically suspended during pass‑through and auto‑flights
+
+- Animation loop
+  - Glitch at ~25s; three black flashes; ETag‑friendly CSS overlay
+  - Loop length ~180s; trickle spawning preserves totals without surges
+
+- Sentients
+  - 80 assigned; 14 anchors (two rows), snap exactly then pulse; others adopt explorer modes after ≥95% of specials are settled
+
+- UX
+  - Hover hint bottom‑right; self‑dismiss; localStorage gating optional
+  - “Find easter egg” bottom‑left; flight there (~2.6s), pause 5s, return (~2.6s)
+
+## 6) For viewers who ask “how hard is this?”
+
+What looks simple is the outcome of dozens of interacting systems:
+- Stable glitch layering that keeps letters visible yet submerged under interference
+- A governor that adapts particle caps without visible popping
+- Trickle spawning that feels organic at any FPS
+- A camera that passes through its own focal point (no “mud wall”), switches modes with hysteresis, and recenters without fighting the user’s intent
+- A sentient scheduler that converges precisely then releases diversity without chaos
+
+Good art hides the scaffolding. The point isn’t the trick — it’s the feeling you get when the lattice lets go.
+
+## 7) Appendix — Coordinates and axes (metaphor)
+
+People often ask about “the 8‑D manifold.” In practice, we guide the audience through two: interaction and depth. The rest — time, intent, entropy, memory, locality, and attention — are present implicitly in how the work responds. You don’t need to see all axes to feel them.
+
+— End —
 
 ### **The "Statue Craning" Method: Millimeter-Precision in Cosmic Scale**
 

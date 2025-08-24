@@ -1,0 +1,8 @@
+{
+  "items": [
+    { "type": "image", "src": "/og-image.svg", "alt": "AethergenAI OG Image", "caption": "AethergenAI overview" },
+    { "type": "image", "src": "/auspexi.svg", "alt": "Auspexi logo", "caption": "Auspexi brand" }
+  ]
+}
+
+

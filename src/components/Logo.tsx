@@ -1,6 +1,8 @@
 import React from 'react';
 
-const Logo = ({ className = "h-8 w-8" }: { className?: string }) => {
+type LogoProps = { className?: string; bg?: 'blue' | 'white' };
+
+const Logo = ({ className = "h-8 w-8", bg = 'blue' }: LogoProps) => {
   return (
     <div className={`${className} relative`}>
       <svg 
@@ -9,6 +11,10 @@ const Logo = ({ className = "h-8 w-8" }: { className?: string }) => {
         role="img" 
         aria-label="Eye of Horus Logo representing the six senses"
       >
+        {/* Background circle for contrast (rendered behind strokes) */}
+        {bg === 'white' && (
+          <circle cx="50" cy="50" r="40" className="fill-white" aria-hidden="true" />
+        )}
         {/* Main Eye Body (1/2) - Smell */}
         <path 
           d="M 20,50 C 20,30 40,25 50,25 C 60,25 80,30 80,50" 
@@ -58,13 +64,9 @@ const Logo = ({ className = "h-8 w-8" }: { className?: string }) => {
         />
         
         {/* Pulsing background circle */}
-        <circle 
-          cx="50" 
-          cy="50" 
-          r="40" 
-          className="text-blue-500/20 fill-current animate-pulse" 
-          aria-hidden="true"
-        />
+        {bg !== 'white' && (
+          <circle cx="50" cy="50" r="40" className="text-blue-500/20 fill-current animate-pulse" aria-hidden="true" />
+        )}
       </svg>
     </div>
   );

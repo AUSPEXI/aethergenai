@@ -17,6 +17,7 @@ const Navigation = () => {
     { name: 'Funding', href: '/funding', current: location.pathname === '/funding' },
     { name: 'Blog', href: '/blog', current: location.pathname === '/blog' },
     { name: 'Resources', href: '/resources', current: location.pathname === '/resources' },
+    { name: 'Hero Art', href: '/hero-art', current: location.pathname === '/hero-art' },
     { name: 'Press', href: '/press', current: location.pathname === '/press' },
     { name: 'Contact', href: '/contact', current: location.pathname === '/contact' }
   ];
@@ -41,7 +42,7 @@ const Navigation = () => {
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link to="/" className="flex items-center">
-              <Logo className="h-8 w-8" />
+              <Logo className="h-12 w-12" />
               <span className={`ml-2 text-xl font-bold text-white`}>
                 Auspexi
               </span>

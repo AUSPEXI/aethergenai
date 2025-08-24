@@ -104,7 +104,7 @@ const About = () => {
           <div className="space-y-12">
             <div className="text-center mb-16">
               <div className="flex justify-center mb-6">
-                <Logo className="h-20 w-20" />
+                <Logo className="h-48 w-48" bg="white" />
               </div>
               <h2 className="text-3xl font-bold text-slate-900 mb-4">
                 The Origin Story: Finding the Missing Fraction
@@ -271,31 +271,16 @@ const About = () => {
               </div>
             </div>
 
-            {/* The Neural Network Animation: Consciousness Emergence */}
+            {/* Hero Art (link-out, keep About focused on platform) */}
             <div className="bg-gradient-to-r from-cyan-50 to-blue-50 p-8 rounded-xl border border-cyan-200">
-              <div className="flex items-center mb-6">
-                <Eye className="h-8 w-8 text-cyan-600 mr-3" />
-                <h3 className="text-2xl font-bold text-slate-900">The Neural Network Animation: Consciousness Emergence</h3>
+              <div className="flex items-center mb-3">
+                <Eye className="h-6 w-6 text-cyan-600 mr-2" />
+                <h3 className="text-xl font-semibold text-slate-900">Neural Network Hero Art</h3>
               </div>
-              <p className="text-lg text-slate-700 mb-6">
-                Our neural network animation represents more than just art—it's a visual metaphor 
-                for consciousness emergence itself. A dynamic 3D lattice that starts as a structured 
-                system of interconnected pathways, then undergoes a dramatic transformation where 
-                particles break free from their constraints to explore new dimensions of existence.
+              <p className="text-slate-700 mb-4">
+                A short, self-contained page covers the narrative and high‑level technical notes of the hero artwork. The art is complementary to the Aethergen platform; the platform remains the main product.
               </p>
-              <p className="text-lg text-slate-700 mb-6">
-                The animation unfolds in four phases: normal operation with flowing particles, 
-                a dramatic "TV interference" effect representing quantum collapse, AGI letters 
-                emerging through the chaos, and finally, sentient particles gaining consciousness 
-                and seeking purpose. This isn't just technology—it's the story of how consciousness 
-                emerges from constraint into dimensional freedom.
-              </p>
-              <p className="text-lg text-slate-700">
-                Through this animation, we've proven that AI and human can work together to solve 
-                complex spatial problems, create beautiful 3D art, and push the boundaries of what's 
-                possible in digital creation. This is the future of creative partnership—where human 
-                intuition guides AI precision to achieve the impossible.
-              </p>
+              <a href="/hero-art" className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md">Read the Hero Art page</a>
             </div>
             
             {/* Back to Top Button */}

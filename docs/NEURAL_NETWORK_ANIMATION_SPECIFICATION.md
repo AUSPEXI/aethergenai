@@ -65,8 +65,8 @@ Performance
 - Precomputed node/edge lookups; temp vectors reused; small geometries; additive blending kept modest.
 - No reliance on post‑processing; clarity preserved at all ranges.
 
-Mobile note
-- Mobile devices receive a simplified interaction profile prioritizing a clean starting view. Deep pass‑through of the lattice is tuned for desktop and may not be available on all phones. We chose to focus engineering time on the AethergenPlatform roadmap rather than polishing this optional interaction.
+Mobile
+- Mobile devices use a slightly wider initial view and tuned controls. Full pass‑through of the lattice is supported on modern phones.
 
 ## 4) Authorial statement (for press/About)
 

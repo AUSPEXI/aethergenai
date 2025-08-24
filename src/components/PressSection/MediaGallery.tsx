@@ -32,11 +32,6 @@ const MediaGallery: React.FC<{ items?: MediaItem[] }> = ({ items }) => {
   }, [loaded]);
 
   const itemsToShow = loaded || defaultItems;
-  const mobileNote = (
-    <div className="mt-6 text-white/80 text-sm bg-white/10 border border-white/20 rounded p-3">
-      Note: On mobile we prioritize a clean starting view. Deep pass‑through of the lattice is desktop‑optimized and not guaranteed on phones. We chose to focus engineering time on the AethergenPlatform rather than polishing this optional interaction.
-    </div>
-  );
 
   return (
     <div>
@@ -57,7 +52,6 @@ const MediaGallery: React.FC<{ items?: MediaItem[] }> = ({ items }) => {
           </div>
         ))}
       </div>
-      {mobileNote}
     </div>
   );
 };

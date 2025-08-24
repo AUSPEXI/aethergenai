@@ -1325,7 +1325,7 @@ export default function AethergenHero() {
           // Suspend recenter while flying
           recenterSuspendUntilRef.current = now + 2600 + 5200; // include pause window
         }}
-        className="hidden md:block absolute bottom-4 left-4 z-[10003] bg-white/20 hover:bg-white/30 text-white text-xs px-3 py-1.5 rounded-md border border-white/30 backdrop-blur-sm shadow"
+        className="absolute bottom-2 left-2 md:bottom-4 md:left-4 z-[10003] bg-white/20 hover:bg-white/30 text-white text-[11px] md:text-xs px-2 py-1 md:px-3 md:py-1.5 rounded-md border border-white/30 backdrop-blur-sm shadow"
       >
         Find easter egg
       </button>

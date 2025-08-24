@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useCallback } from "react";
 import * as THREE from "three";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls, Text3D, Html } from "@react-three/drei";
@@ -100,13 +100,13 @@ function PassThroughZoom({ controlsRef, localBoundaryDistance, deepSpaceEnterDis
       const distTarget = camera.position.distanceTo(target);
       const centerVec = new THREE.Vector3(center[0], center[1], center[2]);
       const distCenter = camera.position.distanceTo(centerVec);
-      const insideCore = distCenter <= baseRadius * 1.05; // within cube extent
+      const insideCore = distCenter <= baseRadius * 1.4; // treat more of the cube as core for smooth pass-through
       const dir = new THREE.Vector3();
       camera.getWorldDirection(dir);
 
       // Hysteresis: only enter outer space when far beyond local, and only exit when well inside local
-      // Absolute guard: if within local boundary, always use local
-      if (distCenter <= localBoundaryDistance) {
+      // Absolute guard: if within (expanded) local boundary, always use local
+      if (distCenter <= localBoundaryDistance * 1.25) {
         modeRef.current = 'local';
       } else {
         if (modeRef.current === 'local' && distCenter >= deepSpaceEnterDistance) modeRef.current = 'outer';
@@ -123,9 +123,9 @@ function PassThroughZoom({ controlsRef, localBoundaryDistance, deepSpaceEnterDis
       let zs: number;
       if (inLocal) {
         if (insideCore) {
-          if (distTarget < 1.2) zs = 0.78;        // very close in core
-          else if (distTarget < 3) zs = 0.9;      // close in core
-          else zs = 1.1;                          // core edge
+          if (distTarget < 1.2) zs = 0.75;        // very close in core
+          else if (distTarget < 3) zs = 0.95;     // close in core
+          else zs = 1.15;                         // core edge
         } else {
           if (distTarget < 2) zs = 0.8;           // ultra close
           else if (distTarget < 6) zs = 1.05;     // close
@@ -142,12 +142,12 @@ function PassThroughZoom({ controlsRef, localBoundaryDistance, deepSpaceEnterDis
       controls.zoomSpeed = zs;
 
       // Symmetric pass-through near the target to eliminate sticky wall
-      const passThreshold = inLocal ? (insideCore ? 0.18 : 1.4) : 0.45;
+      const passThreshold = inLocal ? (insideCore ? 0.35 : 1.8) : 0.45;
       if (distTarget <= passThreshold) {
         const step = inLocal
           ? (insideCore
-              ? Math.min(0.18, Math.max(0.04, distTarget * 0.6))
-              : Math.min(1.0, Math.max(0.28, distTarget * 1.1)))
+              ? Math.min(0.35, Math.max(0.06, distTarget * 0.8))
+              : Math.min(1.2, Math.max(0.3, distTarget * 1.2)))
           : Math.min(0.5, Math.max(0.2, distTarget * 1.2));
         if (e.deltaY < 0) {
           camera.position.addScaledVector(dir, step);
@@ -950,6 +950,7 @@ export default function AethergenHero() {
   const [glitchActive, setGlitchActive] = useState(false);
   const [blackScreenVisible, setBlackScreenVisible] = useState(false);
   const controlsRef = useRef<any>(null);
+  const heroRef = useRef<HTMLDivElement | null>(null);
   const [titlePosition, setTitlePosition] = useState<[number, number, number]>(() => {
     try {
       const saved = localStorage.getItem('hero.titlePosition');
@@ -969,6 +970,27 @@ export default function AethergenHero() {
   const [cubePose, setCubePose] = useState({ pos: [0,0,0] as [number,number,number], rot: [0,0,0] as [number,number,number], quat: [0,0,0,1] as [number,number,number,number] });
   const [subtitleBoundsWorld, setSubtitleBoundsWorld] = useState<{min:[number,number,number], max:[number,number,number]}|null>(null);
   const [anchorTargetsLocal, setAnchorTargetsLocal] = useState<[number,number,number][]>([]);
+  // Interaction hint: show on hero hover; hide on first interaction or when leaving hero
+  const [showHint, setShowHint] = useState<boolean>(false);
+  const hintTimerRef = useRef<number | null>(null);
+  const clearHintTimer = useCallback(() => { if (hintTimerRef.current) { clearTimeout(hintTimerRef.current); hintTimerRef.current = null; } }, []);
+  const armHintTimer = useCallback(() => {
+    clearHintTimer();
+    hintTimerRef.current = window.setTimeout(() => setShowHint(false), 5000) as unknown as number;
+  }, [clearHintTimer]);
+  const dismissHint = useCallback(() => { setShowHint(false); clearHintTimer(); }, [clearHintTimer]);
+  useEffect(() => () => clearHintTimer(), [clearHintTimer]);
+  useEffect(() => {
+    if (!showHint) return;
+    const onPointer = () => dismissHint();
+    const onWheel = () => dismissHint();
+    // Defer binding briefly so the hint is visible for at least a moment
+    const bindId = setTimeout(() => {
+      window.addEventListener('pointerdown', onPointer, { once: true } as any);
+      window.addEventListener('wheel', onWheel, { once: true } as any);
+    }, 400);
+    return () => { clearTimeout(bindId); window.removeEventListener('pointerdown', onPointer as any); window.removeEventListener('wheel', onWheel as any); clearTimeout(hintTimerRef.current); };
+  }, [showHint, dismissHint]);
   
   // Control black screen flashes when glitch is active
   useEffect(() => {
@@ -1023,10 +1045,17 @@ export default function AethergenHero() {
   }, [isPickedUp]);
 
   return (
-    <div className="w-full h-[78vh] min-h-[520px] bg-[#0b1120] overflow-hidden relative">
+    <div
+      ref={heroRef as any}
+      onMouseEnter={() => { setShowHint(true); armHintTimer(); }}
+      onMouseLeave={() => { setShowHint(false); clearHintTimer(); }}
+      onPointerDown={() => dismissHint()}
+      onWheel={() => dismissHint()}
+      className="w-full h-[78vh] min-h-[520px] bg-[#0b1120] overflow-hidden relative"
+    >
               <Canvas 
         camera={{ position: [0, 0, 10.8], fov: CFG.camera.fov }} 
-        style={{ position: "absolute", inset: 0, zIndex: 1 }}
+        style={{ position: "absolute", inset: 0, zIndex: 1, cursor: 'grab' }}
         onContextMenu={(e)=>{ e.preventDefault(); e.stopPropagation(); }}
         onPointerDown={(e:any)=>{
           if (e.button === 2 && isPickedUp) {
@@ -1161,6 +1190,18 @@ export default function AethergenHero() {
       {blackScreenVisible && (
         <div className="absolute inset-0 pointer-events-none z-[10000] bg-black transition-opacity duration-100" />
       )}
+      {/* Interaction hint (self-dismissing) */}
+      <div className={`absolute bottom-4 right-4 z-[10002] transition-opacity duration-500 pointer-events-none ${showHint ? 'opacity-100' : 'opacity-0'}`}>
+        <div className="flex items-center gap-2 bg-black/60 backdrop-blur-sm text-white rounded px-2.5 py-1.5 text-[12px] leading-none pointer-events-none select-none border border-white/10 shadow-lg">
+          {/* Drag icon */}
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="opacity-90"><path d="M8 12h8M12 8v8"/><circle cx="12" cy="12" r="9"/></svg>
+          <span className="opacity-95">Drag</span>
+          <span className="opacity-70">•</span>
+          {/* Scroll icon */}
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="opacity-90"><rect x="7" y="3" width="10" height="18" rx="3"/><line x1="12" y1="7" x2="12" y2="11"/></svg>
+          <span className="opacity-95">Scroll</span>
+        </div>
+      </div>
     </div>
   );
 }

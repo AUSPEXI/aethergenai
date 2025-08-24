@@ -89,7 +89,7 @@ function EasterEggSignature() {
 }
 
 // Allow zoom to pass through the target by nudging camera + target forward when very close
-function PassThroughZoom({ controlsRef, localBoundaryDistance, deepSpaceEnterDistance, deepSpaceExitDistance, center, baseRadius }: { controlsRef: React.MutableRefObject<any>, localBoundaryDistance: number, deepSpaceEnterDistance: number, deepSpaceExitDistance: number, center: [number, number, number], baseRadius: number }) {
+function PassThroughZoom({ controlsRef, localBoundaryDistance, deepSpaceEnterDistance, deepSpaceExitDistance, center, baseRadius, recenterSuspendUntilRef }: { controlsRef: React.MutableRefObject<any>, localBoundaryDistance: number, deepSpaceEnterDistance: number, deepSpaceExitDistance: number, center: [number, number, number], baseRadius: number, recenterSuspendUntilRef: React.MutableRefObject<number> }) {
   const { camera, gl } = useThree();
   const modeRef = useRef<'local' | 'outer'>('local');
   useEffect(() => {
@@ -142,21 +142,24 @@ function PassThroughZoom({ controlsRef, localBoundaryDistance, deepSpaceEnterDis
       controls.zoomSpeed = zs;
 
       // Symmetric pass-through near the target to eliminate sticky wall
-      const passThreshold = inLocal ? (insideCore ? 0.35 : 1.8) : 0.45;
+      const passThreshold = inLocal ? (insideCore ? 0.3 : 1.6) : 0.45;
       if (distTarget <= passThreshold) {
         const step = inLocal
           ? (insideCore
-              ? Math.min(0.35, Math.max(0.06, distTarget * 0.8))
-              : Math.min(1.2, Math.max(0.3, distTarget * 1.2)))
+              ? Math.min(0.25, Math.max(0.05, distTarget * 0.7))
+              : Math.min(1.0, Math.max(0.28, distTarget * 1.1)))
           : Math.min(0.5, Math.max(0.2, distTarget * 1.2));
         if (e.deltaY < 0) {
           camera.position.addScaledVector(dir, step);
           target.addScaledVector(dir, step);
           controls.update?.();
+          // Temporarily suspend recentering to allow escaping through the far side
+          recenterSuspendUntilRef.current = performance.now() + 1200;
         } else if (e.deltaY > 0) {
           camera.position.addScaledVector(dir, -step);
           target.addScaledVector(dir, -step);
           controls.update?.();
+          recenterSuspendUntilRef.current = performance.now() + 900;
         }
       }
     };
@@ -164,6 +167,44 @@ function PassThroughZoom({ controlsRef, localBoundaryDistance, deepSpaceEnterDis
     el.addEventListener('wheel', onWheel, { passive: true } as any);
     return () => el.removeEventListener('wheel', onWheel as any);
   }, [camera, gl, controlsRef]);
+  return null;
+}
+
+// Keep OrbitControls' target centered on the network when within local boundary
+function RecenterTarget({ controlsRef, center, boundary, recenterSuspendUntilRef }: { controlsRef: React.MutableRefObject<any>, center: [number, number, number], boundary: number, recenterSuspendUntilRef: React.MutableRefObject<number> }) {
+  const { camera } = useThree();
+  const centerVec = useRef(new THREE.Vector3(center[0], center[1], center[2]));
+  useEffect(() => { centerVec.current.set(center[0], center[1], center[2]); }, [center]);
+  useFrame(() => {
+    const controls = controlsRef.current;
+    if (!controls) return;
+    if (performance.now() < (recenterSuspendUntilRef.current || 0)) return;
+    const distCenter = camera.position.distanceTo(centerVec.current);
+    if (distCenter <= boundary * 1.25) {
+      const tgt: THREE.Vector3 = controls.target;
+      if (tgt.distanceTo(centerVec.current) > 1e-3) {
+        tgt.lerp(centerVec.current, 0.1);
+        controls.update?.();
+      }
+    }
+  });
+  return null;
+}
+
+// Per-frame control tuning so local settings re-apply even without wheel events
+function ControlTuner({ controlsRef, center, boundary }: { controlsRef: React.MutableRefObject<any>, center: [number, number, number], boundary: number }) {
+  const { camera } = useThree();
+  const centerVec = useRef(new THREE.Vector3(center[0], center[1], center[2]));
+  useEffect(() => { centerVec.current.set(center[0], center[1], center[2]); }, [center]);
+  useFrame(() => {
+    const controls = controlsRef.current;
+    if (!controls) return;
+    const distCenter = camera.position.distanceTo(centerVec.current);
+    const inLocal = distCenter <= boundary * 1.1;
+    if (typeof controls.zoomToCursor === 'boolean') controls.zoomToCursor = inLocal;
+    // Set a baseline zoom speed depending on space; wheel handler may adjust further per distance
+    controls.zoomSpeed = inLocal ? Math.max(controls.zoomSpeed, 1.0) : Math.max(controls.zoomSpeed, 1.6);
+  });
   return null;
 }
 
@@ -951,6 +992,7 @@ export default function AethergenHero() {
   const [blackScreenVisible, setBlackScreenVisible] = useState(false);
   const controlsRef = useRef<any>(null);
   const heroRef = useRef<HTMLDivElement | null>(null);
+  const recenterSuspendUntilRef = useRef<number>(0);
   const [titlePosition, setTitlePosition] = useState<[number, number, number]>(() => {
     try {
       const saved = localStorage.getItem('hero.titlePosition');
@@ -1095,7 +1137,7 @@ export default function AethergenHero() {
             RIGHT: THREE.MOUSE.PAN,
           }}
         />
-        {/* Minimal pass-through helper with dynamic local boundary and hysteresis */}
+        {/* Helpers: pass-through zoom + recenter target near cube */}
         {(() => {
           // Compute local-space boundary from lattice extents and current networkScale
           const half = ((CFG.lattice.size - 1) * CFG.lattice.spacing) / 2; // ~1.4
@@ -1103,7 +1145,11 @@ export default function AethergenHero() {
           const boundary = baseRadius * 3.2; // broaden local boundary
           const enter = baseRadius * 6.0;    // enter deep space much farther out
           const exit = baseRadius * 3.0;     // revert to local once back near boundary
-          return <PassThroughZoom controlsRef={controlsRef} localBoundaryDistance={boundary} deepSpaceEnterDistance={enter} deepSpaceExitDistance={exit} center={networkPosition} baseRadius={baseRadius} />;
+          return <>
+            <PassThroughZoom controlsRef={controlsRef} localBoundaryDistance={boundary} deepSpaceEnterDistance={enter} deepSpaceExitDistance={exit} center={networkPosition} baseRadius={baseRadius} recenterSuspendUntilRef={recenterSuspendUntilRef} />
+            <RecenterTarget controlsRef={controlsRef} center={networkPosition} boundary={boundary} recenterSuspendUntilRef={recenterSuspendUntilRef} />
+            <ControlTuner controlsRef={controlsRef} center={networkPosition} boundary={boundary} />
+          </>;
         })()}
         <NeuralNetwork sceneRef={sceneRef} onGlitchChange={setGlitchActive} networkPosition={networkPosition} networkRotation={networkRotation} networkScale={networkScale} anchorTargets={anchorTargetsLocal} />
         {/* Title at origin */}

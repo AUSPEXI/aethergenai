@@ -9,7 +9,7 @@ const Press = () => {
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
       <SEO
         title="Press – AethergenPlatform"
-        description="Press materials for AethergenPlatform: verified achievements, founder story, and media gallery. IP-safe; public evidence available in Resources."
+        description="Press materials for AethergenPlatform: evidence‑led platform overview, verified outcomes, and media assets. IP‑safe; public evidence is available in Resources."
         canonical="https://auspexi.com/press"
         ogImage="/og-image.svg?v=2"
       />
@@ -20,13 +20,13 @@ const Press = () => {
             Press Materials
           </h1>
           <h2 className="text-2xl md:text-4xl font-semibold text-blue-300 mb-6">
-            The AI‑Human Collaboration Story & Billion‑Scale Achievement
+            Evidence‑Led Synthetic Data Platform – Press Materials
           </h2>
           <p className="text-xl text-blue-100 leading-relaxed mb-3">
-            We're honest enough to say we may not be the only ones when we aren't, and confident enough to say so when we are—after verifying through scientific rigor.
+            AethergenPlatform enables privacy‑preserving synthetic data generation, dataset/model delivery to Databricks with bundled evidence, and safe scaling from pilot to production.
           </p>
           <p className="text-lg text-blue-200 leading-relaxed">
-            Materials here focus on verified achievements and human‑interest narrative. No proprietary algorithms, formulas, or implementation details are disclosed.
+            This page provides press‑ready assets and verifiable outcomes. We avoid speculative claims and do not disclose proprietary algorithms or implementation details.
           </p>
         </div>
       </section>
@@ -52,14 +52,14 @@ const Press = () => {
             Request Interviews or Additional Materials
           </h2>
           <p className="text-xl text-blue-100 mb-8">
-            Explore the world‑record milestone and the AI‑human collaboration narrative. We share verified results and keep intellectual property protected.
+            Explore the platform overview and evidence supporting our results. We share verifiable outcomes and keep intellectual property protected.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a
               href="/about"
               className="bg-white/10 backdrop-blur-lg border border-white/20 text-white px-8 py-3 rounded-lg hover:bg-white/20 transition-all font-semibold"
             >
-              View Complete Story
+              About AethergenPlatform
             </a>
             <a
               href="/contact"

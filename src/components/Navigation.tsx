@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import Logo from './Logo';
@@ -6,6 +6,20 @@ import Logo from './Logo';
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const closeTimer = useRef<number | null>(null);
+
+  const openMenu = () => {
+    if (closeTimer.current) {
+      window.clearTimeout(closeTimer.current);
+      closeTimer.current = null;
+    }
+    setIsOpen(true);
+  };
+
+  const scheduleClose = () => {
+    if (closeTimer.current) window.clearTimeout(closeTimer.current);
+    closeTimer.current = window.setTimeout(() => setIsOpen(false), 220);
+  };
 
   const navigationItems = [
     { name: 'Account', href: '/account', current: location.pathname === '/account' },
@@ -50,18 +64,26 @@ const Navigation = () => {
           </div>
 
           {/* Hamburger Menu - right side with hover dropdown */}
-          <div className="hidden md:block relative" onMouseLeave={() => setIsOpen(false)}>
+          <div className="hidden md:block relative" onMouseEnter={openMenu} onMouseLeave={scheduleClose}>
             <button
-              onMouseEnter={() => setIsOpen(true)}
+              onMouseEnter={openMenu}
               className={`inline-flex items-center justify-center p-2 rounded-md transition-colors text-white hover:text-blue-300`}
             >
               <Menu className="h-6 w-6" />
             </button>
             
+            {/* Invisible hover bridge to remove any gap between trigger and menu */}
+            <div
+              className="absolute right-0 w-48 h-2"
+              style={{ top: '100%' }}
+              onMouseEnter={openMenu}
+            />
+
             {/* Dropdown Menu - Positioned directly under hamburger button */}
             <div
-              onMouseEnter={() => setIsOpen(true)}
-              className={`absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg border border-slate-200 transition-all duration-200 ${
+              onMouseEnter={openMenu}
+              onMouseLeave={scheduleClose}
+              className={`absolute right-0 mt-0 w-48 bg-white rounded-md shadow-lg border border-slate-200 transition-all duration-200 ${
               isOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
             }`}
             >

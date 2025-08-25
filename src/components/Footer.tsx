@@ -10,8 +10,8 @@ const Footer = () => (
         <div className="col-span-1 md:col-span-2">
           <h3 className="text-2xl font-bold text-white mb-4">Auspexi</h3>
           <p className="text-blue-100 mb-4">
-            Revolutionary achievement: 1 BILLION synthetic records generated with 11 proprietary inventions. 
-            Leading the ethical synthetic data revolution with unlimited-scale capabilities.
+            Demonstration: 1 BILLION synthetic records generated; outcomes validated via evidence bundles. 
+            Evidence‑led synthetic data platform with streaming generation and Databricks workflows.
           </p>
           
           {/* Key Achievements */}
@@ -25,8 +25,8 @@ const Footer = () => (
               <div className="text-xs text-blue-200">Inventions</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-green-400">100%</div>
-              <div className="text-xs text-blue-200">Quality</div>
+              <div className="text-2xl font-bold text-green-400">Evidence</div>
+              <div className="text-xs text-blue-200">Quality Metrics</div>
             </div>
           </div>
           
@@ -84,9 +84,9 @@ const Footer = () => (
               </Link>
             </li>
             <li>
-              <Link to="/technology" className="text-blue-200 hover:text-white transition-colors flex items-center">
+              <Link to="/ai" className="text-blue-200 hover:text-white transition-colors flex items-center">
                 <Rocket className="h-4 w-4 mr-2" />
-                Revolutionary Technology
+                AI Communication
               </Link>
             </li>
             <li>
@@ -109,7 +109,7 @@ const Footer = () => (
       <div className="border-t border-blue-800 mt-8 pt-8">
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="text-blue-200 text-sm mb-4 md:mb-0">
-            © 2025 Auspexi. All rights reserved. Revolutionary technology with unlimited innovation.
+            © 2025 Auspexi. All rights reserved. Evidence‑led synthetic data platform.
           </div>
           <div className="flex space-x-6">
             <Link to="/privacy" className="text-blue-200 hover:text-white transition-colors text-sm">

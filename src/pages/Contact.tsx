@@ -31,8 +31,8 @@ const Contact = () => {
 
   const companyHighlights = [
     {
-      title: 'Revolutionary Scale',
-      description: 'Unlimited synthetic data generation with 100% quality compliance',
+      title: 'High‑Scale Generation',
+      description: 'Billion‑row synthetic dataset demonstration with validated metrics',
       icon: Award,
       color: 'text-orange-600'
     },
@@ -50,7 +50,7 @@ const Contact = () => {
     },
     {
       title: 'Innovation Pipeline',
-      description: 'Revolutionary technologies in development for future markets',
+      description: 'Ongoing R&D into methods and tooling for future markets',
       icon: Brain,
       color: 'text-purple-600'
     }
@@ -70,8 +70,8 @@ const Contact = () => {
 
   const pressInquiries = [
     {
-      title: 'Revolutionary Achievement',
-      description: 'Press materials and documentation for our unlimited-scale synthetic data generation',
+      title: 'Proven Result',
+      description: 'Press materials and documentation for our billion‑row synthetic data demonstration',
       icon: Award,
       link: '/press'
     },

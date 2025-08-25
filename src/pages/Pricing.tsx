@@ -100,7 +100,7 @@ const Pricing = () => {
       }
     },
     {
-      name: 'Enterprise Platform',
+      name: 'Org Platform (5 seats)',
       description: 'Large team access with enterprise-grade features',
       price: {
         gbp: '£2,999',
@@ -581,7 +581,7 @@ const Pricing = () => {
         title="Pricing – AethergenPlatform"
         description="Transparent pricing for AethergenPlatform: platform access, datasets, streams, and services. Databricks-ready with evidence bundles and enterprise support."
         canonical="https://auspexi.com/pricing"
-        ogImage="/og-image.svg?v=2"
+        ogImage="/marketing/og-1200x630.png?v=1"
         jsonLd={{
           "@context": "https://schema.org",
           "@type": "FAQPage",
@@ -596,24 +596,23 @@ const Pricing = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
-              AethergenAI Platform Pricing
+              AethergenPlatform Pricing
             </h1>
             <p className="text-xl text-blue-100 mb-8 max-w-4xl mx-auto">
-              Revolutionary technology accessible to developers and enterprises. From individual access to team-scale 
-              unlimited synthetic data generation with advanced proprietary technology.
+              Evidence‑led synthetic data platform for developers and enterprises. From individual access to team‑scale generation with clear entitlements.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20">
-                <div className="text-3xl font-bold text-blue-400 mb-2">Unlimited</div>
-                <div className="text-white">Scale Generation</div>
+                <div className="text-3xl font-bold text-blue-400 mb-2">High‑scale</div>
+                <div className="text-white">Generation</div>
               </div>
               <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20">
-                <div className="text-3xl font-bold text-green-400 mb-2">Advanced</div>
-                <div className="text-white">Proprietary Tech</div>
+                <div className="text-3xl font-bold text-green-400 mb-2">Platform</div>
+                <div className="text-white">Capabilities</div>
               </div>
               <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20">
-                <div className="text-3xl font-bold text-purple-400 mb-2">100%</div>
-                <div className="text-white">Quality Compliance</div>
+                <div className="text-3xl font-bold text-purple-400 mb-2">Validated</div>
+                <div className="text-white">Quality checks</div>
               </div>
             </div>
             <div className="mt-6">
@@ -631,10 +630,10 @@ const Pricing = () => {
           <div className="text-center mb-12">
             <div className="flex items-center justify-center mb-4">
               <Award className="h-8 w-8 text-orange-600 mr-3" />
-              <h2 className="text-3xl font-bold text-slate-900">Revolutionary Technology</h2>
+              <h2 className="text-3xl font-bold text-slate-900">Proven Result</h2>
             </div>
             <p className="text-xl text-slate-600">
-              Our breakthrough system has achieved what was previously considered impossible in synthetic data generation
+              Demonstrated 1 billion‑row synthetic dataset generation. We continue to test, measure, and publish evidence.
             </p>
           </div>
           
@@ -662,17 +661,16 @@ const Pricing = () => {
             <Database className="w-6 h-6 text-blue-600" />
           </div>
           <h3 className="text-2xl font-bold text-slate-900 mb-4">
-            Enterprise Databricks Integration
+            Databricks Integration
           </h3>
           <p className="text-lg text-slate-600 mb-6 max-w-3xl mx-auto">
-            All enterprise packages include seamless Databricks marketplace integration, validated through our strategic partnership 
-            with the $6B+ leader in data platforms.
+            Enterprise packages include seamless Databricks Marketplace integration. We provide sample workflows and Unity Catalog table patterns for smooth evaluation.
           </p>
           <a
-            href="/"
+            href="/resources"
             className="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium text-lg"
           >
-            Learn more about our Databricks partnership →
+            Learn more about our Databricks integration →
           </a>
         </div>
       </section>
@@ -685,7 +683,7 @@ const Pricing = () => {
               Choose Your Service Level
             </h2>
             <p className="text-xl text-slate-600 max-w-4xl mx-auto">
-              We offer two service levels to match your infrastructure needs and budget requirements
+              Two deployment models. Compute responsibility is explicit: you (Self‑Hosted) or us (Full‑Service AWS).
             </p>
           </div>
           
@@ -956,32 +954,7 @@ const Pricing = () => {
               Choose the tier that fits your development and enterprise needs
             </p>
             
-            {/* Cost Savings Banner */}
-            <div className="max-w-4xl mx-auto bg-gradient-to-r from-green-50 to-blue-50 p-6 rounded-xl border border-green-200 mb-8">
-              <div className="flex items-center justify-center mb-4">
-                <div className="bg-green-100 rounded-full p-3 mr-4">
-                  <TrendingUp className="h-6 w-6 text-green-600" />
-                </div>
-                <h3 className="text-2xl font-bold text-green-800">90% Cost Savings vs Traditional Solutions</h3>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
-                <div>
-                  <div className="text-3xl font-bold text-green-600 mb-1">81%</div>
-                  <div className="text-sm text-slate-700">vs Bloomberg Terminal</div>
-                  <div className="text-xs text-slate-500">$2,000 → $379/month</div>
-                </div>
-                <div>
-                  <div className="text-3xl font-bold text-blue-600 mb-1">90%+</div>
-                  <div className="text-sm text-slate-700">vs Traditional Data</div>
-                  <div className="text-xs text-slate-500">$5,000 → £599/month</div>
-                </div>
-                <div>
-                  <div className="text-3xl font-bold text-purple-600 mb-1">75%+</div>
-                  <div className="text-sm text-slate-700">vs Enterprise Solutions</div>
-                  <div className="text-xs text-slate-500">$20,000 → £4,999/month</div>
-                </div>
-              </div>
-            </div>
+            {/* Removed legacy savings banner to avoid confusing/misleading comparisons */}
 
             {/* Entitlements note */}
             <div className="max-w-3xl mx-auto bg-blue-50 border border-blue-200 text-blue-800 rounded-xl p-4">
@@ -1552,10 +1525,10 @@ const Pricing = () => {
       <section className="py-20 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl font-bold text-white mb-4">
-                          Ready to Access Revolutionary Technology?
+            Ready to evaluate AethergenPlatform?
           </h2>
           <p className="text-xl text-blue-100 mb-8">
-            Join the synthetic data revolution with unlimited-scale capabilities and 11 proprietary inventions
+            Explore an evidence‑led path to adopting synthetic data at scale.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a

@@ -18,7 +18,7 @@ const About = () => {
     },
     {
       title: '11 Proprietary Inventions',
-      description: 'Revolutionary technologies including Elastic Collision Newton\'s Cradle and Radioactive Decay Universe Model',
+      description: 'Platform inventions including Elastic Collision Newton\'s Cradle and Radioactive Decay Universe Model',
       icon: Rocket,
       status: 'All Operational',
       color: 'text-blue-600'
@@ -32,7 +32,7 @@ const About = () => {
     },
     {
       title: 'Unlimited Scale Capability',
-      description: 'Revolutionary technology enabling unlimited synthetic data generation',
+      description: 'High‑scale synthetic data generation demonstrated in production scenarios',
       icon: Globe,
       status: 'Capability Proven',
       color: 'text-purple-600'
@@ -76,7 +76,7 @@ const About = () => {
     },
     {
       phase: 'Innovation Development',
-      title: 'Revolutionary Technologies',
+      title: 'Platform Inventions',
       description: 'Advanced innovations in development that will transform multiple industries',
       icon: Brain,
       color: 'blue'
@@ -108,10 +108,10 @@ const About = () => {
                 <Logo className="h-48 w-48" bg="white" />
               </div>
               <h2 className="text-3xl font-bold text-slate-900 mb-4">
-                The Origin Story: Finding the Missing Fraction
+                The Origin Story
               </h2>
               <p className="text-xl text-white">
-                How ancient wisdom guided the creation of modern synthetic data
+                Why we built an evidence‑led synthetic data platform
               </p>
             </div>
 
@@ -420,7 +420,7 @@ const About = () => {
             <div className="space-y-12">
               <div className="text-center mb-16">
                 <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-                  WORLD RECORD ACHIEVEMENT
+                  WORLD RECORD DEMONSTRATION
                 </h2>
                 <h3 className="text-2xl md:text-3xl font-semibold mb-8 text-gray-200">
                   1 BILLION Synthetic Records Generated
@@ -451,7 +451,7 @@ const About = () => {
               <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20 text-center">
                 <h3 className="text-3xl font-bold text-white mb-6">The Impact of This Achievement</h3>
                 <p className="text-xl text-gray-300 leading-relaxed mb-8">
-                  This world record proves that synthetic data can be generated at truly unlimited scale 
+                  This demonstration shows synthetic data generated at billion‑row scale 
                   while maintaining perfect quality and compliance. It opens new possibilities for industries 
                   that previously couldn't access the data they needed.
                 </p>
@@ -638,7 +638,7 @@ const About = () => {
                   11 PROPRIETARY INVENTIONS
                 </h2>
                 <h3 className="text-2xl md:text-3xl font-semibold mb-8 text-gray-200">
-                  Revolutionary Technologies That Redefine What's Possible
+                  Platform Capabilities and Inventions
                 </h3>
                 <p className="text-xl text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
                   Our breakthrough inventions span physics, mathematics, AI, and system architecture, 
@@ -758,7 +758,7 @@ const About = () => {
                   <h3 className="text-2xl font-bold text-white">Strategic Vision</h3>
                 </div>
                 <p className="text-lg text-gray-300 mb-6">
-                  Our 11 proprietary inventions enable unlimited-scale generation while maintaining perfect quality. 
+                  Our 11 proprietary inventions enable high‑scale generation with rigorous quality checks.
                   With advanced mathematical modeling and comprehensive compliance (UK GDPR, FCA/SEC, ISO 27001), 
                   we're positioned to capture significant market share in the rapidly growing synthetic data industry.
                 </p>

@@ -20,6 +20,8 @@ import DPA from './pages/DPA';
 import Subprocessors from './pages/Subprocessors';
 import ManifoldPrototype from './pages/ManifoldPrototype';
 import ManifoldExplainer from './pages/ManifoldExplainer';
+import AI from './pages/AI';
+import Whitepaper from './pages/Whitepaper';
 
 import Footer from './components/Footer';
 
@@ -61,6 +63,8 @@ function App() {
             <Route path="/subprocessors" element={<Subprocessors />} />
             <Route path="/manifold-prototype" element={<ManifoldPrototype />} />
             <Route path="/manifold-explainer" element={<ManifoldExplainer />} />
+            <Route path="/ai" element={<AI />} />
+            <Route path="/whitepaper" element={<Whitepaper />} />
           </Routes>
         </div>
         <Footer />

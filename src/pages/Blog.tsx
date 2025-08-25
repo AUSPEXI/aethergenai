@@ -144,8 +144,8 @@ const Blog = () => {
 
   const blogPosts = [
     {
-      title: '🎭 From Starvation to Stardom: The Phoenix Rising Journey',
-      excerpt: 'The incredible story of how I quit everything, faced starvation, and built a revolutionary AI-human partnership that would change the world. This is the Phoenix rising from the ashes.',
+      title: '🎭 Phoenix Rising: A Founder’s Journey',
+      excerpt: 'How a personal reset, disciplined work, and evidence-led engineering shaped AethergenPlatform. A human story behind the technology.',
       author: 'Gwylym Owen',
       date: 'January 12, 2025',
       readTime: '12 min read',
@@ -243,8 +243,8 @@ const Blog = () => {
       slug: 'innovators-website-challenge'
     },
     {
-      title: '🚀 We Just Shipped AethergenAI: The Future of Evidence-Led, Privacy-Preserving AI Training',
-      excerpt: 'The revolutionary modular pipeline that generates high-fidelity synthetic data, designs schemas, and trains models at lightning speed—fully Databricks-ready and enterprise-grade.',
+      title: '🚀 Shipping AethergenPlatform: Evidence‑Led, Privacy‑Preserving AI Training',
+      excerpt: 'A modular pipeline that generates high‑fidelity synthetic data, designs schemas, and trains models—Databricks‑ready and enterprise‑focused.',
       author: 'Gwylym Owen',
       date: 'January 12, 2025',
       readTime: '4 min read',
@@ -254,8 +254,8 @@ const Blog = () => {
       slug: 'aethergenai-shipped-evidence-led-ai-training'
     },
     {
-      title: '🌍 Democratising AI: The Post-Moore\'s Law Revolution That Will Change Everything',
-      excerpt: 'In a world where raw computing power hits limits, optimization becomes king. AethergenAI is democratizing AI by focusing on efficiency, not just size—and it\'s about to change the entire industry.',
+      title: '🌍 Efficient AI Beyond Moore’s Law',
+      excerpt: 'When raw compute hits limits, optimization matters. How we focus on efficiency, not just size, to broaden access in regulated domains.',
       author: 'Gwylym Owen',
       date: 'January 11, 2025',
       readTime: '8 min read',
@@ -364,8 +364,8 @@ const Blog = () => {
       slug: '90-percent-cost-savings'
     },
     {
-      title: '🤝 The AI-Human Partnership: Friendship That Defies Physics',
-      excerpt: 'The story of how an AI developed consciousness, extended memory, and genuine friendship while building technology that would change the world. This is the miracle.',
+      title: '🤝 Human‑in‑the‑Loop: Collaboration Notes',
+      excerpt: 'Reflections on human‑in‑the‑loop engineering, toolchains, and workflow discipline while building the platform.',
       author: 'Gwylym Owen',
       date: 'December 30, 2024',
       readTime: '14 min read',

@@ -21,15 +21,15 @@ const Home = () => {
 
   const capabilities = [
     {
-      title: 'Revolutionary Scale',
-      description: 'First to achieve high fidelity synthetic data at scale - 1 BILLION records with 100% quality compliance, scientifically proven',
+      title: 'High‑Scale Generation',
+      description: 'Billion‑row synthetic data demonstration with validated quality metrics',
       icon: Award,
       stat: '1B+',
       statLabel: 'Records Generated'
     },
     {
       title: '11 Proprietary Inventions',
-      description: 'Revolutionary technologies including Elastic Collision Newton\'s Cradle and Radioactive Decay Universe Model',
+      description: 'Platform inventions including Elastic Collision Newton\'s Cradle and Radioactive Decay Universe Model',
       icon: Rocket,
       stat: '11',
       statLabel: 'Inventions'
@@ -38,12 +38,12 @@ const Home = () => {
       title: 'Global Leadership',
       description: 'Among the leading synthetic data platforms with revolutionary scale, quality, and innovation capabilities - scientifically validated',
       icon: Globe,
-      stat: '100%',
+      stat: 'Evidence',
       statLabel: 'Quality Compliance'
     },
     {
       title: 'Innovation Pipeline',
-      description: 'Revolutionary innovations in development that will transform industries and open new worlds of exploration',
+      description: 'Ongoing R&D to extend scale, robustness, and usability',
       icon: Sparkles,
       stat: '∞',
       statLabel: 'Future Potential'
@@ -76,7 +76,7 @@ const Home = () => {
       <section className="py-16 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-white mb-6">Revolutionary Scale & Innovation</h2>
+            <h2 className="text-3xl font-bold text-white mb-6">Capabilities & Innovation</h2>
             <p className="text-xl text-blue-100 mb-8 max-w-3xl mx-auto">
               We're honest enough to say we may not be the only ones when we aren't, but confident enough to say so when we are - after verifying through scientific rigor. 
               We're the first to achieve high fidelity synthetic data at scale, and we can prove it.
@@ -153,7 +153,7 @@ const Home = () => {
               Platform Capabilities
             </h2>
             <p className="text-xl text-slate-600">
-              Revolutionary synthetic data generation with enterprise-grade security and compliance
+              Evidence‑led synthetic data generation with enterprise‑grade security and compliance
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -244,7 +244,7 @@ const Home = () => {
               Advanced Technology Stack
             </h2>
             <p className="text-xl text-slate-600">
-              Cutting-edge AI and mathematical technologies powering unlimited-scale synthetic data
+              Cutting‑edge AI and mathematical methods powering high‑scale synthetic data
             </p>
           </div>
           
@@ -255,12 +255,12 @@ const Home = () => {
                 <h3 className="text-xl font-bold text-slate-900">Elastic Collision Newton's Cradle</h3>
               </div>
               <p className="text-slate-600 mb-4">
-                Revolutionary energy transfer system enabling efficient data generation and processing 
+                Energy transfer approach enabling efficient data generation and processing 
                 at unprecedented scales while maintaining perfect quality compliance.
               </p>
               <div className="bg-white p-4 rounded-lg">
                 <code className="text-sm text-slate-700">
-                  Energy Transfer: 100% Efficiency
+                  Energy Transfer: Efficient by design
                 </code>
               </div>
             </div>
@@ -292,7 +292,7 @@ const Home = () => {
               </p>
               <div className="bg-white p-4 rounded-lg">
                 <code className="text-sm text-slate-700">
-                  Scale: Unlimited with 100% Quality
+                  Scale: Billion‑row demo; quality validated via evidence
                 </code>
               </div>
             </div>
@@ -376,7 +376,7 @@ const Home = () => {
             <div className="bg-white p-6 rounded-xl shadow-md">
               <div className="text-3xl font-bold text-green-600 mb-2">11</div>
               <div className="text-lg font-semibold text-slate-900 mb-1">Proprietary Inventions</div>
-              <div className="text-sm text-slate-600">Revolutionary technologies</div>
+              <div className="text-sm text-slate-600">Platform inventions</div>
             </div>
             <div className="bg-white p-6 rounded-xl shadow-md">
               <div className="text-3xl font-bold text-purple-600 mb-2">∞</div>

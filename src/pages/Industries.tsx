@@ -133,7 +133,7 @@ const Industries = () => {
         'Enterprise LLM client capabilities'
       ],
       potential: 'Unlock $3.5T+ in new markets',
-      impact: 'Revolutionary market creation'
+      impact: 'Emerging market opportunities'
     },
     {
       name: 'Foundation Model Delivery',
@@ -178,7 +178,7 @@ const Industries = () => {
             Industry Solutions
           </h1>
           <p className="text-xl text-blue-100 mb-8 max-w-3xl mx-auto">
-            Revolutionary synthetic data solutions transforming industries with proven 1 billion record generation capability
+            Evidence‑led synthetic data solutions with billion‑row demonstration capability
           </p>
         </div>
       </section>
@@ -278,7 +278,7 @@ const Industries = () => {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-slate-900 mb-6">Future Industry Expansion</h2>
-            <p className="text-xl text-slate-600">Revolutionary technologies opening new dimensions of exploration</p>
+            <p className="text-xl text-slate-600">Ongoing R&D into methods and tooling for scale, robustness, and usability</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

@@ -6,7 +6,7 @@ const TermsOfService: React.FC = () => {
       <h1 className="text-3xl font-extrabold mb-4">Terms of Service</h1>
       <p className="mb-6 text-slate-300">Last updated: {new Date().toLocaleDateString()}</p>
 
-      <p className="mb-4">These Terms govern your use of AethergenAI (the "Service"). By accessing or using the Service, you agree to these Terms.</p>
+      <p className="mb-4">These Terms govern your use of AethergenPlatform (the "Service"). By accessing or using the Service, you agree to these Terms.</p>
 
       <h2 className="text-xl font-semibold mt-8 mb-2">Accounts</h2>
       <p className="mb-4">You are responsible for safeguarding the credentials that you use to access the Service. You must notify us immediately upon becoming aware of any security breach.</p>

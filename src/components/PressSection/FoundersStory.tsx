@@ -86,6 +86,21 @@ const FoundersStory: React.FC<FoundersStoryProps> = ({ onContact }) => {
          "Global leadership in synthetic data",
          "Ready for capital and expansion"
        ]
+     },
+     {
+       title: "The Quiet Constant",
+       subtitle: "Support That Made The Build Possible",
+       description: "Nine months of 120‑hour weeks isn’t a solo performance. Nicola’s steady, practical support kept me healthy, focused, and able to deliver when it mattered.",
+       image: "/images/support.jpg",
+       icon: Leaf,
+       color: "text-blue-400",
+       bgColor: "bg-blue-500/20",
+       details: [
+         "Healthy meals and routine during intense build phases",
+         "Calm perspective when buried in edge cases",
+         "Absorbing frustration so the work could continue",
+         "A quiet runway to ship reliably"
+       ]
      }
   ];
 

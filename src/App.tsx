@@ -18,6 +18,8 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfUse from './pages/TermsOfUse';
 import DPA from './pages/DPA';
 import Subprocessors from './pages/Subprocessors';
+import ManifoldPrototype from './pages/ManifoldPrototype';
+import ManifoldExplainer from './pages/ManifoldExplainer';
 
 import Footer from './components/Footer';
 
@@ -57,6 +59,8 @@ function App() {
             <Route path="/terms" element={<TermsOfUse />} />
             <Route path="/dpa" element={<DPA />} />
             <Route path="/subprocessors" element={<Subprocessors />} />
+            <Route path="/manifold-prototype" element={<ManifoldPrototype />} />
+            <Route path="/manifold-explainer" element={<ManifoldExplainer />} />
           </Routes>
         </div>
         <Footer />

@@ -14,6 +14,7 @@ const PublisherOnboardingModal: React.FC<Props> = ({ open, onClose }) => {
   const [schema, setSchema] = useState('');
   const [tablePrefix, setTablePrefix] = useState('aethergen_');
   const [useUnityCatalog, setUseUnityCatalog] = useState(true);
+  const [useEnv, setUseEnv] = useState(false);
   const [isTesting, setIsTesting] = useState(false);
   const [testResult, setTestResult] = useState<TestResult>(null);
 
@@ -32,7 +33,7 @@ const PublisherOnboardingModal: React.FC<Props> = ({ open, onClose }) => {
     } catch (_) {}
   }, [open]);
 
-  const disabled = !workspaceUrl || !patToken;
+  const disabled = !useEnv && (!workspaceUrl || !patToken);
 
   const handleTest = async () => {
     setIsTesting(true);
@@ -41,7 +42,7 @@ const PublisherOnboardingModal: React.FC<Props> = ({ open, onClose }) => {
       const res = await fetch('/api/marketplace-test', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ workspaceUrl, patToken })
+        body: JSON.stringify({ workspaceUrl, patToken, useEnv })
       });
       const data = await res.json();
       setTestResult({ ok: res.ok && data?.ok, message: data?.message });
@@ -103,6 +104,10 @@ const PublisherOnboardingModal: React.FC<Props> = ({ open, onClose }) => {
               <label className="block text-sm font-medium text-slate-700 mb-1">Table Prefix</label>
               <input value={tablePrefix} onChange={e=>setTablePrefix(e.target.value)} placeholder="aethergen_" className="w-full border rounded-lg px-3 py-2" />
             </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <input id="useenv" type="checkbox" checked={useEnv} onChange={e=>setUseEnv(e.target.checked)} />
+            <label htmlFor="useenv" className="text-sm text-slate-700">Use Netlify environment variables</label>
           </div>
           <div className="flex items-center gap-2">
             <input id="uc" type="checkbox" checked={useUnityCatalog} onChange={e=>setUseUnityCatalog(e.target.checked)} />

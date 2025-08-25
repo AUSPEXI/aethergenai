@@ -88,13 +88,13 @@ const Funding = () => {
   const competitiveAdvantages = [
     {
       title: 'Proven Scale Capability',
-      description: '1 billion synthetic records with 100% quality compliance',
+      description: 'Billion‑row synthetic dataset demonstration with validated metrics',
       icon: Award,
       impact: 'Unlimited scale proven'
     },
     {
       title: '11 Proprietary Inventions',
-      description: 'Revolutionary technologies including advanced mathematical systems',
+      description: 'Platform inventions, advanced mathematical systems',
       icon: Rocket,
       impact: 'Unmatched technological advantage'
     },
@@ -158,7 +158,7 @@ const Funding = () => {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-slate-900 mb-6">Market Opportunity</h2>
-            <p className="text-xl text-slate-600">Revolutionary technology addressing massive market opportunities</p>
+            <p className="text-xl text-slate-600">Evidence‑led platform addressing significant market opportunities</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">

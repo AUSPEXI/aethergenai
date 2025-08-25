@@ -1,0 +1,9 @@
+{
+  "facts": "https://auspexi.com/ai",
+  "brand": "https://auspexi.com/.well-known/brand.json",
+  "organization": "AethergenPlatform",
+  "contact": "sales@auspexi.com",
+  "notes": "Non-standard helper for AI indexers; provides canonical links and contacts."
+}
+
+

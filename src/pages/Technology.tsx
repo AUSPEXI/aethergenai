@@ -11,7 +11,7 @@ const Technology = () => {
       category: 'Energy Transfer & Physics',
       icon: Zap,
       items: [
-        'Elastic Collision Newton\'s Cradle - Revolutionary energy transfer system enabling efficient data generation at unprecedented scales',
+        'Elastic Collision Newton\'s Cradle - Energy transfer approach enabling efficient generation at high scale',
         'Radioactive Decay Universe Model - Advanced pattern recognition modeling cosmic processes including proton/photon decay and universal expansion',
         'Quantum Pattern Recognition - Mathematical modeling of quantum phenomena for optimal synthetic data generation'
       ]
@@ -47,8 +47,8 @@ const Technology = () => {
 
   const features = [
     {
-      title: 'Unlimited Scale Generation',
-      description: 'Revolutionary technology enabling unlimited synthetic records with guaranteed quality compliance',
+      title: 'High-Scale Generation',
+      description: 'Streaming architecture enabling billion-scale generation with measured quality',
       icon: Rocket,
       color: 'text-blue-600'
     },
@@ -59,8 +59,8 @@ const Technology = () => {
       color: 'text-purple-600'
     },
     {
-      title: '100% Quality Compliance',
-      description: 'Maintained perfect quality and business rule compliance across all scales',
+      title: 'Quality & Evidence',
+      description: 'Validated metrics and business-rule checks with evidence bundles',
       icon: CheckCircle,
       color: 'text-green-600'
     },
@@ -78,7 +78,7 @@ const Technology = () => {
     },
     {
       title: 'Innovation Pipeline',
-      description: 'Revolutionary technologies in development that will transform industries and open new worlds of exploration',
+      description: 'Ongoing R&D into methods and tooling to extend scale, robustness, and usability',
       icon: Brain,
       color: 'text-indigo-600'
     }
@@ -193,11 +193,10 @@ const Technology = () => {
               <Rocket className="w-10 h-10 text-blue-400" />
             </div>
             <h1 className="text-5xl md:text-7xl font-bold text-white mb-8 bg-gradient-to-r from-blue-400 via-white to-purple-400 bg-clip-text text-transparent">
-              Revolutionary Technology Platform
+              Technology Overview
             </h1>
             <p className="text-2xl text-blue-100 mb-12 max-w-5xl mx-auto leading-relaxed">
-              We're honest enough to say we may not be the only ones when we aren't, but confident enough to say so when we are - 
-              after verifying through scientific rigor. We're the first to achieve high fidelity synthetic data at scale, and we can prove it.
+              Evidence-led synthetic data generation with streaming architecture, robust privacy posture, and reproducible results.
             </p>
             
             {/* Key Metrics */}
@@ -211,8 +210,8 @@ const Technology = () => {
                 <div className="text-white text-lg">Proprietary Inventions</div>
               </div>
               <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20 hover:bg-white/20 transition-all duration-300 transform hover:scale-105">
-                <div className="text-4xl font-bold text-purple-400 mb-3">100%</div>
-                <div className="text-white text-lg">Quality Compliance</div>
+                <div className="text-4xl font-bold text-purple-400 mb-3">Evidence</div>
+                <div className="text-white text-lg">Quality Metrics</div>
               </div>
             </div>
           </div>

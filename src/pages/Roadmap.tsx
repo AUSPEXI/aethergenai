@@ -16,7 +16,7 @@ const Roadmap = () => {
         'Core algorithm design',
         'Eye of Horus mathematical modeling',
         'Dürer\'s mathematical solids research',
-        'Cosmic mathematical theory'
+        'Exploration of high-dimensional field models'
       ],
       metrics: {
         research: 'Foundation Complete',
@@ -29,23 +29,18 @@ const Roadmap = () => {
       version: 'Breakthrough System',
       date: '2025 - Current',
       status: 'completed',
-      title: 'Mission Complete - Breakthrough Achieved!',
-      description: 'The breakthrough system that achieved what was previously considered impossible: unlimited-scale synthetic data generation with perfect quality.',
+      title: 'High-Scale Demonstration',
+      description: 'Billion-row synthetic data demonstration under controlled test conditions.',
       achievements: [
-        'Unlimited synthetic records generated - Scale proven!',
-        'Advanced proprietary technology developed and proven',
-        '100% quality compliance maintained at any scale',
-        'Unlimited scale capability proven',
-        'Advanced proprietary systems operational',
-        'Cosmic modeling technology active',
-        'Multi-dimensional simulation running',
-        'Global leadership in synthetic data established'
+        '1B synthetic rows demonstrated (demo environment)',
+        'Evidence bundle: schema hash, ablation tests, generator versioning',
+        'High-dimensional field modeling prototype'
       ],
       metrics: {
-        records: 'Unlimited Generated',
-        technology: 'Advanced Proven',
-        quality: '100% Maintained',
-        scale: 'Unlimited'
+        records: '1B demo',
+        technology: 'Prototype proven',
+        quality: 'Metrics within targets (per evidence bundle)',
+        scale: 'High-scale (demo)'
       }
     },
     {
@@ -61,7 +56,8 @@ const Roadmap = () => {
         'Foundation model infrastructure planning',
         'Enterprise-scale AI platform development',
         'Clear self-service and full-service models',
-        'Proven customer acquisition strategy'
+        'Go-to-market plan and early design-partner outreach',
+        'Databricks Marketplace onboarding pathway defined'
       ],
       metrics: {
         innovations: 'In Development',
@@ -83,7 +79,7 @@ const Roadmap = () => {
         'Enterprise AI platform for global industries',
         'Market expansion in previously inaccessible sectors',
         'AI democratization through clear service models',
-        'Global technological evolution stewardship'
+        'Responsible scaling and governance'
       ],
       metrics: {
         dimensions: 'Multiple Reality',
@@ -102,13 +98,13 @@ const Roadmap = () => {
     },
     {
       quarter: '2025',
-      title: 'World Record Achievement',
-      description: '1 billion synthetic records generated with 11 inventions'
+      title: 'Billion-Row Demonstration',
+      description: '1 billion synthetic records demonstrated (internal test)'
     },
     {
       quarter: '2025',
       title: 'Multi Data Pipeline',
-      description: 'Revolutionary pipeline enabling unlimited scale generation'
+      description: 'Streaming pipeline enabling high-scale generation'
     },
     {
       quarter: '2025-2026',
@@ -123,7 +119,7 @@ const Roadmap = () => {
     {
       quarter: '2026+',
       title: 'Market Creation',
-      description: 'New dimensions of human exploration and understanding'
+      description: 'New industry use cases and research directions'
     }
   ];
 
@@ -170,6 +166,7 @@ const Roadmap = () => {
       {/* Roadmap Items */}
       <section className="py-16 bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <p className="text-sm text-slate-500 mb-6">Roadmap items are forward-looking and subject to change.</p>
           <div className="space-y-12">
             {roadmapItems.map((item, index) => (
               <div

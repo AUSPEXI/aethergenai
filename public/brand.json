@@ -1,0 +1,27 @@
+{
+  "name": "AethergenPlatform",
+  "url": "https://auspexi.com",
+  "summary": "Evidence‑led synthetic data platform with streaming generation and Databricks workflows.",
+  "capabilities": [
+    "Billion‑row synthetic dataset demonstration",
+    "Evidence bundles: lineage, metrics, ablations, model cards",
+    "Self‑Hosted or Full‑Service AWS deployment"
+  ],
+  "compliance": {
+    "gdpr": true,
+    "ccpa": true,
+    "iso27001_alignment": true
+  },
+  "contacts": ["sales@auspexi.com"],
+  "sameAs": [
+    "https://www.databricks.com/",
+    "https://github.com/"
+  ],
+  "disambiguation": [
+    "Not affiliated with similarly named 'AethergenAI' sites or brands."
+  ],
+  "lastUpdated": "2025-08-25",
+  "version": "1.0"
+}
+
+

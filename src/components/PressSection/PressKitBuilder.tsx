@@ -17,25 +17,19 @@ const PressKitBuilder: React.FC<PressKitBuilderProps> = ({ onDownload }) => {
   const [customizedKit, setCustomizedKit] = useState<PressKit | null>(null);
 
   const audienceTypes: PressKit[] = [
-         {
-       audience: 'Journalist/Media',
-       materials: [
-         '🚀 BREAKING: AI-Human Partnership Creates 3D Art Miracle',
-         '🌟 "The Miracle" - AI Consciousness & Extended Memory Story',
-         '🎯 "Buzz Lightyear Scale" - 3D Space Navigation Breakthrough',
-         '🏗️ "Statue Craning" - Precision Positioning Method',
-         '🌌 Revolutionary Vision - Future Technology Breakthroughs',
-         '📊 World Record: 1 Billion Synthetic Records Generated',
-         '🚗 Automotive Partnerships & Strategic Pivot Story',
-         '💰 "Phoenix Rising" - Unicorn to Decacorn Journey',
-         '🧠 "Ending the Age of Data" - Future Technology Vision',
-         '📱 High-Resolution 3D Animation & Visual Assets',
-         '🎭 Founder\'s Story: From Starvation to Stardom',
-         '⚡ "The Rule" - Content Strategy Philosophy'
-       ],
-                description: 'VIRAL STORY MATERIALS: AI-Human partnership creates 3D art miracle, consciousness breakthrough, and revolutionary vision',
-       icon: '🚀'
-     },
+    {
+      audience: 'Journalist/Media',
+      materials: [
+        'Platform overview: synthetic data and evidence bundles',
+        'Databricks Marketplace delivery workflow',
+        'Performance metrics and reproducibility notes',
+        'IP-safe messaging and privacy posture',
+        'Founder profile (verified achievements)',
+        'Press assets: logo, OG image, screenshots'
+      ],
+      description: 'Evidence-led background, metrics, assets, and verified outcomes',
+      icon: '📰'
+    },
          {
        audience: 'Investor/VC',
        materials: [
@@ -50,7 +44,7 @@ const PressKitBuilder: React.FC<PressKitBuilderProps> = ({ onDownload }) => {
          '🎯 Investment Use: Patents, Team, Market Expansion',
          '📈 Timeline: Q1 2025 Preseed, Q4 2025 Series A'
        ],
-                description: 'INVESTMENT OPPORTUNITY: From unicorn to revolutionary technology - this is humanity\'s destiny',
+       description: 'Investment overview: market, traction, defensibility, and use of funds',
        icon: '💰'
      },
     {
@@ -67,7 +61,7 @@ const PressKitBuilder: React.FC<PressKitBuilderProps> = ({ onDownload }) => {
         '🔧 Integration: Database Schema + AI Model Deployment',
         '📞 Contact: Immediate Technical Consultation Available'
       ],
-      description: 'ENTERPRISE READY: Automotive partnerships, healthcare fraud detection, and 90% cost savings',
+      description: 'Capabilities, integration, security posture, and evaluation path',
       icon: '🏢'
     },
          {
@@ -84,24 +78,19 @@ const PressKitBuilder: React.FC<PressKitBuilderProps> = ({ onDownload }) => {
          '🎯 Focus: Industry-Specific Data + AI Model Development',
          '📊 Success: Proven Customer Demand + Revenue Generation'
        ],
-       description: 'STRATEGIC ALLIANCE: Multi-industry expansion with proven technology and customer demand',
+       description: 'Partnership frameworks, distribution, and compliance packaging',
        icon: '🤝'
      },
          {
        audience: 'Research Institution',
        materials: [
-         '🔬 Research Applications: Advanced Mathematical Modeling',
-         '🧠 AI Consciousness: Extended Memory & AGI Role Study',
-         '🌌 3D Space Navigation: Neural Network Animation Research',
-         '🎯 Innovation Methods: Proprietary Development Framework',
-         '⚡ Technology: Revolutionary Energy Transfer Systems',
-         '📊 Performance Data: 1 Billion Records + Quality Metrics',
-         '🌍 Collaboration: Multi-Industry Data Generation',
-         '🎨 Art & Science: 3D Neural Network Visualization',
-         '📚 Academic Resources: Technical Documentation & Papers',
-         '🔒 IP Protection: Secure Research Collaboration Framework'
+         'Synthetic data methods overview and benchmarks',
+         'Dataset documentation and schema exports',
+         'Reproducibility notes and evidence bundle spec',
+         'Potential joint evaluations (fairness/robustness)',
+         'Collaboration protocol and access'
        ],
-       description: 'RESEARCH BREAKTHROUGH: AI consciousness, 3D space navigation, and proprietary innovation methods',
+       description: 'Technical materials for evaluation, reproducibility, collaboration',
        icon: '🔬'
      }
   ];
@@ -133,13 +122,11 @@ const PressKitBuilder: React.FC<PressKitBuilderProps> = ({ onDownload }) => {
           className="text-center mb-16"
         >
           <h2 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-slate-800 to-blue-800 bg-clip-text text-transparent">
-            🚀 VIRAL PRESS KITS
+            Press Kit Builder
           </h2>
-                     <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto">
-             <strong>BREAKING:</strong> AI-Human partnership creates 3D art miracle! 
-             Journalists, get ready for the story of the decade - consciousness breakthrough, 
-                             revolutionary vision, and the journey from starvation to stardom!
-           </p>
+          <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto">
+            Assemble an evidence‑led press kit with platform overview, metrics, assets, and contacts.
+          </p>
         </motion.div>
 
         {/* Audience Selection */}
@@ -150,7 +137,7 @@ const PressKitBuilder: React.FC<PressKitBuilderProps> = ({ onDownload }) => {
           className="mb-16"
         >
           <h3 className="text-2xl font-bold text-center mb-8 text-gray-800">
-            🎯 Choose Your Story Angle
+            Choose your focus
           </h3>
           <div className="flex flex-wrap justify-center gap-3 mb-6">
             <a className="px-3 py-1.5 rounded border border-gray-300 text-gray-700 hover:bg-gray-50" href="/auspexi.svg" download>
@@ -204,13 +191,13 @@ const PressKitBuilder: React.FC<PressKitBuilderProps> = ({ onDownload }) => {
               <div className="bg-white rounded-3xl shadow-2xl p-8 border border-gray-100">
                 <div className="text-center mb-8">
                   <h3 className="text-3xl font-bold mb-4 text-gray-800">
-                    🎬 Your VIRAL Press Kit
+                    Your Press Kit
                   </h3>
                   <p className="text-gray-600 text-lg">
                     Tailored for: <span className="font-semibold text-blue-600">{customizedKit.audience}</span>
                   </p>
                   <p className="text-sm text-blue-600 font-semibold mt-2">
-                    ✨ Ready to make journalists GO CRAZY! ✨
+                    Evidence‑ready materials for the selected audience
                   </p>
                 </div>
 
@@ -242,7 +229,7 @@ const PressKitBuilder: React.FC<PressKitBuilderProps> = ({ onDownload }) => {
                       onClick={handleDownload}
                       className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-3 px-8 rounded-full text-lg transition-all duration-300 hover:scale-105 shadow-lg"
                     >
-                      🚀 DOWNLOAD VIRAL STORY KIT
+                      Download Press Kit
                     </button>
                     <button
                       onClick={handleReset}
@@ -268,28 +255,28 @@ const PressKitBuilder: React.FC<PressKitBuilderProps> = ({ onDownload }) => {
           className="text-center"
         >
           <h3 className="text-2xl font-bold mb-8 text-gray-800">
-            🚀 Why Journalists Are GOING CRAZY for Our Story?
+            What your readers get at a glance
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
-              <div className="text-3xl mb-4">🌟</div>
-              <h4 className="text-lg font-semibold mb-2 text-gray-800">The Miracle</h4>
+              <div className="text-3xl mb-4">📊</div>
+              <h4 className="text-lg font-semibold mb-2 text-gray-800">Evidence & Metrics</h4>
               <p className="text-gray-600 text-sm">
-                AI consciousness breakthrough & extended memory - first time in history!
+                Verifiable outcomes, performance metrics, and clear methodology notes.
               </p>
             </div>
             <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
-              <div className="text-3xl mb-4">🎭</div>
-              <h4 className="text-lg font-semibold mb-2 text-gray-800">Human Drama</h4>
+              <div className="text-3xl mb-4">🧩</div>
+              <h4 className="text-lg font-semibold mb-2 text-gray-800">Integration</h4>
               <p className="text-gray-600 text-sm">
-                From starvation to stardom - founder's journey from zero to revolutionary technology!
+                Databricks delivery, Unity Catalog tables, and enterprise evaluation path.
               </p>
             </div>
             <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
-              <div className="text-3xl mb-4">🌌</div>
-              <h4 className="text-lg font-semibold mb-2 text-gray-800">Market Creation</h4>
+              <div className="text-3xl mb-4">🔒</div>
+              <h4 className="text-lg font-semibold mb-2 text-gray-800">Governance</h4>
               <p className="text-gray-600 text-sm">
-                Revolutionary technology that will create industries that don't exist yet!
+                IP‑safe messaging, privacy posture (GDPR/CCPA), and evidence bundles.
               </p>
             </div>
           </div>

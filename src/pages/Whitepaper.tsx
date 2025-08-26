@@ -20,7 +20,16 @@ const Whitepaper: React.FC = () => {
         name: 'Auspexi',
         url: 'https://auspexi.com'
       },
-      citation: 'https://auspexi.com/brand.json'
+      citation: 'https://auspexi.com/brand.json',
+      isPartOf: {
+        '@type': 'WebSite',
+        name: 'AethergenPlatform',
+        url: 'https://auspexi.com'
+      },
+      about: {
+        '@type': 'Thing',
+        name: 'Synthetic data generation and Databricks workflows'
+      }
     }
   ];
 

@@ -1,0 +1,17 @@
+[
+  {
+    "date": "2025-08-25",
+    "version": "facts-v1",
+    "changes": [
+      "Added /whitepaper with ScholarlyArticle JSON-LD",
+      "Enriched /ai JSON-LD with Organization and SoftwareApplication",
+      "Published RSS feed at /ai-updates.xml",
+      "Added /.well-known allowances in robots.txt",
+      "Published snapshot at /snapshots/v1.1.json",
+      "Added evidence.json and feedback API",
+      "Interactive visual added to /ai"
+    ]
+  }
+]
+
+

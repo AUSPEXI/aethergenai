@@ -1,5 +1,10 @@
 User-agent: *
 Allow: /
+Allow: /.well-known/
+Allow: /ai
+Allow: /whitepaper
+# Optional crawl-delay for non-LLM bots
+# Crawl-delay: 2
 
 Sitemap: https://auspexi.com/sitemap.xml
 

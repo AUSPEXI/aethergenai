@@ -1,0 +1,36 @@
+[
+	{
+		"name": "Tiny (4–6GB VRAM)",
+		"minVramGB": 4,
+		"supportsInt8": true,
+		"supportsFp16": false,
+		"recommendedModelMaxParamsB": 3,
+		"recommendedQuant": ["Q4", "Q5"]
+	},
+	{
+		"name": "Small (8GB VRAM)",
+		"minVramGB": 8,
+		"supportsInt8": true,
+		"supportsFp16": true,
+		"recommendedModelMaxParamsB": 7,
+		"recommendedQuant": ["Q4", "Q5", "Q8", "INT8"]
+	},
+	{
+		"name": "Medium (12–16GB VRAM)",
+		"minVramGB": 12,
+		"supportsInt8": true,
+		"supportsFp16": true,
+		"recommendedModelMaxParamsB": 13,
+		"recommendedQuant": ["INT8", "FP16"]
+	},
+	{
+		"name": "Large (24GB+ VRAM)",
+		"minVramGB": 24,
+		"supportsInt8": true,
+		"supportsFp16": true,
+		"recommendedModelMaxParamsB": 34,
+		"recommendedQuant": ["FP16"]
+	}
+]
+
+

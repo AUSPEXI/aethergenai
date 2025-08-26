@@ -20,8 +20,12 @@ import DPA from './pages/DPA';
 import Subprocessors from './pages/Subprocessors';
 import ManifoldPrototype from './pages/ManifoldPrototype';
 import ManifoldExplainer from './pages/ManifoldExplainer';
+import ResourcesLLMIndexing from './pages/ResourcesLLMIndexing';
+import ResourcesLLMBenchmarks from './pages/ResourcesLLMBenchmarks';
+import ResourcesVisibilityScore from './pages/ResourcesVisibilityScore';
 import AI from './pages/AI';
 import Whitepaper from './pages/Whitepaper';
+import Publisher from './pages/Publisher';
 
 import Footer from './components/Footer';
 
@@ -64,7 +68,11 @@ function App() {
             <Route path="/manifold-prototype" element={<ManifoldPrototype />} />
             <Route path="/manifold-explainer" element={<ManifoldExplainer />} />
             <Route path="/ai" element={<AI />} />
+            <Route path="/resources/llm-indexing" element={<ResourcesLLMIndexing />} />
+            <Route path="/resources/llm-benchmarks" element={<ResourcesLLMBenchmarks />} />
+            <Route path="/resources/visibility-score" element={<ResourcesVisibilityScore />} />
             <Route path="/whitepaper" element={<Whitepaper />} />
+            <Route path="/publisher" element={<Publisher />} />
           </Routes>
         </div>
         <Footer />

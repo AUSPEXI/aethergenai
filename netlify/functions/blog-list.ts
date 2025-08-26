@@ -10,10 +10,10 @@ const handler: Handler = async () => {
 			.eq('status','published')
 			.order('published_at', { ascending: false })
 			.limit(50)
-		if (error) return { statusCode: 500, body: error.message }
+		if (error) return { statusCode: 500, body: `blog-list: ${error.message}` }
 		return { statusCode: 200, body: JSON.stringify(data || []) }
 	} catch (e: any) {
-		return { statusCode: 500, body: e?.message || 'error' }
+		return { statusCode: 500, body: `blog-list catch: ${e?.message || 'error'}` }
 	}
 }
 

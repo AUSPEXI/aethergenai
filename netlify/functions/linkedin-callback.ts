@@ -17,7 +17,7 @@ async function exchangeCodeForToken(code: string, redirectUri: string) {
 		body: body.toString(),
 	})
 	if (!resp.ok) throw new Error(`Token exchange failed: ${resp.status}`)
-	return resp.json() as Promise<{ access_token: string; expires_in: number }>
+	return resp.json() as Promise<{ access_token: string; expires_in: number; id_token?: string }>
 }
 
 const handler: Handler = async (event) => {
@@ -30,10 +30,19 @@ const handler: Handler = async (event) => {
 		// Store token for organization posting (no r_liteprofile required)
 		const supabase = getServiceClient()
 		const orgUrn = process.env.LINKEDIN_ORG_URN || null
+		let personUrn: string | null = null
+		if (token.id_token) {
+			try {
+				const payloadB64 = token.id_token.split('.')[1]
+				const payload = JSON.parse(Buffer.from(payloadB64, 'base64').toString('utf8'))
+				if (payload?.sub) personUrn = `urn:li:person:${payload.sub}`
+			} catch {}
+		}
+		const accountRef = orgUrn || personUrn
 		const expiresAt = new Date(Date.now() + (token.expires_in || 0) * 1000).toISOString()
 		const { error } = await supabase.from('social_accounts').insert({
 			provider: 'linkedin',
-			account_ref: orgUrn,
+			account_ref: accountRef,
 			owner_email: null,
 			access_token: token.access_token,
 			refresh_token: null,
@@ -44,7 +53,7 @@ const handler: Handler = async (event) => {
 		return {
 			statusCode: 200,
 			headers: { 'content-type': 'text/html' },
-			body: `<html><body><h1>LinkedIn connected</h1><p>Organization mode enabled.</p><p>You can close this window.</p></body></html>`
+			body: `<html><body><h1>LinkedIn connected</h1><p>${orgUrn ? 'Organization' : 'Member'} mode enabled.</p><p>You can close this window.</p></body></html>`
 		}
 	} catch (e: any) {
 		return { statusCode: 500, body: e?.message || 'error' }

@@ -1,7 +1,10 @@
 import React, { useMemo, useState } from 'react';
-import { CheckCircle, GitBranch, Play, RefreshCw, Download, Settings, Database } from 'lucide-react';
+import { CheckCircle, GitBranch, Play, RefreshCw, Download, Settings, Database, Package } from 'lucide-react';
 import { getAutomotiveSeedSchema, generateSeedRecords, generateInChunks } from '../../services/seedSchemaService';
 import MultiDataPipelineService, { MultiDataPipelineConfig, SchemaHarmonizationResult, CrossDomainSynthesisResult, FoundationModelInfrastructure } from '../../services/multiDataPipelineService';
+import { generateEdgeBundleZip } from '../../services/edgePackagingService';
+import { detectDeviceHeuristic } from '../../services/deviceDetection';
+import { exportGGUF, exportONNX, exportLoRAAdapter } from '../../services/edgeExportersService';
 
 type ComputeMode = 'self-service' | 'full-service';
 
@@ -20,7 +23,9 @@ const PipelineManager: React.FC = () => {
   const [infraPlan, setInfraPlan] = useState<FoundationModelInfrastructure | null>(null);
   const [busy, setBusy] = useState<'harmonize' | 'synthesize' | 'plan' | null>(null);
   const [seedBusy, setSeedBusy] = useState<boolean>(false);
+  const [edgeBusy, setEdgeBusy] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [detectedVram, setDetectedVram] = useState<number | null>(null);
 
   const domains = useMemo(() => domainsText.split(',').map(d => d.trim()).filter(Boolean), [domainsText]);
 
@@ -133,6 +138,56 @@ const PipelineManager: React.FC = () => {
     }
   };
 
+  const onGenerateEdgeBundle = async () => {
+    try {
+      setEdgeBusy(true);
+      const vram = Number(prompt('Approx VRAM (GB)? e.g., 8')) || 8;
+      const blob = await generateEdgeBundleZip({
+        projectName: 'AethergenPlatform-Edge',
+        deviceInfo: { vramGB: vram, int8: true, fp16: true },
+        harmonizedSchema: harmonizeResult || undefined,
+        synthesisEvidence: synthResult || undefined,
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'edge-bundle-beta.zip';
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      setError('Failed to generate Edge Bundle');
+    } finally {
+      setEdgeBusy(false);
+    }
+  };
+
+  const onDetectDevice = () => {
+    const d = detectDeviceHeuristic();
+    setDetectedVram(d.approxVramGB);
+  };
+
+  const saveBlob = (blob: Blob, filename: string) => {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const onExportGGUF = async () => {
+    const b = await exportGGUF({ modelName: 'aethergen-demo', profileName: 'auto' });
+    saveBlob(b, 'model.gguf.stub.txt');
+  };
+  const onExportONNX = async () => {
+    const b = await exportONNX({ modelName: 'aethergen-demo', profileName: 'auto' });
+    saveBlob(b, 'model.onnx.stub.txt');
+  };
+  const onExportLoRA = async () => {
+    const b = await exportLoRAAdapter({ modelName: 'aethergen-demo', profileName: 'auto' });
+    saveBlob(b, 'adapter.lora.stub.json');
+  };
+
   const downloadJson = (obj: unknown, filename: string) => {
     const blob = new Blob([JSON.stringify(obj, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -194,6 +249,15 @@ const PipelineManager: React.FC = () => {
           <button onClick={onGenerateLarge} className="inline-flex items-center px-4 py-2 bg-fuchsia-600 text-white rounded hover:bg-fuchsia-700">
             Download 1M (chunks)
           </button>
+          <button onClick={onGenerateEdgeBundle} disabled={edgeBusy} className="inline-flex items-center px-4 py-2 bg-amber-600 text-white rounded hover:bg-amber-700 disabled:opacity-50">
+            <Package className="h-4 w-4 mr-2" /> {edgeBusy ? 'Packaging…' : 'Edge Bundle (Beta)'}
+          </button>
+          <button onClick={onDetectDevice} className="inline-flex items-center px-3 py-2 bg-slate-100 text-slate-800 rounded hover:bg-slate-200">
+            Detect Device
+          </button>
+          {detectedVram && (
+            <span className="text-sm text-slate-600 self-center">Detected VRAM (heuristic): {detectedVram} GB</span>
+          )}
           {harmonizeResult && (
             <button onClick={() => downloadJson(harmonizeResult, 'harmonized_schema.json')} className="inline-flex items-center px-4 py-2 bg-slate-100 text-slate-800 rounded hover:bg-slate-200">
               <Download className="h-4 w-4 mr-2" /> Export Schema
@@ -204,6 +268,11 @@ const PipelineManager: React.FC = () => {
               <Download className="h-4 w-4 mr-2" /> Export Evidence
             </button>
           )}
+        </div>
+        <div className="flex gap-3 mt-3">
+          <button onClick={onExportGGUF} className="px-3 py-2 bg-slate-100 text-slate-800 rounded hover:bg-slate-200">Export GGUF (stub)</button>
+          <button onClick={onExportONNX} className="px-3 py-2 bg-slate-100 text-slate-800 rounded hover:bg-slate-200">Export ONNX (stub)</button>
+          <button onClick={onExportLoRA} className="px-3 py-2 bg-slate-100 text-slate-800 rounded hover:bg-slate-200">Export LoRA (stub)</button>
         </div>
       </div>
 

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>AethergenPlatform – AI Facts Updates</title>
+    <link>https://auspexi.com/ai</link>
+    <description>Updates to the AI Facts Pack and machine-readable brand information.</description>
+    <language>en-gb</language>
+    <item>
+      <title>facts-v1 published</title>
+      <link>https://auspexi.com/ai</link>
+      <pubDate>Mon, 25 Aug 2025 00:00:00 GMT</pubDate>
+      <guid>facts-v1</guid>
+      <description>Initial AI facts pack and brand.json published. Whitepaper added.</description>
+    </item>
+  </channel>
+  
+</rss>
+
+
+

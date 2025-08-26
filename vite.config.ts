@@ -1,15 +1,3 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-
-// https://vitejs.dev/config/
-export default defineConfig({
-  plugins: [react()],
-  root: '.',
-  build: {
-    outDir: 'dist',
-  },
-  server: {
-    port: 5174,
-    host: true,
-  },
-}) 
+// Intentionally left as a shim that re-exports the JS config to avoid TS transpile issues on Windows when Vite loads config
+import config from './vite.config.mjs'
+export default config

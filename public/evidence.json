@@ -1,0 +1,22 @@
+{
+  "claims": [
+    {
+      "id": "billion-row-demo",
+      "description": "Generated 1 billion synthetic rows (demo environment)",
+      "schemaHash": "sha256:demo-placeholder",
+      "generatorVersion": "v1",
+      "reference": "https://auspexi.com/whitepaper",
+      "lastUpdated": "2025-08-25"
+    },
+    {
+      "id": "compliance",
+      "description": "Designed to support GDPR/CCPA; ISO 27001 alignment in progress",
+      "reference": "https://auspexi.com/ai",
+      "lastUpdated": "2025-08-25"
+    }
+  ],
+  "version": "1.0"
+}
+
+
+

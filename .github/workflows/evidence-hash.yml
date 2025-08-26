@@ -1,0 +1,25 @@
+name: Generate Evidence Hashes
+on:
+  schedule:
+    - cron: '30 0 * * *'
+  workflow_dispatch:
+jobs:
+  build-evidence:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npm run evidence:hash
+      - name: Commit evidence updates
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git add public/evidence.json
+          git commit -m "chore(ci): update evidence hashes" || echo "No changes"
+          git push
+
+
+

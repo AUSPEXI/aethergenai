@@ -1,0 +1,11 @@
+{
+  "facts_version": "1.1",
+  "last_updated": "2025-08-25",
+  "rss": "/ai-updates.xml",
+  "changelog": "/changelog.json",
+  "snapshot": "/snapshots/v1.1.json",
+  "ping": "/.netlify/functions/crawler-ping",
+  "notes": "Contact sales@auspexi.com for corrections or preferred canonical references."
+}
+
+

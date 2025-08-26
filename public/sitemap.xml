@@ -10,6 +10,15 @@
   <url><loc>https://auspexi.com/hero-art</loc></url>
   <url><loc>https://auspexi.com/ai</loc></url>
   <url><loc>https://auspexi.com/whitepaper</loc></url>
+  <url><loc>https://auspexi.com/evidence.json</loc></url>
+  <url><loc>https://auspexi.com/ai-updates.xml</loc></url>
+  <url><loc>https://auspexi.com/changelog.json</loc></url>
+  <url><loc>https://auspexi.com/snapshots/v1.1.json</loc></url>
+  <url><loc>https://auspexi.com/.netlify/functions/crawler-health</loc></url>
+  <url><loc>https://auspexi.com/.netlify/functions/events</loc></url>
+  <url><loc>https://auspexi.com/resources/llm-indexing</loc></url>
+  <url><loc>https://auspexi.com/resources/llm-benchmarks</loc></url>
+  <url><loc>https://auspexi.com/resources/visibility-score</loc></url>
 </urlset>
 
 

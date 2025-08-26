@@ -1,6 +1,7 @@
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Calendar, User, Clock } from 'lucide-react';
+import { Link as RouterLink } from 'react-router-dom';
 
 // Blog post data – curated, evidence-led posts only
 const blogPostsData = {
@@ -91,12 +92,48 @@ const blogPostsData = {
       <h2>From Schema to Scale</h2>
       <p>Harmonise domains and scale generation; train niche or larger models with clear entitlements.</p>
     `
+  },
+  'from-starlings-to-swarms-8d-safety': {
+    title: '🕊️ From Starlings to Swarms: 8D Safety for Thousands of Drones',
+    excerpt: 'How an 8D state manifold, safety controllers, and evidence-led evaluation can enable resilient drone swarms—without disclosing proprietary algorithms.',
+    author: 'Gwylym Owen',
+    date: 'January 20, 2025',
+    readTime: '9 min read',
+    category: 'Case Study',
+    content: `
+      <h2>What this demonstrates</h2>
+      <p>We outline a path to large swarms (1k–15k+) that remain stable under faults by combining an 8D agent state, topological neighborhoods, and hard safety constraints. This post shares the safety and evaluation concepts—not proprietary control algorithms.</p>
+
+      <h2>8D state and topological flocking</h2>
+      <p>Each agent tracks position/velocity plus risk/health and link quality in an 8D state. Local control uses a topological neighborhood (≈7 nearest by connectivity), improving resilience under uneven density—similar to starling murmurations.</p>
+
+      <h2>Safety-first control</h2>
+      <p>Control Barrier Functions (CBFs) and a Real-Time Assurance (RTA) supervisor enforce minimum separation, geofences, and fail-safe behaviors (hover/rise/land). Resilient consensus filters out faulty nodes to avoid cascade failures.</p>
+
+      <h2>Training and evaluation</h2>
+      <p>Using NVIDIA Isaac/Omniverse, we stress scenarios with wind, GPS bias, latency, and injected faults. Evidence bundles report safety violations per flight-hour, resilience under k failures, connectivity, and efficiency—signed for procurement.</p>
+
+      <h2>Why this matters</h2>
+      <p>Military, public safety, and enterprise shows face growing scale and reliability demands. This approach supports fully offline, air-gapped deployments with signed evidence and policy packs—aligning with high-security requirements.</p>
+
+      <h2>Get in touch</h2>
+      <p>Interested in pilots for regulated environments? Contact sales@auspexi.com. We can tailor evaluation protocols and offline packaging to your device profiles.</p>
+    `
   }
 };
 
 const BlogPost = () => {
   const { slug } = useParams();
-  const post = blogPostsData[slug];
+  const [remote, setRemote] = React.useState<any | null>(null);
+  React.useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch(`/.netlify/functions/blog-get?slug=${encodeURIComponent(slug || '')}`);
+        if (res.ok) setRemote(await res.json());
+      } catch {}
+    })();
+  }, [slug]);
+  const post = remote || (blogPostsData as any)[slug as keyof typeof blogPostsData];
 
   if (!post) {
     return (
@@ -130,7 +167,7 @@ const BlogPost = () => {
             <User className="h-4 w-4 mr-2" />
             <span className="mr-4">{post.author}</span>
             <Calendar className="h-4 w-4 mr-2" />
-            <span className="mr-4">{post.date}</span>
+            <span className="mr-4">{(post as any).date || ((post as any).published_at ? new Date((post as any).published_at).toDateString() : '')}</span>
             <Clock className="h-4 w-4 mr-2" />
             <span>{post.readTime}</span>
           </div>
@@ -163,7 +200,7 @@ const BlogPost = () => {
             }
           `}</style>
           <div 
-            dangerouslySetInnerHTML={{ __html: post.content }} 
+            dangerouslySetInnerHTML={{ __html: (post as any).content || (post as any).content_html }} 
             className="space-y-8"
             style={{
               '--tw-prose-body': '#1e293b',
@@ -181,7 +218,7 @@ const BlogPost = () => {
               '--tw-prose-pre-bg': '#1e293b',
               '--tw-prose-th-borders': '#cbd5e1',
               '--tw-prose-td-borders': '#e2e8f0'
-            }}
+            } as React.CSSProperties}
           />
         </div>
       </article>
@@ -189,6 +226,19 @@ const BlogPost = () => {
       {/* Footer */}
       <footer className="bg-white border-t border-slate-200 py-8">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="mb-4">
+            <RouterLink to="/publisher" className="inline-flex items-center text-slate-700 hover:text-slate-900 font-semibold mr-4">
+              Create LinkedIn Draft for this post
+            </RouterLink>
+            <a
+              className="inline-flex items-center text-blue-600 hover:text-blue-700 font-semibold"
+              href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(window.location.href)}`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Share on LinkedIn
+            </a>
+          </div>
           <Link to="/blog" className="inline-flex items-center text-blue-600 hover:text-blue-700 font-semibold">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Blog

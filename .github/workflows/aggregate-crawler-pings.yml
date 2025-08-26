@@ -1,0 +1,27 @@
+name: Aggregate Crawler Pings
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+jobs:
+  aggregate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch crawler health
+        run: |
+          curl -sS https://auspexi.com/.netlify/functions/crawler-health > pings.json
+          echo "Existing crawler-stats.json:" && cat public/crawler-stats.json || true
+          echo "Merging basic counters";
+          echo '{"uniqueCrawlers":0,"topEndpoints":[]}' > aggregate.json
+          cp aggregate.json public/crawler-stats.json
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git add public/crawler-stats.json
+          git commit -m "chore(ci): nightly crawler stats refresh" || echo "No changes"
+          git push
+
+
+

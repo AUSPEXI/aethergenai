@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight, Shield, Database, Brain, Lightbulb, TrendingUp } from 'lucide-react';
+import React from 'react';
 
 const Blog = () => {
   // reserved: featuredPost (not used currently)
@@ -142,7 +143,28 @@ const Blog = () => {
     slug: 'triumph-of-preparation-strategic-planning'
   }; */
 
+  const [remotePosts, setRemotePosts] = React.useState<any[] | null>(null);
+  React.useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch('/.netlify/functions/blog-list');
+        if (res.ok) setRemotePosts(await res.json());
+      } catch {}
+    })();
+  }, []);
+
   const blogPosts = [
+    {
+      title: '🕊️ From Starlings to Swarms: 8D Safety for Thousands of Drones',
+      excerpt: 'How an 8D state manifold, safety controllers, and evidence-led evaluation can enable resilient drone swarms—without disclosing proprietary algorithms.',
+      author: 'Gwylym Owen',
+      date: 'January 20, 2025',
+      readTime: '9 min read',
+      category: 'Case Study',
+      icon: Shield,
+      published: true,
+      slug: 'from-starlings-to-swarms-8d-safety'
+    },
     {
       title: '🎭 Phoenix Rising: A Founder’s Journey',
       excerpt: 'How a personal reset, disciplined work, and evidence-led engineering shaped AethergenPlatform. A human story behind the technology.',
@@ -398,7 +420,7 @@ const Blog = () => {
       <section className="py-16 bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {blogPosts.map((post, index) => (
+            {(remotePosts ?? blogPosts).map((post, index) => (
               <article
                 key={index}
                 className="bg-slate-50 border border-slate-200 rounded-xl overflow-hidden hover:border-blue-300 transition-all duration-300 shadow-md"
@@ -423,7 +445,7 @@ const Blog = () => {
                   </div>
                   
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-slate-500">{post.date}</span>
+                    <span className="text-sm text-slate-500">{(post as any).date || ((post as any).published_at ? new Date((post as any).published_at).toDateString() : '')}</span>
                     <Link
                       to={`/blog/${post.slug}`}
                       className="text-blue-500 hover:text-blue-600 font-semibold text-sm flex items-center"

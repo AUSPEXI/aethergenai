@@ -624,6 +624,58 @@ const Pricing = () => {
         </div>
       </section>
 
+      {/* Edge Deployment & Offline Packages */}
+      <section className="py-20 bg-slate-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold text-slate-900 mb-4">Edge Deployment & Offline Packages</h2>
+            <p className="text-xl text-slate-700">Attach to Platform/Enterprise. Device‑aware packaging with evidence and safety artifacts.</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="bg-white rounded-xl p-8 shadow-lg border border-slate-200">
+              <h3 className="text-2xl font-bold text-slate-900 mb-2">Edge Starter</h3>
+              <p className="text-slate-700 mb-4">Device profile guidance, checksums, safety policy pack, basic eval recipes.</p>
+              <div className="text-3xl font-bold text-slate-900 mb-2">£1,499</div>
+              <div className="text-sm text-slate-600 mb-6">per package (Contact Sales)</div>
+              <ul className="space-y-2 text-slate-700 text-sm mb-6">
+                <li>• Device profiles (VRAM‑aware)</li>
+                <li>• Checksums manifest</li>
+                <li>• Safety policy pack</li>
+                <li>• Eval recipes (minimal)</li>
+              </ul>
+              <button className="w-full py-3 px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold">Contact Sales</button>
+            </div>
+            <div className="bg-white rounded-xl p-8 shadow-lg border border-slate-200">
+              <h3 className="text-2xl font-bold text-slate-900 mb-2">Edge Pro</h3>
+              <p className="text-slate-700 mb-4">Adds SBOM, expanded eval datasets, offline docs bundle, adapter watermarking.</p>
+              <div className="text-3xl font-bold text-slate-900 mb-2">£4,999</div>
+              <div className="text-sm text-slate-600 mb-6">per package (Contact Sales)</div>
+              <ul className="space-y-2 text-slate-700 text-sm mb-6">
+                <li>• Everything in Starter</li>
+                <li>• SBOM (software bill of materials)</li>
+                <li>• Expanded eval datasets</li>
+                <li>• Offline documentation bundle</li>
+                <li>• License watermarking for adapters</li>
+              </ul>
+              <button className="w-full py-3 px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold">Contact Sales</button>
+            </div>
+            <div className="bg-white rounded-xl p-8 shadow-lg border border-slate-200">
+              <h3 className="text-2xl font-bold text-slate-900 mb-2">Edge Enterprise</h3>
+              <p className="text-slate-700 mb-4">Air‑gapped packaging, signing/verify workflow, audit log format/rotation, SLAs.</p>
+              <div className="text-3xl font-bold text-slate-900 mb-2">Custom</div>
+              <div className="text-sm text-slate-600 mb-6">per contract</div>
+              <ul className="space-y-2 text-slate-700 text-sm mb-6">
+                <li>• Signing + verify workflow</li>
+                <li>• Audit log format + rotation</li>
+                <li>• Air‑gapped deployment guidance</li>
+                <li>• Support SLAs</li>
+              </ul>
+              <button className="w-full py-3 px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold">Contact Sales</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Revolutionary Achievement */}
       <section className="py-20 bg-gradient-to-br from-orange-50 to-red-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -823,19 +875,16 @@ const Pricing = () => {
               </div>
             </div>
             
-            {/* Cost Savings Note */}
-            <div className="max-w-4xl mx-auto bg-gradient-to-r from-green-50 to-blue-50 p-6 rounded-xl border border-green-200 mt-6">
+            {/* Cost Guidance Note (neutral) */}
+            <div className="max-w-4xl mx-auto bg-gradient-to-r from-slate-50 to-blue-50 p-6 rounded-xl border border-slate-200 mt-6">
               <div className="flex items-start">
                 <div className="flex-shrink-0 mr-4">
-                  <TrendingUp className="h-6 w-6 text-green-600" />
+                  <TrendingUp className="h-6 w-6 text-blue-600" />
                 </div>
                 <div className="text-left">
-                  <h4 className="font-semibold text-slate-900 mb-2">Revolutionary Cost Savings</h4>
-                  <p className="text-slate-700 text-sm leading-relaxed">
-                    <strong>90% Cost Reduction:</strong> Our industry solutions deliver the same capabilities as traditional providers at a fraction of the cost. 
-                    <strong>Automotive Quality Control:</strong> £599/month vs traditional $5,000-10,000/month solutions. 
-                    <strong>Healthcare Fraud Detection:</strong> £799/month vs traditional $3,000-8,000/month systems. 
-                    <strong>Financial Risk Models:</strong> £1,299/month vs Bloomberg $2,000-5,000/month per seat.
+                  <h4 className="font-semibold text-slate-900 mb-2">Cost Guidance</h4>
+                  <p className="text-slate-800 text-sm leading-relaxed">
+                    We focus on value and transparent entitlements. Cost comparisons depend on scope, workload, and compliance needs and are available on request.
                   </p>
                 </div>
               </div>
@@ -1386,19 +1435,19 @@ const Pricing = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
             <h2 className="text-3xl font-bold text-slate-900 mb-3">Entitlements Matrix (Summary)</h2>
-            <p className="text-slate-600">High‑level capabilities by package (detailed contracts govern final scope)</p>
+            <p className="text-slate-800">High‑level capabilities by package (detailed contracts govern final scope)</p>
           </div>
           <div className="overflow-x-auto">
             <div className="min-w-[900px] grid grid-cols-7 gap-2 text-sm">
               <div></div>
-              <div className="font-semibold text-slate-700">Model Seat</div>
-              <div className="font-semibold text-slate-700">Predictions</div>
-              <div className="font-semibold text-slate-700">Datasets</div>
-              <div className="font-semibold text-slate-700">Streams</div>
-              <div className="font-semibold text-slate-700">Platform (Dev/Team)</div>
-              <div className="font-semibold text-slate-700">White‑Label / Enterprise</div>
+              <div className="font-semibold text-slate-900">Model Seat</div>
+              <div className="font-semibold text-slate-900">Predictions</div>
+              <div className="font-semibold text-slate-900">Datasets</div>
+              <div className="font-semibold text-slate-900">Streams</div>
+              <div className="font-semibold text-slate-900">Platform (Dev/Team)</div>
+              <div className="font-semibold text-slate-900">White‑Label / Enterprise</div>
 
-              <div className="font-medium text-slate-800">Inference</div>
+              <div className="font-medium text-slate-900">Inference</div>
               <div>✓</div>
               <div>✓</div>
               <div>—</div>
@@ -1406,7 +1455,7 @@ const Pricing = () => {
               <div>✓ (tools)</div>
               <div>✓</div>
 
-              <div className="font-medium text-slate-800">Dataset download</div>
+              <div className="font-medium text-slate-900">Dataset download</div>
               <div>✕</div>
               <div>✕</div>
               <div>✓ (per SKU)</div>
@@ -1414,7 +1463,7 @@ const Pricing = () => {
               <div>✕ (tools only)</div>
               <div>Optional (contract)</div>
 
-              <div className="font-medium text-slate-800">Training pipelines</div>
+              <div className="font-medium text-slate-900">Training pipelines</div>
               <div>✕</div>
               <div>✕</div>
               <div>✕</div>
@@ -1422,7 +1471,7 @@ const Pricing = () => {
               <div>✓ (quotas)</div>
               <div>✓</div>
 
-              <div className="font-medium text-slate-800">Historical datasets</div>
+              <div className="font-medium text-slate-900">Historical datasets</div>
               <div>✕</div>
               <div>✕</div>
               <div>✓</div>
@@ -1430,7 +1479,7 @@ const Pricing = () => {
               <div>✕</div>
               <div>Optional (contract)</div>
 
-              <div className="font-medium text-slate-800">SLA & Support</div>
+              <div className="font-medium text-slate-900">SLA & Support</div>
               <div>Basic</div>
               <div>Basic</div>
               <div>Standard/Priority</div>
@@ -1438,7 +1487,7 @@ const Pricing = () => {
               <div>Basic→SLA (by tier)</div>
               <div>Priority/SLA</div>
 
-              <div className="font-medium text-slate-800">Records cap</div>
+              <div className="font-medium text-slate-900">Records cap</div>
               <div>—</div>
               <div>—</div>
               <div>Up to 10M/sku</div>
@@ -1446,7 +1495,7 @@ const Pricing = () => {
               <div>10M/50M/100M+/Unlimited*</div>
               <div>50M/500M (WL) / Unlimited (Enterprise)</div>
 
-              <div className="font-medium text-slate-800">Compute responsibility</div>
+              <div className="font-medium text-slate-900">Compute responsibility</div>
               <div>Platform</div>
               <div>Platform</div>
               <div>N/A</div>
@@ -1454,7 +1503,7 @@ const Pricing = () => {
               <div>Customer (self‑host) or Managed (Enterprise)</div>
               <div>Managed (Full‑Service) or Customer (Self‑Hosted)</div>
             </div>
-            <p className="mt-3 text-xs text-slate-500">*Unlimited subject to negotiated contract and fair use.</p>
+            <p className="mt-3 text-xs text-slate-700">*“Unlimited” subject to negotiated contract and fair use.</p>
           </div>
         </div>
       </section>

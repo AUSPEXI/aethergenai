@@ -1,15 +1,25 @@
 import type { Handler } from '@netlify/functions'
+import { getServiceClient } from './_lib/supabase'
 
 type PublishBody = { text: string; url?: string }
 
 const handler: Handler = async (event) => {
 	try {
 		if (event.httpMethod !== 'POST') return { statusCode: 405, body: 'Method Not Allowed' }
-		if (!process.env.LINKEDIN_ACCESS_TOKEN) return { statusCode: 400, body: 'Not connected' }
+		const supabase = getServiceClient()
+		const { data: acct, error } = await supabase
+			.from('social_accounts')
+			.select('access_token, account_ref')
+			.eq('provider','linkedin')
+			.order('updated_at', { ascending: false })
+			.limit(1)
+			.single()
+		if (error || !acct) return { statusCode: 400, body: 'Not connected' }
 		const body = event.body ? JSON.parse(event.body) as PublishBody : { text: '' }
 		const text = (body.text || '').slice(0, 2900)
+		const authorUrn = process.env.LINKEDIN_ORG_URN || acct.account_ref || 'urn:li:organization:me'
 		const post = {
-			author: process.env.LINKEDIN_ACCOUNT_URN || 'urn:li:person:me',
+			author: authorUrn,
 			lifecycleState: 'PUBLISHED',
 			specificContent: {
 				'com.linkedin.ugc.ShareContent': {
@@ -23,7 +33,7 @@ const handler: Handler = async (event) => {
 		const resp = await fetch('https://api.linkedin.com/v2/ugcPosts', {
 			method: 'POST',
 			headers: {
-				'Authorization': `Bearer ${process.env.LINKEDIN_ACCESS_TOKEN}`,
+				'Authorization': `Bearer ${acct.access_token}`,
 				'Content-Type': 'application/json',
 				'X-Restli-Protocol-Version': '2.0.0'
 			},

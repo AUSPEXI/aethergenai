@@ -1,4 +1,5 @@
 import type { Handler } from '@netlify/functions'
+import { getServiceClient } from './_lib/supabase'
 
 async function exchangeCodeForToken(code: string, redirectUri: string) {
 	const clientId = process.env.LINKEDIN_CLIENT_ID || ''
@@ -25,19 +26,25 @@ const handler: Handler = async (event) => {
 		if (!code) return { statusCode: 400, body: 'Missing code' }
 		const redirectUri = `${process.env.URL || ''}/.netlify/functions/linkedin-callback`
 		const token = await exchangeCodeForToken(code, redirectUri)
-		// Minimal verification: fetch me endpoint to get reference
-		const meResp = await fetch('https://api.linkedin.com/v2/me', {
-			headers: { Authorization: `Bearer ${token.access_token}` },
+
+		// Store token for organization posting (no r_liteprofile required)
+		const supabase = getServiceClient()
+		const orgUrn = process.env.LINKEDIN_ORG_URN || null
+		const expiresAt = new Date(Date.now() + (token.expires_in || 0) * 1000).toISOString()
+		const { error } = await supabase.from('social_accounts').insert({
+			provider: 'linkedin',
+			account_ref: orgUrn,
+			owner_email: null,
+			access_token: token.access_token,
+			refresh_token: null,
+			expires_at: expiresAt,
 		})
-		if (!meResp.ok) throw new Error('Failed to fetch profile')
-		const me = await meResp.json()
-		const accountRef = me?.id ? `urn:li:person:${me.id}` : 'unknown'
-		// Store tokens: here we keep it simple in Netlify env-less log; replace with Supabase insert in production
-		// Placeholder success page
+		if (error) throw new Error(`Failed to store token: ${error.message}`)
+
 		return {
 			statusCode: 200,
 			headers: { 'content-type': 'text/html' },
-			body: `<html><body><h1>LinkedIn connected</h1><p>Account: ${accountRef}</p><p>You can close this window.</p></body></html>`
+			body: `<html><body><h1>LinkedIn connected</h1><p>Organization mode enabled.</p><p>You can close this window.</p></body></html>`
 		}
 	} catch (e: any) {
 		return { statusCode: 500, body: e?.message || 'error' }

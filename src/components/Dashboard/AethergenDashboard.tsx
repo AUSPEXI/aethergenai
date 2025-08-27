@@ -23,6 +23,7 @@ import DataCleaner from '../DataCleaner/DataCleaner';
 import PrivacyMetrics from '../PrivacyMetrics/PrivacyMetrics';
 import ModelCollapseRiskDial from '../ModelCollapseRiskDial/ModelCollapseRiskDial';
 import { assertSupabase } from '../../services/supabaseClient';
+import UpgradeGate from './UpgradeGate';
 
 interface AethergenDashboardProps {
   userEmail: string;
@@ -30,6 +31,29 @@ interface AethergenDashboardProps {
 }
 
 type DashboardTab = 'overview' | 'generate' | 'schema' | 'pipelines' | 'clean' | 'privacy' | 'risk' | 'billing' | 'settings';
+
+class TabErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean; message: string }>{
+  constructor(props: any) {
+    super(props);
+    this.state = { hasError: false, message: '' };
+  }
+  static getDerivedStateFromError(error: any) {
+    return { hasError: true, message: error?.message || 'Unexpected error' };
+  }
+  componentDidCatch() {}
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="bg-white rounded-lg border p-8 text-center">
+          <h3 className="text-xl font-semibold text-gray-900 mb-2">This section failed to load</h3>
+          <p className="text-gray-600 mb-4">{this.state.message}</p>
+          <a href="/account" className="inline-flex items-center px-5 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700">Back to Overview</a>
+        </div>
+      );
+    }
+    return this.props.children as any;
+  }
+}
 
 const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLogout }) => {
   const [activeTab, setActiveTab] = useState<DashboardTab>('overview');
@@ -208,6 +232,7 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
         return <PipelineManager />;
 
       case 'clean':
+        if (!roleHas(role, 'run_privacy')) return <UpgradeGate feature="Data Cleaner" />;
         return <DataCleaner />;
 
       case 'privacy':
@@ -215,6 +240,7 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
         return <PrivacyMetrics />;
 
       case 'risk':
+        if (!roleHas(role, 'view_risk')) return <UpgradeGate feature="Risk Assessment" />;
         return (
           <div className="space-y-6">
             <div className="bg-white rounded-lg shadow-sm border p-6">
@@ -350,7 +376,7 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 p-6">
+        <main className="flex-1 p-6 bg-gray-50">
           <div className="max-w-7xl mx-auto">
             {!isSidebarCollapsed && (
               <div className="mb-6">
@@ -363,7 +389,9 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
               </div>
             )}
             
-            {renderTabContent()}
+            <TabErrorBoundary>
+              {renderTabContent()}
+            </TabErrorBoundary>
           </div>
         </main>
       </div>

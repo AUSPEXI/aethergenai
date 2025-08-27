@@ -34,6 +34,7 @@ import ModuleBenchmarks from '../DataCollection/ModuleBenchmarks';
 import DatasetsLibrary from '../Libraries/DatasetsLibrary';
 import ModelsLibrary from '../Libraries/ModelsLibrary';
 import TemplatesLibrary from '../Libraries/TemplatesLibrary';
+import MarketplaceHome from '../Marketplace/MarketplaceHome';
 const StorageUsagePanel: React.FC<{ role: 'viewer'|'developer'|'team'|'enterprise'|'admin' }> = ({ role }) => {
   const [usage, setUsage] = React.useState<{ datasetsBytes:number; datasetsCount:number; modelsCount:number; modelsBytes?:number }|null>(null);
   React.useEffect(()=>{ (async()=>{
@@ -203,7 +204,10 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
     { id: 'privacy', name: 'Privacy Metrics', icon: Shield, description: 'Privacy and compliance tools' },
     { id: 'risk', name: 'Risk Assessment', icon: Activity, description: 'Model collapse risk analysis' },
     { id: 'billing', name: 'Billing', icon: CreditCard, description: 'Subscription and usage' },
-    { id: 'settings', name: 'Settings', icon: Settings, description: 'Account and platform settings' }
+    { id: 'settings', name: 'Settings', icon: Settings, description: 'Account and platform settings' },
+    ...(import.meta.env.VITE_FEATURE_MARKETPLACE === '1' ? [
+      { id: 'marketplace', name: 'Marketplace', icon: GitBranch, description: 'Model rental marketplace (preview)' }
+    ] : [])
   ];
 
   const defaultSchema = {
@@ -531,6 +535,10 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
             </div>
           </div>
         );
+
+      case 'marketplace':
+        if (import.meta.env.VITE_FEATURE_MARKETPLACE !== '1') return null as any;
+        return <MarketplaceHome />;
 
       default:
         return null;

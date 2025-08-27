@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { RefreshCw, Database, Upload, Download, Settings, BarChart3, Clock, Zap, Lock, Shield } from 'lucide-react';
-import ProductionZKProofUpload from '../ZKProof/ProductionZKProofUpload';
 import { FinanceSuite } from '../../types';
 
 interface DataManagementProps {
@@ -56,9 +55,9 @@ const DataManagement: React.FC<DataManagementProps> = ({
           </div>
         </div>
         
-        {/* Embed the ZK-SNARKs upload component */}
-        <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
-          <ProductionZKProofUpload />
+        {/* Consolidated into SeedDataUploader flow; ZK actions now live in Upload tab */}
+        <div className="border border-gray-200 rounded-lg p-4 bg-gray-50 text-sm text-gray-700">
+          ZK upload is consolidated in the Upload tab. Use Upload to generate/verify/download proofs.
         </div>
       </div>
 

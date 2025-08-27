@@ -12,8 +12,38 @@ const AuthPage: React.FC = () => {
     (async () => {
       try {
         const sb = assertSupabase();
-        const { data: { user } } = await sb.auth.getUser();
-        setUserEmail(user?.email || null);
+
+        // 1) Handle magic link callbacks: hash (access_token) or PKCE code
+        const hash = window.location.hash || '';
+        const params = new URLSearchParams(window.location.search);
+
+        if (hash.includes('access_token')) {
+          const { data, error } = await sb.auth.getSession();
+          if (!error && data.session?.user?.email) {
+            setUserEmail(data.session.user.email);
+            // clean URL
+            window.history.replaceState({}, document.title, window.location.pathname);
+          }
+        } else if (params.get('code')) {
+          const { data, error } = await sb.auth.exchangeCodeForSession(params.get('code') as string);
+          if (!error && data.session?.user?.email) {
+            setUserEmail(data.session.user.email);
+            window.history.replaceState({}, document.title, window.location.pathname);
+          }
+        } else {
+          // 2) Load any existing session
+          const { data: { user } } = await sb.auth.getUser();
+          setUserEmail(user?.email || null);
+        }
+
+        // 3) Subscribe to auth changes to update UI
+        const { data: listener } = sb.auth.onAuthStateChange(async (_event, session) => {
+          setUserEmail(session?.user?.email || null);
+        });
+
+        return () => {
+          listener.subscription.unsubscribe();
+        };
       } catch {}
     })();
   }, []);
@@ -25,9 +55,9 @@ const AuthPage: React.FC = () => {
       const sb = assertSupabase();
       console.log('🔍 Supabase client:', !!sb);
       
-      const { error } = await sb.auth.signInWithOtp({ 
-        email, 
-        options: { emailRedirectTo: window.location.origin } 
+      const { error } = await sb.auth.signInWithOtp({
+        email,
+        options: { emailRedirectTo: `${window.location.origin}/account` }
       });
       
       if (error) {
@@ -54,7 +84,11 @@ const AuthPage: React.FC = () => {
   return (
     <div>
       {userEmail ? (
-        <AethergenDashboard userEmail={userEmail} onLogout={logout} />
+        <>
+          <AethergenDashboard userEmail={userEmail} onLogout={logout} />
+          {/* Fallback minimal UI if dashboard fails to render for any reason */}
+          <div className="sr-only">Signed in as {userEmail}</div>
+        </>
       ) : (
         <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center">
           <div className="max-w-md w-full mx-auto p-8 bg-white rounded-2xl shadow-2xl">

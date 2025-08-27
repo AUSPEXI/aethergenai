@@ -40,43 +40,51 @@ function ScrollToTop() {
   return null;
 }
 
+function RoutedApp() {
+  const { pathname } = useLocation();
+  const hideChrome = pathname.startsWith('/account');
+  return (
+    <div className="min-h-screen bg-white flex flex-col">
+      <ScrollToTop />
+      {!hideChrome && <Navigation />}
+      <div className="flex-grow">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/technology" element={<Technology />} />
+          <Route path="/roadmap" element={<Roadmap />} />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/:slug" element={<BlogPost />} />
+          <Route path="/pricing" element={<Pricing />} />
+          <Route path="/funding" element={<Funding />} />
+          <Route path="/resources" element={<Resources />} />
+          <Route path="/hero-art" element={<HeroArt />} />
+          <Route path="/press" element={<Press />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/account" element={<AuthPage />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/terms" element={<TermsOfUse />} />
+          <Route path="/dpa" element={<DPA />} />
+          <Route path="/subprocessors" element={<Subprocessors />} />
+          <Route path="/manifold-prototype" element={<ManifoldPrototype />} />
+          <Route path="/manifold-explainer" element={<ManifoldExplainer />} />
+          <Route path="/ai" element={<AI />} />
+          <Route path="/resources/llm-indexing" element={<ResourcesLLMIndexing />} />
+          <Route path="/resources/llm-benchmarks" element={<ResourcesLLMBenchmarks />} />
+          <Route path="/resources/visibility-score" element={<ResourcesVisibilityScore />} />
+          <Route path="/whitepaper" element={<Whitepaper />} />
+          <Route path="/publisher" element={<Publisher />} />
+        </Routes>
+      </div>
+      {!hideChrome && <Footer />}
+    </div>
+  );
+}
+
 function App() {
   return (
     <Router>
-      <div className="min-h-screen bg-white flex flex-col">
-        <ScrollToTop />
-        <Navigation />
-        <div className="flex-grow">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/technology" element={<Technology />} />
-            <Route path="/roadmap" element={<Roadmap />} />
-            <Route path="/blog" element={<Blog />} />
-            <Route path="/blog/:slug" element={<BlogPost />} />
-            <Route path="/pricing" element={<Pricing />} />
-            <Route path="/funding" element={<Funding />} />
-            <Route path="/resources" element={<Resources />} />
-            <Route path="/hero-art" element={<HeroArt />} />
-            <Route path="/press" element={<Press />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/account" element={<AuthPage />} />
-            <Route path="/privacy" element={<PrivacyPolicy />} />
-            <Route path="/terms" element={<TermsOfUse />} />
-            <Route path="/dpa" element={<DPA />} />
-            <Route path="/subprocessors" element={<Subprocessors />} />
-            <Route path="/manifold-prototype" element={<ManifoldPrototype />} />
-            <Route path="/manifold-explainer" element={<ManifoldExplainer />} />
-            <Route path="/ai" element={<AI />} />
-            <Route path="/resources/llm-indexing" element={<ResourcesLLMIndexing />} />
-            <Route path="/resources/llm-benchmarks" element={<ResourcesLLMBenchmarks />} />
-            <Route path="/resources/visibility-score" element={<ResourcesVisibilityScore />} />
-            <Route path="/whitepaper" element={<Whitepaper />} />
-            <Route path="/publisher" element={<Publisher />} />
-          </Routes>
-        </div>
-        <Footer />
-      </div>
+      <RoutedApp />
     </Router>
   );
 }

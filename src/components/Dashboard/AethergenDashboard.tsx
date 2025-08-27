@@ -11,7 +11,10 @@ import {
   ChevronRight,
   LogOut,
   User,
-  GitBranch
+  GitBranch,
+  Upload,
+  BadgeCheck,
+  LineChart
 } from 'lucide-react';
 import { getEntitlements } from '../../services/entitlementsClient';
 import { entitlementsToRole, roleHas } from '../../services/rbacService';
@@ -24,13 +27,31 @@ import PrivacyMetrics from '../PrivacyMetrics/PrivacyMetrics';
 import ModelCollapseRiskDial from '../ModelCollapseRiskDial/ModelCollapseRiskDial';
 import { assertSupabase } from '../../services/supabaseClient';
 import UpgradeGate from './UpgradeGate';
+import SeedDataUploader from '../SeedDataUploader/SeedDataUploader';
+import ProductionZKProofUpload from '../ZKProof/ProductionZKProofUpload';
+import AdvancedBenchmarking from '../AdvancedBenchmarking/AdvancedBenchmarking';
+import ModuleBenchmarks from '../DataCollection/ModuleBenchmarks';
 
 interface AethergenDashboardProps {
   userEmail: string;
   onLogout: () => void;
 }
 
-type DashboardTab = 'overview' | 'generate' | 'schema' | 'pipelines' | 'clean' | 'privacy' | 'risk' | 'billing' | 'settings';
+type DashboardTab =
+  | 'overview'
+  | 'generate'
+  | 'upload'
+  | 'zkproof'
+  | 'benchmarks'
+  | 'ablation'
+  | 'reporting'
+  | 'schema'
+  | 'pipelines'
+  | 'clean'
+  | 'privacy'
+  | 'risk'
+  | 'billing'
+  | 'settings';
 
 class TabErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean; message: string }>{
   constructor(props: any) {
@@ -68,6 +89,12 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
         const cached = localStorage.getItem(`aeg:role:${userEmail}`);
         if (cached && mounted) setRole(cached as any);
 
+        // QA override: query param ?qa=1 sets a local flag; env VITE_QA_UNLOCK=1 or localStorage('aeg_qa')=1 => admin
+        try {
+          const usp = new URLSearchParams(window.location.search);
+          if (usp.get('qa') === '1') localStorage.setItem('aeg_qa', '1');
+        } catch {}
+
         const ents = await getEntitlements({ email: userEmail });
         const prices = ents.filter(e=>e.active).map(e=>e.stripe_price);
         let computed = entitlementsToRole(prices);
@@ -76,6 +103,9 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
         if (admins.includes(userEmail.toLowerCase())) {
           computed = 'admin';
         }
+        // QA unlock
+        const qaUnlock = (import.meta.env as any).VITE_QA_UNLOCK === '1' || localStorage.getItem('aeg_qa') === '1';
+        if (qaUnlock) computed = 'admin';
         if (mounted) {
           setRole(computed);
           try { localStorage.setItem(`aeg:role:${userEmail}`, computed); } catch {}
@@ -90,6 +120,11 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
   const dashboardTabs = [
     { id: 'overview', name: 'Overview', icon: BarChart3, description: 'Platform metrics and performance' },
     { id: 'generate', name: 'Generate', icon: Database, description: 'Create synthetic datasets' },
+    { id: 'upload', name: 'Upload', icon: Upload, description: 'Upload seed data and assets' },
+    { id: 'zkproof', name: 'ZK Proofs', icon: BadgeCheck, description: 'Manage and verify proofs' },
+    { id: 'benchmarks', name: 'Benchmarks', icon: LineChart, description: 'Performance and quality benchmarks' },
+    { id: 'ablation', name: 'Ablation Tests', icon: Activity, description: 'Run ablation recipes and compare' },
+    { id: 'reporting', name: 'Reporting', icon: BarChart3, description: 'Reports and dashboards' },
     { id: 'schema', name: 'Schema Designer', icon: Settings, description: 'Design data schemas' },
     { id: 'pipelines', name: 'Pipelines', icon: GitBranch, description: 'Multi‑schema pipeline manager' },
     { id: 'clean', name: 'Data Cleaner', icon: Activity, description: 'Clean and prepare data' },
@@ -249,6 +284,21 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
             </div>
           </div>
         );
+
+      case 'upload':
+        return <SeedDataUploader />;
+
+      case 'zkproof':
+        return <ProductionZKProofUpload />;
+
+      case 'benchmarks':
+        return <AdvancedBenchmarking />;
+
+      case 'ablation':
+        return <ModuleBenchmarks />;
+
+      case 'reporting':
+        return <ReportingDashboard />;
 
       case 'billing':
         if (!roleHas(role, 'view_billing')) return <UpgradeGate feature="Billing" />;

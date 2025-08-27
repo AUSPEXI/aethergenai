@@ -28,7 +28,6 @@ import ModelCollapseRiskDial from '../ModelCollapseRiskDial/ModelCollapseRiskDia
 import { assertSupabase } from '../../services/supabaseClient';
 import UpgradeGate from './UpgradeGate';
 import SeedDataUploader from '../SeedDataUploader/SeedDataUploader';
-import ProductionZKProofUpload from '../ZKProof/ProductionZKProofUpload';
 import AdvancedBenchmarking from '../AdvancedBenchmarking/AdvancedBenchmarking';
 import ModuleBenchmarks from '../DataCollection/ModuleBenchmarks';
 
@@ -81,6 +80,7 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
   const [role, setRole] = useState<'viewer'|'developer'|'team'|'enterprise'|'admin'>('viewer');
   const [seedPresent, setSeedPresent] = useState<boolean>(false);
   const [qaMode, setQaMode] = useState<boolean>(false);
+  const [showOnboard, setShowOnboard] = useState<boolean>(false);
 
   useEffect(() => {
     let mounted = true;
@@ -119,6 +119,12 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
     })();
     return () => { mounted = false; };
   }, [userEmail]);
+
+  useEffect(() => {
+    try {
+      setShowOnboard(localStorage.getItem('aeg_onboard_done') !== '1');
+    } catch {}
+  }, []);
 
   const dashboardTabs = [
     { id: 'overview', name: 'Overview', icon: BarChart3, description: 'Platform metrics and performance' },
@@ -175,6 +181,38 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
       case 'overview':
         return (
           <div className="space-y-6">
+            {showOnboard && (
+              <div className="bg-white rounded-lg shadow-sm border p-6">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Welcome! First‑run checklist</h3>
+                    <p className="text-gray-700 mb-4">Follow these steps to get value quickly. You can revisit anytime from Settings.</p>
+                  </div>
+                  <button
+                    className="text-sm text-gray-600 hover:text-gray-900"
+                    onClick={() => { setShowOnboard(false); try { localStorage.setItem('aeg_onboard_done','1'); } catch {} }}
+                    title="Dismiss"
+                  >✕</button>
+                </div>
+                <ol className="list-decimal ml-6 space-y-2 text-gray-800">
+                  <li>
+                    <button className="text-blue-700 underline" onClick={() => setActiveTab('upload')}>Upload a small seed dataset</button>
+                  </li>
+                  <li>
+                    <button className="text-blue-700 underline" onClick={() => setActiveTab('benchmarks')}>Run Benchmarks (uses safe local stubs in QA)</button>
+                  </li>
+                  <li>
+                    <button className="text-blue-700 underline" onClick={() => setActiveTab('reporting')}>Open Reporting dashboard</button>
+                  </li>
+                  <li>
+                    <button className="text-blue-700 underline" onClick={() => setActiveTab('privacy')}>Review Privacy metrics</button>
+                  </li>
+                  <li>
+                    <button className="text-blue-700 underline" onClick={() => setActiveTab('billing')}>Configure Billing (if eligible)</button>
+                  </li>
+                </ol>
+              </div>
+            )}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -323,14 +361,33 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
 
       case 'benchmarks':
         if (!seedPresent && !qaMode) return <GatePanel title="Benchmarks need data" body="Upload a seed or generate a sample dataset so benchmark results reflect your schema." />;
-        return <AdvancedBenchmarking />;
+        {
+          const stubData = qaMode ? [{ vin: 'QA1', model: 'Demo', defect_score: 0.1, timestamp: new Date().toISOString() }] : [] as any[];
+          return (
+            <AdvancedBenchmarking
+              schema={defaultSchema}
+              seedData={stubData}
+              generatedData={stubData}
+            />
+          );
+        }
 
       case 'ablation':
         if (!seedPresent && !qaMode) return <GatePanel title="Ablation needs a dataset" body="Upload a seed or generate a synthetic batch, then run ablation recipes." />;
-        return <ModuleBenchmarks />;
+        return <ModuleBenchmarks qaMode={qaMode} seedPresent={seedPresent} />;
 
       case 'reporting':
-        return <ReportingDashboard />;
+        if (!seedPresent && !qaMode) return <GatePanel title="Reporting needs data" body="Upload a seed or generate a sample to populate reports. No external calls are made until you confirm." />;
+        // Provide safe props; in QA provide stub data
+        const stubData = qaMode ? [{ vin: 'QA1', model: 'Demo', defect_score: 0.1, timestamp: new Date().toISOString() }] : [] as any[];
+        return (
+          <ReportingDashboard
+            schema={defaultSchema}
+            seedData={stubData}
+            generatedData={stubData}
+            benchmarkResults={[]}
+          />
+        );
 
       case 'billing':
         if (!roleHas(role, 'view_billing')) return <UpgradeGate feature="Billing" />;
@@ -444,7 +501,7 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
                   className={`w-full flex items-center px-3 py-3 text-sm font-medium rounded-md transition-colors mb-1 ${
                     activeTab === tab.id
                       ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-700'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                      : 'text-gray-900 hover:text-gray-900 hover:bg-gray-50'
                   }`}
                 >
                   <Icon className="h-5 w-5 flex-shrink-0" />

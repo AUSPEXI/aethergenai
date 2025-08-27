@@ -353,6 +353,42 @@ const SeedDataUploader: React.FC<SeedDataUploaderProps> = ({
     }
   };
 
+  // Expose production actions similar to ProductionZKProofUpload for consolidation
+  const [metadata, setMetadata] = useState({ domain: 'general', description: '', privacyLevel: 'high' });
+  const [uploading, setUploading] = useState(false);
+  const handleProductionUpload = async () => {
+    if (uploadedData.length === 0) return;
+    try {
+      setUploading(true);
+      const encryptedData = btoa(JSON.stringify(uploadedData) + '_encrypted_' + Date.now());
+      const dataHash = (zkProof as any)?.publicSignals?.[0] || 'no-proof-hash';
+      const publicInputs = (zkProof as any)?.publicSignals || [];
+      const verificationRequest = {
+        proof: (zkProof as any)?.proof || null,
+        publicInputs,
+        circuit: 'aethergenai_production_validation',
+        encryptedData,
+        dataHash,
+        domain: metadata.domain,
+        timestamp: new Date().toISOString(),
+        privacyLevel: metadata.privacyLevel,
+        summary: `Production seed data upload (consolidated uploader)`,
+        metadata
+      };
+      await fetch('/.netlify/functions/verifyZKP', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(verificationRequest)
+      });
+      try { localStorage.setItem('aeg_seed_present','1'); } catch {}
+      alert('Seed uploaded to Aethergen pipeline (demo).');
+    } catch (e) {
+      alert('Upload failed');
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const handleProofFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;

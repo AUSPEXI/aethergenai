@@ -17,6 +17,20 @@ const AuthPage: React.FC = () => {
         const hash = window.location.hash || '';
         const params = new URLSearchParams(window.location.search);
 
+        // Handle auth errors from Supabase (e.g., otp_expired)
+        if (hash.includes('error=')) {
+          const errParams = new URLSearchParams(hash.replace(/^#/, ''));
+          const errorCode = errParams.get('error_code');
+          const errorDesc = errParams.get('error_description');
+          if (errorCode === 'otp_expired') {
+            setStatus('Your login link has expired or was already used. Please request a new link.');
+          } else {
+            setStatus(errorDesc || 'Authentication error. Please request a new link.');
+          }
+          // Clean the URL hash
+          window.history.replaceState({}, document.title, window.location.pathname + window.location.search);
+        }
+
         if (hash.includes('access_token')) {
           const { data, error } = await sb.auth.getSession();
           if (!error && data.session?.user?.email) {
@@ -78,6 +92,8 @@ const AuthPage: React.FC = () => {
       const sb = assertSupabase();
       await sb.auth.signOut();
       setUserEmail(null);
+      // Ensure we return to the auth screen
+      window.location.replace('/account');
     } catch {}
   };
 

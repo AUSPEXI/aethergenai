@@ -29,7 +29,69 @@ import { assertSupabase } from '../../services/supabaseClient';
 import UpgradeGate from './UpgradeGate';
 import SeedDataUploader from '../SeedDataUploader/SeedDataUploader';
 import AdvancedBenchmarking from '../AdvancedBenchmarking/AdvancedBenchmarking';
+import ModelLab from '../ModelLab/ModelLab';
 import ModuleBenchmarks from '../DataCollection/ModuleBenchmarks';
+import DatasetsLibrary from '../Libraries/DatasetsLibrary';
+import ModelsLibrary from '../Libraries/ModelsLibrary';
+import TemplatesLibrary from '../Libraries/TemplatesLibrary';
+const StorageUsagePanel: React.FC<{ role: 'viewer'|'developer'|'team'|'enterprise'|'admin' }> = ({ role }) => {
+  const [usage, setUsage] = React.useState<{ datasetsBytes:number; datasetsCount:number; modelsCount:number; modelsBytes?:number }|null>(null);
+  React.useEffect(()=>{ (async()=>{
+    try {
+      const ds = await fetch('/.netlify/functions/datasets?action=usage').then(r=>r.json());
+      const md = await fetch('/.netlify/functions/models?action=usage').then(r=>r.json());
+      setUsage({ datasetsBytes: ds.datasetsBytes||0, datasetsCount: ds.datasetsCount||0, modelsCount: md.modelsCount||0, modelsBytes: md.modelsBytes||0 });
+    } catch {}
+  })() },[]);
+  const fmt = (n:number)=> new Intl.NumberFormat().format(n);
+  const plan = (()=>{
+    switch(role){
+      case 'viewer': return { name:'Free', dsGB: 1, modelLimit: 1 };
+      case 'developer': return { name:'Developer', dsGB: 5, modelLimit: 3 };
+      case 'team': return { name:'Team', dsGB: 50, modelLimit: 10 };
+      case 'enterprise': return { name:'Enterprise', dsGB: 500, modelLimit: 100 };
+      case 'admin': return { name:'Enterprise', dsGB: 500, modelLimit: 100 };
+      default: return { name:'Free', dsGB: 1, modelLimit: 1 };
+    }
+  })();
+  const bytesLimit = plan.dsGB * 1024 * 1024 * 1024;
+  const usedBytes = (usage?.datasetsBytes || 0) + (usage?.modelsBytes || 0);
+  const usedPct = Math.min(100, Math.round((usedBytes/Math.max(1,bytesLimit))*100));
+  const modelsUsed = usage?.modelsCount || 0;
+  const modelsPct = Math.min(100, Math.round((modelsUsed/Math.max(1,plan.modelLimit))*100));
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+      <div className="p-4 bg-gray-50 rounded">
+        <div className="text-gray-600">Total Storage</div>
+        <div className="text-xs text-gray-500">Plan: {plan.name} • Limit: {plan.dsGB} GB</div>
+        <div className="mt-1 text-xl font-semibold">{usage? fmt(usedBytes): '—'} bytes</div>
+        <div className="mt-2 h-2 bg-gray-200 rounded">
+          <div className="h-2 bg-blue-600 rounded" style={{ width: `${usedPct}%` }} />
+        </div>
+        <div className="mt-1 text-xs text-gray-600">{usedPct}% used</div>
+        {usage && (
+          <div className="mt-2 text-xs text-gray-600">
+            <div>Datasets: {fmt(usage.datasetsBytes||0)} bytes</div>
+            <div>Models: {fmt(usage.modelsBytes||0)} bytes</div>
+          </div>
+        )}
+      </div>
+      <div className="p-4 bg-gray-50 rounded">
+        <div className="text-gray-600">Models</div>
+        <div className="text-xs text-gray-500">Limit: {plan.modelLimit}</div>
+        <div className="mt-1 text-xl font-semibold">{usage? fmt(modelsUsed): '—'}</div>
+        <div className="mt-2 h-2 bg-gray-200 rounded">
+          <div className="h-2 bg-green-600 rounded" style={{ width: `${modelsPct}%` }} />
+        </div>
+        <div className="mt-1 text-xs text-gray-600">{modelsPct}% of limit</div>
+      </div>
+      <div className="p-4 bg-gray-50 rounded">
+        <div className="text-gray-600">Datasets (count)</div>
+        <div className="text-xl font-semibold">{usage? fmt(usage.datasetsCount): '—'}</div>
+      </div>
+    </div>
+  );
+};
 
 interface AethergenDashboardProps {
   userEmail: string;
@@ -38,14 +100,15 @@ interface AethergenDashboardProps {
 
 type DashboardTab =
   | 'overview'
-  | 'generate'
-  | 'upload'
-  | 'benchmarks'
-  | 'ablation'
-  | 'reporting'
   | 'schema'
-  | 'pipelines'
+  | 'upload'
+  | 'generate'
   | 'clean'
+  | 'ablation'
+  | 'benchmarks'
+  | 'reporting'
+  | 'pipelines'
+  | 'models'
   | 'privacy'
   | 'risk'
   | 'billing'
@@ -128,14 +191,15 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
 
   const dashboardTabs = [
     { id: 'overview', name: 'Overview', icon: BarChart3, description: 'Platform metrics and performance' },
-    { id: 'generate', name: 'Generate', icon: Database, description: 'Create synthetic datasets' },
-    { id: 'upload', name: 'Upload', icon: Upload, description: 'Upload seed data and assets' },
-    { id: 'benchmarks', name: 'Benchmarks', icon: LineChart, description: 'Performance and quality benchmarks' },
+    { id: 'schema', name: 'Schema Designer', icon: Settings, description: 'Design single or multiple schemas' },
+    { id: 'pipelines', name: 'Pipelines', icon: GitBranch, description: 'Manage multi‑schema pipelines' },
+    { id: 'upload', name: 'Upload / Seed', icon: Upload, description: 'Upload or generate seed (encrypted with proofs)' },
+    { id: 'generate', name: 'Generate Data', icon: Database, description: 'Create synthetic datasets' },
+    { id: 'clean', name: 'Clean Data', icon: Activity, description: 'Clean and prepare data' },
     { id: 'ablation', name: 'Ablation Tests', icon: Activity, description: 'Run ablation recipes and compare' },
+    { id: 'benchmarks', name: 'Benchmarks', icon: LineChart, description: 'Performance and quality benchmarks' },
     { id: 'reporting', name: 'Reporting', icon: BarChart3, description: 'Reports and dashboards' },
-    { id: 'schema', name: 'Schema Designer', icon: Settings, description: 'Design data schemas' },
-    { id: 'pipelines', name: 'Pipelines', icon: GitBranch, description: 'Multi‑schema pipeline manager' },
-    { id: 'clean', name: 'Data Cleaner', icon: Activity, description: 'Clean and prepare data' },
+    { id: 'models', name: 'Models', icon: BadgeCheck, description: 'Model registry and lab' },
     { id: 'privacy', name: 'Privacy Metrics', icon: Shield, description: 'Privacy and compliance tools' },
     { id: 'risk', name: 'Risk Assessment', icon: Activity, description: 'Model collapse risk analysis' },
     { id: 'billing', name: 'Billing', icon: CreditCard, description: 'Subscription and usage' },
@@ -206,6 +270,12 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
                   </li>
                   <li>
                     <button className="text-blue-700 underline" onClick={() => setActiveTab('privacy')}>Review Privacy metrics</button>
+                  </li>
+                  <li>
+                    <button className="text-blue-700 underline" onClick={() => setActiveTab('models')}>Open Libraries (Datasets/Models/Templates)</button>
+                  </li>
+                  <li>
+                    <button className="text-blue-700 underline" onClick={() => setActiveTab('pipelines')}>Manage Pipelines / Snapshots</button>
                   </li>
                   <li>
                     <button className="text-blue-700 underline" onClick={() => setActiveTab('billing')}>Configure Billing (if eligible)</button>
@@ -389,6 +459,19 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
           />
         );
 
+      case 'models':
+        return (
+          <div className="space-y-6">
+            <ModelsLibrary />
+            <DatasetsLibrary />
+            <TemplatesLibrary />
+            <div className="bg-white rounded-lg shadow-sm border p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Model Lab</h3>
+              <ModelLab />
+            </div>
+          </div>
+        );
+
       case 'billing':
         if (!roleHas(role, 'view_billing')) return <UpgradeGate feature="Billing" />;
         return (
@@ -407,6 +490,10 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
                   <p className="text-sm text-gray-600">of 50M records</p>
                 </div>
               </div>
+            </div>
+            <div className="bg-white rounded-lg shadow-sm border p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Storage Usage & Quotas</h3>
+              <StorageUsagePanel role={role} />
             </div>
           </div>
         );

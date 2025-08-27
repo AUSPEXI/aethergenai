@@ -25,6 +25,7 @@ const SeedDataUploader: React.FC<SeedDataUploaderProps> = ({
   const [zkProof, setZkProof] = useState<ProductionZKProof | null>(null);
   const [proofVerified, setProofVerified] = useState<boolean | null>(null);
   const [proofFile, setProofFile] = useState<File | null>(null);
+  const [addingToPipeline, setAddingToPipeline] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const proofFileInputRef = useRef<HTMLInputElement>(null);
 
@@ -410,6 +411,61 @@ const SeedDataUploader: React.FC<SeedDataUploaderProps> = ({
     reader.readAsText(file);
   };
 
+  const handleAddToPipeline = async () => {
+    if (!uploadedData.length || !zkProof) return;
+    setAddingToPipeline(true);
+    try {
+      const payload = {
+        schema_id: schema.id,
+        record_count: uploadedData.length,
+        proof: zkProof,
+        created_at: new Date().toISOString()
+      };
+      await fetch('/.netlify/functions/pipeline-add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      alert('Added to pipeline (demo).');
+    } catch (e) {
+      alert('Failed to add to pipeline');
+    } finally {
+      setAddingToPipeline(false);
+    }
+  };
+
+  const handleSaveDataset = async () => {
+    try {
+      const owner_id = localStorage.getItem('aeg_owner_id') || 'anonymous';
+      const name = `${schema.id}_seed_${new Date().toISOString().slice(0,10)}`;
+      const res = await fetch('/.netlify/functions/datasets?action=create', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, description: 'Seed upload', owner_id }) });
+      const js = await res.json();
+      if (!js.dataset?.id) throw new Error(js.error || 'create failed');
+      const vres = await fetch('/.netlify/functions/datasets?action=addVersion', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ dataset_id: js.dataset.id, version_label: 'v1', row_count: uploadedData.length, byte_size: JSON.stringify(uploadedData).length, checksum: undefined, proof_json: zkProof }) });
+      const vjs = await vres.json();
+      // evidence
+      await fetch('/.netlify/functions/evidence?action=record', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ event_type: 'seed_saved', owner_id, details: { dataset_id: js.dataset.id, version_id: vjs.version?.id, schema_id: schema.id } }) });
+      if (zkProof) {
+        await fetch('/.netlify/functions/evidence?action=link-proof', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ dataset_version_id: vjs.version?.id, proof_id: null }) });
+      }
+      alert('Saved to Datasets Library');
+    } catch (e: any) {
+      alert('Save failed: ' + (e.message || 'unknown'));
+    }
+  };
+
+  const handleVerifyProof = async () => {
+    if (!zkProof) return;
+    try {
+      const ok = await productionZKProofService.verifyProof((zkProof as any).proof, (zkProof as any).publicSignals);
+      setProofVerified(ok);
+      alert(ok ? 'Proof verified' : 'Proof failed');
+    } catch (e) {
+      setProofVerified(false);
+      alert('Verification error');
+    }
+  };
+
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -539,6 +595,29 @@ const SeedDataUploader: React.FC<SeedDataUploaderProps> = ({
         <h2 className="text-2xl font-bold text-gray-800 mb-4">📁 Seed Data Upload</h2>
         <div className="mb-3 text-sm text-gray-600 flex items-center gap-3">
           <label className="flex items-center gap-2"><input type="checkbox" checked={useCleaned} onChange={(e)=>setUseCleaned(e.target.checked)} /> Use cleaned seed data by default</label>
+          <button
+            onClick={async ()=>{
+              try {
+                const sample = Array.from({ length: 200 }).map((_,i)=>({ vin: `VIN_SAMPLE_${(i+1).toString().padStart(6,'0')}`, model: ['Alpha','Beta','Gamma'][i%3], defect_score: Math.round(Math.random()*100)/100, timestamp: new Date(Date.now()-i*86400000).toISOString() }));
+                setUploadedData(sample);
+                setPreviewRows(sample.slice(0,10));
+                const detected = detectSchemaFromData(sample);
+                setDetectedSchema(detected);
+                const validation = validateData(sample, schema);
+                setValidationResult(validation);
+                await generateZKProof(sample);
+                onDataUploaded(sample, detected);
+                onValidationComplete(validation);
+                try { localStorage.setItem('aeg_seed_present','1'); } catch {}
+              } catch (e) {
+                console.error('Sample seed error', e);
+              }
+            }}
+            className="px-3 py-1 bg-gray-100 text-gray-800 rounded hover:bg-gray-200 border text-xs"
+            title="Generate a 200-row sample seed with proof"
+          >
+            ✨ Generate Sample Seed (200)
+          </button>
           {cleaningReport && (
             <span className="text-xs text-gray-500">Cleaned: removed {cleaningReport.rowsRemoved}, dedup {cleaningReport.duplicatesRemoved}, PII {cleaningReport.piiRedacted}</span>
           )}
@@ -714,6 +793,28 @@ const SeedDataUploader: React.FC<SeedDataUploaderProps> = ({
                   📁 {proofFile.name}
                 </span>
               )}
+
+              <button
+                onClick={handleVerifyProof}
+                disabled={!zkProof}
+                className={`px-4 py-2 rounded-md text-sm ${zkProof ? 'bg-indigo-600 text-white hover:bg-indigo-700' : 'bg-gray-400 text-gray-600 cursor-not-allowed'}`}
+              >
+                ✅ Verify Proof
+              </button>
+              <button
+                onClick={handleAddToPipeline}
+                disabled={!zkProof || !uploadedData.length || addingToPipeline}
+                className={`px-4 py-2 rounded-md text-sm ${(!zkProof || !uploadedData.length || addingToPipeline) ? 'bg-gray-400 text-gray-600 cursor-not-allowed' : 'bg-emerald-600 text-white hover:bg-emerald-700'}`}
+              >
+                🔗 Add to Pipeline
+              </button>
+              <button
+                onClick={handleSaveDataset}
+                disabled={!uploadedData.length}
+                className={`px-4 py-2 rounded-md text-sm ${uploadedData.length ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-gray-400 text-gray-600 cursor-not-allowed'}`}
+              >
+                💾 Save to Datasets
+              </button>
             </div>
           </div>
         ) : (
@@ -762,45 +863,26 @@ const SeedDataUploader: React.FC<SeedDataUploaderProps> = ({
                   📁 {proofFile.name}
                 </span>
               )}
+              <button
+                onClick={handleVerifyProof}
+                disabled={!zkProof}
+                className={`px-4 py-2 rounded-md text-sm ${zkProof ? 'bg-indigo-600 text-white hover:bg-indigo-700' : 'bg-gray-400 text-gray-600 cursor-not-allowed'}`}
+              >
+                ✅ Verify Proof
+              </button>
+              <button
+                onClick={handleAddToPipeline}
+                disabled={!zkProof || !uploadedData.length || addingToPipeline}
+                className={`px-4 py-2 rounded-md text-sm ${(!zkProof || !uploadedData.length || addingToPipeline) ? 'bg-gray-400 text-gray-600 cursor-not-allowed' : 'bg-emerald-600 text-white hover:bg-emerald-700'}`}
+              >
+                🔗 Add to Pipeline
+              </button>
             </div>
           </div>
         )}
       </div>
 
-      {/* Validation Results */}
-      {validationResult && (
-        <div className={`border rounded-lg p-4 ${
-          validationResult.isValid ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'
-        }`}>
-          <h3 className={`font-semibold mb-2 ${
-            validationResult.isValid ? 'text-green-800' : 'text-red-800'
-          }`}>
-            {validationResult.isValid ? '✅ Validation Passed' : '❌ Validation Failed'}
-          </h3>
-          
-          {validationResult.errors.length > 0 && (
-            <div className="mb-3">
-              <h4 className="font-medium text-red-700 mb-1">Errors:</h4>
-              <ul className="list-disc list-inside text-red-600 space-y-1">
-                {validationResult.errors.map((error, index) => (
-                  <li key={index}>{error}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-          
-          {validationResult.warnings.length > 0 && (
-            <div>
-              <h4 className="font-medium text-yellow-700 mb-1">Warnings:</h4>
-              <ul className="list-disc list-inside text-yellow-600 space-y-1">
-                {validationResult.warnings.map((warning, index) => (
-                  <li key={index}>{warning}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-      )}
+      
 
       {/* Data Preview */}
       {previewRows.length > 0 && (

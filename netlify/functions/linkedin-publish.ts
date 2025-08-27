@@ -1,10 +1,20 @@
 import type { Handler } from '@netlify/functions'
 import { getServiceClient } from './_lib/supabase'
+import { rateLimit, tooMany } from './_shared/supabase'
 
 type PublishBody = { text: string; url?: string }
 
 const handler: Handler = async (event) => {
 	try {
+		const rl = rateLimit(event, 'linkedin-publish', 10, 60); // 10/min per IP
+		if (!rl.allowed) return tooMany(rl.retryAfter)
+		if (event.httpMethod === 'GET') {
+			return {
+				statusCode: 200,
+				headers: { 'content-type': 'text/html' },
+				body: `<html><body><h1>LinkedIn Publish</h1><p>POST JSON { text, url? } to this endpoint to publish to LinkedIn (requires prior connection via /.netlify/functions/linkedin-start).</p></body></html>`
+			}
+		}
 		if (event.httpMethod !== 'POST') return { statusCode: 405, body: 'Method Not Allowed' }
 		const supabase = getServiceClient()
 		const { data: acct, error } = await supabase

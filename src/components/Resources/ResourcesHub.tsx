@@ -34,7 +34,8 @@ type DocKey =
   | "lm-studio"
   | "changelog"
   | "license-terms"
-  | "guides-getting-started";
+  | "guides-getting-started"
+  | "publisher-guide";
 
 const loaders: Record<DocKey, () => Promise<{ default: string }>> = {
   "getting-started": () => import("../../../docs/MARKETING_SAFE_SUMMARY.md?raw"),
@@ -44,12 +45,13 @@ const loaders: Record<DocKey, () => Promise<{ default: string }>> = {
   "api-reference": () => import("../../../docs/API_REFERENCE.md?raw"),
   "evidence-spec": () => import("../../../docs/EVIDENCE_BUNDLE_SPEC.md?raw"),
   "compliance-audit": () => import("../../../docs/COMPLIANCE_AND_AUDIT.md?raw"),
-  "marketplace": () => import("../../../docs/DATABRICKS_MARKETPLACE_PUBLISHER.md?raw"),
+  "marketplace": () => import("../../../docs/Package_and_list_Databricks.md?raw"),
   "billing-access": () => import("../../../docs/BILLING_AND_ACCESS.md?raw"),
   "lm-studio": () => import("../../../docs/LM_STUDIO_SETUP.md?raw"),
   "changelog": () => import("../../../docs/MARKETING_SAFE_SUMMARY.md?raw"),
   "license-terms": () => import("../../../docs/LICENSE_AND_TERMS.md?raw"),
   "guides-getting-started": () => import("../../../docs/guides/GETTING_STARTED.md?raw"),
+  "publisher-guide": () => import("../../../docs/Publisher_and_Blog_Library.md?raw"),
 };
 
 const sections: Array<{ 
@@ -63,6 +65,7 @@ const sections: Array<{
     items: [
       { key: "getting-started", label: "Platform Overview", description: "Complete platform overview and capabilities" },
       { key: "guides-getting-started", label: "Quickstart Guide", description: "Step-by-step getting started guide" },
+      { key: "publisher-guide", label: "Publisher & Blog Library", description: "Populate library and publish to LinkedIn" },
     ],
   },
   {

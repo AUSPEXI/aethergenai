@@ -41,7 +41,6 @@ type DashboardTab =
   | 'overview'
   | 'generate'
   | 'upload'
-  | 'zkproof'
   | 'benchmarks'
   | 'ablation'
   | 'reporting'
@@ -80,6 +79,8 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
   const [activeTab, setActiveTab] = useState<DashboardTab>('overview');
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [role, setRole] = useState<'viewer'|'developer'|'team'|'enterprise'|'admin'>('viewer');
+  const [seedPresent, setSeedPresent] = useState<boolean>(false);
+  const [qaMode, setQaMode] = useState<boolean>(false);
 
   useEffect(() => {
     let mounted = true;
@@ -105,8 +106,10 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
         }
         // QA unlock
         const qaUnlock = (import.meta.env as any).VITE_QA_UNLOCK === '1' || localStorage.getItem('aeg_qa') === '1';
-        if (qaUnlock) computed = 'admin';
         if (mounted) {
+          setQaMode(!!qaUnlock);
+          if (qaUnlock) computed = 'admin';
+          try { setSeedPresent(localStorage.getItem('aeg_seed_present') === '1'); } catch {}
           setRole(computed);
           try { localStorage.setItem(`aeg:role:${userEmail}`, computed); } catch {}
         }
@@ -121,7 +124,6 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
     { id: 'overview', name: 'Overview', icon: BarChart3, description: 'Platform metrics and performance' },
     { id: 'generate', name: 'Generate', icon: Database, description: 'Create synthetic datasets' },
     { id: 'upload', name: 'Upload', icon: Upload, description: 'Upload seed data and assets' },
-    { id: 'zkproof', name: 'ZK Proofs', icon: BadgeCheck, description: 'Manage and verify proofs' },
     { id: 'benchmarks', name: 'Benchmarks', icon: LineChart, description: 'Performance and quality benchmarks' },
     { id: 'ablation', name: 'Ablation Tests', icon: Activity, description: 'Run ablation recipes and compare' },
     { id: 'reporting', name: 'Reporting', icon: BarChart3, description: 'Reports and dashboards' },
@@ -133,6 +135,40 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
     { id: 'billing', name: 'Billing', icon: CreditCard, description: 'Subscription and usage' },
     { id: 'settings', name: 'Settings', icon: Settings, description: 'Account and platform settings' }
   ];
+
+  const defaultSchema = {
+    id: 'automotive_v1',
+    targetVolume: 1000,
+    fields: [
+      { name: 'vin', type: 'string', privacyLevel: 'medium', constraints: { required: true, unique: true } },
+      { name: 'model', type: 'string', privacyLevel: 'low', constraints: { required: true, unique: false } },
+      { name: 'defect_score', type: 'number', privacyLevel: 'low', constraints: { required: false, unique: false } },
+      { name: 'timestamp', type: 'date', privacyLevel: 'low', constraints: { required: false, unique: false } }
+    ],
+    privacySettings: { epsilon: 0.5, syntheticRatio: 1.0 }
+  } as any;
+
+  function handleSeedUploaded(data: any[]) {
+    if (Array.isArray(data) && data.length > 0) {
+      setSeedPresent(true);
+      try { localStorage.setItem('aeg_seed_present', '1'); } catch {}
+    }
+  }
+
+  const GatePanel: React.FC<{ title: string; body: string }> = ({ title, body }) => (
+    <div className="bg-white rounded-lg border p-8 text-center">
+      <h3 className="text-xl font-semibold text-gray-900 mb-2">{title}</h3>
+      <p className="text-gray-700 mb-6">{body}</p>
+      <div className="flex items-center justify-center gap-3">
+        <button onClick={() => setActiveTab('upload')} className="px-5 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700">Upload seed</button>
+        <button onClick={() => { try { localStorage.setItem('aeg_seed_present','1'); } catch {}; setSeedPresent(true); }} className="px-5 py-2 rounded-lg border border-gray-300 hover:bg-gray-50">Create sample seed (200 rows)</button>
+        <a href="#" onClick={(e)=>{e.preventDefault(); setActiveTab('overview');}} className="text-blue-700 underline">Learn the workflow</a>
+      </div>
+      {qaMode && (
+        <div className="mt-3 text-sm text-amber-700">QA mode is ON. You can explore without uploading.</div>
+      )}
+    </div>
+  );
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -238,18 +274,6 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
         );
 
       case 'generate':
-        // Safe defaults to avoid runtime errors when no schema/seed have been set up yet
-        const defaultSchema = {
-          id: 'automotive_v1',
-          targetVolume: 1000,
-          fields: [
-            { name: 'vin', type: 'string', privacyLevel: 'medium' },
-            { name: 'model', type: 'string', privacyLevel: 'low' },
-            { name: 'defect_score', type: 'number', privacyLevel: 'low' },
-            { name: 'timestamp', type: 'date', privacyLevel: 'low' }
-          ],
-          privacySettings: { epsilon: 0.5, syntheticRatio: 1.0 }
-        } as any;
         return (
           <SyntheticDataGenerator
             schema={defaultSchema}
@@ -263,6 +287,7 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
         return <SchemaDesigner />;
 
       case 'pipelines':
+        if (!seedPresent && !qaMode) return <GatePanel title="Pipelines need data" body="Upload a seed or create a sample dataset to configure multi-schema pipelines." />;
         if (!roleHas(role, 'manage_pipelines')) return <UpgradeGate feature="Pipelines" />;
         return <PipelineManager />;
 
@@ -271,10 +296,12 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
         return <DataCleaner />;
 
       case 'privacy':
+        if (!seedPresent && !qaMode) return <GatePanel title="Privacy metrics need data" body="Upload a seed or generate a sample so we can compute privacy/utility metrics." />;
         if (!roleHas(role, 'run_privacy')) return <UpgradeGate feature="Privacy Metrics" />;
         return <PrivacyMetrics />;
 
       case 'risk':
+        if (!seedPresent && !qaMode) return <GatePanel title="Risk assessment needs data" body="Upload a seed or generate a sample to run risk analysis." />;
         if (!roleHas(role, 'view_risk')) return <UpgradeGate feature="Risk Assessment" />;
         return (
           <div className="space-y-6">
@@ -286,15 +313,20 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
         );
 
       case 'upload':
-        return <SeedDataUploader />;
-
-      case 'zkproof':
-        return <ProductionZKProofUpload />;
+        return (
+          <SeedDataUploader
+            schema={defaultSchema}
+            onDataUploaded={(data)=>{ handleSeedUploaded(data); }}
+            onValidationComplete={()=>{}}
+          />
+        );
 
       case 'benchmarks':
+        if (!seedPresent && !qaMode) return <GatePanel title="Benchmarks need data" body="Upload a seed or generate a sample dataset so benchmark results reflect your schema." />;
         return <AdvancedBenchmarking />;
 
       case 'ablation':
+        if (!seedPresent && !qaMode) return <GatePanel title="Ablation needs a dataset" body="Upload a seed or generate a synthetic batch, then run ablation recipes." />;
         return <ModuleBenchmarks />;
 
       case 'reporting':
@@ -440,7 +472,7 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
             )}
             
             <TabErrorBoundary>
-              {renderTabContent()}
+            {renderTabContent()}
             </TabErrorBoundary>
           </div>
         </main>

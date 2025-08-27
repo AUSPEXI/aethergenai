@@ -10,7 +10,8 @@ import {
   Activity,
   ChevronRight,
   LogOut,
-  User
+  User,
+  GitBranch
 } from 'lucide-react';
 import { getEntitlements } from '../../services/entitlementsClient';
 import { entitlementsToRole, roleHas } from '../../services/rbacService';

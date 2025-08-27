@@ -179,7 +179,25 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
         );
 
       case 'generate':
-        return <SyntheticDataGenerator />;
+        // Safe defaults to avoid runtime errors when no schema/seed have been set up yet
+        const defaultSchema = {
+          id: 'automotive_v1',
+          targetVolume: 1000,
+          fields: [
+            { name: 'vin', type: 'string', privacyLevel: 'medium' },
+            { name: 'model', type: 'string', privacyLevel: 'low' },
+            { name: 'defect_score', type: 'number', privacyLevel: 'low' },
+            { name: 'timestamp', type: 'date', privacyLevel: 'low' }
+          ],
+          privacySettings: { epsilon: 0.5, syntheticRatio: 1.0 }
+        } as any;
+        return (
+          <SyntheticDataGenerator
+            schema={defaultSchema}
+            seedData={[]}
+            onGenerationComplete={() => {}}
+          />
+        );
 
       case 'schema':
         if (!roleHas(role, 'design_schema')) return <UpgradeGate feature="Schema Designer" />;

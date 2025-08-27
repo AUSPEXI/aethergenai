@@ -23,7 +23,13 @@ async function exchangeCodeForToken(code: string, redirectUri: string) {
 const handler: Handler = async (event) => {
 	try {
 		const code = event.queryStringParameters?.code
-		if (!code) return { statusCode: 400, body: 'Missing code' }
+		if (!code) {
+			return {
+				statusCode: 302,
+				headers: { Location: `${process.env.URL || ''}/.netlify/functions/linkedin-start` },
+				body: ''
+			}
+		}
 		const redirectUri = `${process.env.URL || ''}/.netlify/functions/linkedin-callback`
 		const token = await exchangeCodeForToken(code, redirectUri)
 

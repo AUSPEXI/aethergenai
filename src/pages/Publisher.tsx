@@ -42,7 +42,7 @@ const Publisher: React.FC = () => {
 			/>
 			<div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
 				<h1 className="text-3xl font-bold text-slate-900 mb-6">Publisher</h1>
-				<p className="text-slate-600 mb-6">Create LinkedIn drafts from your pages while protecting IP and tone.</p>
+				<p className="text-gray-800 mb-6">Create LinkedIn drafts from your pages while protecting IP and tone.</p>
 				<div className="space-y-4">
 					<div className="flex gap-2 items-center">
 						<select className="border rounded px-3 py-2" value={selectedSlug} onChange={e=>{
@@ -90,8 +90,8 @@ const Publisher: React.FC = () => {
 				<div className="mt-8 bg-slate-50 border border-slate-200 rounded p-4">
 					<h2 className="text-lg font-semibold text-slate-900 mb-3">LinkedIn Draft</h2>
 					<p className="font-semibold mb-2">{draft.headline}</p>
-					<pre className="whitespace-pre-wrap text-sm text-slate-800">{draft.body}</pre>
-					<p className="mt-3 text-sm text-slate-600">{draft.hashtags}</p>
+					<pre className="whitespace-pre-wrap text-sm text-gray-900">{draft.body}</pre>
+					<p className="mt-3 text-sm text-gray-800">{draft.hashtags}</p>
 					<div className="mt-4 flex gap-3 flex-wrap items-center">
 						<a href={draft.shareUrl} target="_blank" rel="noreferrer" className="px-4 py-2 rounded bg-blue-600 text-white">Open LinkedIn Share</a>
 						<button
@@ -122,7 +122,7 @@ const Publisher: React.FC = () => {
 							Queue (Scheduled)
 						</button>
 					</div>
-					<p className="mt-4 text-xs text-slate-500">Safety: sanitized for hype and IP terms. Edit as needed before posting.</p>
+					<p className="mt-4 text-xs text-gray-700">Safety: sanitized for hype and IP terms. Edit as needed before posting.</p>
 				</div>
 				<div className="mt-8 bg-slate-50 border border-slate-200 rounded p-4">
 					<h2 className="text-lg font-semibold text-slate-900 mb-3">Reply Assistant</h2>
@@ -143,7 +143,7 @@ const Publisher: React.FC = () => {
 							window.open(draft.openUrl, '_blank')
 						}}>Copy Reply & Open Post</button>
 					</div>
-					<p className="mt-4 text-xs text-slate-500">Manual posting preserves account integrity and follows platform policies. Keep it concise, non‑promotional, and relevant.</p>
+					<p className="mt-4 text-xs text-gray-700">Manual posting preserves account integrity and follows platform policies. Keep it concise, non‑promotional, and relevant.</p>
 				</div>
 			</div>
 		</div>

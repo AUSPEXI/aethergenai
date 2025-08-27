@@ -19,6 +19,7 @@ import RAGConfidencePanel from './RAGConfidencePanel';
 import AutopilotPanel from './AutopilotPanel';
 import LocalTrainingPanel from './LocalTrainingPanel';
 import VacuumEnginePanel from './VacuumEnginePanel';
+import { HARNESS_MODELS, runHarness } from '../../services/harnessService';
 
 interface AdvancedBenchmarkingProps {
   schema: any;
@@ -85,6 +86,47 @@ const AdvancedBenchmarking: React.FC<AdvancedBenchmarkingProps> = ({
   const [zkupb, setZkupb] = useState<{ ok?: boolean } | null>(null);
   const [hca, setHca] = useState<{ abstainRate:number; calibratedGain:number } | null>(null);
   const [hcaSweep, setHcaSweep] = useState<Array<{ t:number; ar:number; gain:number }>>([]);
+  const [harness, setHarness] = useState<any[] | null>(null);
+  const [suite, setSuite] = useState<Array<{ name:string; value:number; unit:string }>>([]);
+  const runHarnessNow = () => {
+    try {
+      const sampleSize = Math.min(5000, Math.max(1000, generatedData.length||1000));
+      const res = runHarness(HARNESS_MODELS, sampleSize);
+      setHarness(res);
+    } catch {}
+  };
+  const exportHarnessCsv = () => {
+    if (!harness) return;
+    const header = ['model','accuracy','privacy','utility','speed','pass'];
+    const rows = [header, ...harness.map((r:any)=> [r.model, r.accuracy, r.privacy, r.utility, r.speed, r.pass])];
+    const csv = rows.map(r=> r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob); const a = document.createElement('a');
+    a.href = url; a.download = `harness_${Date.now()}.csv`; a.click(); URL.revokeObjectURL(url);
+  };
+  const runPerfSuite = () => {
+    try {
+      const n = Math.max(1, (generatedData||[]).length);
+      const fields = n>0 ? Object.keys(generatedData[0]).length : 0;
+      const start = performance.now();
+      // simple ops to simulate throughput
+      const uniq = new Set((generatedData||[]).map(r=>JSON.stringify(r))).size;
+      const end = performance.now();
+      const dt = Math.max(1, end-start);
+      const rowsPerSec = Math.round((n/(dt/1000)));
+      const featuresPerSec = Math.round((n*fields)/(dt/1000));
+      const memMB = Math.round((JSON.stringify(generatedData||[]).length/1024/1024));
+      const results = [
+        { name:'Rows/sec', value: rowsPerSec, unit:'' },
+        { name:'Features/sec', value: featuresPerSec, unit:'' },
+        { name:'Unique ratio %', value: Math.round((uniq/Math.max(1,n))*100), unit:'%' },
+        { name:'Memory (MB est.)', value: memMB, unit:'MB' }
+      ];
+      setSuite(results);
+    } catch {
+      setSuite([]);
+    }
+  };
   const [froFrs, setFroFrs] = useState<number | null>(null);
   const resultsRef = useRef<HTMLDivElement | null>(null);
   const summaryRef = useRef<HTMLDivElement | null>(null);
@@ -139,6 +181,13 @@ const AdvancedBenchmarking: React.FC<AdvancedBenchmarkingProps> = ({
           localStorage.setItem('aeg_432_weight', String(harmWeight));
         } catch {}
       } catch { /* no-op */ }
+
+      // Run innovation harness over model set (deterministic, local)
+      try {
+        const sampleSize = Math.min(5000, Math.max(1000, generatedData.length));
+        const res = runHarness(HARNESS_MODELS, sampleSize);
+        setHarness(res);
+      } catch {}
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [seedData, generatedData]);
@@ -858,6 +907,57 @@ const AdvancedBenchmarking: React.FC<AdvancedBenchmarkingProps> = ({
               ) : <div className="text-gray-700">No data</div>}
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Harness (20 HF + 11 proprietary) */}
+      {harness && (
+        <div className="bg-white rounded-lg shadow-lg p-6">
+          <h3 className="text-xl font-bold text-gray-800 mb-4">🧪 Model Harness (Deterministic)</h3>
+          <div className="mb-3 flex gap-2">
+            <button onClick={runHarnessNow} className="px-3 py-2 bg-slate-800 text-white rounded text-sm hover:bg-slate-900">Run Harness</button>
+            <button onClick={exportHarnessCsv} className="px-3 py-2 bg-slate-100 text-slate-800 rounded text-sm hover:bg-slate-200">Export CSV</button>
+            <button onClick={runPerfSuite} className="px-3 py-2 bg-amber-600 text-white rounded text-sm hover:bg-amber-700">Run Performance Suite</button>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="min-w-full border">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-3 py-2 text-left">Model</th>
+                  <th className="px-3 py-2 text-left">Accuracy</th>
+                  <th className="px-3 py-2 text-left">Privacy</th>
+                  <th className="px-3 py-2 text-left">Utility</th>
+                  <th className="px-3 py-2 text-left">Speed</th>
+                  <th className="px-3 py-2 text-left">Pass</th>
+                </tr>
+              </thead>
+              <tbody>
+                {harness.map((r:any)=> (
+                  <tr key={r.model} className="border-t">
+                    <td className="px-3 py-2">{r.model}</td>
+                    <td className="px-3 py-2">{(r.accuracy*100).toFixed(1)}%</td>
+                    <td className="px-3 py-2">{(r.privacy*100).toFixed(1)}%</td>
+                    <td className="px-3 py-2">{(r.utility*100).toFixed(1)}%</td>
+                    <td className="px-3 py-2">{r.speed}</td>
+                    <td className="px-3 py-2">{r.pass? '✅' : '⚠️'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {suite.length>0 && (
+            <div className="mt-4">
+              <h4 className="font-semibold mb-2">Performance Suite</h4>
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-3 text-sm">
+                {suite.map((s)=> (
+                  <div key={s.name} className="p-3 bg-gray-50 rounded border">
+                    <div className="text-gray-600">{s.name}</div>
+                    <div className="text-xl font-semibold">{s.value} {s.unit}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
 

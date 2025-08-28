@@ -4,6 +4,8 @@ type DraftInput = {
 	keyPoints?: string[]
 	cta?: string
 	seoKeywords?: string[]
+	techLens?: string
+	contextSnippets?: Array<{ title: string; summary?: string; url?: string; tags?: string[] }>
 }
 
 type DraftOutput = {
@@ -30,13 +32,17 @@ export function generateLinkedInDraft(input: DraftInput): DraftOutput {
 	const title = sanitize(input.title)
 	const url = input.url
 	const cta = sanitize(input.cta || 'Read the case study and get in touch.')
-	const points = (input.keyPoints || []).slice(0, 4).map(p => `• ${sanitize(p)}`)
+	const lens = sanitize(input.techLens || '')
+	const context = (input.contextSnippets || []).slice(0, 2)
+	const ctxLines = context.map(c => `• ${sanitize(c.title)}${c.summary ? ` — ${sanitize(c.summary)}` : ''}`)
+	const points = (input.keyPoints || []).slice(0, 3).map(p => `• ${sanitize(p)}`)
 	const kw = (input.seoKeywords || ['synthetic data','evidence-led','edge AI','privacy']).slice(0, 6)
 	const hashtags = '#AethergenPlatform ' + kw.map(k => '#' + k.replace(/\s+/g,'')).join(' ')
 	const headline = `${title} — Evidence‑Led and Built for Regulated Environments`
 	const body = [
-		'Quick take:',
+		lens ? `Perspective: ${lens}` : 'Quick take:',
 		...points,
+		...(ctxLines.length ? ['Context:', ...ctxLines] : []),
 		'',
 		cta,
 		url,

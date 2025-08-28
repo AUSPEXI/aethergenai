@@ -100,7 +100,7 @@ const Pricing = () => {
       }
     },
     {
-      name: 'Org Platform (5 seats)',
+      name: 'Enterprise Platform',
       description: 'Large team access with enterprise-grade features',
       price: {
         gbp: '£2,999',
@@ -109,13 +109,13 @@ const Pricing = () => {
       period: 'per month (includes 5 seats)',
       features: [
         '500M+ rows/month (negotiated)',
-        'Unlimited ablation runs',
-        'Unlimited API calls',
+        'Unlimited ablation runs (tools only)',
         'SSO integration',
         'SLA guarantees',
         'Audit exports',
         'Dedicated support',
-        'White-label capabilities'
+        'Tools only (no managed compute or Databricks delivery)',
+        'Datasets sold separately'
       ],
       icon: Server,
       color: 'purple',
@@ -123,7 +123,7 @@ const Pricing = () => {
       quotas: {
         rows: '500M+',
         ablation: 'Unlimited',
-        api: 'Unlimited'
+        api: 'By contract'
       }
     }
   ];
@@ -160,7 +160,7 @@ const Pricing = () => {
       name: 'Enterprise Basic',
       price: { gbp: '£9,999', usd: '$12,999' },
       period: 'per month',
-      features: ['Up to 100M records', 'Databricks integration', 'Full evidence bundles', 'Dedicated support', 'Custom compliance'],
+      features: ['Up to 100M records (managed compute included)', 'Databricks integration & delivery', 'Full evidence bundles', 'Dedicated support', 'Custom compliance'],
       icon: Building,
       color: 'blue'
     },
@@ -168,7 +168,7 @@ const Pricing = () => {
       name: 'Enterprise Pro',
       price: { gbp: '£24,999', usd: '$31,999' },
       period: 'per month',
-      features: ['Up to 500M records', 'Databricks integration', 'Full evidence bundles', 'Dedicated support', 'Custom compliance'],
+      features: ['Up to 500M records (managed compute included)', 'Databricks integration & delivery', 'Full evidence bundles', 'Dedicated support', 'Custom compliance'],
       icon: Crown,
       color: 'green'
     },
@@ -176,7 +176,7 @@ const Pricing = () => {
       name: 'Enterprise Ultimate',
       price: { gbp: '£49,999', usd: '$62,999' },
       period: 'per month',
-      features: ['Up to 1B records', 'Databricks integration', 'Full evidence bundles', 'Dedicated support', 'SLA guarantees'],
+      features: ['Up to 1B records (managed compute included)', 'Databricks integration & delivery', 'Full evidence bundles', 'Dedicated support', 'Production SLAs, private networking options'],
       icon: Server,
       color: 'purple'
     }
@@ -901,7 +901,7 @@ const Pricing = () => {
               >
                 <option value="automotive">🚗 Automotive Manufacturing - Primary Focus (Building Now)</option>
                 <option value="healthcare">🏥 Healthcare & NHS - Coming Very Soon (Q1 2025)</option>
-                <option value="finance">💰 Financial Services - Planned (Q2 2025)</option>
+                <option value="financial">💰 Financial Services - Planned (Q2 2025)</option>
               </select>
               <ChevronDown className="absolute right-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-slate-400 pointer-events-none" />
             </div>
@@ -910,9 +910,13 @@ const Pricing = () => {
           {/* Selected Industry Display */}
           <div className="max-w-4xl mx-auto">
             {(() => {
-              const industry = industrySuites.find(i => 
-                i.name.toLowerCase().includes(selectedIndustry)
-              );
+              const industry = industrySuites.find(i => {
+                const key = i.name.toLowerCase();
+                if (selectedIndustry === 'automotive') return key.includes('automotive');
+                if (selectedIndustry === 'healthcare') return key.includes('healthcare');
+                if (selectedIndustry === 'financial') return key.includes('financial');
+                return false;
+              });
               
               if (!industry) return null;
               
@@ -1008,7 +1012,7 @@ const Pricing = () => {
             {/* Entitlements note */}
             <div className="max-w-3xl mx-auto bg-blue-50 border border-blue-200 text-blue-800 rounded-xl p-4">
               <p className="text-sm">
-                Platform tiers provide tooling quotas (generator, benchmarks, privacy, evidence). <strong>Datasets are sold separately</strong> and are not bundled with platform seats.
+                Platform tiers are <strong>tools only</strong> (no managed compute or Databricks delivery). <strong>Datasets sold separately</strong>. Use Enterprise (Databricks) for managed delivery and production SLAs.
               </p>
             </div>
           </div>
@@ -1043,7 +1047,7 @@ const Pricing = () => {
                     <span className="text-4xl font-bold text-slate-900">{tier.price.gbp}</span>
                     <span className="text-slate-600 ml-2">{tier.period}</span>
                   </div>
-                  <div className="text-sm text-slate-500">{tier.price.usd} USD equivalent</div>
+                  <div className="text-sm text-slate-600">{tier.price.usd} USD equivalent</div>
                 </div>
                 
                 <div className="mb-6">
@@ -1115,7 +1119,7 @@ const Pricing = () => {
                     <span className="text-4xl font-bold text-slate-900">{tier.price.gbp}</span>
                     <span className="text-slate-600 ml-2">{tier.period}</span>
                   </div>
-                  <div className="text-sm text-slate-500">{tier.price.usd} USD equivalent</div>
+                  <div className="text-sm text-slate-600">{tier.price.usd} USD equivalent</div>
                 </div>
                 
                 <ul className="space-y-3 mb-8">
@@ -1163,7 +1167,7 @@ const Pricing = () => {
                     <span className="text-4xl font-bold text-slate-900">{tier.price.gbp}</span>
                     <span className="text-slate-600 ml-2">{tier.period}</span>
                   </div>
-                  <div className="text-sm text-slate-500">{tier.price.usd} USD equivalent</div>
+                  <div className="text-sm text-slate-600">{tier.price.usd} USD equivalent</div>
                 </div>
                 
                 <ul className="space-y-3 mb-8">
@@ -1218,7 +1222,7 @@ const Pricing = () => {
                     <span className="text-4xl font-bold text-slate-900">{tier.price.gbp}</span>
                     <span className="text-slate-600 ml-2">{tier.period}</span>
                   </div>
-                  <div className="text-sm text-slate-500">{tier.price.usd} USD equivalent</div>
+                  <div className="text-sm text-slate-600">{tier.price.usd} USD equivalent</div>
                 </div>
                 
                 <ul className="space-y-3 mb-8">
@@ -1274,7 +1278,7 @@ const Pricing = () => {
                     <span className="text-slate-600 ml-2">{tier.period}</span>
                   </div>
                   {tier.price.gbp !== 'Contact Sales' && (
-                    <div className="text-sm text-slate-500">{tier.price.usd} USD equivalent</div>
+                    <div className="text-sm text-slate-600">{tier.price.usd} USD equivalent</div>
                   )}
                 </div>
                 
@@ -1334,7 +1338,7 @@ const Pricing = () => {
                     <span className="text-4xl font-bold text-slate-900">{tier.price.gbp}</span>
                     <span className="text-slate-600 ml-2">{tier.period}</span>
                   </div>
-                  <div className="text-sm text-slate-500">{tier.price.usd} USD equivalent</div>
+                  <div className="text-sm text-slate-600">{tier.price.usd} USD equivalent</div>
                 </div>
                 
                 <ul className="space-y-3 mb-8">
@@ -1373,7 +1377,7 @@ const Pricing = () => {
                     <span className="text-3xl font-bold text-slate-900">{tier.price.gbp}</span>
                     <span className="text-slate-600 ml-2">{tier.period}</span>
                   </div>
-                  <div className="text-sm text-slate-500">{tier.price.usd} USD equivalent</div>
+                  <div className="text-sm text-slate-600">{tier.price.usd} USD equivalent</div>
                 </div>
                 <ul className="space-y-3 mb-8">
                   {tier.features.map((feature: string, featureIndex: number) => (
@@ -1430,7 +1434,10 @@ const Pricing = () => {
         </div>
       </section>
 
-      {/* Entitlements Matrix */}
+      {/* Entitlements Matrix */
+      
+      
+      }
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
@@ -1438,7 +1445,7 @@ const Pricing = () => {
             <p className="text-slate-800">High‑level capabilities by package (detailed contracts govern final scope)</p>
           </div>
           <div className="overflow-x-auto">
-            <div className="min-w-[900px] grid grid-cols-7 gap-2 text-sm">
+            <div className="min-w-[900px] grid grid-cols-7 gap-2 text-sm text-slate-800">
               <div></div>
               <div className="font-semibold text-slate-900">Model Seat</div>
               <div className="font-semibold text-slate-900">Predictions</div>
@@ -1503,7 +1510,7 @@ const Pricing = () => {
               <div>Customer (self‑host) or Managed (Enterprise)</div>
               <div>Managed (Full‑Service) or Customer (Self‑Hosted)</div>
             </div>
-            <p className="mt-3 text-xs text-slate-700">*“Unlimited” subject to negotiated contract and fair use.</p>
+            <p className="mt-3 text-xs text-slate-800">*“Unlimited” subject to negotiated contract and fair use.</p>
           </div>
         </div>
       </section>

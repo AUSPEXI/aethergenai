@@ -447,8 +447,13 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
         }
 
       case 'ablation':
-        if (!seedPresent && !qaMode) return <GatePanel title="Ablation needs a dataset" body="Upload a seed or generate a synthetic batch, then run ablation recipes." />;
-        return <ModuleBenchmarks qaMode={qaMode} seedPresent={seedPresent} />;
+        return (
+          <div className="bg-white rounded-lg border p-8 text-center">
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">Ablation moved under Benchmarks</h3>
+            <p className="text-gray-700 mb-6">Use the Benchmarks tab to run ablation recipes and model comparisons.</p>
+            <button onClick={() => setActiveTab('benchmarks')} className="px-5 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700">Go to Benchmarks</button>
+          </div>
+        );
 
       case 'reporting':
         if (!seedPresent && !qaMode) return <GatePanel title="Reporting needs data" body="Upload a seed or generate a sample to populate reports. No external calls are made until you confirm." />;

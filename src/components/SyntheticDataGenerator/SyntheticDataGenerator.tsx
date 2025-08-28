@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { cleanSyntheticData, CleaningReport } from '../../services/dataCleaningService';
 import { estimateStep } from '../../services/costEstimator';
-import ModelCollapseRiskDial from '../ModelCollapseRiskDial/ModelCollapseRiskDial';
 import { DataSchema, SyntheticDataResult } from '../../types/schema';
 import { productionZKProofService, ProductionZKProofInput, ProductionZKProof } from '../../services/zksnark/productionZKProofService';
 // REMOVE: import { saveAs } from 'file-saver';
@@ -992,16 +991,15 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
         </button>
       </div>
 
-      {/* Model Collapse Risk Monitoring */}
-      <div className="bg-white rounded-lg shadow-lg p-6">
-        <ModelCollapseRiskDial
-          syntheticData={generatedData}
-          schema={schema}
-          onRiskChange={(riskLevel, recommendations) => {
-            console.log('Risk level changed:', riskLevel, recommendations);
-            // Could trigger automatic mitigation strategies here
-          }}
-        />
+      {/* Risk assessment lives under the Risk tab. Link out from here for clarity. */}
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-base font-semibold text-blue-800">Risk Assessment</h3>
+            <p className="text-sm text-blue-700">Model collapse risk is available under the Risk tab.</p>
+          </div>
+          <a href="#" onClick={(e)=>{ e.preventDefault(); try{ window.dispatchEvent(new CustomEvent('aeg:navigate-dashboard',{ detail: { tab: 'risk' } })); }catch{} }} className="px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm">Go to Risk</a>
+        </div>
       </div>
 
       {/* Generation Progress/Monitoring Section */}

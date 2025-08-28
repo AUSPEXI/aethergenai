@@ -168,7 +168,7 @@ const LandingPage: React.FC = () => {
             {t:'Datasets',d:'Preview (Free, 50k rows) • Standard £399/$499 • Enterprise £25k/$30k/yr (Delta Sharing)'},
             {t:'Specialised Models',d:'Niche like Healthcare Fraud Detection £149/$199 p/seat / month'},
             {t:'Prediction Credits',d:'100k £49/$59 • 1M £399/$499 (one‑time)'},
-            {t:'Developer Hub',d:'Dev Hub £299/$379 • Pro £499/$629 • Enterprise £2,999/$3,799 (5 seats)'}
+            {t:'Developer Hub',d:'Dev Hub £299/$379 • Pro £499/$629 • Enterprise Platform £2,999/$3,799 (5 seats, tools only)'}
           ].map(({t,d}) => (
             <div key={t} className="rounded-xl p-6 dark-card neon-card flex flex-col">
               <div className="text-emerald-300 font-semibold mb-2">{t}</div>

@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Global accessibility tweak: avoid light gray text on light backgrounds */
+@layer base {
+  .text-gray-300, .text-gray-200, .text-gray-100,
+  .text-slate-300, .text-slate-200, .text-slate-100,
+  .text-neutral-300, .text-neutral-200, .text-neutral-100 {
+    color: #334155; /* slate-700 equivalent */
+  }
+}
+
 @layer utilities {
   /* Liquid Morphing Animations */
   @keyframes fade-in {

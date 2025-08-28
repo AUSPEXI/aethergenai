@@ -38,8 +38,33 @@
 
 # General API redirects (must come BEFORE the catch-all)
 [[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
+  from = "/api/:resource"
+  to = "/.netlify/functions/api?resource=:resource"
+  status = 200
+
+[[redirects]]
+  from = "/.netlify/functions/datasets"
+  to = "/.netlify/functions/api?resource=datasets"
+  status = 200
+
+[[redirects]]
+  from = "/.netlify/functions/models"
+  to = "/.netlify/functions/api?resource=models"
+  status = 200
+
+[[redirects]]
+  from = "/.netlify/functions/templates"
+  to = "/.netlify/functions/api?resource=templates"
+  status = 200
+
+[[redirects]]
+  from = "/.netlify/functions/pipelines"
+  to = "/.netlify/functions/api?resource=pipelines"
+  status = 200
+
+[[redirects]]
+  from = "/.netlify/functions/evidence"
+  to = "/.netlify/functions/api?resource=evidence"
   status = 200
 
 

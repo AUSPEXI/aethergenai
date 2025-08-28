@@ -33,8 +33,21 @@ export function generateLinkedInDraft(input: DraftInput): DraftOutput {
 	const url = input.url
 	const cta = sanitize(input.cta || 'Read the case study and get in touch.')
 	const lens = sanitize(input.techLens || '')
-	const context = (input.contextSnippets || []).slice(0, 2)
-	const ctxLines = context.map(c => `• ${sanitize(c.title)}${c.summary ? ` — ${sanitize(c.summary)}` : ''}`)
+	// Deduplicate context by title and trim summaries
+	const seen = new Set<string>()
+	const context = (input.contextSnippets || []).filter(c => {
+		const t = (c.title || '').trim()
+		if (!t || seen.has(t)) return false
+		seen.add(t)
+		return true
+	}).slice(0, 2)
+	const ctxLines = context.map(c => {
+		const t = sanitize(c.title || '')
+		let s = sanitize(c.summary || '')
+		if (s.startsWith(t)) s = s.slice(t.length).trim()
+		if (s.length > 140) s = s.slice(0, 139) + '…'
+		return `• ${t}${s ? ` — ${s}` : ''}`
+	})
 	const points = (input.keyPoints || []).slice(0, 3).map(p => `• ${sanitize(p)}`)
 	const kw = (input.seoKeywords || ['synthetic data','evidence-led','edge AI','privacy']).slice(0, 6)
 	const hashtags = '#AethergenPlatform ' + kw.map(k => '#' + k.replace(/\s+/g,'')).join(' ')

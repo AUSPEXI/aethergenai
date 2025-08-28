@@ -284,13 +284,14 @@ const Blog = () => {
     }
   ];
 
-  // Merge sources: remote (Supabase) → local seed → library
+  // Merge sources: ALWAYS include local seeds + remote (Supabase) + library; dedupe by slug
   const merged = React.useMemo(() => {
-    const base = (remotePosts ?? blogPosts) as any[];
-    const all = [...base, ...libraryPosts];
+    const all = [...blogPosts, ...(remotePosts || []), ...libraryPosts];
     const bySlug = new Map<string, any>();
     for (const p of all) {
-      if (p && p.slug && !bySlug.has(p.slug)) bySlug.set(p.slug, p);
+      if (p && p.slug) {
+        if (!bySlug.has(p.slug)) bySlug.set(p.slug, p);
+      }
     }
     return Array.from(bySlug.values());
   }, [remotePosts, libraryPosts]);

@@ -1,0 +1,10 @@
+{
+  "slug": "synthetic-data-lifecycle",
+  "title": "The Synthetic Data Lifecycle: Design → Generate → Validate",
+  "summary": "Schema design, controlled generation, privacy/utility metrics, ablations, and reporting.",
+  "tags": ["synthetic-data", "governance", "benchmarks"],
+  "bodyMd": "## Lifecycle Overview\n\nDesign schemas with constraints → generate with budgets → validate with privacy and utility → ablate → report.\n\n- Schema Designer: multi-dataset constraints.\n- Generator: epsilon/delta variants and policy packs.\n- Benchmarks: task deltas and stability.\n- Reporting: signed evidence JSON ready for procurement.",
+  "keywords": ["schema", "generator", "privacy", "utility", "ablation", "reporting"]
+}
+
+

@@ -1,0 +1,10 @@
+{
+  "slug": "evidence-bundles-and-testing",
+  "title": "Evidence Bundles and Testing",
+  "summary": "Contents of signed evidence and how it supports regulated procurement decisions.",
+  "tags": ["evidence", "testing", "procurement"],
+  "bodyMd": "## What is in the Bundle?\n\n- Provenance: schema, versions, recipe hash, artifact checksums.\n- Privacy: re-id risk, attribute disclosure, outlier leakage.\n- Utility: KS/TV alignment, task deltas.\n- Ablations: module impacts and privacy budgets.\n- Model card: intended use and limits.",
+  "keywords": ["evidence", "privacy", "utility", "ablation", "model card"]
+}
+
+

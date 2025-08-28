@@ -1,0 +1,9 @@
+{
+  "slug": "evidence-led-ai-regulated-industries",
+  "title": "Evidence‑Led AI in Regulated Industries: A Practical Guide",
+  "summary": "How AethergenPlatform ships signed evidence bundles (privacy, utility, ablations, cards) so procurement and compliance can review facts, not promises.",
+  "tags": ["regulated","privacy","evidence","synthetic-data"],
+  "bodyMd": "## Why Evidence First\nRegulated adoption needs facts: signed bundles for provenance, privacy probes, utility, and ablations. AethergenPlatform automates these artefacts so teams can move fast without skipping governance.\n\n### What’s Inside an Evidence Bundle\n- Provenance: schema/version, recipe hash, checksums\n- Privacy: re‑id, attribute disclosure, MIA\n- Utility: statistical alignment, task deltas\n- Ablations: which modules/budgets matter\n- Cards: intended use, limits, responsible‑use notes\n\n### Platform Workflow\nSchema Designer → Generator → Benchmarks/Ablation → Reporting (export signed bundle).\n\n### Start Small\nPick one use case and a success KPI; generate, evaluate, and review the bundle before piloting."
+}
+
+

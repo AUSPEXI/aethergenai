@@ -1,0 +1,10 @@
+{
+  "slug": "pricing-and-entitlements-explained",
+  "title": "Pricing and Entitlements Explained",
+  "summary": "Clear differences between Platform tooling and Enterprise (Databricks) delivery with entitlements called out.",
+  "tags": ["pricing", "plans", "tiers"],
+  "bodyMd": "## Platform vs Enterprise (Databricks)\n\nPlatform tiers license the Aethergen tools (generator, benchmarks, privacy, evidence) with monthly quotas. Enterprise Databricks packages include compute, managed runtime, SLAs, and delivery via Unity Catalog.\n\n- Platform (tools-only): quotas for rows, ablations, API; no dataset downloads bundled.\n- Enterprise (managed): managed compute, dataset delivery, SLAs, support, and Databricks integration.\n\nEvidence-led claims are backed by signed JSON bundles across privacy, utility, and ablations.",
+  "keywords": ["pricing", "entitlements", "platform", "enterprise", "databricks"]
+}
+
+

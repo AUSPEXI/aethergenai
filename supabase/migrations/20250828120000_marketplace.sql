@@ -132,8 +132,7 @@ exception when others then null; end $$;
 do $$
 begin
   if not exists (select 1 from pg_policies where policyname = 'listings_read_published' and tablename = 'listings')
-  then execute $$create policy listings_read_published on public.listings for select
-                 using (status = 'published')$$; end if;
+  then execute 'create policy listings_read_published on public.listings for select using (status = ''published'')'; end if;
 exception when others then null; end $$;
 
 -- Triggers to update updated_at

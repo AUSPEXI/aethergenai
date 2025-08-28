@@ -135,20 +135,20 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
       if (!generatedData || generatedData.length === 0) return;
       const owner_id = localStorage.getItem('aeg_owner_id') || 'anonymous';
       const name = `${schema?.id || 'schema'}_synthetic_${new Date().toISOString().slice(0,10)}`;
-      const createRes = await fetch('/.netlify/functions/datasets?action=create', {
+      const createRes = await fetch('/api/datasets?action=create', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, description: 'Synthetic dataset', owner_id })
       });
       const created = await createRes.json();
       if (!created.dataset?.id) throw new Error(created.error || 'Dataset create failed');
-      const vRes = await fetch('/.netlify/functions/datasets?action=addVersion', {
+      const vRes = await fetch('/api/datasets?action=addVersion', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ dataset_id: created.dataset.id, version_label: 'v1', row_count: generatedData.length, byte_size: JSON.stringify(generatedData).length, checksum: undefined, proof_json: zkProof })
       });
       const vJs = await vRes.json();
-      await fetch('/.netlify/functions/evidence?action=record', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ event_type: 'synthetic_saved', owner_id, details: { dataset_id: created.dataset.id, version_id: vJs.version?.id, schema_id: schema?.id } }) });
+      await fetch('/api/evidence?action=record', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ event_type: 'synthetic_saved', owner_id, details: { dataset_id: created.dataset.id, version_id: vJs.version?.id, schema_id: schema?.id } }) });
       if (zkProof) {
-        await fetch('/.netlify/functions/evidence?action=link-proof', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ dataset_version_id: vJs.version?.id, proof_id: null }) });
+        await fetch('/api/evidence?action=link-proof', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ dataset_version_id: vJs.version?.id, proof_id: null }) });
       }
       alert('Synthetic data saved to Datasets');
     } catch (e: any) {

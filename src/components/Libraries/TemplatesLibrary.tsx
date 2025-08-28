@@ -12,7 +12,7 @@ const TemplatesLibrary: React.FC = () => {
   const load = async () => {
     setLoading(true); setError(null);
     try {
-      const res = await fetch('/.netlify/functions/templates?action=list');
+      const res = await fetch('/api/templates?action=list');
       const js = await res.json();
       setItems(js.items || []);
     } catch (e: any) { setError(e.message || 'Failed to load'); } finally { setLoading(false); }
@@ -24,7 +24,7 @@ const TemplatesLibrary: React.FC = () => {
     setLoading(true); setError(null);
     try {
       const owner_id = localStorage.getItem('aeg_owner_id') || 'anonymous';
-      await fetch('/.netlify/functions/templates?action=create', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, domain, owner_id }) });
+      await fetch('/api/templates?action=create', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, domain, owner_id }) });
       setName(''); setDomain('');
       await load();
     } catch (e: any) { setError(e.message || 'Create failed'); } finally { setLoading(false); }
@@ -33,11 +33,11 @@ const TemplatesLibrary: React.FC = () => {
   const applyToPipeline = async (templateId: string) => {
     try {
       const owner_id = localStorage.getItem('aeg_owner_id') || 'anonymous';
-      const res = await fetch('/.netlify/functions/templates?action=list');
+      const res = await fetch('/api/templates?action=list');
       const js = await res.json();
       const t = (js.items||[]).find((x:any)=>x.id===templateId);
       const config = { template_id: templateId, applied_at: new Date().toISOString(), template_name: t?.name };
-      await fetch('/.netlify/functions/pipelines?action=snapshot', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ label: `Apply ${t?.name||templateId}`, config, owner_id }) });
+      await fetch('/api/pipelines?action=snapshot', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ label: `Apply ${t?.name||templateId}`, config, owner_id }) });
       alert('Applied to pipeline (snapshot created)');
     } catch (e: any) {
       alert('Apply failed: ' + (e.message||'unknown'));

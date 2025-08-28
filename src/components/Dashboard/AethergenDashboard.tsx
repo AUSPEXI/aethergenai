@@ -39,8 +39,8 @@ const StorageUsagePanel: React.FC<{ role: 'viewer'|'developer'|'team'|'enterpris
   const [usage, setUsage] = React.useState<{ datasetsBytes:number; datasetsCount:number; modelsCount:number; modelsBytes?:number }|null>(null);
   React.useEffect(()=>{ (async()=>{
     try {
-      const ds = await fetch('/.netlify/functions/datasets?action=usage').then(r=>r.json());
-      const md = await fetch('/.netlify/functions/models?action=usage').then(r=>r.json());
+      const ds = await fetch('/api/datasets?action=usage').then(r=>r.json());
+      const md = await fetch('/api/models?action=usage').then(r=>r.json());
       setUsage({ datasetsBytes: ds.datasetsBytes||0, datasetsCount: ds.datasetsCount||0, modelsCount: md.modelsCount||0, modelsBytes: md.modelsBytes||0 });
     } catch {}
   })() },[]);

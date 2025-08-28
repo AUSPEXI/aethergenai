@@ -27,20 +27,54 @@ const blogPostsData = {
     readTime: '12 min read',
     category: 'Technology',
     content: `
-      <h2>Governance Before Models</h2>
-      <p>In regulated environments, <strong>governance precedes models</strong>. We adopt a synthetic‑first approach with <em>evidence bundles</em> that accompany every dataset/model release: lineage, privacy and utility metrics, ablation traces, and model cards. Buyers review evidence, not marketing.</p>
-      <h2>Privacy Without Paralysis</h2>
-      <p>Our generator enforces <strong>differential privacy controls</strong> (ε, δ variants) and redaction transforms. We quantify risk with attribute disclosure and membership inference probes; results are included in the evidence pack. For PHI/PII processing, we avoid raw ingestion with <em>seed minimisation and field‑wise synthesis</em>.</p>
-      <h2>What Evidence Looks Like</h2>
+      <h2>Why This Post Exists</h2>
+      <p>If you work in a regulated organisation, you’ve probably felt this tension: the business wants AI yesterday, but compliance, privacy, and procurement are (rightly) cautious. Promises aren’t enough—<strong>evidence</strong> is. This article explains how we build and ship AI with <em>evidence first</em> so teams can move quickly <em>and</em> keep trust.</p>
+
+      <h2>What “Evidence‑Led” Actually Means</h2>
+      <p>At Auspexi, we build on our platform <strong>AethergenPlatform</strong> to generate synthetic data, train/evaluate models, and produce <em>evidence bundles</em> as standard. An evidence bundle is a signed JSON (and attachments) that tells a reviewer:</p>
       <ul>
-        <li><strong>Provenance:</strong> schema, version, generation recipe hash, artifacts checksums</li>
-        <li><strong>Privacy metrics:</strong> re‑id score, attribute disclosure, outlier leakage</li>
-        <li><strong>Utility metrics:</strong> statistical alignment (KS/TV), task accuracy deltas</li>
-        <li><strong>Ablation traces:</strong> impact of modules and privacy budgets</li>
-        <li><strong>Model card:</strong> intended use, limits, ethical considerations</li>
+        <li><strong>Where it came from:</strong> schema, versions, recipe/parameter hashes, artifact checksums</li>
+        <li><strong>How safe it is:</strong> differential privacy budget (ε), attribute disclosure, membership‑inference probes</li>
+        <li><strong>How useful it is:</strong> statistical alignment (KS/TV), task accuracy deltas vs reference</li>
+        <li><strong>What mattered:</strong> ablation traces that show which modules/features actually move the needle</li>
+        <li><strong>How to use it:</strong> a model card/datasheet with limits and responsible‑use notes</li>
       </ul>
-      <h2>Platform Tie‑In</h2>
-      <p>Use <em>Schema Designer</em> → <em>Generator</em> → <em>Benchmarks</em> → <em>Reporting</em> to produce and export a signed evidence JSON. The result is procurement‑ready documentation without disclosing IP.</p>
+      <p>Reviewers get facts, not fluff. Builders keep momentum because reviews focus on the <em>bundle</em>, not scattered spreadsheets and slides.</p>
+
+      <h2>The Privacy Bit (Plain Language)</h2>
+      <p>We default to <strong>synthetic‑first</strong> data: we learn patterns from minimal or redacted seed samples, then generate new records that 
+      behave like the real thing without carrying real identifiers. When needed, we apply differential privacy (ε, δ) so that no single person’s data 
+      can significantly change the output. We also run disclosure probes—can we recognise a person, or overfit to a rare pattern?—and include those results in the bundle.</p>
+
+      <h2>A Concrete Example</h2>
+      <p>Imagine credit‑risk modelling under Basel governance. We build a <em>synthetic transaction graph</em> with risk features and typology injection (e.g., late‑pay patterns) using privacy budgets appropriate for the use case. We train and evaluate, then publish the bundle:</p>
+      <ul>
+        <li>PD AUC/KS lift vs baseline (utility)</li>
+        <li>MIA/attribute‑disclosure scores (privacy)</li>
+        <li>Drift signals and stability under scenario stress (risk)</li>
+        <li>What changed outcomes (ablation)</li>
+      </ul>
+      <p>Compliance can reason about the model in <em>their</em> language. Procurement can file the signed JSON with the contract. 
+      Product can move forward without putting raw customer data at risk.</p>
+
+      <h2>How This Works on AethergenPlatform</h2>
+      <p>AethergenPlatform is our evidence‑led workspace. In practice you walk the workflow like this:</p>
+      <ol>
+        <li><strong>Schema Designer:</strong> define fields, constraints, and privacy levels (who needs to see what)</li>
+        <li><strong>Generator:</strong> produce synthetic datasets at the volumes you need with ε control</li>
+        <li><strong>Benchmarks & Ablation:</strong> run task evaluations, stress, and ablations (what actually matters)</li>
+        <li><strong>Reporting:</strong> export a <em>signed evidence bundle</em> and model/dataset cards for review</li>
+      </ol>
+      <p>If you’re a self‑hosted team, you run compute. If you need us to shoulder production and SLAs, we provide <em>Managed Delivery</em> 
+      (Databricks‑aligned) with the same evidence baked in.</p>
+
+      <h2>What We Publish—and What We Don’t</h2>
+      <p>We publish enough for trust and operation: lineage, metrics, ablations, and cards. We <em>don’t</em> publish proprietary control laws or full training code unless a contract calls for it. The boundary is deliberate: buyers get assurance; IP stays protected.</p>
+
+      <h2>Where to Start</h2>
+      <p>If you’re evaluating AI in a regulated space, start with <em>one</em> use case and one clear success metric. We’ll generate a synthetic dataset, train/evaluate a baseline, and hand you a bundle with signed metrics. You can then decide, with evidence in hand, whether to proceed to a pilot.</p>
+
+      <p><strong>Next:</strong> If you want a guided pilot (credit risk, AML, claims fraud, or operations forecasting), <a href="/contact">contact us</a>. We’ll align privacy budgets, KPIs, and documentation from day one so adoption doesn’t stall at the last mile.</p>
     `
   },
   'databricks-marketplace-lab-to-revenue': {

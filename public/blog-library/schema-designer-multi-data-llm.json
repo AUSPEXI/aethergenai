@@ -1,0 +1,10 @@
+{
+  "slug": "schema-designer-multi-data-llm",
+  "title": "Schema Designer for Multi‑Data LLM Pipelines",
+  "summary": "Multi‑schema design, template application, and pipeline snapshots for LLM data flows.",
+  "tags": ["schema", "pipelines", "llm"],
+  "bodyMd": "## Multi‑Schema Design\n\nCapture fields, constraints, and joins across datasets. Apply templates and snapshot pipelines for reproducibility.\n\n- Templates Library for reuse.\n- Pipeline snapshots with proofs and metrics.\n- Apply to training/eval recipes.",
+  "keywords": ["schema", "templates", "pipelines", "snapshots"]
+}
+
+

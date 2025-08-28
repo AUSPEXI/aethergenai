@@ -11,6 +11,42 @@
       "title": "From Starlings to Swarms: 8D Safety for Thousands of Drones",
       "tags": ["drones", "safety", "edge", "synthetic data"],
       "summary": "8D state, safety (CBF/RTA), evidence bundles, and offline edge deployment for large-scale drone swarms."
+    },
+    {
+      "slug": "evidence-led-ai-regulated-industries",
+      "title": "Evidence‑Led AI in Regulated Industries: A Practical Guide",
+      "tags": ["regulated", "privacy", "evidence", "synthetic-data"],
+      "summary": "How AethergenPlatform ships signed evidence bundles so procurement and compliance can review facts, not promises."
+    },
+    {
+      "slug": "pricing-and-entitlements-explained",
+      "title": "Pricing and Entitlements Explained",
+      "tags": ["pricing", "plans", "tiers"],
+      "summary": "Clear differences between Platform vs Enterprise (Databricks) with entitlements called out."
+    },
+    {
+      "slug": "databricks-marketplace-lab-to-revenue",
+      "title": "Databricks Marketplace: From Lab to Revenue",
+      "tags": ["databricks", "marketplace"],
+      "summary": "Packaging datasets and models with evidence, publishing via Unity Catalog, and driving revenue."
+    },
+    {
+      "slug": "synthetic-data-lifecycle",
+      "title": "The Synthetic Data Lifecycle: Design → Generate → Validate",
+      "tags": ["synthetic-data", "governance", "benchmarks"],
+      "summary": "Schema design, controlled generation, privacy/utility metrics, ablations, and reporting."
+    },
+    {
+      "slug": "evidence-bundles-and-testing",
+      "title": "Evidence Bundles and Testing",
+      "tags": ["evidence", "testing", "procurement"],
+      "summary": "What goes into signed evidence JSON and how it supports regulated procurement."
+    },
+    {
+      "slug": "schema-designer-multi-data-llm",
+      "title": "Schema Designer for Multi‑Data LLM Pipelines",
+      "tags": ["schema", "pipelines", "llm"],
+      "summary": "Multi‑schema design, pipeline snapshots, and applying templates across datasets."
     }
   ]
 }

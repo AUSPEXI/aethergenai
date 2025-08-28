@@ -1,0 +1,10 @@
+{
+  "slug": "databricks-marketplace-lab-to-revenue",
+  "title": "Databricks Marketplace: From Lab to Revenue",
+  "summary": "Packaging datasets/models with evidence, registering to Unity Catalog, and listing in Marketplace.",
+  "tags": ["databricks", "marketplace", "unity-catalog"],
+  "bodyMd": "## Lab → Revenue on Databricks\n\nTurn validated assets into revenue: package schema, seed data, synthetic datasets, and models with SBOM and evidence. Register tables and models in Unity Catalog, then list via Marketplace with usage terms.\n\n- Evidence bundles: provenance, privacy, utility, ablations, model card.\n- Packaging: checksums, license metadata, watermarks.\n- Listing: tiered usage rights and clear SLAs.",
+  "keywords": ["unity catalog", "delta", "mlflow", "listing"]
+}
+
+

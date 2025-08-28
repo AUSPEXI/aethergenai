@@ -14,6 +14,8 @@ const Publisher: React.FC = () => {
   const [replyUrl, setReplyUrl] = useState('')
   const [replyAngle, setReplyAngle] = useState<'appreciation'|'insight'|'question'>('insight')
   const [replyPoints, setReplyPoints] = useState('')
+  const [techLens, setTechLens] = useState('Deterministic engineering lens: safety‑critical workflows, evidence, and offline operation')
+  const [siteContext, setSiteContext] = useState<Array<{ title: string; summary?: string; url?: string; tags?: string[]; contextOnly?: boolean }>>([])
 
   useEffect(() => {
     (async () => {
@@ -27,13 +29,28 @@ const Publisher: React.FC = () => {
     })()
   }, [])
 
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch('/.netlify/functions/site-context')
+        if (res.ok) {
+          const js = await res.json()
+          const pages = Array.isArray(js) ? js : (js.pages || [])
+          setSiteContext(pages)
+        }
+      } catch {}
+    })()
+  }, [])
+
 	const draft = useMemo(() => generateLinkedInDraft({
 		title,
 		url,
 		keyPoints: keyPoints.split(';').map(s=>s.trim()).filter(Boolean),
 		cta,
 		seoKeywords: keywords.split(',').map(s=>s.trim()).filter(Boolean),
-	}), [title, url, keyPoints, cta, keywords])
+		techLens,
+		contextSnippets: siteContext.slice(0, 6).map((p: any) => ({ title: p.title, summary: p.summary, url: p.url, tags: p.tags })),
+	}), [title, url, keyPoints, cta, keywords, techLens, siteContext])
 
 	return (
 		<div className="min-h-screen bg-white">
@@ -76,6 +93,7 @@ const Publisher: React.FC = () => {
 					<input className="w-full border rounded px-3 py-2 text-slate-900 placeholder-slate-500" value={keyPoints} onChange={e=>setKeyPoints(e.target.value)} placeholder="Key points (semicolon‑separated)" />
 					<input className="w-full border rounded px-3 py-2 text-slate-900 placeholder-slate-500" value={cta} onChange={e=>setCta(e.target.value)} placeholder="Call to action" />
 					<input className="w-full border rounded px-3 py-2 text-slate-900 placeholder-slate-500" value={keywords} onChange={e=>setKeywords(e.target.value)} placeholder="Keywords (comma‑separated)" />
+					<input className="w-full border rounded px-3 py-2 text-slate-900 placeholder-slate-500" value={techLens} onChange={e=>setTechLens(e.target.value)} placeholder="Your Tech Lens (tone & perspective)" />
 					<div className="flex gap-2 text-sm">
 						<button className="px-3 py-2 border rounded text-slate-900" onClick={()=>{
 							const d = new Date(); const day = d.getDay(); const add = (2 - day + 7) % 7 || 7; d.setDate(d.getDate()+add); d.setHours(9,0,0,0);

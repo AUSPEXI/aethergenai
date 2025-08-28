@@ -17,7 +17,7 @@ const DatasetsLibrary: React.FC = () => {
   const load = async () => {
     setLoading(true); setError(null);
     try {
-      const res = await fetch('/.netlify/functions/datasets?action=list');
+      const res = await fetch('/api/datasets?action=list');
       const js = await res.json();
       setItems(js.items || []);
     } catch (e: any) {
@@ -32,7 +32,7 @@ const DatasetsLibrary: React.FC = () => {
     setLoading(true); setError(null);
     try {
       const owner_id = localStorage.getItem('aeg_owner_id') || 'anonymous';
-      await fetch('/.netlify/functions/datasets?action=create', {
+      await fetch('/api/datasets?action=create', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, description, owner_id })
       });
@@ -69,7 +69,7 @@ const DatasetsLibrary: React.FC = () => {
                   <td className="px-3 py-2 text-sm text-gray-600">{new Date(it.created_at).toLocaleString()}</td>
                   <td className="px-3 py-2 text-right">
                     <button onClick={async ()=>{
-                      const res = await fetch(`/.netlify/functions/datasets?action=bundle&dataset_id=${it.id}`);
+                      const res = await fetch(`/api/datasets?action=bundle&dataset_id=${it.id}`);
                       const manifest = await res.json();
                       const blob = new Blob([JSON.stringify(manifest, null, 2)], { type: 'application/json' });
                       const url = URL.createObjectURL(blob);
@@ -78,7 +78,7 @@ const DatasetsLibrary: React.FC = () => {
                       URL.revokeObjectURL(url);
                     }} className="px-3 py-1 bg-slate-800 text-white rounded text-sm hover:bg-slate-900">Export Manifest</button>
                     <button onClick={async ()=>{
-                      const res = await fetch(`/.netlify/functions/datasets?action=bundle&dataset_id=${it.id}&format=zip`, { headers: { Accept: 'application/zip' } } as any);
+                      const res = await fetch(`/api/datasets?action=bundle&dataset_id=${it.id}&format=zip`, { headers: { Accept: 'application/zip' } } as any);
                       const b64 = await res.text();
                       const bin = atob(b64);
                       const arr = new Uint8Array(bin.length);

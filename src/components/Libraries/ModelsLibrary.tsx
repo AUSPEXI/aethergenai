@@ -12,7 +12,7 @@ const ModelsLibrary: React.FC = () => {
   const load = async () => {
     setLoading(true); setError(null);
     try {
-      const res = await fetch('/.netlify/functions/models?action=list');
+      const res = await fetch('/api/models?action=list');
       const js = await res.json();
       setItems(js.items || []);
     } catch (e: any) { setError(e.message || 'Failed to load'); } finally { setLoading(false); }
@@ -24,7 +24,7 @@ const ModelsLibrary: React.FC = () => {
     setLoading(true); setError(null);
     try {
       const owner_id = localStorage.getItem('aeg_owner_id') || 'anonymous';
-      await fetch('/.netlify/functions/models?action=create', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, task, owner_id }) });
+      await fetch('/api/models?action=create', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, task, owner_id }) });
       setName(''); setTask('');
       await load();
     } catch (e: any) { setError(e.message || 'Create failed'); } finally { setLoading(false); }

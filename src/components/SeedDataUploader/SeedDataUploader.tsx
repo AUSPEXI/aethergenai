@@ -438,15 +438,15 @@ const SeedDataUploader: React.FC<SeedDataUploaderProps> = ({
     try {
       const owner_id = localStorage.getItem('aeg_owner_id') || 'anonymous';
       const name = `${schema.id}_seed_${new Date().toISOString().slice(0,10)}`;
-      const res = await fetch('/.netlify/functions/datasets?action=create', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, description: 'Seed upload', owner_id }) });
+      const res = await fetch('/api/datasets?action=create', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, description: 'Seed upload', owner_id }) });
       const js = await res.json();
       if (!js.dataset?.id) throw new Error(js.error || 'create failed');
-      const vres = await fetch('/.netlify/functions/datasets?action=addVersion', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ dataset_id: js.dataset.id, version_label: 'v1', row_count: uploadedData.length, byte_size: JSON.stringify(uploadedData).length, checksum: undefined, proof_json: zkProof }) });
+      const vres = await fetch('/api/datasets?action=addVersion', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ dataset_id: js.dataset.id, version_label: 'v1', row_count: uploadedData.length, byte_size: JSON.stringify(uploadedData).length, checksum: undefined, proof_json: zkProof }) });
       const vjs = await vres.json();
       // evidence
-      await fetch('/.netlify/functions/evidence?action=record', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ event_type: 'seed_saved', owner_id, details: { dataset_id: js.dataset.id, version_id: vjs.version?.id, schema_id: schema.id } }) });
+      await fetch('/api/evidence?action=record', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ event_type: 'seed_saved', owner_id, details: { dataset_id: js.dataset.id, version_id: vjs.version?.id, schema_id: schema.id } }) });
       if (zkProof) {
-        await fetch('/.netlify/functions/evidence?action=link-proof', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ dataset_version_id: vjs.version?.id, proof_id: null }) });
+        await fetch('/api/evidence?action=link-proof', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ dataset_version_id: vjs.version?.id, proof_id: null }) });
       }
       alert('Saved to Datasets Library');
     } catch (e: any) {

@@ -42,30 +42,7 @@
   to = "/.netlify/functions/api?resource=:resource"
   status = 200
 
-[[redirects]]
-  from = "/.netlify/functions/datasets"
-  to = "/.netlify/functions/api?resource=datasets"
-  status = 200
-
-[[redirects]]
-  from = "/.netlify/functions/models"
-  to = "/.netlify/functions/api?resource=models"
-  status = 200
-
-[[redirects]]
-  from = "/.netlify/functions/templates"
-  to = "/.netlify/functions/api?resource=templates"
-  status = 200
-
-[[redirects]]
-  from = "/.netlify/functions/pipelines"
-  to = "/.netlify/functions/api?resource=pipelines"
-  status = 200
-
-[[redirects]]
-  from = "/.netlify/functions/evidence"
-  to = "/.netlify/functions/api?resource=evidence"
-  status = 200
+# Removed invalid redirects using /.netlify in from path; clients now call /api/* directly
 
 
 

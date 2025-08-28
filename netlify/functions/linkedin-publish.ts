@@ -27,7 +27,16 @@ const handler: Handler = async (event) => {
 		if (error || !acct) return { statusCode: 400, body: 'Not connected' }
 		const body = event.body ? JSON.parse(event.body) as PublishBody : { text: '' }
 		const text = (body.text || '').slice(0, 2900)
-		const authorUrn = process.env.LINKEDIN_ORG_URN || acct.account_ref || 'urn:li:organization:me'
+		const requestedScope = (process.env.LINKEDIN_SCOPE || '').toLowerCase()
+		const authorUrn = acct.account_ref || ''
+		if (!authorUrn || !/^urn:li:(person|organization):[A-Za-z0-9\-]+$/.test(authorUrn)) {
+			return { statusCode: 400, body: 'Not connected: invalid author. Reconnect via /.netlify/functions/linkedin-start' }
+		}
+		const isOrg = authorUrn.includes('organization:')
+		const orgScopeRequested = requestedScope.includes('w_organization_social')
+		if (isOrg && !orgScopeRequested) {
+			return { statusCode: 400, body: 'App not authorized for organization posting. Include w_organization_social in LINKEDIN_SCOPE and reconnect.' }
+		}
 		const post = {
 			author: authorUrn,
 			lifecycleState: 'PUBLISHED',

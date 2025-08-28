@@ -36,6 +36,7 @@ const handler: Handler = async (event) => {
 		// Store token for organization posting (no r_liteprofile required)
 		const supabase = getServiceClient()
 		const orgUrn = process.env.LINKEDIN_ORG_URN || null
+		const requestedScope = (process.env.LINKEDIN_SCOPE || '').toLowerCase()
 		let personUrn: string | null = null
 		if (token.id_token) {
 			try {
@@ -44,7 +45,9 @@ const handler: Handler = async (event) => {
 				if (payload?.sub) personUrn = `urn:li:person:${payload.sub}`
 			} catch {}
 		}
-		const accountRef = orgUrn || personUrn
+		// Only use organization URN if org scope is requested; otherwise default to member
+		const orgScopeRequested = requestedScope.includes('w_organization_social')
+		const accountRef = (orgScopeRequested && orgUrn) ? orgUrn : (personUrn || orgUrn)
 		const expiresAt = new Date(Date.now() + (token.expires_in || 0) * 1000).toISOString()
 		const { error } = await supabase.from('social_accounts').insert({
 			provider: 'linkedin',

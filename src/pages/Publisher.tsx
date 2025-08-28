@@ -66,7 +66,6 @@ const Publisher: React.FC = () => {
 							const res = await fetch(`/blog-library/${selectedSlug}.json`)
 							if (!res.ok) return
 							const j = await res.json()
-							// schedule blog publish
 							if (!scheduledAt) { alert('Pick a schedule time'); return }
 							const r2 = await fetch('/.netlify/functions/blog-queue', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ slug: j.slug, title: j.title, excerpt: j.summary || j.excerpt, contentHtml: j.contentHtml || j.bodyMd || j.body, scheduledAt }) })
 							alert(r2.ok ? 'Blog queued' : `Failed: ${await r2.text()}`)
@@ -79,13 +78,11 @@ const Publisher: React.FC = () => {
 					<input className="w-full border rounded px-3 py-2 text-slate-900 placeholder-slate-500" value={keywords} onChange={e=>setKeywords(e.target.value)} placeholder="Keywords (comma‑separated)" />
 					<div className="flex gap-2 text-sm">
 						<button className="px-3 py-2 border rounded text-slate-900" onClick={()=>{
-							// UK next Tue 09:00 local
 							const d = new Date(); const day = d.getDay(); const add = (2 - day + 7) % 7 || 7; d.setDate(d.getDate()+add); d.setHours(9,0,0,0);
 							setScheduledAt(d.toISOString().slice(0,16))
 						}}>UK Tue 09:00</button>
 						<button className="px-3 py-2 border rounded text-slate-900" onClick={()=>{
-							// US ET next Tue 09:00 (~UTC-5 winter). Adjust roughly by -5h.
-							const d = new Date(); const day = d.getDay(); const add = (2 - day + 7) % 7 || 7; d.setDate(d.getDate()+add); d.setHours(14,0,0,0); // 09:00 ET ≈ 14:00 UTC
+							const d = new Date(); const day = d.getDay(); const add = (2 - day + 7) % 7 || 7; d.setDate(d.getDate()+add); d.setHours(14,0,0,0);
 							setScheduledAt(d.toISOString().slice(0,16))
 						}}>US ET Tue 09:00</button>
 					</div>

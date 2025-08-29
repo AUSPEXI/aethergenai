@@ -14,7 +14,7 @@ Widgets:
 
 from pyspark.sql import functions as F
 from pyspark.sql.types import StructType, StructField, StringType, IntegerType, DoubleType, TimestampType
-import random
+import random, datetime as _dt
 
 dbutils.widgets.text("catalog_name", "aethergen", "catalog_name")
 dbutils.widgets.text("schema_name", "automotive", "schema_name")
@@ -54,7 +54,7 @@ def gen_row(i: int):
   hum = min(60.0, max(35.0, random.gauss(45.0, 3.0)))
   defect = 1 if (rough > 0.27 or scratch > 1.0 or dent > 0.5) else 0
   return (
-    F.current_timestamp(),
+    _dt.datetime.utcnow(),
     f"L{1 + (i % 3)}",
     f"S{1 + (i % 5)}",
     f"C{1 + (i % 7)}",

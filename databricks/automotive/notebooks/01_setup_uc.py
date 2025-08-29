@@ -36,15 +36,16 @@ print({
 spark.sql(f"CREATE CATALOG IF NOT EXISTS {catalog}")
 spark.sql(f"CREATE SCHEMA IF NOT EXISTS {catalog}.{schema}")
 
-# Create an external volume if a URI is provided
-if external_uri:
-  try:
+# Create a volume: external if URI provided, else managed
+try:
+  if external_uri:
     spark.sql(f"CREATE VOLUME IF NOT EXISTS {catalog}.{schema}.{volume} LOCATION '{external_uri}'")
-    print({"volume_created": True, "uri": external_uri})
-  except Exception as e:
-    print({"volume_created": False, "error": str(e)})
-else:
-  print({"volume_skipped": True})
+    print({"volume_created": True, "mode": "external", "uri": external_uri})
+  else:
+    spark.sql(f"CREATE MANAGED VOLUME IF NOT EXISTS {catalog}.{schema}.{volume}")
+    print({"volume_created": True, "mode": "managed"})
+except Exception as e:
+  print({"volume_created": False, "error": str(e)})
 
 # COMMAND ----------
 

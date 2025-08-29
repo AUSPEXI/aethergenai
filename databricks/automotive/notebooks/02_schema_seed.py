@@ -28,6 +28,13 @@ dataset = dbutils.widgets.get("dataset_name").strip()
 delta_base = dbutils.widgets.get("delta_base_uri").strip().rstrip("/")
 preview_percent = float(dbutils.widgets.get("preview_percent").strip() or "1")
 
+# Ensure Spark session exists (defensive)
+try:
+  spark  # type: ignore
+except NameError:
+  from pyspark.sql import SparkSession  # type: ignore
+  spark = SparkSession.builder.getOrCreate()
+
 full_table = f"{catalog}.{schema}.{dataset}"
 delta_uri = f"{delta_base}/{dataset}/" if delta_base else None
 

@@ -23,6 +23,13 @@ schema = dbutils.widgets.get("schema_name").strip()
 volume = dbutils.widgets.get("volume_name").strip()
 external_uri = dbutils.widgets.get("external_location_uri").strip()
 
+# Ensure Spark session exists (defensive)
+try:
+  spark  # type: ignore
+except NameError:
+  from pyspark.sql import SparkSession  # type: ignore
+  spark = SparkSession.builder.getOrCreate()
+
 print({
   "catalog": catalog,
   "schema": schema,

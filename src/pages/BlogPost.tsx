@@ -258,15 +258,25 @@ const blogPostsData = {
 const BlogPost = () => {
   const { slug } = useParams();
   const [remote, setRemote] = React.useState<any | null>(null);
+  const [isLoading, setIsLoading] = React.useState<boolean>(true);
   React.useEffect(() => {
     (async () => {
       try {
         const res = await fetch(`/.netlify/functions/blog-get?slug=${encodeURIComponent(slug || '')}`);
         if (res.ok) setRemote(await res.json());
       } catch {}
+      finally { setIsLoading(false); }
     })();
   }, [slug]);
   const post = remote || (blogPostsData as any)[slug as keyof typeof blogPostsData];
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="text-center text-slate-600">Loading…</div>
+      </div>
+    );
+  }
 
   if (!post) {
     return (

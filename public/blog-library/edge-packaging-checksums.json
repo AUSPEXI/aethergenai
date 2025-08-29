@@ -1,0 +1,9 @@
+{
+  "slug": "edge-packaging-checksums",
+  "title": "Edge Packaging: Checksums, SBOM, and License Metadata",
+  "summary": "How we package offline edge deployments with verifiable artifacts and clean licensing.",
+  "tags": ["edge", "sbom", "checksums", "licensing"],
+  "bodyMd": "## Why Packaging Matters for Edge\n\nOffline environments (factory lines, clinical sites, air‑gapped defence) demand **verifiability**. Our edge packages ship with a signed manifest so operators can trust what runs where.\n\n## What We Ship\n- **Checksums manifest** (SHA‑256) for binaries, configs, and model artifacts\n- **SBOM** (Software Bill of Materials) for transparency and compliance\n- **License metadata** for adapters and third‑party components\n- **Device profiles** (VRAM/thermal envelopes) and safety policy packs\n\n## How Verification Works\n1. Download the bundle (`*.zip`)\n2. Validate `manifest.json` signatures\n3. Compare SHA‑256 checksums\n4. Load SBOM into your policy scanner\n\n## Platform Tie‑In\nUse the **Datasets/Models** libraries to export bundles. For air‑gapped delivery, we add an offline verification script plus QR‑encoded manifest hash for on‑site audit.\n\n[View Pricing →](/pricing) | [Contact Sales →](/contact)"
+}
+
+

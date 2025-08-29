@@ -1,0 +1,9 @@
+{
+  "slug": "databricks-publishing-playbook",
+  "title": "Databricks Publishing Playbook: From Delta to Marketplace",
+  "summary": "A practical checklist for packaging Delta datasets/models and listing in Marketplace.",
+  "tags": ["databricks", "marketplace", "unity-catalog"],
+  "bodyMd": "## Objective\n\nTurn validated assets into revenue with a minimal, reliable workflow.\n\n## Checklist\n- Create Delta table (+ OPTIMIZE/Z‑ORDER)\n- Register in Unity Catalog (tags: domain, license, sensitivity)\n- Attach SBOM/evidence bundle\n- Provide quickstart notebook + sample queries\n- Define usage rights and SLAs\n\n## Quality Gates\n- Utility ≥ threshold\n- Privacy ≤ bound\n- Docs complete\n\n[View Pricing →](/pricing) | [Contact Sales →](/contact)"
+}
+
+

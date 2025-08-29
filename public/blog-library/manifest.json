@@ -47,7 +47,12 @@
       "title": "Schema Designer for Multi‑Data LLM Pipelines",
       "tags": ["schema", "pipelines", "llm"],
       "summary": "Multi‑schema design, pipeline snapshots, and applying templates across datasets."
-    }
+    },
+    { "slug": "edge-packaging-checksums", "title": "Edge Packaging: Checksums, SBOM, and License Metadata" },
+    { "slug": "innovation-test-harness", "title": "Innovation Test Harness: Fast, Deterministic Model Evaluation" },
+    { "slug": "databricks-publishing-playbook", "title": "Databricks Publishing Playbook: From Delta to Marketplace" },
+    { "slug": "finance-fraud-signals", "title": "Financial Fraud Signals: Synthetic Graphs for AML" },
+    { "slug": "automotive-quality-edge", "title": "Automotive Quality at the Edge: Real‑Time, Offline, Evidence‑Led" }
   ]
 }
 

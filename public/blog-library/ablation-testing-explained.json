@@ -1,0 +1,9 @@
+{
+  "slug": "ablation-testing-explained",
+  "title": "Ablation Testing Explained: What Actually Moves the Needle",
+  "summary": "Design ablations that reveal causal contributors and avoid cargo‑cult tweaks.",
+  "tags": ["ablation", "evaluation", "ml"],
+  "bodyMd": "## Why\nAblations clarify which modules/features matter.\n\n## Patterns\n- One‑at‑a‑time feature drops\n- Module on/off\n- Interaction checks\n\n## Reporting\nSummarise deltas with effect sizes; include in evidence for reviewers."
+}
+
+

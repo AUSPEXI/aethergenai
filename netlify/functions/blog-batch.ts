@@ -73,21 +73,38 @@ const handler: Handler = async (event) => {
       const qp = (event.queryStringParameters?.slugs || '').split(',').map(s=>s.trim()).filter(Boolean)
       const slugs = body.slugs && body.slugs.length ? body.slugs : (qp.length ? qp : ['edge-packaging-checksums','innovation-test-harness','databricks-publishing-playbook','finance-fraud-signals','automotive-quality-edge'])
       if (!slugs.length) return { statusCode: 400, body: 'slugs required' }
+      let updated = 0
       for (const slug of slugs) {
         const js = await loadPost(slug)
         if (!js) continue
         const content_html = convertMarkdownToHtml(js.contentHtml || js.bodyMd || js.body || '')
-        await supabase.from('blog_posts').insert({
-          slug: js.slug,
-          title: js.title,
-          excerpt: js.summary || js.excerpt || '',
-          content_html,
-          tags: js.tags || [],
-          status: 'published',
-          published_at: new Date().toISOString(),
-        })
+        const now = new Date().toISOString()
+        // upsert: update if exists, else insert
+        const existing = await supabase.from('blog_posts').select('id').eq('slug', js.slug).limit(1).single().catch(()=>({ data:null, error:null })) as any
+        if (existing && existing.data && existing.data.id) {
+          const { error: eUp } = await supabase.from('blog_posts').update({
+            title: js.title,
+            excerpt: js.summary || js.excerpt || '',
+            content_html,
+            tags: js.tags || [],
+            status: 'published',
+            published_at: now,
+          }).eq('id', existing.data.id)
+          if (!eUp) updated++
+        } else {
+          const { error: eIns } = await supabase.from('blog_posts').insert({
+            slug: js.slug,
+            title: js.title,
+            excerpt: js.summary || js.excerpt || '',
+            content_html,
+            tags: js.tags || [],
+            status: 'published',
+            published_at: now,
+          })
+          if (!eIns) updated++
+        }
       }
-      return { statusCode: 200, body: JSON.stringify({ ok: true, count: (body.slugs||[]).length }) }
+      return { statusCode: 200, body: JSON.stringify({ ok: true, count: updated }) }
     }
 
     if (action === 'planTwoWeeks') {
@@ -115,6 +132,38 @@ const handler: Handler = async (event) => {
         })
       }
       return { statusCode: 200, body: JSON.stringify({ ok: true, scheduled: 15 }) }
+    }
+
+    if (action === 'planRemainder') {
+      const manifest = await loadLibrary()
+      if (!manifest.length) return { statusCode: 400, body: 'library empty' }
+      const startParam = event.queryStringParameters?.start
+      if (!startParam) return { statusCode: 400, body: 'start required' }
+      const start = new Date(startParam)
+      const remainder = manifest.slice(15, 23)
+      const scheduleOffsets = [16, 16, 17, 18, 18, 19, 20, 21]
+      const scheduleHours =      [ 9, 14,  9,  9, 14,  9,  9,  9]
+      let scheduled = 0
+      for (let i = 0; i < remainder.length && i < scheduleOffsets.length; i++) {
+        const slug = remainder[i].slug
+        const js = await loadPost(slug)
+        if (!js) continue
+        const content_html = convertMarkdownToHtml(js.contentHtml || js.bodyMd || js.body || '')
+        const d = new Date(start)
+        d.setDate(start.getDate() + scheduleOffsets[i])
+        d.setHours(scheduleHours[i], 0, 0, 0)
+        const { error } = await supabase.from('blog_posts').insert({
+          slug: js.slug,
+          title: js.title,
+          excerpt: js.summary || js.excerpt || '',
+          content_html,
+          tags: js.tags || [],
+          status: 'scheduled',
+          scheduled_at: d.toISOString(),
+        })
+        if (!error) scheduled++
+      }
+      return { statusCode: 200, body: JSON.stringify({ ok: true, scheduled }) }
     }
 
     return { statusCode: 400, body: 'unknown action' }

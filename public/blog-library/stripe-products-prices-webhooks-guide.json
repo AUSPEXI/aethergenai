@@ -1,0 +1,9 @@
+{
+  "slug": "stripe-products-prices-webhooks-guide",
+  "title": "Stripe Setup: Products, Prices, Webhooks, and Env Vars",
+  "summary": "Create products/prices, set env vars, and wire secure webhooks into billing.",
+  "tags": ["stripe", "billing", "guide"],
+  "bodyMd": "## What You Need\n- Products/Prices (recurring + one‑off)\n- Test/Live API keys\n- Webhook signing secret\n\n## Steps\n1. Create Products and Prices in Stripe.\n2. Put keys in env: `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`.\n3. Implement checkout and portal links.\n4. Handle webhook events: checkout.session.completed, invoice.paid, customer.subscription.updated.\n\n## Platform Tie‑In\nOur function `create-checkout-session` creates sessions and maps entitlements; `stripe-webhook` updates access and logs evidence."
+}
+
+

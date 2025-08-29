@@ -1,0 +1,9 @@
+{
+  "slug": "synthetic-data-governance-kpis",
+  "title": "Synthetic Data Governance: KPIs for Utility, Privacy, and Risk",
+  "summary": "Practical KPIs: AUC/KS, disclosure scores, drift/risk indicators to govern synthetic data.",
+  "tags": ["governance", "kpi", "synthetic-data"],
+  "bodyMd": "## KPIs\n- Utility: AUC/PR‑AUC/KS deltas vs baseline\n- Privacy: MIA/attribute disclosure; DP budgets\n- Risk: drift sensitivity; stress outcomes\n\n## Evidence\nReport thresholds and effect sizes in signed bundles to enable review and acceptance."
+}
+
+

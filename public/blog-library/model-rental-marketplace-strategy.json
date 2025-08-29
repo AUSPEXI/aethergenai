@@ -1,0 +1,9 @@
+{
+  "slug": "model-rental-marketplace-strategy",
+  "title": "Model Rental Marketplace: Strategy, Governance, and KPIs",
+  "summary": "Phase roadmap for renting niche models with evidence, pricing, and Unity Catalog integration.",
+  "tags": ["marketplace", "models", "governance"],
+  "bodyMd": "## Why Rental\n\nLower adoption friction for buyers; recurring revenue for providers.\n\n## Phases\n1. Private listings with evidence\n2. Curated public catalog\n3. Self‑serve with guardrails\n\n## Governance\n- Evidence thresholds (utility/privacy)\n- License and usage constraints\n- Drift/abuse monitoring\n\n## KPIs\n- Conversion to trial and paid\n- SLA adherence\n- Evidence accept/reject rate\n\n## Platform Tie‑In\nUnity Catalog packages + evidence bundles; metering via usage logs."
+}
+
+

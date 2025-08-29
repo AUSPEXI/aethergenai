@@ -1,0 +1,9 @@
+{
+  "slug": "benchmarks-ablation-reporting-howto",
+  "title": "Benchmarks, Ablations, Reporting: A Practical How‑To",
+  "summary": "Set up benchmarks, run ablations, and export a complete evidence bundle.",
+  "tags": ["benchmarks", "ablations", "reporting"],
+  "bodyMd": "## Steps\n1. Define task and dataset snapshot\n2. Select models and ablations\n3. Run and compare deltas\n4. Export signed evidence bundle\n\n## Outputs\nUtility, privacy, ablation tables, lineage, and signatures."
+}
+
+

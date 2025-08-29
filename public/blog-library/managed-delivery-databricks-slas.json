@@ -1,0 +1,9 @@
+{
+  "slug": "managed-delivery-databricks-slas",
+  "title": "Managed Delivery on Databricks: SLAs with Evidence",
+  "summary": "Operate on Databricks with evidence‑led SLAs and clear run‑ownership.",
+  "tags": ["databricks", "sla", "enterprise"],
+  "bodyMd": "## Why\nEnterprises want SLAs tied to evidence.\n\n## Scope\n- We run compute and deliver bundles\n- You get metrics, lineage, and support\n\n## Alignment\nEvidence thresholds and change windows baked into SLAs."
+}
+
+

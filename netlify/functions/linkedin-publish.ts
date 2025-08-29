@@ -28,9 +28,19 @@ const handler: Handler = async (event) => {
 		const body = event.body ? JSON.parse(event.body) as PublishBody : { text: '' }
 		const text = (body.text || '').slice(0, 2900)
 		const requestedScope = (process.env.LINKEDIN_SCOPE || '').toLowerCase()
-		const authorUrn = acct.account_ref || ''
+		let authorUrn = acct.account_ref || ''
 		if (!authorUrn || !/^urn:li:(person|organization):[A-Za-z0-9\-]+$/.test(authorUrn)) {
-			return { statusCode: 400, body: 'Not connected: invalid author. Reconnect via /.netlify/functions/linkedin-start' }
+			// Final fallback: try OIDC userinfo to recover person URN
+			try {
+				const ui = await fetch('https://api.linkedin.com/v2/userinfo', { method: 'GET', headers: { 'Authorization': `Bearer ${acct.access_token}` } })
+				if (ui.ok) {
+					const u = await ui.json() as any
+					if (u?.sub) authorUrn = `urn:li:person:${u.sub}`
+				}
+			} catch {}
+			if (!authorUrn || !/^urn:li:(person|organization):[A-Za-z0-9\-]+$/.test(authorUrn)) {
+				return { statusCode: 400, body: 'Not connected: invalid author. Reconnect via /.netlify/functions/linkedin-start' }
+			}
 		}
 		const isOrg = authorUrn.includes('organization:')
 		const orgScopeRequested = requestedScope.includes('w_organization_social')

@@ -1,0 +1,9 @@
+{
+  "slug": "evidence-bundles-zk-snarks-overview",
+  "title": "Evidence Bundles and zk‑Proofs: Verifying Claims Without IP Leakage",
+  "summary": "How signed evidence and optional zk‑proofs validate privacy bounds and performance claims.",
+  "tags": ["evidence", "zk", "privacy"],
+  "bodyMd": "## Why\n\nBuyers want assurance without source code. Signed bundles plus optional zk‑proofs verify bounds while protecting IP.\n\n## What’s Inside\n- Lineage and hashes\n- Utility/Privacy metrics\n- Ablation traces\n- Optional zk on privacy bounds\n\n## Platform Tie‑In\nExport from Reporting; attach to listings and contracts."
+}
+
+

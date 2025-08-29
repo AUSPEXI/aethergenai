@@ -1,0 +1,9 @@
+{
+  "slug": "databricks-unity-catalog-listing-guide",
+  "title": "Unity Catalog Listing Guide: Packaging Data and Models",
+  "summary": "Hands‑on steps to publish Delta tables and ML artifacts with evidence to Databricks Marketplace.",
+  "tags": ["databricks", "unity-catalog", "marketplace"],
+  "bodyMd": "## Checklist\n- Delta OPTIMIZE + Z‑ORDER\n- Column docs and units\n- Tags: domain, license, sensitivity\n- Evidence bundle attached\n- Quickstart notebook\n\n## Quality Gates\n- Utility ≥ threshold\n- Privacy ≤ bound\n- Docs complete"
+}
+
+

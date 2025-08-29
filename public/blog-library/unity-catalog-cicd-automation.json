@@ -1,0 +1,9 @@
+{
+  "slug": "unity-catalog-cicd-automation",
+  "title": "Unity Catalog CI/CD: Automating Packaging and Listing Updates",
+  "summary": "Automate packaging, evidence export, and Marketplace listing refresh via CI/CD.",
+  "tags": ["databricks", "ci", "marketplace"],
+  "bodyMd": "## Pipeline\n- Build artifacts and Delta OPTIMIZE\n- Run benchmarks; export evidence\n- Package zip (manifest + SBOM + evidence)\n- Push to UC; update listing\n\n## Gates\nFail closed on utility/privacy thresholds."
+}
+
+

@@ -6,10 +6,14 @@ import fs from 'fs'
 function convertMarkdownToHtml(input: string): string {
 	const s = input || ''
 	if (/[<][a-zA-Z]/.test(s)) return s
-	// Basic markdown conversion with headings, links, and unordered lists
-	const lines = s.replace(/\r\n/g, '\n').split(/\n/)
+	// Basic markdown conversion with headings, links, and lists
+	let raw = s.replace(/\r\n/g, '\n')
+	// Remove inline CTA markdown lines; we render real buttons below the article
+	raw = raw.split('\n').filter(l => !/\[\s*View\s+Pricing/i.test(l) && !/\[\s*Contact\s+Sales/i.test(l)).join('\n')
+	const lines = raw.split(/\n/)
 	const outParts: string[] = []
 	let inList = false
+	let inOList = false
 	const flushPara = (buf: string[]) => {
 		if (!buf.length) return
 		let p = buf.join(' ').trim()
@@ -22,10 +26,10 @@ function convertMarkdownToHtml(input: string): string {
 	const paraBuf: string[] = []
 	for (let i=0;i<lines.length;i++) {
 		const line = lines[i]
-		if (/^\s*$/.test(line)) { flushPara(paraBuf); if (inList) { outParts.push('</ul>'); inList=false } continue }
-		const h3 = line.match(/^###\s+(.*)$/); if (h3) { flushPara(paraBuf); if (inList){outParts.push('</ul>'); inList=false} outParts.push(`<h3>${h3[1]}</h3>`); continue }
-		const h2 = line.match(/^##\s+(.*)$/); if (h2) { flushPara(paraBuf); if (inList){outParts.push('</ul>'); inList=false} outParts.push(`<h2>${h2[1]}</h2>`); continue }
-		const h1 = line.match(/^#\s+(.*)$/); if (h1) { flushPara(paraBuf); if (inList){outParts.push('</ul>'); inList=false} outParts.push(`<h1>${h1[1]}</h1>`); continue }
+		if (/^\s*$/.test(line)) { flushPara(paraBuf); if (inList) { outParts.push('</ul>'); inList=false } if (inOList) { outParts.push('</ol>'); inOList=false } continue }
+		const h3 = line.match(/^###\s+(.*)$/); if (h3) { flushPara(paraBuf); if (inList){outParts.push('</ul>'); inList=false} if (inOList){outParts.push('</ol>'); inOList=false} outParts.push(`<h3>${h3[1]}</h3>`); continue }
+		const h2 = line.match(/^##\s+(.*)$/); if (h2) { flushPara(paraBuf); if (inList){outParts.push('</ul>'); inList=false} if (inOList){outParts.push('</ol>'); inOList=false} outParts.push(`<h2>${h2[1]}</h2>`); continue }
+		const h1 = line.match(/^#\s+(.*)$/); if (h1) { flushPara(paraBuf); if (inList){outParts.push('</ul>'); inList=false} if (inOList){outParts.push('</ol>'); inOList=false} outParts.push(`<h1>${h1[1]}</h1>`); continue }
 		const li = line.match(/^\s*-\s+(.*)$/)
 		if (li) {
 			flushPara(paraBuf)
@@ -35,9 +39,18 @@ function convertMarkdownToHtml(input: string): string {
 			outParts.push(`<li>${item}</li>`)
 			continue
 		}
+		const oli = line.match(/^\s*\d+\.\s+(.*)$/)
+		if (oli) {
+			flushPara(paraBuf)
+			if (!inOList) { outParts.push('<ol>'); inOList = true }
+			const text = oli[1]
+			const item = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2">$1</a>')
+			outParts.push(`<li>${item}</li>`)
+			continue
+		}
 		paraBuf.push(line)
 	}
-	flushPara(paraBuf); if (inList) outParts.push('</ul>')
+	flushPara(paraBuf); if (inList) outParts.push('</ul>'); if (inOList) outParts.push('</ol>')
 	return outParts.join('\n')
 }
 

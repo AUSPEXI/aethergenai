@@ -1,53 +1,29 @@
 {
   "posts": [
-    {
-      "slug": "edge-computing-packages",
-      "title": "Auspexi’s Edge Computing Packages: Secure AI at the Edge",
-      "tags": ["edge", "automotive", "healthcare", "finance", "security"],
-      "summary": "Edge AI that runs offline with checksums, SBOMs, and optional evidence bundles—integrated with Auspexi’s synthetic data and LLM training tools."
-    },
-    {
-      "slug": "from-starlings-to-swarms-8d-safety",
-      "title": "From Starlings to Swarms: 8D Safety for Thousands of Drones",
-      "tags": ["drones", "safety", "edge", "synthetic data"],
-      "summary": "8D state, safety (CBF/RTA), evidence bundles, and offline edge deployment for large-scale drone swarms."
-    },
-    {
-      "slug": "evidence-led-ai-regulated-industries",
-      "title": "Evidence‑Led AI in Regulated Industries: A Practical Guide",
-      "tags": ["regulated", "privacy", "evidence", "synthetic-data"],
-      "summary": "How AethergenPlatform ships signed evidence bundles so procurement and compliance can review facts, not promises."
-    },
-    {
-      "slug": "pricing-and-entitlements-explained",
-      "title": "Pricing and Entitlements Explained",
-      "tags": ["pricing", "plans", "tiers"],
-      "summary": "Clear differences between Platform vs Enterprise (Databricks) with entitlements called out."
-    },
-    {
-      "slug": "databricks-marketplace-lab-to-revenue",
-      "title": "Databricks Marketplace: From Lab to Revenue",
-      "tags": ["databricks", "marketplace"],
-      "summary": "Packaging datasets and models with evidence, publishing via Unity Catalog, and driving revenue."
-    },
-    {
-      "slug": "synthetic-data-lifecycle",
-      "title": "The Synthetic Data Lifecycle: Design → Generate → Validate",
-      "tags": ["synthetic-data", "governance", "benchmarks"],
-      "summary": "Schema design, controlled generation, privacy/utility metrics, ablations, and reporting."
-    },
-    {
-      "slug": "evidence-bundles-and-testing",
-      "title": "Evidence Bundles and Testing",
-      "tags": ["evidence", "testing", "procurement"],
-      "summary": "What goes into signed evidence JSON and how it supports regulated procurement."
-    },
-    {
-      "slug": "schema-designer-multi-data-llm",
-      "title": "Schema Designer for Multi‑Data LLM Pipelines",
-      "tags": ["schema", "pipelines", "llm"],
-      "summary": "Multi‑schema design, pipeline snapshots, and applying templates across datasets."
-    },
+    { "slug": "model-rental-marketplace-strategy", "title": "Model Rental Marketplace: Strategy, Governance, and KPIs" },
+    { "slug": "databricks-unity-catalog-listing-guide", "title": "Unity Catalog Listing Guide: Packaging Data and Models" },
+    { "slug": "stripe-products-prices-webhooks-guide", "title": "Stripe Setup: Products, Prices, Webhooks, and Env Vars" },
+    { "slug": "evidence-bundles-zk-snarks-overview", "title": "Evidence Bundles and zk‑Proofs: Verifying Claims Without IP Leakage" },
+    { "slug": "synthetic-data-governance-kpis", "title": "Synthetic Data Governance: KPIs for Utility, Privacy, and Risk" },
+    { "slug": "edge-offline-audit-sbom", "title": "Offline Edge Audit: SBOM, Checksums, and QR‑Verified Manifests" },
+    { "slug": "ablation-testing-explained", "title": "Ablation Testing Explained: What Actually Moves the Needle" },
+    { "slug": "drift-stress-testing-regulated-ai", "title": "Drift & Stress Testing: Evidence‑Led Stability in Regulated AI" },
+    { "slug": "unity-catalog-cicd-automation", "title": "Unity Catalog CI/CD: Automating Packaging and Listing Updates" },
+    { "slug": "aml-graph-typology-library", "title": "AML Graph Typology Library: Parameterised Patterns for Testing" },
+    { "slug": "qc-vision-edge-reference-architecture", "title": "QC Vision at the Edge: Reference Architecture and Evidence" },
+    { "slug": "enterprise-pricing-evidence-alignment", "title": "Enterprise Pricing that Aligns with Evidence and Outcomes" },
+    { "slug": "managed-delivery-databricks-slas", "title": "Managed Delivery on Databricks: SLAs with Evidence" },
+    { "slug": "benchmarks-ablation-reporting-howto", "title": "Benchmarks, Ablations, Reporting: A Practical How‑To" },
+    { "slug": "dataset-cards-model-cards-evidence", "title": "Dataset Cards and Model Cards: Evidence Buyers Can Trust" },
+
+    { "slug": "edge-computing-packages", "title": "Auspexi’s Edge Computing Packages: Secure AI at the Edge" },
+    { "slug": "from-starlings-to-swarms-8d-safety", "title": "From Starlings to Swarms: 8D Safety for Thousands of Drones" },
+    { "slug": "evidence-led-ai-regulated-industries", "title": "Evidence‑Led AI in Regulated Industries: A Practical Guide" },
+    { "slug": "pricing-and-entitlements-explained", "title": "Pricing and Entitlements Explained" },
+    { "slug": "databricks-marketplace-lab-to-revenue", "title": "Databricks Marketplace: From Lab to Revenue" },
+    { "slug": "synthetic-data-lifecycle", "title": "The Synthetic Data Lifecycle: Design → Generate → Validate" },
+    { "slug": "evidence-bundles-and-testing", "title": "Evidence Bundles and Testing" },
+    { "slug": "schema-designer-multi-data-llm", "title": "Schema Designer for Multi‑Data LLM Pipelines" },
     { "slug": "edge-packaging-checksums", "title": "Edge Packaging: Checksums, SBOM, and License Metadata" },
     { "slug": "innovation-test-harness", "title": "Innovation Test Harness: Fast, Deterministic Model Evaluation" },
     { "slug": "databricks-publishing-playbook", "title": "Databricks Publishing Playbook: From Delta to Marketplace" },

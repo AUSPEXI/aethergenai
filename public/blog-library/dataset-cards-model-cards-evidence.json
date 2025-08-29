@@ -1,0 +1,9 @@
+{
+  "slug": "dataset-cards-model-cards-evidence",
+  "title": "Dataset Cards and Model Cards: Evidence Buyers Can Trust",
+  "summary": "What cards should contain, and how they tie into signed evidence bundles.",
+  "tags": ["documentation", "cards", "evidence"],
+  "bodyMd": "## Contents\n- Intended use and limits\n- Metrics and probes\n- Lineage and versions\n\n## Tie‑In\nCards summarise; evidence bundles verify with signatures and hashes."
+}
+
+

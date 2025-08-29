@@ -1,0 +1,9 @@
+{
+  "slug": "qc-vision-edge-reference-architecture",
+  "title": "QC Vision at the Edge: Reference Architecture and Evidence",
+  "summary": "A reference design for on‑device QC vision with signed evidence and offline packaging.",
+  "tags": ["edge", "vision", "quality"],
+  "bodyMd": "## Components\n- Camera ingestion and preprocessing\n- On‑device inference and thresholds\n- Offline packaging (SBOM, signatures)\n- Evidence cards for QA sign‑off\n\n## KPIs\nSensitivity/specificity per defect class; rework savings; throughput impact."
+}
+
+

@@ -1,0 +1,9 @@
+{
+  "slug": "aml-graph-typology-library",
+  "title": "AML Graph Typology Library: Parameterised Patterns for Testing",
+  "summary": "A reusable library of parameterised AML typologies for synthetic graph generation and testing.",
+  "tags": ["aml", "graphs", "synthetic-data"],
+  "bodyMd": "## Typologies\n- Smurfing (window/threshold)\n- Mule fan‑out (degree, reuse)\n- Cash‑out rings (timing, hub degree)\n- Daisy chains (hop count, time lag)\n\n## Use\nGenerate test graphs and evaluate rule/models; export evidence for audit."
+}
+
+

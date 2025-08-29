@@ -1,0 +1,9 @@
+{
+  "slug": "drift-stress-testing-regulated-ai",
+  "title": "Drift & Stress Testing: Evidence‑Led Stability in Regulated AI",
+  "summary": "Design drift/stress suites and report effect sizes so risk teams can accept models.",
+  "tags": ["drift", "stability", "evidence"],
+  "bodyMd": "## Why\nDrift and instability derail regulated AI. Measure sensitivity and report evidence.\n\n## Tests\n- Time drift (weekly/monthly windows)\n- Domain shifts (product/segment)\n- Corruptions (vision/text)\n- Fault injection (dropout/jitter)\n\n## Reporting\nEffect sizes, CIs, and fail‑closed rules in the evidence bundle."
+}
+
+

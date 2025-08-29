@@ -1,0 +1,9 @@
+{
+  "slug": "edge-offline-audit-sbom",
+  "title": "Offline Edge Audit: SBOM, Checksums, and QR‑Verified Manifests",
+  "summary": "Make offline edge deployments auditable with SBOMs, hashes, and QR‑encoded manifests.",
+  "tags": ["edge", "sbom", "audit"],
+  "bodyMd": "## Why\nAir‑gapped deployments still need trust.\n\n## How\n- SBOM for binaries and models\n- SHA‑256 manifest and signatures\n- QR‑encoded manifest hash for on‑site checks\n\n## Platform Tie‑In\nPackaging generates the manifest; Reporting archives evidence for procurement."
+}
+
+

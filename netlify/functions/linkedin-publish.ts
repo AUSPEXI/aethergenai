@@ -2,7 +2,7 @@ import type { Handler } from '@netlify/functions'
 import { getServiceClient } from './_lib/supabase'
 import { rateLimit, tooMany } from './_shared/supabase'
 
-type PublishBody = { text: string; url?: string }
+type PublishBody = { text: string; url?: string; postAs?: 'org'|'member' }
 
 const handler: Handler = async (event) => {
 	try {
@@ -28,7 +28,14 @@ const handler: Handler = async (event) => {
 		const body = event.body ? JSON.parse(event.body) as PublishBody : { text: '' }
 		const text = (body.text || '').slice(0, 2900)
 		const requestedScope = (process.env.LINKEDIN_SCOPE || '').toLowerCase()
-		let authorUrn = acct.account_ref || ''
+		const envOrgUrn = process.env.LINKEDIN_ORG_URN || ''
+		let authorUrn = ''
+		// Prefer org posting when requested and allowed
+		if (body.postAs === 'org' && envOrgUrn && requestedScope.includes('w_organization_social')) {
+			authorUrn = envOrgUrn
+		} else {
+			authorUrn = acct.account_ref || ''
+		}
 		if (!authorUrn || !/^urn:li:(person|organization):[A-Za-z0-9\-]+$/.test(authorUrn)) {
 			// Final fallback: try OIDC userinfo to recover person URN
 			try {

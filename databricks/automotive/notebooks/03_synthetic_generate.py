@@ -28,12 +28,11 @@ dataset = dbutils.widgets.get("dataset_name").strip()
 delta_base = dbutils.widgets.get("delta_base_uri").strip().rstrip("/")
 rows = int(dbutils.widgets.get("rows").strip() or "100000")
 
-# Ensure Spark session exists (defensive)
+# Ensure Spark context is available (do not create one in Databricks)
 try:
-  spark  # type: ignore
-except NameError:
-  from pyspark.sql import SparkSession  # type: ignore
-  spark = SparkSession.builder.getOrCreate()
+  _ = spark.version  # type: ignore
+except Exception as e:
+  raise RuntimeError("Spark context is not available. Attach notebook to a running cluster.") from e
 
 full_table = f"{catalog}.{schema}.{dataset}"
 delta_uri = f"{delta_base}/{dataset}/" if delta_base else None

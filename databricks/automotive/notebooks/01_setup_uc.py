@@ -23,12 +23,11 @@ schema = dbutils.widgets.get("schema_name").strip()
 volume = dbutils.widgets.get("volume_name").strip()
 external_uri = dbutils.widgets.get("external_location_uri").strip()
 
-# Ensure Spark session exists (defensive)
+# Ensure Spark context is available (do not create one in Databricks)
 try:
-  spark  # type: ignore
-except NameError:
-  from pyspark.sql import SparkSession  # type: ignore
-  spark = SparkSession.builder.getOrCreate()
+  _ = spark.version  # type: ignore
+except Exception as e:
+  raise RuntimeError("Spark context is not available. Attach notebook to a running cluster.") from e
 
 print({
   "catalog": catalog,

@@ -26,6 +26,13 @@ schema = dbutils.widgets.get("schema_name").strip()
 dataset = dbutils.widgets.get("dataset_name").strip()
 model_name = dbutils.widgets.get("model_name").strip() or f"{catalog}.{schema}.material_defect_detection_v1"
 
+# Ensure Spark session exists (defensive)
+try:
+  _ = spark.version  # type: ignore
+except Exception:
+  from pyspark.sql import SparkSession  # type: ignore
+  spark = SparkSession.builder.getOrCreate()
+
 full_table = f"{catalog}.{schema}.{dataset}"
 df = spark.table(full_table).withColumn("label", F.col("defect_label").cast("double"))
 

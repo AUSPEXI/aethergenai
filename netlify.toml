@@ -20,6 +20,11 @@
 [functions."*"]
   timeout = 120
 
+[functions."databricks-jobs"]
+  included_files = [
+    "databricks/**"
+  ]
+
 # Specific API redirects (must come BEFORE the catch-all)
 [[redirects]]
   from = "/api/entitlements"

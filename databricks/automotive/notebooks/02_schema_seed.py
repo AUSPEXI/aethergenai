@@ -62,7 +62,11 @@ if delta_uri:
   (seed_df.write.format("delta").mode("overwrite").save(delta_uri))
   spark.sql(f"CREATE TABLE IF NOT EXISTS {full_table} USING DELTA LOCATION '{delta_uri}'")
 else:
-  (seed_df.write.format("delta").mode("overwrite").saveAsTable(full_table))
+  try:
+    spark.sql(f"TRUNCATE TABLE {full_table}")
+  except Exception:
+    pass
+  (seed_df.write.format("delta").mode("append").saveAsTable(full_table))
 
 preview_table = f"{full_table}_preview"
 spark.sql(

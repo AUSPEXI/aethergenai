@@ -60,6 +60,7 @@ const handler: Handler = async (event) => {
 		}
 		// Only use organization URN if org scope is requested; otherwise default to member
 		const orgScopeRequested = requestedScope.includes('w_organization_social')
+		// If org scope present and org URN configured, prefer org for new connections
 		const accountRef = (orgScopeRequested && orgUrn) ? orgUrn : (personUrn || orgUrn)
 		const expiresAt = new Date(Date.now() + (token.expires_in || 0) * 1000).toISOString()
 		const { error } = await supabase.from('social_accounts').insert({

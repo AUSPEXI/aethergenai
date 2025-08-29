@@ -59,17 +59,37 @@ const handler: Handler = async (event) => {
 			},
 			visibility: { 'com.linkedin.ugc.MemberNetworkVisibility': 'PUBLIC' }
 		}
-		const resp = await fetch('https://api.linkedin.com/v2/ugcPosts', {
+		const doPost = async (payload: any) => fetch('https://api.linkedin.com/v2/ugcPosts', {
 			method: 'POST',
 			headers: {
 				'Authorization': `Bearer ${acct.access_token}`,
 				'Content-Type': 'application/json',
 				'X-Restli-Protocol-Version': '2.0.0'
 			},
-			body: JSON.stringify(post)
+			body: JSON.stringify(payload)
 		})
-		const data = await resp.text()
-		return { statusCode: resp.ok ? 200 : resp.status, body: data }
+		let resp = await doPost(post)
+		if (!resp.ok) {
+			try {
+				const bodyText = await resp.text()
+				// Retry once on duplicate by tweaking URL (utm) to avoid DUPLICATE_POST
+				if (resp.status === 422 && /DUPLICATE_POST/i.test(bodyText)) {
+					const u = new URL(url)
+					u.searchParams.set('utm_content', `r${Date.now().toString().slice(-6)}`)
+					const retry = JSON.parse(JSON.stringify(post))
+					if (retry?.specificContent?.['com.linkedin.ugc.ShareContent']?.media?.[0]) {
+						retry.specificContent['com.linkedin.ugc.ShareContent'].media[0].originalUrl = u.toString()
+					}
+					resp = await doPost(retry)
+					if (!resp.ok) return { statusCode: resp.status, body: await resp.text() }
+					return { statusCode: 200, body: await resp.text() }
+				}
+				return { statusCode: resp.status, body: bodyText }
+			} catch {
+				return { statusCode: resp.status, body: 'publish failed' }
+			}
+		}
+		return { statusCode: 200, body: await resp.text() }
 	} catch (e: any) {
 		return { statusCode: 500, body: e?.message || 'error' }
 	}

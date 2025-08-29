@@ -1,6 +1,19 @@
 import type { Handler } from '@netlify/functions'
 import { getServiceClient } from './_lib/supabase'
 
+function convertMarkdownToHtml(input: string): string {
+	const s = input || ''
+	if (/[<][a-zA-Z]/.test(s)) return s
+	let out = s
+		.replace(/^###\s+(.*)$/gm, '<h3>$1</h3>')
+		.replace(/^##\s+(.*)$/gm, '<h2>$1</h2>')
+		.replace(/^#\s+(.*)$/gm, '<h1>$1</h1>')
+		.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+		.replace(/\n\n+/g, '</p><p>')
+	out = `<p>${out}</p>`
+	return out
+}
+
 type EnqueueBody = {
 	slug: string
 	title: string
@@ -22,7 +35,7 @@ const handler: Handler = async (event) => {
 			slug: body.slug,
 			title: body.title,
 			excerpt: body.excerpt,
-			content_html: body.contentHtml,
+			content_html: convertMarkdownToHtml(body.contentHtml),
 			tags: body.tags || [],
 			status: 'scheduled',
 			scheduled_at: new Date(body.scheduledAt).toISOString(),

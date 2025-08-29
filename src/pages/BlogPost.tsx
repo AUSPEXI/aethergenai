@@ -320,13 +320,15 @@ const BlogPost = () => {
       </header>
 
       {/* Article Content */}
-      <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-slate-900">
         <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-8 leading-tight">
           {post.title}
         </h1>
         
-        <div className="prose prose-lg max-w-none">
+        <div className="prose prose-lg max-w-none text-slate-900">
           <style>{`
+            .prose { color: #0f172a !important; }
+            .prose * { color: #1e293b !important; }
             .prose h2 { 
               margin-top: 2rem !important; 
               margin-bottom: 1rem !important; 
@@ -353,6 +355,7 @@ const BlogPost = () => {
               color: #0f172a !important; 
               font-weight: 700 !important;
             }
+            .prose a { color: #2563eb !important; }
           `}</style>
           <div 
             dangerouslySetInnerHTML={{ __html: (post as any).content || (post as any).content_html }} 

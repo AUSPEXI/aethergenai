@@ -27,7 +27,13 @@ const handler: Handler = async (event) => {
 		.eq('status','published')
 		.limit(1)
 		.single()
-	if (!error && data) return { statusCode: 200, body: JSON.stringify(data) }
+	if (!error && data) {
+		const html = (data as any).content_html || ''
+		const wordCount = String(html).replace(/<[^>]+>/g,' ').trim().split(/\s+/).filter(Boolean).length
+		const readTime = `${Math.max(2, Math.round(wordCount/200))} min read`
+		const payload = { ...data, author: (data as any).author || 'Auspexi Team', category: (data as any).category || 'Technology', readTime: (data as any).readTime || readTime, published_at: (data as any).published_at || new Date().toISOString() }
+		return { statusCode: 200, body: JSON.stringify(payload) }
+	}
 	// Fallback to library JSON file in public/blog-library
 	try {
 		const base = process.env.URL || process.env.DEPLOY_PRIME_URL || ''
@@ -36,7 +42,9 @@ const handler: Handler = async (event) => {
 			if (r.ok) {
 				const js = await r.json() as any
 				const content_html = convertMarkdownToHtml(js.contentHtml || js.bodyMd || js.body || '')
-				const payload = { ...js, content_html, excerpt: js.summary || js.excerpt || '' }
+				const wordCount = String(content_html).replace(/<[^>]+>/g,' ').trim().split(/\s+/).filter(Boolean).length
+				const readTime = `${Math.max(2, Math.round(wordCount/200))} min read`
+				const payload = { ...js, content_html, excerpt: js.summary || js.excerpt || '', author: js.author || 'Auspexi Team', category: js.category || 'Technology', readTime, published_at: js.published_at || new Date().toISOString() }
 				return { statusCode: 200, body: JSON.stringify(payload) }
 			}
 		}
@@ -45,7 +53,9 @@ const handler: Handler = async (event) => {
 		const raw = await fs.promises.readFile(p, 'utf8')
 		const js = JSON.parse(raw)
 		const content_html = convertMarkdownToHtml(js.contentHtml || js.bodyMd || js.body || '')
-		const payload = { ...js, content_html, excerpt: js.summary || js.excerpt || '' }
+		const wordCount = String(content_html).replace(/<[^>]+>/g,' ').trim().split(/\s+/).filter(Boolean).length
+		const readTime = `${Math.max(2, Math.round(wordCount/200))} min read`
+		const payload = { ...js, content_html, excerpt: js.summary || js.excerpt || '', author: js.author || 'Auspexi Team', category: js.category || 'Technology', readTime, published_at: js.published_at || new Date().toISOString() }
 		return { statusCode: 200, body: JSON.stringify(payload) }
 	} catch {}
 	return { statusCode: 404, body: 'not found' }

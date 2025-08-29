@@ -34,12 +34,11 @@ dataset = dbutils.widgets.get("dataset_name").strip()
 model_name = dbutils.widgets.get("model_name").strip() or f"{catalog}.{schema}.material_defect_detection_v1"
 volume_uri = dbutils.widgets.get("volume_uri").strip().rstrip("/")
 
-# Ensure Spark session exists (defensive)
+# Ensure Spark context is available (do not create one in Databricks)
 try:
   _ = spark.version  # type: ignore
-except Exception:
-  from pyspark.sql import SparkSession  # type: ignore
-  spark = SparkSession.builder.getOrCreate()
+except Exception as e:
+  raise RuntimeError("Spark context is not available. Attach notebook to a running cluster.") from e
 
 full_table = f"{catalog}.{schema}.{dataset}"
 df = spark.table(full_table).withColumn("label", F.col("defect_label").cast("double"))

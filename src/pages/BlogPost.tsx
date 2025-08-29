@@ -338,7 +338,6 @@ const BlogPost = () => {
         <div className="prose prose-lg max-w-none text-slate-900">
           <style>{`
             .prose { color: #0f172a !important; }
-            .prose * { color: #1e293b !important; }
             .prose h2 { 
               margin-top: 2rem !important; 
               margin-bottom: 1rem !important; 
@@ -366,6 +365,7 @@ const BlogPost = () => {
               font-weight: 700 !important;
             }
             .prose a { color: #2563eb !important; }
+            .prose a.aeg-btn { color: #ffffff !important; }
           `}</style>
           <div 
             dangerouslySetInnerHTML={{ __html: (post as any).content || (post as any).content_html }} 
@@ -389,8 +389,8 @@ const BlogPost = () => {
             } as React.CSSProperties}
           />
           <div className="mt-8">
-            <a href="/pricing" className="inline-block px-4 py-2 bg-blue-600 text-white rounded mr-3">View Pricing →</a>
-            <a href="/contact" className="inline-block px-4 py-2 bg-slate-800 text-white rounded">Contact Sales →</a>
+            <a href="/pricing" className="aeg-btn inline-block px-4 py-2 bg-blue-600 text-white rounded mr-3">View Pricing →</a>
+            <a href="/contact" className="aeg-btn inline-block px-4 py-2 bg-slate-800 text-white rounded">Contact Sales →</a>
           </div>
         </div>
       </article>

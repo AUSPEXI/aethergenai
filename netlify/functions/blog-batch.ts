@@ -66,11 +66,12 @@ const handler: Handler = async (event) => {
   try {
     const supabase = getServiceClient()
     const action = event.queryStringParameters?.action || 'publishNow'
-    if (event.httpMethod !== 'POST') return { statusCode: 405, body: 'Method Not Allowed' }
-    const body = event.body ? JSON.parse(event.body) as { slugs?: string[], plan?: { startDate?: string } } : {}
+    const isPost = event.httpMethod === 'POST'
+    const body = isPost && event.body ? JSON.parse(event.body) as { slugs?: string[], plan?: { startDate?: string } } : {}
 
     if (action === 'publishNow') {
-      const slugs = body.slugs || []
+      const qp = (event.queryStringParameters?.slugs || '').split(',').map(s=>s.trim()).filter(Boolean)
+      const slugs = body.slugs && body.slugs.length ? body.slugs : (qp.length ? qp : ['edge-packaging-checksums','innovation-test-harness','databricks-publishing-playbook','finance-fraud-signals','automotive-quality-edge'])
       if (!slugs.length) return { statusCode: 400, body: 'slugs required' }
       for (const slug of slugs) {
         const js = await loadPost(slug)
@@ -92,7 +93,8 @@ const handler: Handler = async (event) => {
     if (action === 'planTwoWeeks') {
       const manifest = await loadLibrary()
       if (!manifest.length) return { statusCode: 400, body: 'library empty' }
-      const start = body.plan?.startDate ? new Date(body.plan.startDate) : new Date()
+      const startParam = event.queryStringParameters?.start
+      const start = body.plan?.startDate ? new Date(body.plan.startDate) : (startParam ? new Date(startParam) : new Date())
       const targets = manifest.slice(0, 15)
       for (let i = 0; i < targets.length; i++) {
         const slug = targets[i].slug

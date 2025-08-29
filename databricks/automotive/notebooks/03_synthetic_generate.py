@@ -14,13 +14,13 @@ Widgets:
 
 from pyspark.sql import functions as F
 from pyspark.sql.types import StructType, StructField, StringType, IntegerType, DoubleType, TimestampType
-import random, datetime as _dt
+import datetime as _dt
 
 dbutils.widgets.text("catalog_name", "aethergen", "catalog_name")
 dbutils.widgets.text("schema_name", "automotive", "schema_name")
 dbutils.widgets.text("dataset_name", "material_defect_v1", "dataset_name")
 dbutils.widgets.text("delta_base_uri", "", "delta_base_uri")
-dbutils.widgets.text("rows", "50000", "rows")
+dbutils.widgets.text("rows", "20000", "rows")
 
 catalog = dbutils.widgets.get("catalog_name").strip()
 schema = dbutils.widgets.get("schema_name").strip()
@@ -31,54 +31,35 @@ rows = int(dbutils.widgets.get("rows").strip() or "100000")
 full_table = f"{catalog}.{schema}.{dataset}"
 delta_uri = f"{delta_base}/{dataset}/" if delta_base else None
 
-schema_def = StructType([
-  StructField("ts", TimestampType(), True),
-  StructField("line_id", StringType(), True),
-  StructField("station_id", StringType(), True),
-  StructField("camera_id", StringType(), True),
-  StructField("part_serial", StringType(), True),
-  StructField("surface_roughness", DoubleType(), True),
-  StructField("scratch_length_mm", DoubleType(), True),
-  StructField("dent_depth_mm", DoubleType(), True),
-  StructField("temperature_c", DoubleType(), True),
-  StructField("humidity_pct", DoubleType(), True),
-  StructField("defect_label", IntegerType(), True)
-])
-
-def gen_row(i: int):
-  # synthetic but plausible distributions
-  rough = max(0.1, random.gauss(0.22, 0.05))
-  scratch = max(0.0, random.gauss(0.4 if random.random() < 0.2 else 0.0, 0.3))
-  dent = max(0.0, random.gauss(0.3 if random.random() < 0.1 else 0.0, 0.2))
-  temp = random.gauss(22.0, 1.0)
-  hum = min(60.0, max(35.0, random.gauss(45.0, 3.0)))
-  defect = 1 if (rough > 0.27 or scratch > 1.0 or dent > 0.5) else 0
-  return (
-    _dt.datetime.utcnow(),
-    f"L{1 + (i % 3)}",
-    f"S{1 + (i % 5)}",
-    f"C{1 + (i % 7)}",
-    f"PS-{i:06d}",
-    float(rough),
-    float(scratch),
-    float(dent),
-    float(temp),
-    float(hum),
-    int(defect)
-  )
-
-rdd = spark.sparkContext.parallelize(range(rows)).map(gen_row)
-df = spark.createDataFrame(rdd, schema_def)
+# Generate at the Spark side for reliability on serverless
+base = spark.range(rows).withColumnRenamed("id", "idx")
+df = (
+  base
+    .withColumn("ts", F.current_timestamp())
+    .withColumn("line_id", F.concat(F.lit("L"), (F.col("idx") % F.lit(3)) + F.lit(1)))
+    .withColumn("station_id", F.concat(F.lit("S"), (F.col("idx") % F.lit(5)) + F.lit(1)))
+    .withColumn("camera_id", F.concat(F.lit("C"), (F.col("idx") % F.lit(7)) + F.lit(1)))
+    .withColumn("part_serial", F.format_string("PS-%06d", F.col("idx")))
+    # Distributions
+    .withColumn("surface_roughness", F.greatest(F.lit(0.1), F.lit(0.22) + F.randn() * F.lit(0.05)))
+    .withColumn("scratch_length_mm", F.when(F.rand() < 0.2, F.greatest(F.lit(0.0), F.lit(0.4) + F.randn() * F.lit(0.3))).otherwise(F.lit(0.0)))
+    .withColumn("dent_depth_mm", F.when(F.rand() < 0.1, F.greatest(F.lit(0.0), F.lit(0.3) + F.randn() * F.lit(0.2))).otherwise(F.lit(0.0)))
+    .withColumn("temperature_c", F.lit(22.0) + F.randn() * F.lit(1.0))
+    .withColumn("humidity_pct", F.least(F.lit(60.0), F.greatest(F.lit(35.0), F.lit(45.0) + F.randn() * F.lit(3.0))))
+    .withColumn("defect_label", ( (F.col("surface_roughness") > 0.27) | (F.col("scratch_length_mm") > 1.0) | (F.col("dent_depth_mm") > 0.5) ).cast("int"))
+    .drop("idx")
+)
 
 if delta_uri:
   (df.write.format("delta").mode("overwrite").save(delta_uri))
   spark.sql(f"CREATE TABLE IF NOT EXISTS {full_table} USING DELTA LOCATION '{delta_uri}'")
 else:
   try:
+    spark.sql(f"CREATE TABLE IF NOT EXISTS {full_table} (ts TIMESTAMP, line_id STRING, station_id STRING, camera_id STRING, part_serial STRING, surface_roughness DOUBLE, scratch_length_mm DOUBLE, dent_depth_mm DOUBLE, temperature_c DOUBLE, humidity_pct DOUBLE, defect_label INT) USING DELTA")
     spark.sql(f"TRUNCATE TABLE {full_table}")
   except Exception:
     pass
-  (df.write.format("delta").mode("append").saveAsTable(full_table))
+  (df.coalesce(8).write.format("delta").mode("append").saveAsTable(full_table))
 
 # Optimize & Z-Order on frequent predicates
 try:

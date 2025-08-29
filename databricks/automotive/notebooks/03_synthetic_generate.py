@@ -20,7 +20,7 @@ dbutils.widgets.text("catalog_name", "aethergen", "catalog_name")
 dbutils.widgets.text("schema_name", "automotive", "schema_name")
 dbutils.widgets.text("dataset_name", "material_defect_v1", "dataset_name")
 dbutils.widgets.text("delta_base_uri", "", "delta_base_uri")
-dbutils.widgets.text("rows", "100000", "rows")
+dbutils.widgets.text("rows", "50000", "rows")
 
 catalog = dbutils.widgets.get("catalog_name").strip()
 schema = dbutils.widgets.get("schema_name").strip()
@@ -74,10 +74,17 @@ if delta_uri:
   (df.write.format("delta").mode("overwrite").save(delta_uri))
   spark.sql(f"CREATE TABLE IF NOT EXISTS {full_table} USING DELTA LOCATION '{delta_uri}'")
 else:
-  (df.write.format("delta").mode("overwrite").saveAsTable(full_table))
+  try:
+    spark.sql(f"TRUNCATE TABLE {full_table}")
+  except Exception:
+    pass
+  (df.write.format("delta").mode("append").saveAsTable(full_table))
 
 # Optimize & Z-Order on frequent predicates
-spark.sql(f"OPTIMIZE {full_table} ZORDER BY (ts, line_id, station_id)")
+try:
+  spark.sql(f"OPTIMIZE {full_table} ZORDER BY (ts, line_id, station_id)")
+except Exception:
+  pass
 
 print({"rows": rows, "table": full_table})
 

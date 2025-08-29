@@ -6,14 +6,39 @@ import fs from 'fs'
 function convertMarkdownToHtml(input: string): string {
 	const s = input || ''
 	if (/[<][a-zA-Z]/.test(s)) return s
-	let out = s
-		.replace(/^###\s+(.*)$/gm, '<h3>$1</h3>')
-		.replace(/^##\s+(.*)$/gm, '<h2>$1</h2>')
-		.replace(/^#\s+(.*)$/gm, '<h1>$1</h1>')
-		.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-		.replace(/\n\n+/g, '</p><p>')
-	out = `<p>${out}</p>`
-	return out
+	// Basic markdown conversion with headings, links, and unordered lists
+	const lines = s.replace(/\r\n/g, '\n').split(/\n/)
+	const outParts: string[] = []
+	let inList = false
+	const flushPara = (buf: string[]) => {
+		if (!buf.length) return
+		let p = buf.join(' ').trim()
+		if (!p) { buf.length = 0; return }
+		p = p
+			.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+			.replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2">$1</a>')
+		outParts.push(`<p>${p}</p>`) ; buf.length = 0
+	}
+	const paraBuf: string[] = []
+	for (let i=0;i<lines.length;i++) {
+		const line = lines[i]
+		if (/^\s*$/.test(line)) { flushPara(paraBuf); if (inList) { outParts.push('</ul>'); inList=false } continue }
+		const h3 = line.match(/^###\s+(.*)$/); if (h3) { flushPara(paraBuf); if (inList){outParts.push('</ul>'); inList=false} outParts.push(`<h3>${h3[1]}</h3>`); continue }
+		const h2 = line.match(/^##\s+(.*)$/); if (h2) { flushPara(paraBuf); if (inList){outParts.push('</ul>'); inList=false} outParts.push(`<h2>${h2[1]}</h2>`); continue }
+		const h1 = line.match(/^#\s+(.*)$/); if (h1) { flushPara(paraBuf); if (inList){outParts.push('</ul>'); inList=false} outParts.push(`<h1>${h1[1]}</h1>`); continue }
+		const li = line.match(/^\s*-\s+(.*)$/)
+		if (li) {
+			flushPara(paraBuf)
+			if (!inList) { outParts.push('<ul>'); inList = true }
+			const text = li[1]
+			const item = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2">$1</a>')
+			outParts.push(`<li>${item}</li>`)
+			continue
+		}
+		paraBuf.push(line)
+	}
+	flushPara(paraBuf); if (inList) outParts.push('</ul>')
+	return outParts.join('\n')
 }
 
 const handler: Handler = async (event) => {

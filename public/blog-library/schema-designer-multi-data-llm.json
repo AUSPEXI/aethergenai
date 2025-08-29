@@ -1,9 +1,9 @@
 {
   "slug": "schema-designer-multi-data-llm",
   "title": "Schema Designer for Multi‑Data LLM Pipelines",
-  "summary": "Multi‑schema design, template application, and pipeline snapshots for LLM data flows.",
+  "summary": "Design linked schemas across domains; snapshot pipelines; feed deterministic LLM training/eval.",
   "tags": ["schema", "pipelines", "llm"],
-  "bodyMd": "## Multi‑Schema Design\n\nCapture fields, constraints, and joins across datasets. Apply templates and snapshot pipelines for reproducibility.\n\n- Templates Library for reuse.\n- Pipeline snapshots with proofs and metrics.\n- Apply to training/eval recipes.",
+  "bodyMd": "## Multi‑Schema Design\nModel entities/events across domains with constraints (types, ranges, keys) and join cardinalities. Templates accelerate reuse.\n\n## Pipelines\nSnapshot end‑to‑end configs (preproc, joins, feature families) with digests; changes are tracked and auditable.\n\n## LLM Training/Eval\nDeterministic snapshots feed training/eval recipes so runs are reproducible; evaluation evidence is exported with each snapshot.\n\n[View Pricing →](/pricing)  |  [Contact Sales →](/contact)",
   "keywords": ["schema", "templates", "pipelines", "snapshots"]
 }
 

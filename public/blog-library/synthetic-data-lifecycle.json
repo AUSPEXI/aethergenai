@@ -1,9 +1,9 @@
 {
   "slug": "synthetic-data-lifecycle",
-  "title": "The Synthetic Data Lifecycle: Design → Generate → Validate",
-  "summary": "Schema design, controlled generation, privacy/utility metrics, ablations, and reporting.",
+  "title": "Synthetic Data Lifecycle: Deterministic, Measurable, Signed",
+  "summary": "A production pipeline from schema design to signed evidence — privacy budgets, utility metrics, and ablations baked in.",
   "tags": ["synthetic-data", "governance", "benchmarks"],
-  "bodyMd": "## Lifecycle Overview\n\nDesign schemas with constraints → generate with budgets → validate with privacy and utility → ablate → report.\n\n- Schema Designer: multi-dataset constraints.\n- Generator: epsilon/delta variants and policy packs.\n- Benchmarks: task deltas and stability.\n- Reporting: signed evidence JSON ready for procurement.",
+  "bodyMd": "## 1) Design\nDefine multi‑dataset schemas with constraints (types, ranges, join cardinalities) and privacy levels per field. Output a versioned schema manifest.\n\n## 2) Seed Strategy\nMinimal seeds or field‑wise priors; where PHI/PII is present, we apply redaction transforms and avoid raw retention.\n\n## 3) Generate (Deterministic)\nSet DP budgets (ε, δ) and generator seeds. Produce volumes needed for training/eval. Log recipe hashes and artifact checksums.\n\n## 4) Validate\n- **Privacy**: re‑id, attribute disclosure, MI probes\n- **Utility**: KS/TV distribution alignment + task metrics\n- **Stability**: drift under faults/noise\n\n## 5) Ablate\nToggle modules and privacy budgets; quantify causal impact on task metrics and privacy bounds.\n\n## 6) Report (Signed)\nExport the evidence bundle (JSON) with provenance, privacy, utility, and ablations; sign the digest for audit.\n\n## CI/CD Hooks\nWe run lifecycle checks on merge; failures block promotion until gates pass.\n\n[View Pricing →](/pricing)  |  [Contact Sales →](/contact)",
   "keywords": ["schema", "generator", "privacy", "utility", "ablation", "reporting"]
 }
 

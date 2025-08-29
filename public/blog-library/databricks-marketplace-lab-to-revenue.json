@@ -1,9 +1,9 @@
 {
   "slug": "databricks-marketplace-lab-to-revenue",
   "title": "Databricks Marketplace: From Lab to Revenue",
-  "summary": "Packaging datasets/models with evidence, registering to Unity Catalog, and listing in Marketplace.",
+  "summary": "How to turn validated assets into revenue: Delta packaging, Unity Catalog registration, evidence, and listing.",
   "tags": ["databricks", "marketplace", "unity-catalog"],
-  "bodyMd": "## Lab → Revenue on Databricks\n\nTurn validated assets into revenue: package schema, seed data, synthetic datasets, and models with SBOM and evidence. Register tables and models in Unity Catalog, then list via Marketplace with usage terms.\n\n- Evidence bundles: provenance, privacy, utility, ablations, model card.\n- Packaging: checksums, license metadata, watermarks.\n- Listing: tiered usage rights and clear SLAs.",
+  "bodyMd": "## Why Marketplace\nBuyers want governed assets they can deploy in minutes. Our process packages Delta tables and models with evidence and SBOM so security teams can approve quickly.\n\n## Packaging Checklist\n- Create Delta tables (OPTIMIZE/Z‑ORDER, meaningful comments)\n- Register in Unity Catalog; apply tags (domain, license, sensitivity)\n- Attach SBOM and evidence bundle (JSON)\n- Provide notebook quickstart + sample queries\n\n## Listing\nDefine entitlement tiers and SLAs, link evidence, and publish. Usage telemetry feeds back into quality gates.\n\n## Quality Gates\nUtility ≥ threshold, Privacy ≤ bound, Docs complete. Failing assets do not ship.\n\n[View Pricing →](/pricing)  |  [Contact Sales →](/contact)",
   "keywords": ["unity catalog", "delta", "mlflow", "listing"]
 }
 

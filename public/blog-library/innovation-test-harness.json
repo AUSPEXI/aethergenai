@@ -1,0 +1,9 @@
+{
+  "slug": "innovation-test-harness",
+  "title": "Innovation Test Harness: Fast, Deterministic Model Evaluation",
+  "summary": "Run quick evidence‑led evaluations with deterministic settings and exportable bundles.",
+  "tags": ["benchmarks", "ablations", "evaluation"],
+  "bodyMd": "## Why a Harness?\n\nTeams need **repeatable** evaluations without yak‑shaving. Our harness runs standard tasks with deterministic settings and produces exportable evidence.\n\n## What You Get\n- Model registry with ready‑to‑run presets (HF + proprietary)\n- Ablation injectors (toggle modules, privacy budgets)\n- CSV/JSON export and evidence cards\n\n## Typical Workflow\n1. Select models and recipes\n2. Run harness → export summary\n3. Decide with facts (utility, stability, privacy)\n\n## Evidence Outputs\n- Task deltas vs baseline\n- Stability under noise/faults\n- Privacy probe summaries\n\n[View Pricing →](/pricing) | [Contact Sales →](/contact)"
+}
+
+

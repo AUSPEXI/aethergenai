@@ -10,12 +10,6 @@ const Contact = () => {
       description: 'Direct communication with our team'
     },
     {
-      icon: Phone,
-      title: 'Phone',
-      details: ['+44 (0) 20 XXXX XXXX'],
-      description: 'Available during UK business hours'
-    },
-    {
       icon: MapPin,
       title: 'Location',
       details: ['London, United Kingdom'],

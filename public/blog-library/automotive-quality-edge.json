@@ -1,0 +1,9 @@
+{
+  "slug": "automotive-quality-edge",
+  "title": "Automotive Quality at the Edge: Real‑Time, Offline, Evidence‑Led",
+  "summary": "Deploy defect detection and line optimisation on edge devices with signed evidence.",
+  "tags": ["automotive", "edge", "quality"],
+  "bodyMd": "## Why Edge for Quality\n\nLatency and privacy requirements make edge the right fit for visual inspection and optimisation loops.\n\n## Solution\n- Models: Material Defect Detection v1, Production Line Optimisation v1\n- Edge packaging with checksums/SBOM\n- Evidence cards for QA sign‑off\n\n## Rollout\n- Start with one line, one defect class\n- Validate and expand\n- Publish evidence to buyers\n\n[View Pricing →](/pricing) | [Contact Sales →](/contact)"
+}
+
+

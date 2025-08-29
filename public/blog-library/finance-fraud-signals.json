@@ -1,0 +1,9 @@
+{
+  "slug": "finance-fraud-signals",
+  "title": "Financial Fraud Signals: Synthetic Graphs for AML",
+  "summary": "How we build synthetic transaction graphs with typologies for AML model testing.",
+  "tags": ["finance", "aml", "synthetic-data"],
+  "bodyMd": "## Why Synthetic for AML\n\nAccess to labelled fraud is scarce and risky. Synthetic graphs let teams test ideas without handling raw PII.\n\n## What We Generate\n- Accounts, merchants, cards with realistic topology\n- Typology injection: smurfing, velocity spikes, rings\n- Risk features for downstream models\n\n## Evaluation\n- Detection lift vs baseline\n- False‑positive balance\n- Drift/stability over time\n\n[View Pricing →](/pricing) | [Contact Sales →](/contact)"
+}
+
+

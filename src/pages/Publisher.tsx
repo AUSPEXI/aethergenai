@@ -139,6 +139,24 @@ const Publisher: React.FC = () => {
 						>
 							Queue (Scheduled)
 						</button>
+						<button
+							onClick={async ()=>{
+								try {
+									if (!selectedSlug) { alert('Pick from library first'); return }
+									const r = await fetch(`/blog-library/${selectedSlug}.json`)
+									if (!r.ok) { alert('Missing library file'); return }
+									const j = await r.json()
+									const nowIso = new Date().toISOString()
+									const res = await fetch('/.netlify/functions/blog-queue', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ slug: j.slug, title: j.title, excerpt: j.summary || j.excerpt || '', contentHtml: j.contentHtml || j.bodyMd || j.body || '', scheduledAt: nowIso }) })
+									if (!res.ok) { alert('Failed to publish now: ' + await res.text()); return }
+									await fetch('/.netlify/functions/blog-scheduler')
+									alert('Blog published')
+								} catch (e: any) { alert('Error: ' + (e.message||'unknown')) }
+							}}
+							className="px-4 py-2 rounded bg-indigo-600 text-white"
+						>
+							Post Now
+						</button>
 					</div>
 					<p className="mt-4 text-xs text-slate-800">Safety: sanitized for hype and IP terms. Edit as needed before posting.</p>
 				</div>

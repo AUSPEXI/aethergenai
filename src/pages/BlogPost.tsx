@@ -378,6 +378,10 @@ const BlogPost = () => {
               '--tw-prose-td-borders': '#e2e8f0'
             } as React.CSSProperties}
           />
+          <div className="mt-8">
+            <a href="/pricing" className="inline-block px-4 py-2 bg-blue-600 text-white rounded mr-3">View Pricing →</a>
+            <a href="/contact" className="inline-block px-4 py-2 bg-slate-800 text-white rounded">Contact Sales →</a>
+          </div>
         </div>
       </article>
 

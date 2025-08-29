@@ -32,6 +32,7 @@ dbutils.widgets.text("schema_name", "public", "schema_name")
 dbutils.widgets.text("version", "v1", "version")
 dbutils.widgets.text("privacy_level", "high", "privacy_level")
 dbutils.widgets.text("synthetic_ratio", "0.98", "synthetic_ratio")
+dbutils.widgets.text("epsilon", "1.0", "epsilon")
 dbutils.widgets.text("evidence_uri", "s3://your-evidence-bucket/healthcare_v1.json", "evidence_uri")
 dbutils.widgets.text("preview_percent", "1", "preview_percent")
 
@@ -48,6 +49,7 @@ schema_name = dbutils.widgets.get("schema_name").strip()
 version = dbutils.widgets.get("version").strip()
 privacy_level = dbutils.widgets.get("privacy_level").strip()
 synthetic_ratio = dbutils.widgets.get("synthetic_ratio").strip()
+epsilon = float(dbutils.widgets.get("epsilon").strip() or "1.0")
 evidence_uri = dbutils.widgets.get("evidence_uri").strip()
 preview_percent_str = dbutils.widgets.get("preview_percent").strip()
 
@@ -109,9 +111,7 @@ spark.sql(f"CREATE CATALOG IF NOT EXISTS {catalog_name}")
 spark.sql(f"CREATE SCHEMA IF NOT EXISTS {catalog_name}.{schema_name}")
 spark.sql(f"CREATE TABLE IF NOT EXISTS {full_table_name} USING DELTA LOCATION '{delta_uri}'")
 
-comment = (
-    f"Synthetic dataset {dataset_name}; ε={epsilon}; AUM/AGO/432/TriCoT/VRME evidence attached."
-)
+comment = (f"Synthetic dataset {dataset_name}; eps={epsilon}; evidence attached.")
 spark.sql(f"COMMENT ON TABLE {full_table_name} IS '{comment}'")
 
 tblprops = (

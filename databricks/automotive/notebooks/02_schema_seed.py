@@ -14,6 +14,7 @@ Widgets:
 
 from pyspark.sql.types import StructType, StructField, StringType, IntegerType, DoubleType, TimestampType
 from pyspark.sql import functions as F
+import datetime as _dt
 
 dbutils.widgets.text("catalog_name", "aethergen", "catalog_name")
 dbutils.widgets.text("schema_name", "automotive", "schema_name")
@@ -44,13 +45,15 @@ schema_def = StructType([
   StructField("defect_label", IntegerType(), True) # 0/1
 ])
 
-# Generate tiny seed
-seed_df = spark.createDataFrame([
-  (F.current_timestamp(), "L1", "S1", "C1", "PS-0001", 0.22, 0.0, 0.0, 22.1, 45.0, 0),
-  (F.current_timestamp(), "L1", "S1", "C2", "PS-0002", 0.28, 1.2, 0.0, 22.5, 44.5, 1),
-  (F.current_timestamp(), "L1", "S2", "C3", "PS-0003", 0.20, 0.0, 0.4, 22.7, 44.8, 1),
-  (F.current_timestamp(), "L2", "S3", "C4", "PS-0004", 0.18, 0.0, 0.0, 21.9, 46.2, 0)
-], schema_def)
+# Generate tiny seed (use Python datetimes, not Spark column expressions)
+now = _dt.datetime.utcnow()
+seed_rows = [
+  (now, "L1", "S1", "C1", "PS-0001", 0.22, 0.0, 0.0, 22.1, 45.0, 0),
+  (now, "L1", "S1", "C2", "PS-0002", 0.28, 1.2, 0.0, 22.5, 44.5, 1),
+  (now, "L1", "S2", "C3", "PS-0003", 0.20, 0.0, 0.4, 22.7, 44.8, 1),
+  (now, "L2", "S3", "C4", "PS-0004", 0.18, 0.0, 0.0, 21.9, 46.2, 0)
+]
+seed_df = spark.createDataFrame(seed_rows, schema_def)
 
 spark.sql(f"CREATE CATALOG IF NOT EXISTS {catalog}")
 spark.sql(f"CREATE SCHEMA IF NOT EXISTS {catalog}.{schema}")

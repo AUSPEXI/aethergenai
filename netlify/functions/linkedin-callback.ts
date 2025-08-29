@@ -45,6 +45,19 @@ const handler: Handler = async (event) => {
 				if (payload?.sub) personUrn = `urn:li:person:${payload.sub}`
 			} catch {}
 		}
+		// Fallback: fetch OIDC userinfo if id_token missing or sub not parsed
+		if (!personUrn) {
+			try {
+				const ui = await fetch('https://api.linkedin.com/v2/userinfo', {
+					method: 'GET',
+					headers: { 'Authorization': `Bearer ${token.access_token}` }
+				})
+				if (ui.ok) {
+					const u = await ui.json() as any
+					if (u?.sub) personUrn = `urn:li:person:${u.sub}`
+				}
+			} catch {}
+		}
 		// Only use organization URN if org scope is requested; otherwise default to member
 		const orgScopeRequested = requestedScope.includes('w_organization_social')
 		const accountRef = (orgScopeRequested && orgUrn) ? orgUrn : (personUrn || orgUrn)
@@ -62,7 +75,7 @@ const handler: Handler = async (event) => {
 		return {
 			statusCode: 200,
 			headers: { 'content-type': 'text/html' },
-			body: `<html><body><h1>LinkedIn connected</h1><p>${orgUrn ? 'Organization' : 'Member'} mode enabled.</p><p>You can close this window.</p></body></html>`
+			body: `<html><body><h1>LinkedIn connected</h1><p>${(accountRef||'').includes('organization:') ? 'Organization' : 'Member'} mode enabled.</p><p>You can close this window.</p></body></html>`
 		}
 	} catch (e: any) {
 		return { statusCode: 500, body: e?.message || 'error' }

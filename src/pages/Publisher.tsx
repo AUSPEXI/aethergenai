@@ -3,18 +3,18 @@ import SEO from '../components/SEO'
 import { generateLinkedInDraft, generateReplyDraft } from '../services/socialPublisherService'
 
 const Publisher: React.FC = () => {
-	const [title, setTitle] = useState('From Starlings to Swarms: 8D Safety for Thousands of Drones')
-	const [url, setUrl] = useState('https://auspexi.com/blog/from-starlings-to-swarms-8d-safety')
-	const [keyPoints, setKeyPoints] = useState('8D state; Safety (CBF/RTA); Evidence bundles; Offline edge deployment')
-	const [cta, setCta] = useState('Military and safety‑critical pilots welcome. Evidence on request.')
-	const [keywords, setKeywords] = useState('synthetic data, evidence-led, safety, drones, edge AI, MoD')
+	const [title, setTitle] = useState('')
+	const [url, setUrl] = useState('')
+	const [keyPoints, setKeyPoints] = useState('')
+	const [cta, setCta] = useState('Read the guide and get in touch.')
+	const [keywords, setKeywords] = useState('')
 	const [scheduledAt, setScheduledAt] = useState<string>('')
   const [library, setLibrary] = useState<any[]>([])
   const [selectedSlug, setSelectedSlug] = useState<string>('')
   const [replyUrl, setReplyUrl] = useState('')
   const [replyAngle, setReplyAngle] = useState<'appreciation'|'insight'|'question'>('insight')
   const [replyPoints, setReplyPoints] = useState('')
-  const [techLens, setTechLens] = useState('Deterministic engineering lens: safety‑critical workflows, evidence, and offline operation')
+  const [techLens, setTechLens] = useState('')
   const [siteContext, setSiteContext] = useState<Array<{ title: string; summary?: string; url?: string; tags?: string[]; contextOnly?: boolean }>>([])
 
   useEffect(() => {
@@ -71,6 +71,11 @@ const Publisher: React.FC = () => {
 							if (found) {
 								setTitle(found.title)
 								setUrl(`https://auspexi.com/blog/${found.slug}`)
+								// Reset draft inputs to avoid cross‑post carryover
+								setKeyPoints('')
+								setCta('Read the guide and get in touch.')
+								setKeywords(Array.isArray((found as any).tags) ? (found as any).tags.join(', ') : '')
+								setTechLens('')
 							}
 						}}>
 							<option value="">Pick draft from library…</option>
@@ -105,11 +110,11 @@ const Publisher: React.FC = () => {
 						}}>US ET Tue 09:00</button>
 					</div>
 				</div>
-				<div className="mt-8 bg-white border border-slate-200 rounded p-4">
+				<div className="mt-8 bg-white border border-slate-200 rounded p-4" style={{ hyphens: 'none' as any, wordBreak: 'normal' }}>
 					<h2 className="text-lg font-semibold text-slate-900 mb-3">LinkedIn Draft</h2>
-					<p className="font-semibold mb-2 text-slate-900">{draft.headline}</p>
-					<pre className="whitespace-pre-wrap text-sm text-slate-900">{draft.body}</pre>
-					<p className="mt-3 text-sm text-slate-800">{draft.hashtags}</p>
+					<p className="font-semibold mb-2 text-slate-900" style={{ hyphens: 'none' as any, wordBreak: 'normal' }}>{draft.headline}</p>
+					<pre className="whitespace-pre-wrap text-sm text-slate-900" style={{ hyphens: 'none' as any, wordBreak: 'normal' }}>{draft.body}</pre>
+					<p className="mt-3 text-sm text-slate-800" style={{ hyphens: 'none' as any, wordBreak: 'normal' }}>{draft.hashtags}</p>
 					<div className="mt-4 flex gap-3 flex-wrap items-center">
 						<a href={draft.shareUrl} target="_blank" rel="noreferrer" className="px-4 py-2 rounded bg-blue-600 text-white">Open LinkedIn Share</a>
 						<button

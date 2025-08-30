@@ -49,8 +49,15 @@ export function generateLinkedInDraft(input: DraftInput): DraftOutput {
 		return `• ${t}${s ? ` — ${s}` : ''}`
 	})
 	const points = (input.keyPoints || []).slice(0, 3).map(p => `• ${sanitize(p)}`)
-	const kw = (input.seoKeywords || ['synthetic data','evidence-led','edge AI','privacy']).slice(0, 6)
-	const hashtags = '#AethergenPlatform ' + kw.map(k => '#' + k.replace(/\s+/g,'')).join(' ')
+	// BEGIN: updated hashtag logic - only from current input, sanitize and dedupe
+	const kwRaw = (input.seoKeywords || []).map(k => (k || '').toString().trim()).filter(Boolean)
+	const dedupe = new Set<string>()
+	const tagList = (kwRaw.length ? kwRaw : ['synthetic data','evidence-led','privacy'])
+		.slice(0, 6)
+		.map(k => '#' + k.toLowerCase().replace(/\s+/g,'').replace(/[^a-z0-9_#]/g,''))
+		.filter(t => { if (dedupe.has(t)) return false; dedupe.add(t); return true })
+	const hashtags = ['#AethergenPlatform', ...tagList].join(' ')
+	// END: updated hashtag logic
 	const headline = `${title} — Evidence‑Led and Built for Regulated Environments`
 	const body = [
 		lens ? `Perspective: ${lens}` : 'Quick take:',

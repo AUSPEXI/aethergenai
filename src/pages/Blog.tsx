@@ -143,15 +143,7 @@ const Blog = () => {
     slug: 'triumph-of-preparation-strategic-planning'
   }; */
 
-  const [remotePosts, setRemotePosts] = React.useState<any[] | null>(null);
-  React.useEffect(() => {
-    (async () => {
-      try {
-        const res = await fetch('/.netlify/functions/blog-list');
-        if (res.ok) setRemotePosts(await res.json());
-      } catch {}
-    })();
-  }, []);
+  // Static-only mode: no remote fetch
 
   const blogPosts = [
     {
@@ -405,12 +397,12 @@ const Blog = () => {
   return (
     <div className="min-h-screen">
       {/* Header Section */}
-      <section className="py-16 bg-blue-50 text-slate-900">
+      <section className="py-16 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl font-bold text-slate-900 mb-6">
+          <h1 className="text-4xl font-bold text-white mb-6">
             Founder's Blog
           </h1>
-          <p className="text-xl text-slate-700 mb-8 max-w-3xl mx-auto">
+          <p className="text-xl text-blue-100 mb-8 max-w-3xl mx-auto">
             Real stories from the front lines of AI innovation and entrepreneurship
           </p>
         </div>
@@ -420,14 +412,14 @@ const Blog = () => {
       <section className="py-16 bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {(remotePosts ?? blogPosts).map((post, index) => (
+            {blogPosts.map((post: any, index: number) => (
               <article
                 key={index}
                 className="bg-slate-50 border border-slate-200 rounded-xl overflow-hidden hover:border-blue-300 transition-all duration-300 shadow-md"
               >
                 <div className="p-6">
                   <div className="flex items-center mb-4">
-                    <post.icon className="w-5 h-5 text-blue-500 mr-2" />
+                    {(post && post.icon ? post.icon : Database)({ className: "w-5 h-5 text-blue-500 mr-2" } as any)}
                     <span className="text-sm text-slate-500">{post.category}</span>
                   </div>
                   

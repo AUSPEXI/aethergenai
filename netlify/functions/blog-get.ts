@@ -91,6 +91,36 @@ const handler: Handler = async (event) => {
 		const payload = { ...data, author: (data as any).author || 'Auspexi Team', category: (data as any).category || 'Technology', readTime: (data as any).readTime || readTime, published_at: (data as any).published_at || new Date().toISOString() }
 		return { statusCode: 200, body: JSON.stringify(payload) }
 	}
+	// Prefer direct HTML posts (public/blog-html) when available (switch to direct HTML)
+	try {
+		const base = process.env.URL || process.env.DEPLOY_PRIME_URL || ''
+		if (base) {
+			const rh = await fetch(`${base}/blog-html/${slug}.html`)
+			if (rh.ok) {
+				const htmlRaw = await rh.text()
+				const h1 = htmlRaw.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i)
+				const title = h1 ? h1[1].replace(/<[^>]*>/g,'').trim() : String(slug).replace(/-/g,' ')
+				const p1m = htmlRaw.match(/<p[^>]*>([\s\S]*?)<\/p>/i)
+				const excerpt = p1m ? p1m[1].replace(/<[^>]*>/g,'').trim().slice(0, 280) : ''
+				const wordCount = String(htmlRaw).replace(/<[^>]+>/g,' ').trim().split(/\s+/).filter(Boolean).length
+				const readTime = `${Math.max(2, Math.round(wordCount/200))} min read`
+				const payload = { slug, title, excerpt, content_html: htmlRaw, author: 'Auspexi Team', category: 'Technology', readTime, published_at: new Date().toISOString() }
+				return { statusCode: 200, body: JSON.stringify(payload) }
+			}
+		}
+		// local fs direct HTML during dev
+		const pHtml = path.join(process.cwd(), 'public', 'blog-html', `${slug}.html`)
+		const htmlRaw = await fs.promises.readFile(pHtml, 'utf8')
+		const h1 = htmlRaw.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i)
+		const title = h1 ? h1[1].replace(/<[^>]*>/g,'').trim() : String(slug).replace(/-/g,' ')
+		const p1m = htmlRaw.match(/<p[^>]*>([\s\S]*?)<\/p>/i)
+		const excerpt = p1m ? p1m[1].replace(/<[^>]*>/g,'').trim().slice(0, 280) : ''
+		const wordCount = String(htmlRaw).replace(/<[^>]+>/g,' ').trim().split(/\s+/).filter(Boolean).length
+		const readTime = `${Math.max(2, Math.round(wordCount/200))} min read`
+		const payload = { slug, title, excerpt, content_html: htmlRaw, author: 'Auspexi Team', category: 'Technology', readTime, published_at: new Date().toISOString() }
+		return { statusCode: 200, body: JSON.stringify(payload) }
+	} catch {}
+
 	// Fallback to library JSON file in public/blog-library
 	try {
 		const base = process.env.URL || process.env.DEPLOY_PRIME_URL || ''

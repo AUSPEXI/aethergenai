@@ -420,63 +420,43 @@ const Blog = () => {
       <section className="py-16 bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {(() => {
-              // Prefer curated local posts; merge in remote extras by slug without overriding locals
-              const bySlug = new Map<string, any>();
-              for (const p of blogPosts) if (p?.slug) bySlug.set(p.slug, p);
-              if (remotePosts && Array.isArray(remotePosts)) {
-                for (const r of remotePosts) {
-                  const s = (r && (r as any).slug) || '';
-                  if (s && !bySlug.has(s)) bySlug.set(s, r);
-                }
-              }
-              return Array.from(bySlug.values());
-            })().map((post: any, index: number) => {
-              const IconComp = post?.icon || Database;
-              const title = post?.title || post?.slug || 'Blog Post';
-              const excerpt = post?.excerpt || '';
-              const author = post?.author || 'Auspexi';
-              const readTime = post?.readTime || '';
-              const dateText = post?.date || (post?.published_at ? new Date(post.published_at).toDateString() : '');
-              const slug = post?.slug || '';
-              return (
-                <article
-                  key={index}
-                  className="bg-slate-50 border border-slate-200 rounded-xl overflow-hidden hover:border-blue-300 transition-all duration-300 shadow-md"
-                >
-                  <div className="p-6">
-                    <div className="flex items-center mb-4">
-                      <IconComp className="w-5 h-5 text-blue-500 mr-2" />
-                      <span className="text-sm text-slate-500">{post?.category || 'Blog'}</span>
-                    </div>
-                    
-                    <h2 className="text-xl font-bold text-slate-900 mb-3 line-clamp-3">
-                      {title}
-                    </h2>
-                    
-                    <p className="text-slate-600 mb-4 line-clamp-3">
-                      {excerpt}
-                    </p>
-                    
-                    <div className="flex items-center justify-between text-sm text-slate-500 mb-4">
-                      <span>{author}</span>
-                      <span>{readTime}</span>
-                    </div>
-                    
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-slate-500">{dateText}</span>
-                      <Link
-                        to={`/blog/${slug}`}
-                        className="text-blue-500 hover:text-blue-600 font-semibold text-sm flex items-center"
-                      >
-                        Read More
-                        <ArrowRight className="w-4 h-4 ml-1" />
-                      </Link>
-                    </div>
+            {(remotePosts ?? blogPosts).map((post, index) => (
+              <article
+                key={index}
+                className="bg-slate-50 border border-slate-200 rounded-xl overflow-hidden hover:border-blue-300 transition-all duration-300 shadow-md"
+              >
+                <div className="p-6">
+                  <div className="flex items-center mb-4">
+                    <post.icon className="w-5 h-5 text-blue-500 mr-2" />
+                    <span className="text-sm text-slate-500">{post.category}</span>
                   </div>
-                </article>
-              );
-            })}
+                  
+                  <h2 className="text-xl font-bold text-slate-900 mb-3 line-clamp-3">
+                    {post.title}
+                  </h2>
+                  
+                  <p className="text-slate-600 mb-4 line-clamp-3">
+                    {post.excerpt}
+                  </p>
+                  
+                  <div className="flex items-center justify-between text-sm text-slate-500 mb-4">
+                    <span>{post.author}</span>
+                    <span>{post.readTime}</span>
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-slate-500">{(post as any).date || ((post as any).published_at ? new Date((post as any).published_at).toDateString() : '')}</span>
+                    <Link
+                      to={`/blog/${post.slug}`}
+                      className="text-blue-500 hover:text-blue-600 font-semibold text-sm flex items-center"
+                    >
+                      Read More
+                      <ArrowRight className="w-4 h-4 ml-1" />
+                    </Link>
+                  </div>
+                </div>
+              </article>
+            ))}
           </div>
         </div>
       </section>

@@ -420,7 +420,18 @@ const Blog = () => {
       <section className="py-16 bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {(remotePosts ?? blogPosts).map((post: any, index: number) => {
+            {(() => {
+              // Prefer curated local posts; merge in remote extras by slug without overriding locals
+              const bySlug = new Map<string, any>();
+              for (const p of blogPosts) if (p?.slug) bySlug.set(p.slug, p);
+              if (remotePosts && Array.isArray(remotePosts)) {
+                for (const r of remotePosts) {
+                  const s = (r && (r as any).slug) || '';
+                  if (s && !bySlug.has(s)) bySlug.set(s, r);
+                }
+              }
+              return Array.from(bySlug.values());
+            })().map((post: any, index: number) => {
               const IconComp = post?.icon || Database;
               const title = post?.title || post?.slug || 'Blog Post';
               const excerpt = post?.excerpt || '';

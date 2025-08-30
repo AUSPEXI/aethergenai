@@ -405,12 +405,12 @@ const Blog = () => {
   return (
     <div className="min-h-screen">
       {/* Header Section */}
-      <section className="py-16 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white">
+      <section className="py-16 bg-blue-50 text-slate-900">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl font-bold text-white mb-6">
+          <h1 className="text-4xl font-bold text-slate-900 mb-6">
             Founder's Blog
           </h1>
-          <p className="text-xl text-blue-100 mb-8 max-w-3xl mx-auto">
+          <p className="text-xl text-slate-700 mb-8 max-w-3xl mx-auto">
             Real stories from the front lines of AI innovation and entrepreneurship
           </p>
         </div>

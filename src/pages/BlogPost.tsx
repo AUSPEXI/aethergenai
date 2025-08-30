@@ -108,15 +108,61 @@ const blogPostsData = {
     readTime: '10 min read',
     category: 'Business Strategy',
     content: `
-      <h2>Two Clear Service Models</h2>
+      <h2>Overview</h2>
+      <h3>Two ways to work with AethergenPlatform</h3>
       <ul>
-        <li><strong>Platform (Self‑Service):</strong> tools only; you run compute; datasets sold separately</li>
-        <li><strong>Managed Delivery (Full‑Service):</strong> we run compute and deliver on Databricks with SLAs</li>
+        <li><strong>Platform (Self‑Service):</strong> tools only — you run compute; datasets sold separately; export evidence yourself.</li>
+        <li><strong>Managed Delivery (Full‑Service):</strong> we run compute and deliver in Unity Catalog on Databricks with SLAs, change control, and compliance support.</li>
       </ul>
-      <h2>Why This Separation</h2>
-      <p>Separating platform tools from managed compute prevents entitlements confusion and preserves economics: experimentation is inexpensive, production has guarantees.</p>
-      <h2>Evidence in Pricing</h2>
-      <p>Enterprise tiers include <em>evidence reporting</em> and <em>compliance support</em>. Platform tiers export the same evidence, but SLAs and run‑ownership differ. This avoids apples‑to‑oranges comparisons.</p>
+
+      <h2>What you get</h2>
+      <h3>Platform (Tools)</h3>
+      <ul>
+        <li>Generator with privacy budgets and recipe hashing</li>
+        <li>Benchmarks & ablations; signed evidence export (utility, privacy, lineage)</li>
+        <li>API & UI access with tiered quotas</li>
+        <li>Optional dataset SKUs (sold separately)</li>
+      </ul>
+      <h3>Enterprise (Managed on Databricks)</h3>
+      <ul>
+        <li>Managed compute/orchestration on your Databricks workspace</li>
+        <li>Unity Catalog delivery for tables/models + evidence bundle attached per release</li>
+        <li>SLAs (availability, refresh cadence), support, audit‑ready logs</li>
+        <li>Change windows, rollback, and named approvals</li>
+      </ul>
+
+      <h2>When to choose which</h2>
+      <p><strong>Platform</strong> if you’re engineering‑led and want to customise recipes while owning infra costs. <strong>Enterprise</strong> if you need guaranteed delivery on Databricks with governance and minimal internal lift.</p>
+
+      <h2>Entitlements by approach</h2>
+      <table>
+        <thead>
+          <tr><th>Capability</th><th>Platform (Tools)</th><th>Enterprise (Managed)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Synthetic generation</td><td>Yes (tiered quotas)</td><td>Yes (managed)</td></tr>
+          <tr><td>Evidence bundle</td><td>Self‑serve export (Reporting)</td><td>Auto‑attached per release (provenance, privacy, utility, ablation, manifest)</td></tr>
+          <tr><td>Datasets included</td><td>Buy per SKU</td><td>Included per contract</td></tr>
+          <tr><td>Databricks integration</td><td>Optional</td><td>Required; UC delivery</td></tr>
+          <tr><td>SLAs & support</td><td>Community/standard</td><td>Formal SLAs & dedicated support</td></tr>
+        </tbody>
+      </table>
+
+      <h2>Scenarios</h2>
+      <h3>1) Automotive QA team with an MLOps engineer</h3>
+      <p>Start on <strong>Platform</strong>. Buy the automotive dataset SKU you need; generate variants under quotas; export evidence for procurement. If usage grows, move to <strong>Enterprise</strong> for managed cadence.</p>
+
+      <h3>2) Bank model risk wants fast evaluation and a paper trail</h3>
+      <p>Choose <strong>Enterprise</strong>. We run jobs on your Databricks, attach evidence to each release, and meet your change‑control.</p>
+
+      <h3>3) Startup validating a use case before scale</h3>
+      <p>Use <strong>Platform</strong> to prototype and keep costs predictable; upgrade to <strong>Enterprise</strong> for guaranteed refresh and support.</p>
+
+      <h2>FAQ</h2>
+      <p><strong>Do I get datasets included with Platform?</strong> Platform focuses on the tools. Datasets are separate SKUs so you only buy what you need.</p>
+      <p><strong>Can I switch later?</strong> Yes. We migrate recipes and evidence history; your UC objects stay the same.</p>
+      <p><strong>What does the evidence bundle contain?</strong> Provenance, privacy probes, utility metrics, ablations, and a manifest you can verify.</p>
+      <p><strong>How is Databricks used?</strong> Enterprise runs on your workspace and delivers in Unity Catalog; Platform can run anywhere you choose.</p>
     `
   },
   'synthetic-data-lifecycle': {

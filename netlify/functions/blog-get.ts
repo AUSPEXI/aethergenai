@@ -39,6 +39,25 @@ function convertMarkdownToHtml(input: string): string {
 			outParts.push(`<li>${item}</li>`)
 			continue
 		}
+		// Pipe table detection: header |---| row(s)
+		const tableHeader = line.match(/^\s*\|(.+)\|\s*$/)
+		if (tableHeader && i+1 < lines.length && /^\s*\|\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|\s*$/.test(lines[i+1])) {
+			flushPara(paraBuf); if (inList){outParts.push('</ul>'); inList=false} if (inOList){outParts.push('</ol>'); inOList=false}
+			const headers = tableHeader[1].split('|').map(h=>h.trim())
+			i += 2
+			const rows: string[][] = []
+			while (i < lines.length && /^\s*\|(.+)\|\s*$/.test(lines[i])) {
+				const m = lines[i].match(/^\s*\|(.+)\|\s*$/)!
+				rows.push(m[1].split('|').map(c=>c.trim()))
+				i++
+			}
+			i--
+			outParts.push('<table>')
+			outParts.push('<thead><tr>' + headers.map(h=>`<th>${h}</th>`).join('') + '</tr></thead>')
+			if (rows.length) outParts.push('<tbody>' + rows.map(r=>'<tr>'+r.map(c=>`<td>${c}</td>`).join('')+'</tr>').join('') + '</tbody>')
+			outParts.push('</table>')
+			continue
+		}
 		const oli = line.match(/^\s*\d+\.\s+(.*)$/)
 		if (oli) {
 			flushPara(paraBuf)

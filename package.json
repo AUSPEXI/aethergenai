@@ -24,7 +24,8 @@
     "test:monitor:validation": "tsx src/test/monitorValidationTest.ts",
     "test:stress:break": "tsx src/test/systemStressTest.ts",
     "test:stress:optimized": "tsx src/test/optimizedStressTest.ts",
-    "test:billion:scale": "tsx scripts/test-billion-scale.ts"
+    "test:billion:scale": "tsx scripts/test-billion-scale.ts",
+    "blog:publish-html": "node scripts/publish-html-posts.mjs"
   },
   "dependencies": {
     "@aws-sdk/client-dataexchange": "^3.525.0",

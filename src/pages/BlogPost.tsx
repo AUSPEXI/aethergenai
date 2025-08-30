@@ -309,7 +309,22 @@ const BlogPost = () => {
     (async () => {
       try {
         const res = await fetch(`/.netlify/functions/blog-get?slug=${encodeURIComponent(slug || '')}`);
-        if (res.ok) setRemote(await res.json());
+        if (res.ok) {
+          setRemote(await res.json());
+        } else {
+          // Fallback: fetch direct HTML from public/blog-html
+          const rh = await fetch(`/blog-html/${encodeURIComponent(slug || '')}.html`).catch(() => null as any)
+          if (rh && rh.ok) {
+            const htmlRaw = await rh.text()
+            const h1 = htmlRaw.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i)
+            const title = h1 ? h1[1].replace(/<[^>]*>/g,'').trim() : String(slug || '').replace(/-/g,' ')
+            const p1m = htmlRaw.match(/<p[^>]*>([\s\S]*?)<\/p>/i)
+            const excerpt = p1m ? p1m[1].replace(/<[^>]*>/g,'').trim().slice(0, 280) : ''
+            const wordCount = String(htmlRaw).replace(/<[^>]+>/g,' ').trim().split(/\s+/).filter(Boolean).length
+            const readTime = `${Math.max(2, Math.round(wordCount/200))} min read`
+            setRemote({ slug, title, excerpt, content_html: htmlRaw, author: 'Auspexi Team', category: 'Technology', readTime, published_at: new Date().toISOString() })
+          }
+        }
       } catch {}
       finally { setIsLoading(false); }
     })();

@@ -366,6 +366,9 @@ const BlogPost = () => {
             }
             .prose a { color: #2563eb !important; }
             .prose a.aeg-btn { color: #ffffff !important; }
+            /* Table spacing */
+            .prose table { border-collapse: separate; border-spacing: 24px 8px; width: auto; }
+            .prose th, .prose td { padding: 0 8px; vertical-align: top; }
           `}</style>
           <div 
             dangerouslySetInnerHTML={{ __html: (post as any).content || (post as any).content_html }} 

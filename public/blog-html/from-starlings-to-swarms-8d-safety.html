@@ -1,0 +1,36 @@
+<h1>From Starlings to Swarms: 8D Safety for Thousands of Drones</h1>
+<p>This article outlines how AethergenPlatform’s 8D manifold control and non‑linear methods enable large‑scale, resilient swarms (1k–15k+) with evidence‑backed safety—sharing the safety/evaluation concepts without disclosing proprietary control laws.</p>
+
+<h2>8D State Manifold</h2>
+<p>An agent’s control state lives on an 8‑dimensional manifold capturing kinematics and mission/safety context: position/velocity plus health/risk and link/latency/role. Variants include local density, goal progress, altitude band, or airspace mode.</p>
+
+<h2>Topological Flocking</h2>
+<p>Each drone tracks ≈7 nearest neighbors by graph connectivity, improving resilience in variable density (starling heuristic). Fields and SDFs define cohesion/alignment/separation, formation/goal, density regulation, and wind compensation. Control follows negative gradients on the manifold with hard constraints.</p>
+
+<h2>Safety Layer</h2>
+<ul>
+  <li>Control Barrier Functions enforce min‑separation, altitude bands, geofences.</li>
+  <li>Real‑Time Assurance overrides learned/heuristic actions to safe modes (hover/rise/land).</li>
+  <li>Resilient consensus filters outliers/Byzantine nodes to prevent cascades.</li>
+  <li>Fault isolation repairs local graph “holes”; role reassignment maintains coverage/connectivity.</li>
+ </ul>
+
+<h2>Simulation & Training</h2>
+<p>Using NVIDIA Omniverse/Isaac: physics (wind, GNSS bias, latency), failure injection (motor/GPS/partitions/spikes), multi‑agent RL + imitation atop the safety layer, and curricula that scale 100→1k→10k agents under tighter latency budgets.</p>
+
+<h2>Evidence & Evaluation</h2>
+<ul>
+  <li>Safety: violations per flight‑hour, min‑sep breaches, geofence intrusions, k‑failure recovery.</li>
+  <li>Connectivity/resilience: largest connected subgraph over time; completion under partitions.</li>
+  <li>Efficiency: energy, smoothness, throughput. All signed in evidence bundles.</li>
+</ul>
+
+<h2>Edge Packaging & Deployment</h2>
+<p>Export compact policies and safety controllers (INT8/Q4/FP16) with device profiles. Offline policy packs carry default CBFs, geofences, RTA thresholds, logging toggles, and checksums/SBOM. On‑device watchdog controls fail‑safe modes.</p>
+
+<h2>Governance & Risk</h2>
+<p>Geofencing, altitude limits, restricted zones, offline logs with signed digests, SBOM and signatures, license controls. Mitigations include topological limits, sparse comms, robust estimators, authenticated comms, and jurisdictional profiles.</p>
+
+<p><a href="/contact" class="aeg-btn">Contact Sales →</a></p>
+
+

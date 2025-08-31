@@ -1,195 +1,415 @@
+
+<script type="text/javascript">
+    var gk_isXlsx = false;
+    var gk_xlsxFileLookup = {};
+    var gk_fileData = {};
+    function filledCell(cell) {
+      return cell !== '' && cell != null;
+    }
+    function loadFileData(filename) {
+    if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+        try {
+            var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+            var firstSheetName = workbook.SheetNames[0];
+            var worksheet = workbook.Sheets[firstSheetName];
+
+            // Convert sheet to JSON to filter blank rows
+            var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+            // Filter out blank rows (rows where all cells are empty, null, or undefined)
+            var filteredData = jsonData.filter(row => row.some(filledCell));
+
+            // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+            var headerRowIndex = filteredData.findIndex((row, index) =>
+              row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+            );
+            // Fallback
+            if (headerRowIndex === -1 || headerRowIndex > 25) {
+              headerRowIndex = 0;
+            }
+
+            // Convert filtered JSON back to CSV
+            var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+            csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+            return csv;
+        } catch (e) {
+            console.error(e);
+            return "";
+        }
+    }
+    return gk_fileData[filename] || "";
+    }
+    </script><!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ablations with Effect Sizes: Proving What Moves the Needle | Auspexi</title>
+<style>
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.6;
+  color: #2d3748;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: #f7fafc;
+}
+h1 {
+  font-size: 2.5rem;
+  color: #1a202c;
+  margin-bottom: 1rem;
+  line-height: 1.2;
+}
+h2 {
+  font-size: 1.8rem;
+  color: #2b6cb0;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+p {
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+}
+em {
+  font-style: italic;
+  color: #4a5568;
+}
+ul, ol {
+  margin-bottom: 1.5rem;
+  padding-left: 2rem;
+}
+li {
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+pre {
+  background-color: #1a202c;
+  color: #e2e8f0;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+}
+code {
+  font-family: 'Fira Code', monospace;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1.5rem;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+th, td {
+  padding: 0.75rem;
+  border: 1px solid #e2e8f0;
+  text-align: left;
+  font-size: 1rem;
+}
+th {
+  background-color: #2b6cb0;
+  color: #fff;
+}
+details {
+  margin-bottom: 1rem;
+  background-color: #edf2f7;
+  padding: 1rem;
+  border-radius: 0.5rem;
+}
+summary {
+  font-weight: bold;
+  cursor: pointer;
+  color: #2b6cb0;
+  font-size: 1.1rem;
+}
+.aeg-btn {
+  display: inline-block;
+  background-color: #2b6cb0;
+  color: #fff;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.3s;
+  margin-top: 1rem;
+}
+.aeg-btn:hover {
+  background-color: #2c5282;
+}
+@media (max-width: 600px) {
+  body {
+    padding: 1rem;
+  }
+  h1 {
+    font-size: 2rem;
+  }
+  h2 {
+    font-size: 1.5rem;
+  }
+  p, li {
+    font-size: 1rem;
+  }
+}
+</style>
+</head>
+<body>
 <h1>Ablations with Effect Sizes: Proving What Moves the Needle</h1>
 <p><em>By Gwylym Owen — 26–38 min read</em></p>
 
-<h2>Executive Summary</h2>
-<p>Ablations separate signal from noise. AethergenPlatform reports <strong>effect sizes</strong> with confidence intervals so teams can see which features, recipes, or thresholds <em>actually</em> improve outcomes—at the operating points that matter.</p>
+<p>Picture this: you’re building an AI model to catch payment fraud, optimize a factory line, or predict patient outcomes. You tweak a feature, adjust a threshold, and—bam!—the model’s performance shifts. But <em>how much</em> does it shift, and is it worth the effort? That’s where <strong>ablations with effect sizes</strong> come in, and at Auspexi, we’ve made this the heartbeat of our Aethergen Platform. I’m Gwylym Owen, and I’m here to walk you through how we use ablations to separate the signal from the noise, giving you clear, evidence-backed answers on what <em>actually</em> improves your AI outcomes. Buckle up—this isn’t your average tech jargon fest; it’s a journey into making AI decisions that stick, with a dash of real-world grit and a whole lot of data magic.</p>
 
-<h2>Why Effect Sizes</h2>
+<h2>Executive Summary</h2>
+<p>Ablations are like a chef tasting the soup to figure out which ingredient makes it pop. On the Aethergen Platform, we run ablations to test what features, recipes, or settings move the needle for your AI models—whether it’s catching more fraud or boosting production efficiency. But we don’t stop at vague “it works better” claims. We report <strong>effect sizes</strong> (how big the change is) with <strong>confidence intervals</strong> (how sure we are), so your team knows exactly what’s driving results at the <strong>operating points</strong> (OPs) that matter—like catching fraud at a 1% false positive rate (FPR). This means procurement teams, analysts, and execs can see the <em>real</em> impact, backed by evidence, not just hype. It’s how we ensure your AI investments pay off, every time.</p>
+
+<h2>Why Effect Sizes?</h2>
+<p>Let’s get real: stats can lie. A tiny p-value might scream “significant!” but not tell you if the change is worth the cost. That’s why we focus on <strong>effect sizes</strong>—the actual magnitude of improvement, like a 4% boost in fraud detection accuracy. Pair that with <strong>confidence intervals (CIs)</strong>, which show the range of that boost (say, 3.3% to 5%), and you’ve got a clear picture of what’s reliable. Why does this matter? Because your team—whether it’s procurement crunching budgets or analysts setting thresholds—needs to know the <em>cost-benefit trade-off</em> at specific operating points, like sticking to a strict 1% FPR to avoid annoying customers. Plus, we provide <strong>reproducible deltas</strong> (changes) with pinned seeds and configs, so your results hold up under scrutiny. No smoke and mirrors, just hard evidence linked to plots and configs on <a href="https://auspexi.com/evidence">auspexi.com/evidence</a>.</p>
 <ul>
-  <li>P‑values alone mislead; buyers need magnitude and uncertainty.</li>
-  <li>Decision‑making needs cost/benefit at operating points.</li>
-  <li>Procurement needs reproducible deltas with seeds/configs.</li>
- </ul>
+<li>P-values alone mislead: They tell you <em>if</em> something works, not <em>how much</em>. Buyers need magnitude and certainty to justify spend.</li>
+<li>Decision-making needs cost/benefit: At your chosen OP, effect sizes show what’s worth deploying.</li>
+<li>Procurement loves reproducibility: We pin seeds and configs for consistent, auditable results.</li>
+</ul>
 
 <h2>Design</h2>
+<p>So, how do we run these ablations? It’s like tuning a racecar—one tweak at a time, or a full factorial design if we’re feeling fancy. We start by <strong>freezing a base configuration</strong>—think of it as your model’s default recipe, like a trusty lasagna. Then, we define the <strong>operating point</strong>, say, a 1% FPR where your fraud detector flags suspicious transactions without spamming alerts. We vary one factor—like adding a new feature (e.g., device graph motifs) or tweaking a threshold—and measure the impact. To make sure it’s not a fluke, we <strong>repeat with different seeds</strong> (random starting points) and compute CIs to show how stable the results are. It’s methodical but not boring—think of it as a treasure hunt for the features that make your AI shine.</p>
 <ul>
-  <li>Define base configuration and operating point.</li>
-  <li>Vary one factor at a time or use factorial design.</li>
-  <li>Repeat with different seeds; compute CIs.</li>
- </ul>
+<li>Define base configuration and OP: Lock in your starting model and decision point (e.g., 1% FPR).</li>
+<li>Vary one factor or use factorial design: Test one change or multiple combos for deeper insights.</li>
+<li>Repeat with seeds; compute CIs: Run multiple trials to ensure results are rock-solid.</li>
+</ul>
 
 <h2>Reporting</h2>
+<p>When we report results, we don’t just throw numbers at you. We give you <strong>effect sizes</strong> (e.g., +4.1% utility at 1% FPR) with CIs (e.g., +3.3% to +5%) so you know the range of impact. We break it down by <strong>segments</strong>—like regions (NA, EU, APAC)—to show how stable the change is across contexts. Plus, every result links to <strong>evidence bundles</strong> with plots and configs, so your procurement team can dig into the details. It’s like handing you a map with X marking the spot—clear, transparent, and ready for action.</p>
 <ul>
-  <li>Effect size (Δ utility@OP) with CI.</li>
-  <li>Segment deltas; robustness implications.</li>
-  <li>Evidence links to plots and configs.</li>
- </ul>
+<li>Effect size (Δ utility@OP) with CI: Shows the change and its reliability.</li>
+<li>Segment deltas; robustness implications: Reveals how results hold across regions or use cases.</li>
+<li>Evidence links: Plots and configs at <a href="https://auspexi.com/evidence">auspexi.com/evidence</a> for full transparency.</li>
+</ul>
 
 <h2>Example Table</h2>
-<pre>
-factor, delta@1%FPR, ci_low, ci_high, note
-add_graph_motifs, +0.041, +0.033, +0.050, significant, keep
-remove_amount_residuals, -0.012, -0.019, -0.006, harmful, revert
-threshold+0.01, +0.004, -0.001, +0.009, marginal, review capacity
-</pre>
+<p>Here’s a peek at what you get:</p>
+<table>
+<tr>
+  <th>factor</th>
+  <th>delta@1%FPR</th>
+  <th>ci_low</th>
+  <th>ci_high</th>
+  <th>note</th>
+</tr>
+<tr>
+  <td>add_graph_motifs</td>
+  <td>+0.041</td>
+  <td>+0.033</td>
+  <td>+0.050</td>
+  <td>significant, keep</td>
+</tr>
+<tr>
+  <td>remove_amount_residuals</td>
+  <td>-0.012</td>
+  <td>-0.019</td>
+  <td>-0.006</td>
+  <td>harmful, revert</td>
+</tr>
+<tr>
+  <td>threshold+0.01</td>
+  <td>+0.004</td>
+  <td>-0.001</td>
+  <td>+0.009</td>
+  <td>marginal, review capacity</td>
+</tr>
+</table>
+<p>This table tells a story: adding device graph motifs (patterns in user-device connections) boosts fraud detection by 4.1% at 1% FPR, with a solid CI (3.3–5%). Removing transaction amount residuals? Bad move—hurts performance by 1.2%. Tweaking the threshold? Meh, it’s marginal, so we’d check if compute capacity allows it. This isn’t just data; it’s a decision roadmap.</p>
 
 <h2>Visuals</h2>
+<p>Numbers are great, but visuals make it click. We use <strong>forest plots</strong> to show effect sizes with 95% CI bars—like a bar chart with error bars, making it easy to spot winners and losers. <strong>Trade-off curves</strong> show how performance shifts if you tweak the OP (e.g., 0.99% to 1.01% FPR). And <strong>segment heatmaps</strong> highlight stability across regions or customer types, so you know your model won’t flop in APAC. These visuals live in our evidence bundles, making your case to stakeholders a breeze.</p>
 <ul>
-  <li>Forest plots of effect sizes with CIs.</li>
-  <li>Trade‑off curves at neighboring thresholds.</li>
-  <li>Segment heatmaps for stability impacts.</li>
- </ul>
+<li>Forest plots: Effect sizes with CIs for each factor, clear as day.</li>
+<li>Trade-off curves: Show performance around your OP, like ±0.02 FPR.</li>
+<li>Segment heatmaps: Visualize stability across regions or use cases.</li>
+</ul>
 
 <h2>Governance</h2>
+<p>At Auspexi, we don’t just build models—we make sure they’re ready for the real world. Our <strong>promotion gates</strong> require ablation checks to ensure no change goes live without proven impact. Every tweak gets a <strong>change-log entry</strong> with an effect size ID, so you can track what’s working. If a deployed change starts drifting (negative deltas beyond tolerance), we’ve got <strong>rollback triggers</strong> to pull it back. It’s like having a safety net for your AI, ensuring it’s always delivering value.</p>
 <ul>
-  <li>Promotion gates include ablation checks.</li>
-  <li>Change‑logs reference effect size IDs.</li>
-  <li>Rollback if negative deltas exceed tolerance.</li>
- </ul>
+<li>Promotion gates: No go-live without ablation proof.</li>
+<li>Change-logs: Track effect size IDs for every tweak.</li>
+<li>Rollback triggers: Revert if negative deltas get out of hand.</li>
+</ul>
 
 <h2>Case Study</h2>
-<p>In a payments detector, adding device graph motifs delivered +4.1% utility@1%FPR (CI +3.3–5.0%). Removing amount residuals hurt −1.2%. The forest plot and evidence bundle convinced procurement to approve the change with clear impact.</p>
+<p>Let’s talk real-world impact. In a payments fraud detector, we ran ablations to test new features. Adding <strong>device graph motifs</strong> (tracking how devices connect) gave a +4.1% utility boost at 1% FPR, with a CI of +3.3% to +5%. That’s a game-changer—fewer missed frauds without flooding analysts with alerts. But removing <strong>amount residuals</strong> (transaction amount patterns)? Disaster—performance dropped by 1.2%. Our forest plot and evidence bundle (<a href="https://auspexi.com/evidence">auspexi.com/evidence</a>) showed procurement the clear win, greenlighting the change. This is how we turn data into dollars, one ablation at a time.</p>
 
 <h2>FAQ</h2>
 <details>
-  <summary>Do we need thousands of runs?</summary>
-  <p>No—enough to bound uncertainty; we target practical CIs around OP.</p>
- </details>
+<summary>Do we need thousands of runs?</summary>
+<p>No way—only enough to keep uncertainty tight. We target practical CIs around your OP, so you get reliable results without burning compute.</p>
+</details>
 <details>
-  <summary>Can we combine factors?</summary>
-  <p>Yes—use factorial designs and interaction terms; report per‑factor and joint effects.</p>
- </details>
+<summary>Can we combine factors?</summary>
+<p>Absolutely! We use factorial designs to test combos and report both individual and joint effects, so you know how factors play together.</p>
+</details>
+<details>
+<summary>Why not just report AUC?</summary>
+<p>AUC’s great for academics, but buyers work with fixed budgets. Effect sizes at your OP (like 1% FPR) map directly to real-world wins, like fewer fraud losses.</p>
+</details>
+<details>
+<summary>How do we pick ranges?</summary>
+<p>We start with domain knowledge and safety bounds, like what’s worked in fraud or manufacturing. We only expand if the gates clear.</p>
+</details>
+<details>
+<summary>What if factors interact?</summary>
+<p>We’ve got you—factorial designs catch interactions, and we report them holistically so you make smart, big-picture decisions.</p>
+</details>
 
 <h2>Glossary</h2>
 <ul>
-  <li><strong>Effect size</strong>: magnitude of change in KPI.</li>
-  <li><strong>CI</strong>: confidence interval for the effect.</li>
-  <li><strong>OP</strong>: operating point—where decisions are made.</li>
- </ul>
+<li><strong>Effect size</strong>: The actual change in your key metric (e.g., +4% accuracy).</li>
+<li><strong>CI</strong>: Confidence interval, showing how certain we are (e.g., 3–5%).</li>
+<li><strong>OP</strong>: Operating point, where you make decisions (e.g., 1% FPR for fraud alerts).</li>
+</ul>
 
 <h2>Checklist</h2>
 <ul>
-  <li>Base config frozen; OP defined.</li>
-  <li>Factors and ranges listed.</li>
-  <li>Replications run; CIs computed.</li>
-  <li>Evidence plotted; decisions recorded.</li>
- </ul>
-
-<p><a class="aeg-btn" href="/contact">Contact Sales →</a></p>
-
+<li>Base config frozen; OP defined: Lock your starting point and decision threshold.</li>
+<li>Factors and ranges listed: Know what you’re testing, like features or thresholds.</li>
+<li>Replications run; CIs computed: Get enough runs for solid results.</li>
+<li>Evidence plotted; decisions recorded: Visuals and notes ready for stakeholders.</li>
+</ul>
 
 <h2>Methodology Details</h2>
+<p>Running ablations is like baking a cake—you need a recipe and precision. We <strong>freeze the base pipeline</strong> (your model’s starting point) and pin seeds/configs for consistency. We define the <strong>OP</strong> based on your budget or analyst capacity—say, catching fraud without overwhelming your team. We list <strong>factors</strong> (features, recipes, thresholds) and their ranges, then run <strong>replications</strong> to compute deltas and CIs. It’s rigorous but practical, ensuring your AI tweaks are bulletproof.</p>
 <ul>
-  <li>Freeze base pipeline; pin seeds and configs.</li>
-  <li>Define OP; align to budget or analyst capacity.</li>
-  <li>List factors (features, recipes, thresholds) with ranges.</li>
-  <li>Run replications; compute Δ and CIs.</li>
+<li>Freeze base pipeline: Pin seeds and configs for consistency.</li>
+<li>Define OP: Align to your budget or capacity needs.</li>
+<li>List factors and ranges: Features, recipes, thresholds to test.</li>
+<li>Run replications: Compute deltas and CIs for reliability.</li>
 </ul>
 
 <h2>Bootstrap Sketch</h2>
-<pre>
+<p>Here’s a peek under the hood (pseudocode style):</p>
+<pre><code>
 # pseudocode
 for b in 1..B:
-  sample = resample(eval_rows)
-  metric_b = utility_at_op(sample)
-  store(metric_b)
+sample = resample(eval_rows)
+metric_b = utility_at_op(sample)
+store(metric_b)
 ci = percentile(metric_b, [2.5, 97.5])
-</pre>
+</code></pre>
+<p>This “bootstrap” method resamples your data B times, measures performance at your OP, and calculates CIs to show how stable your results are. It’s like shaking a tree to see which apples fall—only the strong ones stick.</p>
 
 <h2>Power Considerations</h2>
+<p>To make ablations work, we need enough runs (<strong>B</strong>) for stable CIs—think 100–500, not thousands, to keep it practical. The <strong>evaluation set</strong> must cover key segments (e.g., regions, customer types) to avoid blind spots. For rare events (like major fraud), we account for <strong>variance inflation</strong> to ensure our CIs aren’t too optimistic. It’s all about balancing precision with practicality.</p>
 <ul>
-  <li>Choose B large enough for stable CIs.</li>
-  <li>Ensure evaluation set covers key segments.</li>
-  <li>Consider variance inflation for rare events.</li>
+<li>Choose B for stable CIs: Enough runs to trust the results.</li>
+<li>Cover key segments: Ensure your data reflects real-world diversity.</li>
+<li>Handle rare events: Adjust for high-variance cases like fraud.</li>
 </ul>
 
 <h2>Interaction Effects</h2>
+<p>Sometimes, factors team up—like adding a feature <em>and</em> tweaking a threshold. We use <strong>factorial designs</strong> to test <strong>two-way interactions</strong>, reporting both main effects (e.g., +4% from one feature) and joint effects (e.g., +5% when combined). This helps you make holistic decisions, not just one-off tweaks.</p>
 <ul>
-  <li>Two‑way interactions between top factors.</li>
-  <li>Report both main and interaction Δ.</li>
+<li>Two-way interactions: Test how factors play together.</li>
+<li>Report main and interaction Δ: Clear insights for complex changes.</li>
 </ul>
 
 <h2>Segment Reporting</h2>
-<pre>
-segment, delta@1%FPR, ci_low, ci_high
-region.NA, +0.036, +0.028, +0.044
-region.EU, +0.031, +0.024, +0.039
-region.APAC, +0.029, +0.022, +0.036
-</pre>
+<p>Not all regions or use cases behave the same. Here’s how a fraud detector performed across regions:</p>
+<table>
+<tr>
+  <th>segment</th>
+  <th>delta@1%FPR</th>
+  <th>ci_low</th>
+  <th>ci_high</th>
+</tr>
+<tr>
+  <td>region.NA</td>
+  <td>+0.036</td>
+  <td>+0.028</td>
+  <td>+0.044</td>
+</tr>
+<tr>
+  <td>region.EU</td>
+  <td>+0.031</td>
+  <td>+0.024</td>
+  <td>+0.039</td>
+</tr>
+<tr>
+  <td>region.APAC</td>
+  <td>+0.029</td>
+  <td>+0.022</td>
+  <td>+0.036</td>
+</tr>
+</table>
+<p>North America saw a 3.6% boost, Europe 3.1%, and APAC 2.9%—all solid, with tight CIs. This shows your model’s stable across the globe, giving procurement confidence to sign off.</p>
 
 <h2>Plots (Described)</h2>
+<p>Our visuals make the data sing:</p>
 <ul>
-  <li>Forest plot per factor with 95% CI bars.</li>
-  <li>Heatmap of segment deltas by factor.</li>
-  <li>OP sweep curves ±0.02 around target.</li>
+<li>Forest plot per factor: Bars show effect sizes with 95% CI error bars—easy to spot what’s working.</li>
+<li>Heatmap of segment deltas: Color-coded stability across regions or customer types.</li>
+<li>OP sweep curves: Performance ±0.02 around your target FPR, so you see trade-offs.</li>
 </ul>
 
 <h2>Reporting Template</h2>
-<pre>
+<p>Here’s how we wrap it up:</p>
+<pre><code>
 Ablation Report v2025.01
 Base: model X, OP=1%FPR
-Factors tested: ...
+Factors tested: add_graph_motifs, remove_amount_residuals, threshold+0.01
 Top positive: add_graph_motifs (+4.1% [3.3,5.0])
 Top negative: remove_amount_residuals (−1.2% [−1.9, −0.6])
 Decisions: keep motifs; revert residuals; review threshold.
-</pre>
+</code></pre>
 
 <h2>Governance Mapping</h2>
+<p>We’ve got your back with governance:</p>
 <ul>
-  <li>Promotion requires no negative Δ beyond tolerance.</li>
-  <li>Change‑logs reference factor IDs and decisions.</li>
-  <li>Rollback triggers documented if Δ drifts post‑deploy.</li>
+<li>Promotion requires no negative Δ: No harmful changes go live.</li>
+<li>Change-logs reference factor IDs: Track every tweak’s impact.</li>
+<li>Rollback triggers: Pull back if post-deploy deltas go south.</li>
 </ul>
 
-<h2>SOP</h2>
+<h2>SOP (Standard Operating Procedure)</h2>
+<p>Here’s the playbook:</p>
 <ol>
-  <li>Define OP and base.</li>
-  <li>Run ablations (B runs each).</li>
-  <li>Compute CIs; generate plots; draft decisions.</li>
-  <li>Review with QA; attach to evidence; promote or iterate.</li>
+<li>Define OP and base: Set your threshold and starting model.</li>
+<li>Run ablations: Test B runs per factor.</li>
+<li>Compute CIs; generate plots: Visualize and draft decisions.</li>
+<li>Review with QA: Attach to evidence, promote, or iterate.</li>
 </ol>
 
-<h2>Extended FAQ</h2>
-<details>
-  <summary>Why not just report AUC?</summary>
-  <p>Because buyers operate at fixed budgets. Effect sizes at OP map to real work.</p>
- </details>
-<details>
-  <summary>How do we pick ranges?</summary>
-  <p>Start from domain knowledge and safety bounds; expand only if gates pass.</p>
- </details>
-<details>
-  <summary>What if factors interact?</summary>
-  <p>Run factorial designs and report interactions; decide holistically.</p>
- </details>
-
 <h2>Appendix: CSV Schema</h2>
-<pre>
+<pre><code>
 factor:string,delta:float,ci_low:float,ci_high:float,note:string
-</pre>
+</code></pre>
 
 <h2>Appendix: JSON Result</h2>
-<pre>
+<pre><code>
 {
-  "base": "model-X@op1%",
-  "factors": ["add_graph_motifs", "remove_amount_residuals"],
-  "results": [
-    {"factor": "add_graph_motifs", "delta": 0.041, "ci": [0.033,0.050]},
-    {"factor": "remove_amount_residuals", "delta": -0.012, "ci": [-0.019,-0.006]}
-  ]
+"base": "model-X@op1%",
+"factors": ["add_graph_motifs", "remove_amount_residuals"],
+"results": [
+{"factor": "add_graph_motifs", "delta": 0.041, "ci": [0.033,0.050]},
+{"factor": "remove_amount_residuals", "delta": -0.012, "ci": [-0.019,-0.006]}
+]
 }
-</pre>
+</code></pre>
 
 <h2>Appendix: Threshold Sweep</h2>
-<pre>
+<pre><code>
 thresh,utility
 0.71,0.742
 0.72,0.751
 0.73,0.758
 0.74,0.761
-</pre>
+</code></pre>
+<p>This shows how tweaking the threshold around 1% FPR impacts performance—small changes, big insights.</p>
 
 <h2>Closing</h2>
-<p>Ablations with effect sizes keep teams honest. They turn tweaks into decisions—grounded in evidence, resilient across segments, and understood by risk and procurement. That’s how AethergenPlatform proves progress, not just claims.</p>
+<p>Ablations with effect sizes are our secret weapon at Auspexi. They’re not just stats—they’re your roadmap to better AI, whether you’re catching fraud, optimizing factories, or saving lives in healthcare. By focusing on what <em>actually</em> moves the needle, we keep your team honest, your decisions grounded, and your results resilient. Ready to see ablations in action? Hit up our sales team at <a class="aeg-btn" href="https://auspexi.com/contact">auspexi.com/contact</a> and let’s make your AI unstoppable. 🚀</p>
+
+<p><a class="aeg-btn" href="https://auspexi.com/contact">Contact Sales →</a></p>
+</body>
+</html>
 
 

@@ -124,16 +124,27 @@ const blogPostsData = {
 
 const BlogPost = () => {
   const { slug } = useParams();
-  const [remote, setRemote] = React.useState<any | null>(null);
+  const [post, setPost] = React.useState<any | null>((blogPostsData as any)[slug as keyof typeof blogPostsData] || null);
   React.useEffect(() => {
     (async () => {
       try {
-        const res = await fetch(`/.netlify/functions/blog-get?slug=${encodeURIComponent(slug || '')}`);
-        if (res.ok) setRemote(await res.json());
+        const rh = await fetch(`/blog-html/${encodeURIComponent(slug || '')}.html`).catch(()=>null as any)
+        if (rh && rh.ok) {
+          const htmlRaw = await rh.text()
+          const h1 = htmlRaw.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i)
+          const title = h1 ? h1[1].replace(/<[^>]*>/g,'').trim() : String(slug || '').replace(/-/g,' ')
+          const p1m = htmlRaw.match(/<p[^>]*>([\s\S]*?)<\/p>/i)
+          const excerpt = p1m ? p1m[1].replace(/<[^>]*>/g,'').trim().slice(0, 280) : ''
+          const wordCount = String(htmlRaw).replace(/<[^>]+>/g,' ').trim().split(/\s+/).filter(Boolean).length
+          const readTime = `${Math.max(2, Math.round(wordCount/200))} min read`
+          setPost({ slug, title, excerpt, content_html: htmlRaw, author: 'Gwylym Owen', category: 'Blog', readTime, published_at: new Date().toISOString() })
+          return
+        }
       } catch {}
+      // fallback to curated map
+      setPost((blogPostsData as any)[slug as keyof typeof blogPostsData] || null)
     })();
   }, [slug]);
-  const post = remote || (blogPostsData as any)[slug as keyof typeof blogPostsData];
 
   if (!post) {
     return (
@@ -161,15 +172,17 @@ const BlogPost = () => {
           </Link>
           
           <div className="flex items-center text-sm text-slate-500 mb-4">
-            <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-medium mr-4">
-              {post.category}
-            </span>
+            {post.category ? (
+              <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-medium mr-4">
+                {post.category}
+              </span>
+            ) : null}
             <User className="h-4 w-4 mr-2" />
             <span className="mr-4">{post.author}</span>
             <Calendar className="h-4 w-4 mr-2" />
             <span className="mr-4">{(post as any).date || ((post as any).published_at ? new Date((post as any).published_at).toDateString() : '')}</span>
             <Clock className="h-4 w-4 mr-2" />
-            <span>{post.readTime}</span>
+            <span>{post.readTime || ''}</span>
           </div>
         </div>
       </header>
@@ -200,7 +213,7 @@ const BlogPost = () => {
             }
           `}</style>
           <div 
-            dangerouslySetInnerHTML={{ __html: (post as any).content || (post as any).content_html }} 
+            dangerouslySetInnerHTML={{ __html: (post as any).content_html || (post as any).content || '' }} 
             className="space-y-8"
             style={{
               '--tw-prose-body': '#1e293b',

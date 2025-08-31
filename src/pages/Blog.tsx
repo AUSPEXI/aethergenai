@@ -444,6 +444,17 @@ const Blog = () => {
       slug: 'air-gapped-ai-packaging-sbom-qr-manifests'
     },
     {
+      title: '🚗 Automotive Quality at the Edge: Offline Vision with Verifiable Results',
+      excerpt: 'Golden run protocols, station context constraints, and evidence-led quality control for automotive manufacturing with offline verification and rework integration.',
+      author: 'Gwylym Owen',
+      date: 'January 24, 2025',
+      readTime: '6 min read',
+      category: 'Technology',
+      icon: Shield,
+      published: true,
+      slug: 'automotive-quality-edge-offline-vision-evidence'
+    },
+    {
       title: '🚀 Shipping AethergenPlatform: Evidence‑Led, Privacy‑Preserving AI Training',
       excerpt: 'A modular pipeline that generates high‑fidelity synthetic data, designs schemas, and trains models—Databricks‑ready and enterprise‑focused.',
       author: 'Gwylym Owen',

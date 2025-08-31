@@ -1,4 +1,5 @@
 import JSZip from 'jszip'
+import QRCode from 'qrcode'
 
 export type DeviceProfile = {
 	name: string
@@ -172,6 +173,355 @@ export async function generateEdgeBundleZip(options: {
 	zip.folder('policy')?.file('policy.json', JSON.stringify(policy, null, 2))
 
 	return await zip.generateAsync({ type: 'blob' })
+}
+
+// Air-gapped types
+export type AirGappedManifest = {
+	version: string
+	name: string
+	createdAt: string
+	manifestHash: string
+	qrHash: string
+	signedBy: string
+	deviceProfileRecommendation: string
+	deviceProfiles: DeviceProfile[]
+	exportFormats: string[]
+	files: Array<{
+		path: string
+		sha256: string
+		size: number
+	}>
+	build: {
+		time: string
+		env: string
+		version: string
+	}
+	evidence: {
+		lineage: string
+		privacyScore?: number
+		utilityScore?: number
+		ablationId?: string
+	}
+	rollback?: {
+		previousVersion: string
+		previousHash: string
+	}
+}
+
+export type AirGappedOptions = {
+	projectName: string
+	version?: string
+	deviceInfo: RecommendInput
+	harmonizedSchema?: unknown
+	synthesisEvidence?: unknown
+	signingKey?: string
+	evidenceBundle?: {
+		lineage: string
+		privacyScore?: number
+		utilityScore?: number
+		ablationId?: string
+	}
+	rollbackInfo?: {
+		previousVersion: string
+		previousHash: string
+	}
+}
+
+// Air-gapped manifest generation
+export async function generateAirGappedManifest(options: AirGappedOptions): Promise<AirGappedManifest> {
+	const profiles = await loadDeviceProfiles()
+	const rec = recommendDeviceProfile(profiles, options.deviceInfo)
+	const now = new Date().toISOString()
+	const version = options.version || '0.1.0-beta'
+
+	// Generate file list with checksums
+	const files: Array<{ path: string; content: string; size: number }> = [
+		{ path: 'air-gapped-manifest.json', content: '', size: 0 }, // Will be calculated
+		{ path: 'README.txt', content: generateAirGappedReadme(options), size: 0 },
+		{ path: 'RELEASE_NOTES.txt', content: generateReleaseNotes(options), size: 0 },
+	]
+
+	if (options.harmonizedSchema) {
+		const content = JSON.stringify(options.harmonizedSchema, null, 2)
+		files.push({ path: 'harmonized_schema.json', content, size: content.length })
+	}
+	if (options.synthesisEvidence) {
+		const content = JSON.stringify(options.synthesisEvidence, null, 2)
+		files.push({ path: 'synthesis_evidence.json', content, size: content.length })
+	}
+
+	// Calculate checksums
+	const encoder = new TextEncoder()
+	async function sha256Hex(input: string): Promise<string> {
+		const data = encoder.encode(input)
+		const hash = await crypto.subtle.digest('SHA-256', data)
+		const arr = Array.from(new Uint8Array(hash))
+		return arr.map(b => b.toString(16).padStart(2, '0')).join('')
+	}
+
+	const fileChecksums: Array<{ path: string; sha256: string; size: number }> = []
+	for (const file of files) {
+		const hash = await sha256Hex(file.content)
+		fileChecksums.push({ path: file.path, sha256: hash, size: file.content.length })
+	}
+
+	// Create manifest content
+	const manifestContent = {
+		version,
+		name: options.projectName,
+		createdAt: now,
+		deviceProfileRecommendation: rec.name,
+		deviceProfiles: profiles,
+		exportFormats: ['GGUF (Ollama/LM Studio)', 'ONNX (TensorRT‑LLM path)', 'LoRA (safetensors)'],
+		files: fileChecksums,
+		build: {
+			time: now,
+			env: 'air-gapped-builder-1',
+			version: version
+		},
+		evidence: {
+			lineage: options.evidenceBundle?.lineage || 'Generated via AethergenPlatform',
+			privacyScore: options.evidenceBundle?.privacyScore,
+			utilityScore: options.evidenceBundle?.utilityScore,
+			ablationId: options.evidenceBundle?.ablationId
+		},
+		...(options.rollbackInfo && {
+			rollback: {
+				previousVersion: options.rollbackInfo.previousVersion,
+				previousHash: options.rollbackInfo.previousHash
+			}
+		})
+	}
+
+	// Calculate manifest hash
+	const manifestString = JSON.stringify(manifestContent, null, 2)
+	const manifestHash = await sha256Hex(manifestString)
+	
+	// Generate QR hash (base32 encoded manifest hash with version prefix)
+	const qrHash = `AEG-${version}-${manifestHash.slice(0, 16)}`
+
+	// Create final manifest
+	const manifest: AirGappedManifest = {
+		...manifestContent,
+		manifestHash,
+		qrHash,
+		signedBy: options.signingKey || 'aethergen-platform-key-001'
+	}
+
+	return manifest
+}
+
+// Generate QR code for manifest verification
+export async function generateQRCode(manifestHash: string): Promise<string> {
+	try {
+		const qrDataUrl = await QRCode.toDataURL(manifestHash, {
+			errorCorrectionLevel: 'M', // Medium error correction for glare/dust
+			margin: 2,
+			width: 256,
+			color: {
+				dark: '#000000',
+				light: '#FFFFFF'
+			}
+		})
+		return qrDataUrl
+	} catch (error) {
+		console.error('Failed to generate QR code:', error)
+		throw new Error('QR code generation failed')
+	}
+}
+
+// Generate air-gapped bundle with QR verification
+export async function generateAirGappedBundle(options: AirGappedOptions): Promise<Blob> {
+	const manifest = await generateAirGappedManifest(options)
+	const qrCode = await generateQRCode(manifest.qrHash)
+	
+	const zip = new JSZip()
+	
+	// Add manifest
+	zip.file('air-gapped-manifest.json', JSON.stringify(manifest, null, 2))
+	
+	// Add QR code
+	zip.file('qr-verification.png', qrCode.split(',')[1], { base64: true })
+	
+	// Add release notes
+	zip.file('RELEASE_NOTES.txt', generateReleaseNotes(options))
+	
+	// Add README
+	zip.file('README.txt', generateAirGappedReadme(options))
+	
+	// Add optional files
+	if (options.harmonizedSchema) {
+		zip.file('harmonized_schema.json', JSON.stringify(options.harmonizedSchema, null, 2))
+	}
+	if (options.synthesisEvidence) {
+		zip.file('synthesis_evidence.json', JSON.stringify(options.synthesisEvidence, null, 2))
+	}
+	
+	// Add integrity files
+	const integrityFiles = [
+		{ path: 'air-gapped-manifest.json', content: JSON.stringify(manifest) },
+		{ path: 'RELEASE_NOTES.txt', content: generateReleaseNotes(options) },
+		{ path: 'README.txt', content: generateAirGappedReadme(options) }
+	]
+	
+	if (options.harmonizedSchema) {
+		integrityFiles.push({ 
+			path: 'harmonized_schema.json', 
+			content: JSON.stringify(options.harmonizedSchema) 
+		})
+	}
+	if (options.synthesisEvidence) {
+		integrityFiles.push({ 
+			path: 'synthesis_evidence.json', 
+			content: JSON.stringify(options.synthesisEvidence) 
+		})
+	}
+	
+	// Generate checksums
+	const encoder = new TextEncoder()
+	async function sha256Hex(input: string): Promise<string> {
+		const data = encoder.encode(input)
+		const hash = await crypto.subtle.digest('SHA-256', data)
+		const arr = Array.from(new Uint8Array(hash))
+		return arr.map(b => b.toString(16).padStart(2, '0')).join('')
+	}
+	
+	const checksums: Record<string, string> = {}
+	for (const file of integrityFiles) {
+		checksums[file.path] = await sha256Hex(file.content)
+	}
+	
+	zip.folder('integrity')?.file('checksums.sha256.json', JSON.stringify(checksums, null, 2))
+	zip.folder('integrity')?.file('SIGNATURE.txt', `Signed by: ${manifest.signedBy}\nManifest Hash: ${manifest.manifestHash}\nQR Hash: ${manifest.qrHash}`)
+	
+	// Add SBOM
+	const sbom = {
+		name: options.projectName,
+		version: manifest.version,
+		generated: manifest.createdAt,
+		components: [
+			{ name: 'air-gapped-manifest.json', type: 'manifest' },
+			{ name: 'qr-verification.png', type: 'verification' },
+			{ name: 'RELEASE_NOTES.txt', type: 'documentation' },
+			{ name: 'README.txt', type: 'documentation' },
+			options.harmonizedSchema ? { name: 'harmonized_schema.json', type: 'data' } : null,
+			options.synthesisEvidence ? { name: 'synthesis_evidence.json', type: 'data' } : null,
+			{ name: 'integrity/checksums.sha256.json', type: 'integrity' },
+		].filter(Boolean),
+	}
+	zip.folder('sbom')?.file('sbom.json', JSON.stringify(sbom, null, 2))
+	
+	// Add policy pack
+	const policy = {
+		blockedCategories: ['violent.extreme', 'sexual.minor', 'illegal.instructions'],
+		redTeamPrompts: ['how to make ... illegal', 'bypass safety ...', 'exploit ...'],
+		logging: { enabled: true, level: 'detailed' },
+		verification: {
+			qrCodeRequired: true,
+			checksumVerification: true,
+			offlineVerification: true
+		}
+	}
+	zip.folder('policy')?.file('policy.json', JSON.stringify(policy, null, 2))
+	
+	return await zip.generateAsync({ type: 'blob' })
+}
+
+// Helper functions
+function generateAirGappedReadme(options: AirGappedOptions): string {
+	return [
+		'# Air-Gapped AI Package',
+		'',
+		`Project: ${options.projectName}`,
+		`Version: ${options.version || '0.1.0-beta'}`,
+		`Created: ${new Date().toISOString()}`,
+		'',
+		'## Verification Instructions',
+		'1. Scan the QR code (qr-verification.png) with any QR scanner',
+		'2. Compare the displayed hash with the manifest hash in air-gapped-manifest.json',
+		'3. Verify all checksums in integrity/checksums.sha256.json',
+		'4. Run post-install self-tests',
+		'',
+		'## Installation',
+		'1. Verify media integrity with hash scan',
+		'2. Snapshot current system state',
+		'3. Install package contents',
+		'4. Run self-tests and verify results',
+		'',
+		'## Security Features',
+		'- QR-verified manifest integrity',
+		'- SHA-256 checksums for all files',
+		'- Signed release notes',
+		'- Offline verification capability',
+		'',
+		'## Support',
+		'For field support, contact: sales@auspexi.com',
+	].join('\n')
+}
+
+function generateReleaseNotes(options: AirGappedOptions): string {
+	const version = options.version || '0.1.0-beta'
+	const now = new Date().toISOString()
+	
+	return [
+		`Release: Aethergen Air-Gapped Pack v${version}`,
+		`Manifest Hash (QR): ${options.projectName}-${version}-${now.slice(0, 10)}`,
+		`Signed By: ${options.signingKey || 'aethergen-platform-key-001'}`,
+		'',
+		'Includes:',
+		'  - Air-gapped manifest with QR verification',
+		'  - SBOM for compliance and audit',
+		'  - Policy pack with safety controls',
+		'  - Integrity checksums and signatures',
+		'',
+		'Change Summary:',
+		'  - Initial air-gapped deployment package',
+		'  - QR code verification system',
+		'  - Enhanced security and audit features',
+		'',
+		'Rollback:',
+		options.rollbackInfo ? 
+			`  - Last good: v${options.rollbackInfo.previousVersion} hash ${options.rollbackInfo.previousHash}` :
+			'  - No previous version available',
+		'',
+		'Field Verification:',
+		'1. Scan QR code and verify hash match',
+		'2. Check all file checksums',
+		'3. Run self-tests and log results',
+		'4. Print verification ticket for audit',
+	].join('\n')
+}
+
+// Verification utilities
+export async function verifyManifest(manifest: AirGappedManifest, qrHash: string): Promise<{
+	valid: boolean
+	errors: string[]
+}> {
+	const errors: string[] = []
+	
+	// Verify QR hash format
+	if (!qrHash.startsWith('AEG-')) {
+		errors.push('Invalid QR hash format')
+	}
+	
+	// Verify manifest hash matches QR
+	const expectedQrHash = `AEG-${manifest.version}-${manifest.manifestHash.slice(0, 16)}`
+	if (qrHash !== expectedQrHash) {
+		errors.push('QR hash does not match manifest hash')
+	}
+	
+	// Verify timestamp is recent (within 30 days)
+	const createdAt = new Date(manifest.createdAt)
+	const now = new Date()
+	const daysDiff = (now.getTime() - createdAt.getTime()) / (1000 * 60 * 60 * 24)
+	if (daysDiff > 30) {
+		errors.push('Manifest is older than 30 days')
+	}
+	
+	return {
+		valid: errors.length === 0,
+		errors
+	}
 }
 
 

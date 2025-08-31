@@ -27,6 +27,9 @@ import AI from './pages/AI';
 import Whitepaper from './pages/Whitepaper';
 import Publisher from './pages/Publisher';
 import BlogManager from './pages/BlogManager';
+import { AirGappedDemo } from './pages/AirGappedDemo';
+import { AutomotiveDemo } from './pages/AutomotiveDemo';
+import { MarketplaceDemo } from './pages/MarketplaceDemo';
 
 import Footer from './components/Footer';
 
@@ -74,8 +77,11 @@ function RoutedApp() {
           <Route path="/resources/llm-benchmarks" element={<ResourcesLLMBenchmarks />} />
           <Route path="/resources/visibility-score" element={<ResourcesVisibilityScore />} />
           <Route path="/whitepaper" element={<Whitepaper />} />
-          <Route path="/publisher" element={<Publisher />} />
-          <Route path="/blog-manager" element={<BlogManager />} />
+                                  <Route path="/publisher" element={<Publisher />} />
+                        <Route path="/blog-manager" element={<BlogManager />} />
+                        <Route path="/air-gapped-demo" element={<AirGappedDemo />} />
+                        <Route path="/automotive-demo" element={<AutomotiveDemo />} />
+                        <Route path="/marketplace-demo" element={<MarketplaceDemo />} />
         </Routes>
       </div>
       {!hideChrome && <Footer />}

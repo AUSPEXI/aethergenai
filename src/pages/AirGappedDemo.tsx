@@ -1,0 +1,5 @@
+import React, { useState } from 'react'
+import { Download, QrCode, Shield, CheckCircle, FileText, Package } from 'lucide-react'
+import JSZip from 'jszip'
+import { generateAirGappedBundle, AirGappedOptions } from '../services/edgePackagingService'
+import { VerificationKiosk } from '../components/VerificationKiosk'

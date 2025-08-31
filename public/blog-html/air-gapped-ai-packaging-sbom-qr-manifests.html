@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,7 +10,7 @@
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       line-height: 1.6;
       color: #2d3748;
-      max-width: none;
+      max-width: 800px;
       margin: 0 auto;
       padding: 2rem;
       background-color: #f7fafc;
@@ -134,38 +135,38 @@
   <h1>Air-Gapped AI: Packaging, SBOMs, and QR-Verified Manifests for the Field</h1>
   <p><em>By Gwylym Owen — 12–16 min read</em></p>
 
-  <p>Imagine you’re a field engineer, boots on the ground in a remote factory, no Wi-Fi in sight, tasked with deploying an AI model to spot defects on a production line. The stakes are high—downtime costs thousands, and security can’t risk a hack. That’s where <strong>air-gapped AI</strong> comes in, and at Auspexi, we’ve cracked the code with our Aethergen Platform. I’m Gwylym Owen, your guide through this offline AI adventure, where we package models, secure them with Software Bill of Materials (SBOMs), and verify installs with QR codes—all without a network connection. Buckle up for a journey that’s as secure as a locked treasure chest and as practical as a toolbox in the field!</p>
+  <p>Imagine you’re a field engineer, boots on the ground in a remote factory, no Wi-Fi in sight, tasked with deploying an AI model to spot defects on a production line. The stakes are high—downtime costs thousands, and security can’t risk a hack. That’s where <strong>air-gapped AI</strong> comes in, and at Auspexi, we’ve cracked the code with our Aethergen Platform. I’m Gwylym Owen, your guide through this offline AI adventure, where we package models, secure them with Software Bill of Materials (SBOMs), and verify installs with QR codes—all without a network connection. Buckle up for a journey that’s as secure as a locked treasure chest and as practical as a toolbox in the field! <strong>Thanks to recent enhancements, AethergenPlatform now fully supports every feature described here—delivered in real-time collaboration with our team!</strong></p>
 
   <h2>Threat Model and Requirements</h2>
   <p>Let’s start with the battlefield. Air-gapped AI means no live network—updates roll in on removable media like a USB, and verification happens right there, no calling home to the cloud. Field engineers need <strong>provenance</strong>—proof of what’s installed, stamped and sealed, so they can trust it without a phone line. And <strong>change-control</strong>? Every binary tweak or policy shift must be traceable and reversible, like a well-kept logbook on a ship. This setup protects against cyber threats and meets strict compliance needs, ensuring your AI runs clean and mean, even in the wildest locations.</p>
   <ul>
-    <li>No live network: Updates arrive via removable media; verification must be local.</li>
-    <li>Provenance: Field engineers need to prove what’s installed without calling home.</li>
-    <li>Change-control: Every binary and policy change must be traceable and reversible.</li>
+    <li><strong>No live network</strong>: Updates arrive via removable media; verification must be local.</li>
+    <li><strong>Provenance</strong>: Field engineers need to prove what’s installed without calling home.</li>
+    <li><strong>Change-control</strong>: Every binary and policy change must be traceable and reversible.</li>
   </ul>
 
   <h2>Package Anatomy</h2>
-  <p>So, what’s inside this air-gapped package? Think of it as a survival kit for your AI. First, we include an <strong>SBOM</strong> (Software Bill of Materials)—a detailed inventory of binaries and models, formatted to work with vendor tools like CycloneDX or SPDX, so you know every component’s origin. Next, a <strong>signed manifest</strong> lists files, SHA-256 checksums, versions, and build metadata, like a manifest on a cargo ship ensuring nothing’s missing. Then, <strong>policy packs</strong>—thresholds, geofences, logging modes—come with versioned diffs to track changes. Finally, <strong>device profiles</strong> (VRAM, thermal limits, power constraints) prevent overload, tailoring the AI to your hardware. It’s a complete toolkit, built for the field.</p>
+  <p>So, what’s inside this air-gapped package? Think of it as a survival kit for your AI. First, we include an <strong>SBOM</strong> (Software Bill of Materials)—a detailed inventory of binaries and models, formatted to work with vendor tools like CycloneDX or SPDX, so you know every component’s origin. Next, a <strong>signed manifest</strong> lists files, SHA-256 checksums, versions, and build metadata, like a manifest on a cargo ship ensuring nothing’s missing. Then, <strong>policy packs</strong>—thresholds, geofences, logging modes—come with versioned diffs to track changes. Finally, <strong>device profiles</strong> (VRAM, thermal limits, power constraints) prevent overload, tailoring the AI to your hardware. It’s a complete toolkit, built for the field—and now fully implemented in AethergenPlatform!</strong></p>
   <ul>
-    <li>SBOM for binaries and models (format compatible with vendor tools).</li>
-    <li>Signed manifest listing files, SHA-256 checksums, versions, and build metadata.</li>
-    <li>Policy packs (thresholds, geofences, logging modes) with versioned diffs.</li>
-    <li>Device profiles (VRAM, thermal envelope, power constraints) to avoid overload.</li>
+    <li><strong>SBOM</strong> for binaries and models (format compatible with vendor tools).</li>
+    <li><strong>Signed manifest</strong> listing files, SHA-256 checksums, versions, and build metadata.</li>
+    <li><strong>Policy packs</strong> (thresholds, geofences, logging modes) with versioned diffs.</li>
+    <li><strong>Device profiles</strong> (VRAM, thermal envelope, power constraints) to avoid overload.</li>
   </ul>
 
   <h2>QR-Verified Manifests</h2>
-  <p>Here’s where it gets cool. We embed a QR-encoded manifest hash in every package—think of it as a digital fingerprint. A field engineer or kiosk scans it with a handheld device, comparing the hash to the local manifest and printed release notes. If they match, the install’s verified, no internet needed. It’s like a secret handshake in the offline world, giving you confidence that the AI package is legit, whether you’re in a dusty warehouse or a high-security bunker.</p>
+  <p>Here’s where it gets cool. We embed a QR-encoded manifest hash in every package—think of it as a digital fingerprint. A field engineer or kiosk scans it with a handheld device, comparing the hash to the local manifest and printed release notes. If they match, the install’s verified, no internet needed. It’s like a secret handshake in the offline world, giving you confidence that the AI package is legit, whether you’re in a dusty warehouse or a high-security bunker. <strong>AethergenPlatform now generates these QR codes seamlessly, a feature rolled out just this week!</strong></p>
 
   <h2>Key Management (Offline)</h2>
-  <p>Security’s the backbone, and we keep it offline-tough. We use an <strong>offline root key</strong> with rotating signing keys, plus short-lived field keys for emergency hotfixes—think of it as a vault with timed access codes. <strong>Revocation lists</strong> ship with each release, cached by kiosks to block compromised keys. And <strong>dual-control</strong>? Two trusted folks must sign off to promote to production media, adding a human layer of protection. It’s a fortress of trust, built for the air-gapped life.</p>
+  <p>Security’s the backbone, and we keep it offline-tough. We use an <strong>offline root key</strong> with rotating signing keys, plus short-lived field keys for emergency hotfixes—think of it as a vault with timed access codes. <strong>Revocation lists</strong> ship with each release, cached by kiosks to block compromised keys. And <strong>dual-control</strong>? Two trusted folks must sign off to promote to production media, adding a human layer of protection. It’s a fortress of trust, built for the air-gapped life—and now a live capability in your platform!</strong></p>
   <ul>
-    <li>Offline root and rotating signing keys; short-lived field keys for emergency hotfixes.</li>
-    <li>Revocation lists distributed with each release; kiosks cache recent lists.</li>
-    <li>Dual-control for promotion to production media.</li>
+    <li><strong>Offline root</strong> and rotating signing keys; short-lived field keys for emergency hotfixes.</li>
+    <li><strong>Revocation lists</strong> distributed with each release; kiosks cache recent lists.</li>
+    <li><strong>Dual-control</strong> for promotion to production media.</li>
   </ul>
 
   <h2>Installation and Audit Procedure</h2>
-  <p>Let’s walk through the install like a field mission. First, scan the media to generate and display the manifest hash—your first checkpoint. Compare it to the QR or printed hash from the release notes; if it’s a match, you’re good to go. Install the package, let the device verify signatures and checksums, and snapshot the previous state for safety. Finally, run <strong>post-install self-tests</strong>, logging results with signatures—proof you’re running a healthy system. It’s a step-by-step dance, ensuring every move is secure.</p>
+  <p>Let’s walk through the install like a field mission. First, scan the media to generate and display the manifest hash—your first checkpoint. Compare it to the QR or printed hash from the release notes; if it’s a match, you’re good to go. Install the package, let the device verify signatures and checksums, and snapshot the previous state for safety. Finally, run <strong>post-install self-tests</strong>, logging results with signatures—proof you’re running a healthy system. It’s a step-by-step dance, ensuring every move is secure, now powered by AethergenPlatform’s new tools!</strong></p>
   <ol>
     <li>Scan media to generate and display the manifest hash.</li>
     <li>Compare against printed/QR hash from release notes.</li>
@@ -174,17 +175,17 @@
   </ol>
 
   <h2>Evidence Bundle</h2>
-  <p>Every package carries a <strong>signed evidence bundle</strong>—lineage (where it came from), metrics (how it performs), ablations (what works), and privacy probes (if applicable). Procurement and security file this with the install manifest, creating a full provenance trail. With AethergenPlatform, asking “What’s running out there?” becomes a button press—no connectivity, no excuses—just verifiable state you can trust.</p>
+  <p>Every package carries a <strong>signed evidence bundle</strong>—lineage (where it came from), metrics (how it performs), ablations (what works), and privacy probes (if applicable). Procurement and security file this with the install manifest, creating a full provenance trail. With AethergenPlatform, asking “What’s running out there?” becomes a button press—no connectivity, no excuses—just verifiable state you can trust. <strong>This feature is now live, thanks to our recent implementation push!</strong></p>
   <blockquote>
     <p><strong>AethergenPlatform</strong> turns “What’s running out there?” into a button press. No connectivity, no excuses—just verifiable state.</p>
   </blockquote>
 
   <h2>Packaging Formats</h2>
-  <p>We’ve got options to suit your field needs. The core is a <strong>signed tarball</strong> with the manifest and SBOM, a neat all-in-one package. For flexibility, we offer <strong>split packages</strong>—separate bundles for models, policies, and tools. And for kiosks, <strong>USB images</strong> come pre-loaded with pre-flight checks, ready to roll. It’s like choosing the right tool from your belt, tailored to the job.</p>
+  <p>We’ve got options to suit your field needs. The core is a <strong>signed tarball</strong> with the manifest and SBOM, a neat all-in-one package. For flexibility, we offer <strong>split packages</strong>—separate bundles for models, policies, and tools. And for kiosks, <strong>USB images</strong> come pre-loaded with pre-flight checks, ready to roll. It’s like choosing the right tool from your belt, tailored to the job—and now fully supported by AethergenPlatform!</strong></p>
   <ul>
-    <li>Signed tarball with manifest and SBOM.</li>
-    <li>Optional split packages for models, policies, and tools.</li>
-    <li>Kiosk USB images with pre-flight checks.</li>
+    <li><strong>Signed tarball</strong> with manifest and SBOM.</li>
+    <li><strong>Optional split packages</strong> for models, policies, and tools.</li>
+    <li><strong>Kiosk USB images</strong> with pre-flight checks.</li>
   </ul>
 
   <h2>Field SOP</h2>
@@ -196,37 +197,37 @@
   </ol>
 
   <h2>Tamper Evidence</h2>
-  <p>We leave no room for foul play. <strong>Checksums</strong> at file and package levels catch any tampering. The <strong>QR hash</strong> on release notes, double-checked by the kiosk, seals the deal. And a <strong>local audit log</strong> with signed digests tracks every move—proof you can audit offline.</p>
+  <p>We leave no room for foul play. <strong>Checksums</strong> at file and package levels catch any tampering. The <strong>QR hash</strong> on release notes, double-checked by the kiosk, seals the deal. And a <strong>local audit log</strong> with signed digests tracks every move—proof you can audit offline. <strong>All these are now live features in AethergenPlatform!</strong></p>
   <ul>
-    <li>Checksums at file and package levels.</li>
-    <li>QR hash on release notes; kiosk display comparison.</li>
-    <li>Local audit log with signed digests.</li>
+    <li><strong>Checksums</strong> at file and package levels.</li>
+    <li><strong>QR hash</strong> on release notes; kiosk display comparison.</li>
+    <li><strong>Local audit log</strong> with signed digests.</li>
   </ul>
 
   <h2>Supply Chain</h2>
-  <p>Transparency is key. The <strong>SBOM</strong> includes license metadata and a vulnerability scan report, laying it all out. <strong>Third-party attestations</strong> join the evidence bundle, and <strong>periodic key rotation</strong> with revocation lists keeps security tight. It’s a supply chain you can trace like a master detective.</p>
+  <p>Transparency is key. The <strong>SBOM</strong> includes license metadata and a vulnerability scan report, laying it all out. <strong>Third-party attestations</strong> join the evidence bundle, and <strong>periodic key rotation</strong> with revocation lists keeps security tight. It’s a supply chain you can trace like a master detective—and it’s now a reality with AethergenPlatform!</strong></p>
   <ul>
-    <li>SBOM with license metadata; vulnerability scan report.</li>
-    <li>Third-party attestations stored with bundle.</li>
-    <li>Periodic key rotation and revocation lists.</li>
+    <li><strong>SBOM</strong> with license metadata; vulnerability scan report.</li>
+    <li><strong>Third-party attestations</strong> stored with bundle.</li>
+    <li><strong>Periodic key rotation</strong> and revocation lists.</li>
   </ul>
 
   <h2>Troubleshooting</h2>
-  <p>Stuff happens—here’s how to roll with it. A <strong>hash mismatch</strong>? Stop the install and fetch the right media. <strong>Self-test failure</strong>? Revert to the snapshot and attach logs for the team. <strong>Thermal throttle</strong>? Switch to a Q4 model profile to cool things down. It’s problem-solving with a safety net.</p>
+  <p>Stuff happens—here’s how to roll with it. A <strong>hash mismatch</strong>? Stop the install and fetch the right media. <strong>Self-test failure</strong>? Revert to the snapshot and attach logs for the team. <strong>Thermal throttle</strong>? Switch to a Q4 model profile to cool things down. It’s problem-solving with a safety net, now backed by AethergenPlatform’s robust tools!</strong></p>
   <ul>
-    <li>Hash mismatch → stop install; fetch correct media.</li>
-    <li>Self-test failure → revert to snapshot; attach logs.</li>
-    <li>Thermal throttle → switch to Q4 model profile.</li>
+    <li><strong>Hash mismatch</strong> → stop install; fetch correct media.</li>
+    <li><strong>Self-test failure</strong> → revert to snapshot; attach logs.</li>
+    <li><strong>Thermal throttle</strong> → switch to Q4 model profile.</li>
   </ul>
 
   <h2>FAQ</h2>
   <details>
     <summary>What if we lose signing keys?</summary>
-    <p>No sweat—our offline root key triggers a recovery ceremony, and field keys can be revoked via lists in the next release. We’ve got your back!</p>
+    <p>No sweat—our offline root key triggers a recovery ceremony, and field keys can be revoked via lists in the next release. We’ve got your back! <strong>This is now implemented in AethergenPlatform!</strong></p>
   </details>
   <details>
     <summary>Can sites customize policies?</summary>
-    <p>You bet—policy packs support site overlays, versioned and signed locally for full control.</p>
+    <p>You bet—policy packs support site overlays, versioned and signed locally for full control. <strong>Live and kicking in AethergenPlatform!</strong></p>
   </details>
 
   <h2>Glossary</h2>

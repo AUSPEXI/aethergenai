@@ -1,0 +1,55 @@
+<h1>From First Pilot to Policy: Building Trust with Quality Gates</h1>
+<p><em>By Gwylym Owen — 20–30 min read</em></p>
+
+<h2>Executive Summary</h2>
+<p>Pilots stall when results aren’t reproducible or reviewable. AethergenPlatform turns pilots into policy by shipping <strong>quality gates</strong> and <strong>evidence bundles</strong>: OP utility with CIs, stability bands, latency SLOs, and privacy probes—signed and ready for audit.</p>
+
+<h2>Define the Gate</h2>
+<ul>
+  <li>Operating point (OP) tied to analyst capacity or safety budget.</li>
+  <li>Stability bands across segments (region/product/lifecycle).</li>
+  <li>Latency p95/p99 envelopes; privacy probe thresholds.</li>
+ </ul>
+
+<h2>Pilot SOP</h2>
+<ol>
+  <li>Freeze OP and segment taxonomy with stakeholders.</li>
+  <li>Run evaluation; compute CIs; generate dashboards.</li>
+  <li>Package evidence bundle (metrics, plots, configs, sbom, manifest).</li>
+  <li>Review in change‑control; rehearse rollback.</li>
+ </ol>
+
+<h2>Policy Promotion</h2>
+<ul>
+  <li>Fail‑closed gates in CI guard promotion.</li>
+  <li>Catalog comments reference evidence IDs and OP thresholds.</li>
+  <li>SLAs reference OP/stability bands and refresh cadence.</li>
+ </ul>
+
+<h2>Evidence Manifest (Sketch)</h2>
+<pre>
+{
+  "version": "2025.01",
+  "artifacts": ["metrics/utility@op.json", "plots/stability_bars.html", "sbom.json"],
+  "hashes": {"metrics/utility@op.json": "sha256:..."}
+}
+</pre>
+
+<h2>Acceptance Form</h2>
+<pre>
+bundle_id: 8e7...
+op_utility: PASS
+stability: PASS
+latency: PASS
+privacy: PASS
+decision: APPROVE | REJECT
+signoff: ____________  date: ________
+</pre>
+
+<h2>Case Study</h2>
+<p>A regulated buyer moved from a two‑week pilot to policy in under a month: OP utility 0.758 [0.749,0.767], stability bands within thresholds, and documented rollback. Procurement filed the bundle and SBOM with the contract.</p>
+
+<h2>Closing</h2>
+<p>Policy is a set of gates plus proof. With <strong>AethergenPlatform</strong>, you ship both—so pilots become production with less friction.</p>
+
+

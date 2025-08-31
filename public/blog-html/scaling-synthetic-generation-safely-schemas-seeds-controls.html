@@ -1,0 +1,266 @@
+<h1>Scaling Synthetic Generation Safely: Schemas, Seeds, and Controls</h1>
+<p><em>By Gwylym Owen — 28–40 min read</em></p>
+
+<h2>Executive Summary</h2>
+<p>Scaling synthetic data is not about pressing “more.” It’s about <strong>control</strong>: schema discipline, seed minimisation, scenario overlays, and measurable privacy/utility gates. AethergenPlatform orchestrates these controls so you can generate millions to billions of records with confidence.</p>
+
+<h2>Control Surfaces</h2>
+<ul>
+  <li><strong>Schemas</strong>: typed fields, constraints, vocabularies, relations.</li>
+  <li><strong>Seeds</strong>: minimal/redacted anchors for realism.</li>
+  <li><strong>Recipes</strong>: generation operators with parameters and bounds.</li>
+  <li><strong>Scenarios</strong>: overlays for tails and stress testing.</li>
+  <li><strong>Validation</strong>: fidelity and utility metrics with CIs.</li>
+  <li><strong>Privacy</strong>: probes and optional DP budgets.</li>
+  <li><strong>Evidence</strong>: signed bundles for governance.</li>
+</ul>
+
+<h2>Schema Discipline</h2>
+<ul>
+  <li>Enumerations for codes; dictionaries under version control.</li>
+  <li>Constraints for ranges, regex, and referential integrity.</li>
+  <li>Relations and multiplicity captured explicitly.</li>
+</ul>
+
+<h2>Seed Strategy</h2>
+<ul>
+  <li>Prefer aggregates/minimal samples; segregate access.</li>
+  <li>Document provenance and retention policy.</li>
+  <li>Measure leakage via membership/attribute probes.</li>
+</ul>
+
+<h2>Generation Recipes</h2>
+<ul>
+  <li>Copulas for joints; sequence models for timelines.</li>
+  <li>Graph generators for networks (AML/fraud).</li>
+  <li>Parameter ranges with safe defaults and hard caps.</li>
+</ul>
+
+<h2>Scenario Overlays</h2>
+<ul>
+  <li>Rare events (fraud typologies, adverse cases) with knobs.</li>
+  <li>Stress ranges for robustness studies.</li>
+  <li>Versioned overlays with reproducible seeds.</li>
+</ul>
+
+<h2>Validation & Utility</h2>
+<ul>
+  <li>Marginals/joints/temporal comparisons with tolerances.</li>
+  <li>Baseline detectors at operating points; CI bands.</li>
+  <li>Analyst yield and cost curves where applicable.</li>
+</ul>
+
+<h2>Privacy Controls</h2>
+<ul>
+  <li>Membership inference advantage below thresholds.</li>
+  <li>Attribute disclosure below baselines.</li>
+  <li>Optional DP with declared budgets and impact.</li>
+</ul>
+
+<h2>Evidence & Governance</h2>
+<ul>
+  <li>Signed manifests; SBOM; environment fingerprints.</li>
+  <li>Seeds/configs/parameters logged for regeneration.</li>
+  <li>Change‑control and procurement filing ready.</li>
+</ul>
+
+<h2>Pipeline</h2>
+<pre>
+schema → seeds → generation → overlays → validation → privacy → packaging → evidence
+                        ↘ ablations ↗
+</pre>
+
+<h2>Case Study</h2>
+<p>An AML team scaled from 10M to 1B edges by tightening schemas, moving to graph generators with parameterised scenarios, and gating on utility@budget. Procurement approved with quarterly refresh.</p>
+
+<h2>FAQ</h2>
+<details>
+  <summary>Can we skip overlays?</summary>
+  <p>Overlays preserve tails; without them, detectors underperform on rare but important events.</p>
+ </details>
+<details>
+  <summary>How much seed data is enough?</summary>
+  <p>Enough to anchor structure; start minimal and grow only if fidelity gates fail.</p>
+ </details>
+
+<h2>Glossary</h2>
+<ul>
+  <li><strong>Overlay</strong>: additive scenario controlling prevalence/severity.</li>
+  <li><strong>DP</strong>: differential privacy.</li>
+  <li><strong>Utility@OP</strong>: performance at a declared operating point.</li>
+</ul>
+
+<h2>Checklist</h2>
+<ul>
+  <li>Schemas versioned; dictionaries pinned.</li>
+  <li>Seeds minimized; probes pass.</li>
+  <li>Recipes bounded; overlays documented.</li>
+  <li>Validation and evidence green.</li>
+</ul>
+
+<p><a class="aeg-btn" href="/contact">Contact Sales →</a></p>
+
+
+<h2>Recipe Catalog (Illustrative)</h2>
+<pre>
+recipes:
+  claims_v3:
+    generator: copula+sequence
+    params:
+      interarrival: mixexp(λ=[.3,.8], w=[.4,.6])
+      amount: lognorm(μ=..., σ=...)
+  aml_graph_v2:
+    generator: sbm_graph + overlay(mule_ring)
+    params:
+      sbm: {community_sizes: [..], p_in: 0.08, p_out: 0.01}
+      mule_ring: {size: 12, reuse: 0.35}
+</pre>
+
+<h2>Schema Examples</h2>
+<pre>
+entity Provider { id, specialty, region }
+entity Claim { id, provider_id -> Provider.id, amount, code }
+constraint Claim.amount >= 0
+vocab Claim.code in CPT_v12
+</pre>
+
+<h2>QC Checks</h2>
+<ul>
+  <li>Null rates below thresholds per field.</li>
+  <li>Range, regex, referential integrity checks.</li>
+  <li>Coverage for rare codes via overlays.</li>
+</ul>
+
+<h2>Seed Governance</h2>
+<ul>
+  <li>Separate vault; least privilege access.</li>
+  <li>Rotation and retention policies documented.</li>
+  <li>Probe reports attached to evidence.</li>
+</ul>
+
+<h2>Privacy Budgets (Optional)</h2>
+<ul>
+  <li>Declare ε, δ per release with composition notes.</li>
+  <li>Publish expected utility impact at OP.</li>
+</ul>
+
+<h2>Runbook</h2>
+<ol>
+  <li>Small run; validate; adjust params.</li>
+  <li>Scale run; run probes; compute evidence.</li>
+  <li>Gate; package; file procurement.</li>
+</ol>
+
+<h2>Monitoring</h2>
+<ul>
+  <li>Generation success/failure; resource usage.</li>
+  <li>Drift in marginals/joints across releases.</li>
+  <li>Utility stability at OP across refreshes.</li>
+</ul>
+
+<h2>Dashboards</h2>
+<ul>
+  <li>Fidelity panels with tolerances.</li>
+  <li>Utility@OP with CIs by segment.</li>
+  <li>Privacy probe summaries.</li>
+</ul>
+
+<h2>Procurement Mapping</h2>
+<ul>
+  <li>Evidence bundle → contract exhibit.</li>
+  <li>Recipe and schema versions → appendix.</li>
+</ul>
+
+<h2>Parameter Table (Excerpt)</h2>
+<pre>
+param, default, min, max, note
+amount.μ, 4.2, 3.9, 4.8, lognorm mean
+amount.σ, 0.7, 0.5, 0.9, tail width
+ring.size, 10, 6, 18, mule ring members
+ring.reuse, 0.3, 0.1, 0.6, device/IP reuse rate
+</pre>
+
+<h2>Example YAML</h2>
+<pre>
+recipe: aml_graph_v2
+params:
+  sbm:
+    community_sizes: [10000, 8000, 6000]
+    p_in: 0.05
+    p_out: 0.01
+  mule_ring:
+    size: 12
+    reuse: 0.35
+</pre>
+
+<h2>Drift Testing</h2>
+<ul>
+  <li>Simulate code shifts; ensure OP utility within band.</li>
+  <li>Alert if segment delta exceeds threshold.</li>
+</ul>
+
+<h2>Cost Estimation</h2>
+<ul>
+  <li>Per‑million record generation time and infra profile.</li>
+  <li>Validation cost; evidence rendering time.</li>
+</ul>
+
+<h2>Multi‑Region</h2>
+<ul>
+  <li>Regional vocab and parameter overlays.</li>
+  <li>Region‑specific stability targets.</li>
+</ul>
+
+<h2>Appendix: CLI</h2>
+<pre>
+aeg generate --recipe claims_v3 --out data/claims
+AEG_OP=fpr=0.01 aeg evidence --bundle out/evidence
+</pre>
+
+<h2>Appendix: JSON Manifest</h2>
+<pre>
+{
+  "schema_version": "1.0",
+  "artifacts": ["parquet", "metrics.json", "plots.html"],
+  "hashes": {"metrics.json": "..."}
+}
+</pre>
+
+<h2>Example Evidence Snippets</h2>
+<pre>
+metrics.json: {"utility@op": 0.761, "ci": [0.752,0.769]}
+probes.json: {"membership_advantage": 0.03}
+</pre>
+
+<h2>CI/CD Hooks</h2>
+<ul>
+  <li>Automate generation, validation, probes, and evidence packaging.</li>
+  <li>Fail pipeline if gates not met; attach logs for triage.</li>
+</ul>
+
+<h2>Team Roles</h2>
+<ul>
+  <li>Data custodian: seeds and policy owners.</li>
+  <li>Generator engineer: recipes and overlays.</li>
+  <li>QA lead: gates and evidence sign‑off.</li>
+</ul>
+
+<h2>Run Cost Table (Example)</h2>
+<pre>
+step, time_min, notes
+generate_10M, 42, GPU
+validate, 18, CPU
+probes, 25, CPU
+bundle, 4, CPU
+</pre>
+
+<h2>Benchmark Plan</h2>
+<ul>
+  <li>Compare recipes A/B; report utility@OP and fidelity deltas.</li>
+  <li>Record costs; choose best trade‑off.</li>
+</ul>
+
+<h2>Closing</h2>
+<p>Scaling safely is about <strong>discipline</strong>: schemas, seeds, recipes, overlays—and gates that prove utility and privacy. <strong>AethergenPlatform</strong> turns that discipline into reproducible, auditable practice at any scale.</p>
+
+

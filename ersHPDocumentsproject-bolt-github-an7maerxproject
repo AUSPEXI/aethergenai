@@ -94,4 +94,133 @@ Date:   Mon Aug 25 15:41:55 2025 +0100
 [31m-  [m
 [31m-  'innovators-website-challenge': {[m
 [31m-    title: '🎢 The Innovator\'s Website Challenge: When Innovation Outpaces Documentation',[m
-[31m-    excerpt: 'The beautiful chaos of being a solo entrepreneur pre-funding: when your website can\'t keep up with your brain because you\'re too busy building the future. This is
+[31m-    excerpt: 'The beautiful chaos of being a solo entrepreneur pre-funding: when your website can\'t keep up with your brain because you\'re too busy building the future. This is the reality of innovation outpacing everything else.',[m
+[31m-    author: 'Gwylym Owen',[m
+[31m-    date: 'January 13, 2025',[m
+[31m-    readTime: '5 min read',[m
+[31m-    category: 'Founder Story',[m
+[31m-    content: `[m
+[31m-      <h2>The Beautiful Chaos of Innovation</h2>[m
+[31m-      <p>Keeping a website up to date as a solo entrepreneur pre-funding? It's a challenge I know all too well at Auspexi! The whirlwind of brainstorming and product development sprints—crafting innovations like SDSP, Authentes 1.0, 2.0, PIS, and PIS2, and finally Aethergen (hint: not finally at all!)—means the site often lags behind our latest breakthroughs. The sheer rate of creativity can outpace even the fastest updates, a reality for many founders juggling it all.</p>[m
+[31m-      [m
+[31m-      <h2>Chaos as a Badge of Resilience</h2>[m
+[31m-      <p>Yet, this chaos is a badge of resilience. Each late night spent coding or refining synthetic data solutions builds character and momentum. We overcome by prioritising what moves the needle—building, testing, learning—before circling back to polish the website. It's not about neglecting the details; it's about understanding what truly drives progress.</p>[m
+[31m-      [m
+[31m-      <h2>The Innovation Rollercoaster</h2>[m
+[31m-      <p>When you're building the future, sometimes the present has to wait. Our website might be a few iterations behind, but that's because we're too busy creating the innovations that will make it obsolete anyway. It's a beautiful paradox: the faster we innovate, the more outdated our documentation becomes.</p>[m
+[31m-      [m
+[31m-      <h2>What Moves the Needle</h2>[m
+[31m-      <p>We've learned to prioritize ruthlessly: building, testing, learning—these are the activities that create real value. Website updates, while important, come second to the breakthroughs that will change everything. It's about understanding that sometimes the best marketing is the product itself.</p>[m
+[31m-      [m
+[31m-      <h2>The Road Ahead</h2>[m
+[31m-      <p>Soon, we'll update it to showcase the new delights in store for our customers, from scalable data generation to model democratisation. It's a tough road, but every step forward fuels the journey. The website will catch up, but the innovation never stops.</p>[m
+[31m-      [m
+[31m-      <h2>To My Fellow Founders</h2>[m
+[31m-      <p>Who else is riding this rollercoaster? If your website is behind because you're too busy building the future, wear it as a badge of honor. The chaos is temporary, but the breakthroughs are forever. Let's share the grit, the late nights, and the beautiful mess of innovation outpacing everything else.</p>[m
+[31m-      [m
+[31m-      <p>Because in the end, it's not about having the perfect website—it's about having the perfect product that makes the website irrelevant.</p>[m
+[31m-    `[m
+[31m-  },[m
+[31m-  [m
+[31m-  'aethergenai-shipped-evidence-led-ai-training': {[m
+[31m-    title: '🚀 We Just Shipped AethergenAI: The Future of Evidence-Led, Privacy-Preserving AI Training',[m
+[31m-    excerpt: 'The revolutionary modular pipeline that generates high-fidelity synthetic data, designs schemas, and trains models at lightning speed—fully Databricks-ready and enterprise-grade.',[m
+[31m-    author: 'Gwylym Owen',[m
+[31m-    date: 'January 12, 2025',[m
+[31m-    readTime: '4 min read',[m
+[31m-    category: 'Technology',[m
+[31m-    content: `[m
+[31m-      <h2>What We Built</h2>[m
+[31m-      <p>A revolutionary modular pipeline that generates high-fidelity synthetic data, designs schemas, and trains models at lightning speed—fully Databricks-ready and enterprise-grade.</p>[m
+[31m-      [m
+[31m-      <h2>Why This Changes Everything</h2>[m
+[31m-      <p>Most teams are trapped between data scarcity, privacy constraints, and skyrocketing compute costs. We've solved all three problems simultaneously, unlocking the future of AI development.</p>[m
+[31m-      [m
+[31m-      <h2>What Makes Us Revolutionary</h2>[m
+[31m-      <p><strong>Evidence-Led Generation:</strong> Every release ships with comprehensive evidence bundles and model cards for complete transparency.</p>[m
+[31m-      <p><strong>Privacy-First Architecture:</strong> Synthetic-first approach with enterprise-grade differential privacy and zero PHI exposure.</p>[m
+[31m-      <p><strong>Results-Focused Innovation:</strong> Smaller, specialized models that consistently outperform brute-force scaling for regulated use cases.</p>[m
+[31m-      [m
+[31m-      <h2>What You Can Do Right Now</h2>[m
+[31m-      <p>Get a healthcare claims fraud dataset and baseline model in minutes. Deploy to Databricks Marketplace with a single click. Start building the future today.</p>[m
+[31m-      [m
+[31m-      <h2>The Future is Here</h2>[m
+[31m-      <p>If you work in regulated industries (healthcare, government, finance) and want to move at the speed of innovation without the compliance drag, we're your solution.</p>[m
+[31m-      [m
+[31m-      <p><strong>This is the beginning of the AI revolution. Are you ready to build the future?</strong></p>[m
+[31m-    `[m
+[31m-  },[m
+[31m-  [m
+[31m-  'democratising-ai-post-moores-law-revolution': {[m
+[31m-    title: '🌍 Democratising AI: The Post-Moore\'s Law Revolution That Will Change Everything',[m
+[31m-    excerpt: 'In a world where raw computing power hits limits, optimization becomes king. AethergenAI is democratizing AI by focusing on efficiency, not just size—and it\'s about to change the entire industry.',[m
+[31m-    author: 'Gwylym Owen',[m
+[31m-    date: 'January 11, 2025',[m
+     readTime: '8 min read',[m
+[31m-    category: 'Technology',[m
+[31m-    content: `[m
+[31m-      <h2>The End of an Era: When Moore\'s Law Meets Reality</h2>[m
+[31m-      <p>For decades, the tech industry has relied on a simple truth: computing power doubles every two years, making everything faster, cheaper, and more powerful. But what happens when that law finally hits the wall? What happens when raw computing power can\'t keep up with our ambitions?</p>[m
+[31m-      [m
+[31m-      <p>We\'re about to find out. And AethergenAI is leading the revolution.</p>[m
+[31m-      [m
+[31m-      <h2>The Post-Moore\'s Law Future: Where Optimization Becomes King</h2>[m
+[31m-      <p>In a world where raw computing power hits fundamental limits, optimization becomes everything. It\'s no longer about throwing more transistors at the problem—it\'s about making every single computation count. It\'s about being smarter, not just bigger.</p>[m
+[31m-      [m
+[31m-      <p>This is where AethergenAI changes everything. While others are still chasing the brute-force approach of bigger models and more compute, we\'ve built a platform that thrives in the post-Moore\'s Law world.</p>[m
+[31m-      [m
+[31m-      <h2>Democratizing AI: Power Without the Price Tag</h2>[m
+[31m-      <p>We\'re giving businesses the tools to create their own DeepSeek-like models—powerful AI without the million-pound price tags. Using synthetic data and ablation workflows, AethergenAI slashes costs while delivering performance that rivals the biggest players in the industry.</p>[m
+[31m-      [m
+[31m-      <p>But here\'s the revolutionary part: we\'re not just making AI cheaper. We\'re making it accessible to everyone who needs it.</p>[m
+[31m-      [m
+[31m-      <h2>The Rental Revolution: AI as a Service, Not a Product</h2>[m
+[31m-      <p>Model rental is set to boom, and AethergenAI lets businesses build these rentable models for a fraction of today\'s costs. Imagine leasing a bespoke AI solution without breaking the bank. Imagine having access to enterprise-grade AI without the enterprise-grade price tag.</p>[m
+[31m-      [m
+[31m-      <p>This isn\'t just about cost—it\'s about democratizing access to the most powerful technology humanity has ever created.</p>[m
+[31m-      [m
+[31m-      <h2>Unlocking Regulated Industries: Privacy-First Innovation</h2>[m
+[31m-      <p>For fenced-off sectors like medical and MoD, we provide privacy-first tools to build custom models—secure, compliant, and tailored to their needs, no middleman required. These industries have been locked out of the AI revolution by compliance requirements and cost barriers.</p>[m
+[31m-      [m
+[31m-      <p>Until now.</p>[m
+[31m-      [m
+[31m-      <h2>Why This Matters: The Future of AI Development</h2>[m
+[31m-      <p>This isn\'t just about building better AI. It\'s about building a future where AI serves everyone, not just the tech giants with unlimited budgets. It\'s about putting control back in the hands of innovators, startups, and regulated giants alike.</p>[m
+[31m-      [m
+[31m-      <p>In the post-Moore\'s Law world, efficiency is everything. And AethergenAI is the most efficient AI development platform ever created.</p>[m
+[31m-      [m
+[31m-      <h2>The Platform That Powers the Future</h2>[m
+[31m-      <p>Our platform\'s live at Auspexi.com, with persistence via Netlify Functions and a Supabase-backed database, all optimized for efficiency. Every line of code, every database query, every API call is designed for maximum performance with minimum resource consumption.</p>[m
+[31m-      [m
+[31m-      <p>Because in the post-Moore\'s Law future, every computation counts.</p>[m
+[31m-      [m
+[31m-      <h2>Join the Revolution</h2>[m
+[31m-      <p>Have you faced AI cost barriers? Want to co-design features or explore rental models? This isn\'t just about technology—it\'s about democratizing the future.</p>[m
+[31m-      [m
+[31m-      <p>Drop a comment or email me at sales@auspexi.com. Let\'s build the future of AI together.</p>[m
+[31m-      <p>Drop a comment or email me at sales@auspexi.com. Let\'s build the future of AI together.</p>[m
+[31m-      [m
+[31m-      <p><strong>Because in the post-Moore\'s Law world, the future belongs to those who optimize, not those who scale. And AethergenAI is the optimization platform that will change everything.</strong></p>[m
+[31m-    `[m
+[31m-  },[m
+[31m-  [m
+[31m-  'triumph-of-preparation-strategic-planning': {[m
+[31m-    title: '🎯 The Triumph of Preparation: How Strategic Planning Eliminates Development Chaos',[m
+[31m-    excerpt: 'That triumphant moment when your master development document is fully configured, with all guidelines and common pitfalls meticulously resolved. This is the art of building bulletproof systems.',[m
+[31m-    author: 'Gwylym Owen',[m
+[31m-    date: 'January 10, 2025',[m
+[31m-    readTime: '6 min read',[m
+[31m-    category: 'Technology',[m
+[31m-    content: `[m
+[31m-      <h2>The Moment of Triumph: When Everything Clicks Into Place</h2>[m
+[31m-      <p>That triumphant moment when your master development document is fully configured, with all guidelines and common pitfalls meticulously resolved, sets the stage for seamlessly generating hundreds of complex files without stumbling over the same obstacles.</p>[m
+[31m-      [m
+[31m-      <p>It\'s a feeling that every developer knows but few achieve consistently. The moment when you realize that your system is bulletproof, your architecture is sound, and your development process is about to become exponentially more efficient.</p>[m
+[31m-      [m
+[31m-      <h2>The Power of Thoughtful Planning: Small Scale, Massive Impact</h2>[m
+[31m-      <p>Thoughtful planning and iterative testing on a small scale can dramatically enhance productivity. It\'s counterintuitive, but the time you spend planning and testing on a small scale pays dividends that compound exponentially as you scale up.</p>[m
+[31m-      [m
+[31m-      <p>Think of it like building a house. You wouldn\'t start pouring concrete without a blueprint, would you? Yet so many developers dive into complex systems without proper planning, only to hit the same walls again and again.</p>[m
+[31m-      [m
+[31m-      <h2>Building Bulletproof Architecture: The Foundation of Success</h2>[m
+[31m-      <p>With solid preparation, your system\'s file architecture should be well-balanced, free of critical failure points, and designed to safeguard files with pr

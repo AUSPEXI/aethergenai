@@ -1,0 +1,195 @@
+<h1>Ablations with Effect Sizes: Proving What Moves the Needle</h1>
+<p><em>By Gwylym Owen — 26–38 min read</em></p>
+
+<h2>Executive Summary</h2>
+<p>Ablations separate signal from noise. AethergenPlatform reports <strong>effect sizes</strong> with confidence intervals so teams can see which features, recipes, or thresholds <em>actually</em> improve outcomes—at the operating points that matter.</p>
+
+<h2>Why Effect Sizes</h2>
+<ul>
+  <li>P‑values alone mislead; buyers need magnitude and uncertainty.</li>
+  <li>Decision‑making needs cost/benefit at operating points.</li>
+  <li>Procurement needs reproducible deltas with seeds/configs.</li>
+ </ul>
+
+<h2>Design</h2>
+<ul>
+  <li>Define base configuration and operating point.</li>
+  <li>Vary one factor at a time or use factorial design.</li>
+  <li>Repeat with different seeds; compute CIs.</li>
+ </ul>
+
+<h2>Reporting</h2>
+<ul>
+  <li>Effect size (Δ utility@OP) with CI.</li>
+  <li>Segment deltas; robustness implications.</li>
+  <li>Evidence links to plots and configs.</li>
+ </ul>
+
+<h2>Example Table</h2>
+<pre>
+factor, delta@1%FPR, ci_low, ci_high, note
+add_graph_motifs, +0.041, +0.033, +0.050, significant, keep
+remove_amount_residuals, -0.012, -0.019, -0.006, harmful, revert
+threshold+0.01, +0.004, -0.001, +0.009, marginal, review capacity
+</pre>
+
+<h2>Visuals</h2>
+<ul>
+  <li>Forest plots of effect sizes with CIs.</li>
+  <li>Trade‑off curves at neighboring thresholds.</li>
+  <li>Segment heatmaps for stability impacts.</li>
+ </ul>
+
+<h2>Governance</h2>
+<ul>
+  <li>Promotion gates include ablation checks.</li>
+  <li>Change‑logs reference effect size IDs.</li>
+  <li>Rollback if negative deltas exceed tolerance.</li>
+ </ul>
+
+<h2>Case Study</h2>
+<p>In a payments detector, adding device graph motifs delivered +4.1% utility@1%FPR (CI +3.3–5.0%). Removing amount residuals hurt −1.2%. The forest plot and evidence bundle convinced procurement to approve the change with clear impact.</p>
+
+<h2>FAQ</h2>
+<details>
+  <summary>Do we need thousands of runs?</summary>
+  <p>No—enough to bound uncertainty; we target practical CIs around OP.</p>
+ </details>
+<details>
+  <summary>Can we combine factors?</summary>
+  <p>Yes—use factorial designs and interaction terms; report per‑factor and joint effects.</p>
+ </details>
+
+<h2>Glossary</h2>
+<ul>
+  <li><strong>Effect size</strong>: magnitude of change in KPI.</li>
+  <li><strong>CI</strong>: confidence interval for the effect.</li>
+  <li><strong>OP</strong>: operating point—where decisions are made.</li>
+ </ul>
+
+<h2>Checklist</h2>
+<ul>
+  <li>Base config frozen; OP defined.</li>
+  <li>Factors and ranges listed.</li>
+  <li>Replications run; CIs computed.</li>
+  <li>Evidence plotted; decisions recorded.</li>
+ </ul>
+
+<p><a class="aeg-btn" href="/contact">Contact Sales →</a></p>
+
+
+<h2>Methodology Details</h2>
+<ul>
+  <li>Freeze base pipeline; pin seeds and configs.</li>
+  <li>Define OP; align to budget or analyst capacity.</li>
+  <li>List factors (features, recipes, thresholds) with ranges.</li>
+  <li>Run replications; compute Δ and CIs.</li>
+</ul>
+
+<h2>Bootstrap Sketch</h2>
+<pre>
+# pseudocode
+for b in 1..B:
+  sample = resample(eval_rows)
+  metric_b = utility_at_op(sample)
+  store(metric_b)
+ci = percentile(metric_b, [2.5, 97.5])
+</pre>
+
+<h2>Power Considerations</h2>
+<ul>
+  <li>Choose B large enough for stable CIs.</li>
+  <li>Ensure evaluation set covers key segments.</li>
+  <li>Consider variance inflation for rare events.</li>
+</ul>
+
+<h2>Interaction Effects</h2>
+<ul>
+  <li>Two‑way interactions between top factors.</li>
+  <li>Report both main and interaction Δ.</li>
+</ul>
+
+<h2>Segment Reporting</h2>
+<pre>
+segment, delta@1%FPR, ci_low, ci_high
+region.NA, +0.036, +0.028, +0.044
+region.EU, +0.031, +0.024, +0.039
+region.APAC, +0.029, +0.022, +0.036
+</pre>
+
+<h2>Plots (Described)</h2>
+<ul>
+  <li>Forest plot per factor with 95% CI bars.</li>
+  <li>Heatmap of segment deltas by factor.</li>
+  <li>OP sweep curves ±0.02 around target.</li>
+</ul>
+
+<h2>Reporting Template</h2>
+<pre>
+Ablation Report v2025.01
+Base: model X, OP=1%FPR
+Factors tested: ...
+Top positive: add_graph_motifs (+4.1% [3.3,5.0])
+Top negative: remove_amount_residuals (−1.2% [−1.9, −0.6])
+Decisions: keep motifs; revert residuals; review threshold.
+</pre>
+
+<h2>Governance Mapping</h2>
+<ul>
+  <li>Promotion requires no negative Δ beyond tolerance.</li>
+  <li>Change‑logs reference factor IDs and decisions.</li>
+  <li>Rollback triggers documented if Δ drifts post‑deploy.</li>
+</ul>
+
+<h2>SOP</h2>
+<ol>
+  <li>Define OP and base.</li>
+  <li>Run ablations (B runs each).</li>
+  <li>Compute CIs; generate plots; draft decisions.</li>
+  <li>Review with QA; attach to evidence; promote or iterate.</li>
+</ol>
+
+<h2>Extended FAQ</h2>
+<details>
+  <summary>Why not just report AUC?</summary>
+  <p>Because buyers operate at fixed budgets. Effect sizes at OP map to real work.</p>
+ </details>
+<details>
+  <summary>How do we pick ranges?</summary>
+  <p>Start from domain knowledge and safety bounds; expand only if gates pass.</p>
+ </details>
+<details>
+  <summary>What if factors interact?</summary>
+  <p>Run factorial designs and report interactions; decide holistically.</p>
+ </details>
+
+<h2>Appendix: CSV Schema</h2>
+<pre>
+factor:string,delta:float,ci_low:float,ci_high:float,note:string
+</pre>
+
+<h2>Appendix: JSON Result</h2>
+<pre>
+{
+  "base": "model-X@op1%",
+  "factors": ["add_graph_motifs", "remove_amount_residuals"],
+  "results": [
+    {"factor": "add_graph_motifs", "delta": 0.041, "ci": [0.033,0.050]},
+    {"factor": "remove_amount_residuals", "delta": -0.012, "ci": [-0.019,-0.006]}
+  ]
+}
+</pre>
+
+<h2>Appendix: Threshold Sweep</h2>
+<pre>
+thresh,utility
+0.71,0.742
+0.72,0.751
+0.73,0.758
+0.74,0.761
+</pre>
+
+<h2>Closing</h2>
+<p>Ablations with effect sizes keep teams honest. They turn tweaks into decisions—grounded in evidence, resilient across segments, and understood by risk and procurement. That’s how AethergenPlatform proves progress, not just claims.</p>
+
+

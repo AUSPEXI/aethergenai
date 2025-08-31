@@ -1,0 +1,106 @@
+<h1>Financial Crime Labs: Safe Scenario Testing with Synthetic Graphs</h1>
+<p><em>By Gwylym Owen — 14–18 min read</em></p>
+
+<h2>Executive Summary</h2>
+<p>Fraud and AML teams need to test ideas quickly without exposing customer data. AethergenPlatform generates <strong>synthetic transaction graphs</strong> that preserve network structure, seasonal flows, and edge‑case behaviors while removing direct identifiers. This enables repeatable experiments, procurement‑grade evaluations, and evidence‑backed deployments.</p>
+
+<h2>Graph Data Model</h2>
+<ul>
+  <li><strong>Nodes</strong>: customers, accounts, cards, merchants, devices, IPs, branches.</li>
+  <li><strong>Edges</strong>: transfers/payments with timestamp, amount, channel, MCC, country, auth result.</li>
+  <li><strong>Node/edge features</strong>: tenure, KYC tier, merchant risk band, device fingerprint, velocity bands.</li>
+  <li><strong>Global structure</strong>: degree distributions, community structure, diurnal/seasonal cycles.</li>
+</ul>
+
+<h2>Typology Library (Parameterised)</h2>
+<ul>
+  <li><strong>Structuring (smurfing)</strong>: micro‑deposits under reporting thresholds; window and band parameters.</li>
+  <li><strong>Mule rings</strong>: device/IP reuse across identities; control ring size and churn.</li>
+  <li><strong>Card testing</strong>: rapid low‑value authorizations across MCCs; burst/cooldown controls.</li>
+  <li><strong>Sanctions evasion motifs</strong>: indirect paths via neutral hubs; path length and timing knobs.</li>
+  <li><strong>First‑party abuse</strong>: refund/chargeback loops; merchant collusion parameters.</li>
+</ul>
+
+<h2>Evaluation That Sticks in Risk Committees</h2>
+<ul>
+  <li><strong>Operating point utility</strong>: detection at fixed alert budgets with confidence intervals.</li>
+  <li><strong>Segment stability</strong>: product, region, and lifecycle consistency.</li>
+  <li><strong>Scenario stress</strong>: performance under parameter sweeps for each typology.</li>
+  <li><strong>Cost curves</strong>: incremental cases per analyst‑hour; escalation loads.</li>
+</ul>
+
+<h2>Modeling Baselines</h2>
+<ul>
+  <li><strong>Rules</strong>: transparent baselines for governance and anchoring.</li>
+  <li><strong>Graph features</strong>: PageRank‑like centrality, motif counts, community scores.</li>
+  <li><strong>Learned models</strong>: GNN or gradient‑boosted trees with calibrated thresholds.</li>
+</ul>
+
+<h2>Evidence Bundle</h2>
+<ul>
+  <li>Signed lineage and environment fingerprints.</li>
+  <li>Metrics with CIs; per‑typology parameter logs.</li>
+  <li>Ablations to show which features/typologies drive lift.</li>
+  <li>Limits, intended use, and rollback rules.</li>
+</ul>
+
+<blockquote>
+  <p><strong>AethergenPlatform</strong> lets you ask hard questions safely: What happens to alert yield if we cut our budget 20%? Which motifs crumble first under drift? Answer with evidence, not anecdotes.</p>
+ </blockquote>
+
+<p><a class="aeg-btn" href="/contact">Contact Sales →</a></p>
+
+<h2>Graph Generation Config (Illustrative)</h2>
+<pre>
+nodes: 2M customers, 3M accounts, 250k merchants
+features:
+  customer.tenure: log‑normal
+  merchant.risk_band: categorical
+edges:
+  transaction.amount: log‑normal
+  transaction.interarrival: mixture exponential
+seasonality: weekly + monthly cycles
+communities: stochastic block model with regional priors
+typologies: mule_ring(size=12, reuse=0.35), structuring(window=72h)
+</pre>
+
+<h2>Scenario Design</h2>
+<ul>
+  <li>Pick 3 typologies and 2 operating budgets (alerts/day).</li>
+  <li>Define success: cases/analyst‑hour uplift vs baseline.</li>
+  <li>Run parameter sweeps and publish sensitivity.</li>
+</ul>
+
+<h2>Feature Catalog</h2>
+<ul>
+  <li>Velocity bands, burstiness, merchant diversity.</li>
+  <li>Graph motifs: stars, cycles, bi‑cliques.</li>
+  <li>Community leakage scores; device/IP reuse ratios.</li>
+</ul>
+
+<h2>Thresholding Policy</h2>
+<ul>
+  <li>Segment thresholds by product and region.</li>
+  <li>Cap escalations; elastic budget for weekends/peaks.</li>
+  <li>Auto‑tune to keep alert budget within ±10%.</li>
+</ul>
+
+<h2>Case Study</h2>
+<p>A mid‑size bank tested mule‑ring detection. With the same alert budget, the graph‑aware baseline surfaced 31% more actionable rings than rules, while reducing duplicate escalations by 18%. Evidence included per‑typology sensitivity curves and parameter logs.</p>
+
+<h2>FAQ</h2>
+<details>
+  <summary>Will synthetic hurt performance on real traffic?</summary>
+  <p>We measure relative rankings stability and de‑risk via shadow evaluation before promotion. Synthetic is for safe iteration and procurement evidence.</p>
+ </details>
+<details>
+  <summary>Can we export the graphs?</summary>
+  <p>Yes—Parquet/Delta with documented schemas; evidence bundle includes seeds for regeneration.</p>
+ </details>
+
+<h2>Glossary</h2>
+<ul>
+  <li><strong>Operating budget</strong>: fixed number of alerts per time window.</li>
+  <li><strong>Motif</strong>: small recurring subgraph structure.</li>
+  <li><strong>Shadow evaluation</strong>: parallel scoring without impacting production decisions.</li>
+</ul>

@@ -1,13 +1,224 @@
 <h1>Efficient AI Beyond Moore’s Law</h1>
-<p>When raw compute hits limits, optimisation matters. We focus on efficiency, not just size—broadening access in regulated domains without compromising evidence or privacy.</p>
+<p><em>By Gwylym Owen — 40–60 min read</em></p>
 
-<h2>How</h2>
+<h2>Executive Summary</h2>
+<p>Scaling compute endlessly is no longer a given. Efficiency wins via <strong>schema‑first generation</strong>, <strong>optimization‑led training</strong>, and <strong>evidence‑anchored operations</strong>. AethergenPlatform delivers optimization without guesswork: every change measured at operating points, every artifact signed and ready for audit.</p>
+
+<h2>Principles</h2>
 <ul>
-  <li>Schema‑first generation to reduce waste</li>
-  <li>Targeted ablations to avoid cargo‑cult tuning</li>
-  <li>Evidence gates to ensure measurable impact</li>
-</ul>
+  <li>Optimize before you scale: reduce waste upstream.</li>
+  <li>Measure where it matters: operate at fixed budgets (OPs).</li>
+  <li>Protect privacy: synthetic‑first, probes, optional DP.</li>
+  <li>Prove improvements: effect sizes with confidence intervals.</li>
+ </ul>
+
+<h2>Schema‑First Data</h2>
+<ul>
+  <li>Typed entities, relations, vocabularies; constraints enforced.</li>
+  <li>Generation recipes with overlays for tails and scenarios.</li>
+  <li>Validation dashboards with marginals/joints/temporal checks.</li>
+ </ul>
+
+<h2>Optimization‑Led Training</h2>
+<ul>
+  <li>Adapters and small specialized models.</li>
+  <li>Domain‑specific augmentations; clear limits and use.</li>
+  <li>Robustness checks where relevant (noise/OCR).</li>
+ </ul>
+
+<h2>Operating Points (OPs)</h2>
+<pre>
+capacity:
+  analysts_per_day: 20
+  cases_per_analyst: 100
+budget:
+  alerts_per_day: 2000
+op:
+  target_fpr: 0.01
+</pre>
+
+<h2>Evidence Gates</h2>
+<ul>
+  <li>Utility@OP with CIs ≥ target.</li>
+  <li>Stability deltas within bands across segments.</li>
+  <li>Latency p95/p99 ≤ SLO; privacy probes ≤ thresholds.</li>
+ </ul>
+
+<h2>Effect Sizes</h2>
+<pre>
+factor, delta@op, ci_low, ci_high, decision
+compression_int8, -0.006, -0.011, -0.002, keep (speed↑, cost↓)
+adapter_specialized, +0.019, +0.013, +0.025, keep
+</pre>
+
+<h2>Edge & Device Profiles</h2>
+<ul>
+  <li>INT8/FP16/Q4 variants; thermal and power envelopes.</li>
+  <li>Latency budgets; fallback profiles.</li>
+  <li>Packaging with SBOMs and manifests.</li>
+ </ul>
+
+<h2>CI/CD for Efficiency</h2>
+<pre>
+evaluate → evidence → gates → package → publish
+fail‑closed on gate breach; signatures on artifacts.
+</pre>
+
+<h2>KPIs</h2>
+<ul>
+  <li>Utility@OP, stability, latency.</li>
+  <li>Energy per task, cost per case.</li>
+  <li>Analyst yield; device utilization.</li>
+ </ul>
+
+<h2>Case Studies</h2>
+<ul>
+  <li>Healthcare extraction: adapters + synthetic aug boosts F1 @OP with half the compute.</li>
+  <li>Edge vision: INT8 models hit p95 latency with −30% energy.</li>
+ </ul>
+
+<h2>Procurement‑Ready</h2>
+<ul>
+  <li>Evidence bundles with OP metrics and CIs.</li>
+  <li>SBOMs and signed manifests.</li>
+  <li>Unity Catalog delivery and trial notebooks.</li>
+ </ul>
+
+<h2>FAQ</h2>
+<details>
+  <summary>Does smaller always mean better?</summary>
+  <p>No—<em>targeted</em> specialization with OP evidence beats blind downsizing.</p>
+ </details>
+<details>
+  <summary>How do we measure energy?</summary>
+  <p>Device counters or proxy metrics; we report energy/task where supported.</p>
+ </details>
 
 <p><a href="/pricing" class="aeg-btn">View Pricing →</a> <a href="/contact" class="aeg-btn">Contact Sales →</a></p>
 
+
+<h2>Optimization Taxonomy</h2>
+<ul>
+  <li>Data: schema discipline, overlay targeting, deduplication, stratified splits.</li>
+  <li>Model: adapters, quantization, pruning where safe, architectural fit.</li>
+  <li>Serving: batching, caching, IO alignment, device‑aware kernels.</li>
+  <li>Operations: OP thresholding, stability bands, drift early‑warning.</li>
+ </ul>
+
+<h2>Data Efficiency</h2>
+<ul>
+  <li>Schema‑first generation reduces useless variation.</li>
+  <li>Overlay knobs preserve tails without exploding volume.</li>
+  <li>Validation dashboards confirm fidelity with tolerances.</li>
+ </ul>
+
+<h2>Model Efficiency</h2>
+<ul>
+  <li>Adapters over full fine‑tunes; task‑focused heads.</li>
+  <li>Quantization to INT8/Q4 with OP checks and effect sizes.</li>
+  <li>Prune only with stability verification.</li>
+ </ul>
+
+<h2>Serving Efficiency</h2>
+<ul>
+  <li>Batch sizes tuned to device envelopes.</li>
+  <li>Pinned memory and asynchronous IO for throughput.</li>
+  <li>Fallback profiles for thermal throttling.</li>
+ </ul>
+
+<h2>Operating Point (OP) Mechanics</h2>
+<pre>
+Given budget alerts/day = B and volume/day = V,
+choose threshold θ such that FPR(θ) ≈ B / V.
+Report precision/recall at θ with bootstrap CIs.
+</pre>
+
+<h2>Effect Sizes (Examples)</h2>
+<pre>
+factor, delta@op, ci_low, ci_high, decision
+adapter_domain, +0.024, +0.017, +0.031, keep
+quant_int8, -0.007, -0.012, -0.003, keep (speed↑ cost↓)
+prune_10pct, -0.015, -0.024, -0.008, revert
+</pre>
+
+<h2>Energy & Latency KPIs</h2>
+<ul>
+  <li>Energy/task (J) or proxy (TDP*time).</li>
+  <li>Latency p50/p95/p99 with device constraints.</li>
+  <li>Throughput (tasks/sec) at OP threshold.</li>
+ </ul>
+
+<h2>Device Profiles</h2>
+<pre>
+Jetson Orin NX: INT8, batch=1, p95<=25ms, cap=30W
+RTX A2000: FP16, batch=2, p95<=18ms, fan=B
+ARM SBC: Q4, batch=1, p95<=40ms, throttle handling
+</pre>
+
+<h2>Evidence Bundle (Sketch)</h2>
+<pre>
+index.json
+├─ metrics/utility@op.json
+├─ metrics/stability_by_segment.json
+├─ metrics/latency.json
+├─ energy/summary.json
+├─ plots/op_tradeoffs.html
+├─ configs/evaluation.yaml
+├─ sbom.json
+└─ manifest.json
+</pre>
+
+<h2>Manifest (Example)</h2>
+<pre>
+{
+  "version": "2025.01",
+  "artifacts": ["metrics/utility@op.json", "plots/op_tradeoffs.html", "sbom.json"],
+  "hashes": {"metrics/utility@op.json": "sha256:..."},
+  "env": {"python": "3.11", "numpy": "1.26.4"}
+}
+</pre>
+
+<h2>CI/CD</h2>
+<pre>
+evaluate → evidence → gates → package → publish
+fail‑closed on gate breach; sign manifests.
+</pre>
+
+<h2>Case Study: Healthcare LLM</h2>
+<p>Adapters + schema‑first corpora improved F1 at OP by +2.1% with half the compute. Stability bands met; energy/task down −28%. Procurement accepted with evidence IDs.</p>
+
+<h2>Case Study: Edge Vision</h2>
+<p>INT8 model with fallback profile hit p95 latency budget; energy down −30% without breaching stability bands. Evidence dashboards shipped with SBOM and manifests.</p>
+
+<h2>Governance</h2>
+<ul>
+  <li>OP thresholds stored in config tables.</li>
+  <li>Unity Catalog comments reference evidence IDs.</li>
+  <li>Change‑control logs with bundle IDs; deprecations noted.</li>
+ </ul>
+
+<h2>Buyer Quickstart</h2>
+<pre>
+# 1) Load sample data
+# 2) Run UDF at OP
+# 3) Compute OP metrics
+# 4) Review energy/latency and stability summaries
+</pre>
+
+<h2>FAQs</h2>
+<details>
+  <summary>Is bigger always better?</summary>
+  <p>No—task fit with OP evidence beats raw size in constrained settings.</p>
+ </details>
+<details>
+  <summary>How do we ensure fairness?</summary>
+  <p>Segment stability and targeted overlays; document limits; monitor drift.</p>
+ </details>
+<details>
+  <summary>Can we run air‑gapped?</summary>
+  <p>Yes—offline dashboards, signed manifests, and QR‑verifiable labels.</p>
+ </details>
+
+<h2>Closing</h2>
+<p>Efficiency isn’t a compromise—it’s how regulated teams win. With <strong>AethergenPlatform</strong>, optimization is measured, governed, and ready for audit.</p>
 

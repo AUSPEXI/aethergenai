@@ -1,0 +1,211 @@
+<h1>The Procurement Bundle: Signatures, Hashes, and Filing Made Simple</h1>
+<p><em>By Gwylym Owen — 45–60 min read</em></p>
+
+<h2>Executive Summary</h2>
+<p>Procurement does not want mystery. They want <strong>files they can keep</strong>: metrics, manifests, hashes, SBOMs, and readable dashboards. AethergenPlatform ships a <strong>procurement bundle</strong> with every release so buyers can file and audit without phone calls.</p>
+
+<h2>What’s in the Bundle</h2>
+<ul>
+  <li><strong>Evidence</strong>: utility@OP, stability, robustness, latency, privacy.</li>
+  <li><strong>Configs</strong>: evaluation and thresholds.</li>
+  <li><strong>Dashboards</strong>: HTML/PDF exports; no external links required.</li>
+  <li><strong>Manifests</strong>: file hashes; environment fingerprints.</li>
+  <li><strong>SBOM</strong>: third‑party components and licenses.</li>
+  <li><strong>Release notes</strong>: human‑readable summary with manifest IDs.</li>
+</ul>
+
+<h2>Manifest Example</h2>
+<pre>
+{
+  "version": "2025.01",
+  "artifacts": ["metrics/utility@op.json", "plots/roc_pr.html", "sbom.json"],
+  "hashes": {"metrics/utility@op.json": "sha256:..."},
+  "seeds": "seeds/seeds.txt",
+  "env": {"python": "3.11", "libs": {"numpy": "1.26"}}
+}
+</pre>
+
+<h2>Signatures</h2>
+<ul>
+  <li>Artifacts signed; signature files stored with bundle.</li>
+  <li>Public keys and rotation policy included.</li>
+  <li>Verification instructions in README.</li>
+</ul>
+
+<h2>SBOM</h2>
+<ul>
+  <li>Component list with versions and licenses.</li>
+  <li>Vulnerability scan report.</li>
+  <li>Attestations attached for offline review.</li>
+</ul>
+
+<h2>Dashboards</h2>
+<ul>
+  <li>OP utility, stability by segment, and latency distributions.</li>
+  <li>No internet access required; inline assets only.</li>
+  <li>Anchored to manifest IDs for audit trails.</li>
+</ul>
+
+<h2>Release Notes Template</h2>
+<pre>
+Release: model‑x 2025.01
+Highlights: utility@OP, stability bands, latency, privacy
+Manifest: 8e7...
+SBOM: present
+Support: contact, SLA
+</pre>
+
+<h2>Filing Workflow</h2>
+<ol>
+  <li>Verify signatures and hashes.</li>
+  <li>Review dashboards and metrics against thresholds.</li>
+  <li>File SBOM and manifests; archive in evidence store.</li>
+  <li>Record acceptance with bundle ID.</li>
+ </ol>
+
+<h2>Governance</h2>
+<ul>
+  <li>Bundle IDs referenced in contracts and SOWs.</li>
+  <li>Deprecation policy and migration notes included.</li>
+  <li>Retention timelines and access controls specified.</li>
+</ul>
+
+<h2>Case Study</h2>
+<p>An insurer ran offline review: they verified hashes, opened HTML dashboards, and filed SBOMs. With no external dependencies, procurement finished in days—not weeks.</p>
+
+<h2>FAQ</h2>
+<details>
+  <summary>Can we split bundles by audience?</summary>
+  <p>Yes—engineering annex can be separate; procurement bundle stays stable.</p>
+ </details>
+<details>
+  <summary>What if a dashboard references a missing asset?</summary>
+  <p>We embed assets or bundle them locally; verification is part of CI.</p>
+ </details>
+
+<h2>Glossary</h2>
+<ul>
+  <li><strong>SBOM</strong>: software bill of materials.</li>
+  <li><strong>Manifest</strong>: file list with hashes and environment.</li>
+  <li><strong>Bundle ID</strong>: stable identifier for filing and contracts.</li>
+</ul>
+
+<h2>Checklist</h2>
+<ul>
+  <li>Hashes verified; signatures valid.</li>
+  <li>Dashboards open offline.</li>
+  <li>Evidence meets gates; notes recorded.</li>
+  <li>Contracts reference bundle IDs.</li>
+</ul>
+
+<h2>Appendix: Verification Commands</h2>
+<pre>
+sha256sum -c manifest.sha256 | cat
+gpg --verify evidence.sig evidence.tar
+</pre>
+
+<h2>Appendix: README (Excerpt)</h2>
+<pre>
+How to verify: 1) hashes; 2) signatures; 3) open dashboards; 4) file SBOM.
+</pre>
+
+<h2>Closing</h2>
+<p>Procurement moves faster when they can <strong>file and verify</strong> without friction. <strong>AethergenPlatform</strong> delivers bundles that stand on their own—signatures, hashes, dashboards, and SBOMs—so approvals stick.</p>
+
+<h2>Bundle Directory Layout</h2>
+<pre>
+release_2025_01/
+├─ metrics/
+├─ plots/
+├─ configs/
+├─ sbom.json
+├─ manifest.json
+├─ evidence.sig
+└─ README.html
+</pre>
+
+<h2>Verification Steps (Detailed)</h2>
+<ol>
+  <li>Compute and compare hashes.</li>
+  <li>Verify signatures with provided public keys.</li>
+  <li>Open HTML dashboards; confirm OP and stability bands.</li>
+  <li>Review SBOM licenses and vulnerability report.</li>
+  <li>Record bundle ID and decision.</li>
+</ol>
+
+<h2>Public Keys & Rotation</h2>
+<ul>
+  <li>Include current and previous keys; mark active.</li>
+  <li>Rotation schedule documented; revocation list shipped.</li>
+</ul>
+
+<h2>Manifests for People</h2>
+<ul>
+  <li>Short, readable section naming key files and purpose.</li>
+  <li>Link to dashboard quick‑start.</li>
+</ul>
+
+<h2>Reader‑Friendly Dashboards</h2>
+<ul>
+  <li>Executive summary at the top.</li>
+  <li>Tooltips with definitions (OP, CI, stability band).</li>
+  <li>Printable PDF mode.</li>
+</ul>
+
+<h2>Contract Mapping</h2>
+<ul>
+  <li>Bundle ID → contract exhibit.</li>
+  <li>SBOM → supply chain clause.</li>
+  <li>Refresh cadence → maintenance clause.</li>
+</ul>
+
+<h2>Case Files</h2>
+<ul>
+  <li>Healthcare buyer accepted with bundle ID embedded in PO.</li>
+  <li>Automotive plant used offline dashboards for QA sign‑off.</li>
+</ul>
+
+<h2>FAQ (Extended)</h2>
+<details>
+  <summary>Do we need internet to verify?</summary>
+  <p>No—everything is bundled; verification works offline.</p>
+ </details>
+<details>
+  <summary>How do we handle sensitive assets?</summary>
+  <p>Use private annexes with their own manifests; main bundle references them.</p>
+ </details>
+<details>
+  <summary>Can we split dashboards by audience?</summary>
+  <p>Yes—procurement summary and engineering annex keep everyone happy.</p>
+ </details>
+
+<h2>Templates</h2>
+<pre>
+acceptance_form.pdf
+fields: bundle_id, date, reviewer, decision, notes
+</pre>
+
+<h2>Appendix: Example SBOM Entry</h2>
+<pre>
+{
+  "component": "numpy",
+  "version": "1.26.4",
+  "license": "BSD-3-Clause"
+}
+</pre>
+
+<h2>Appendix: Manifest Hashes</h2>
+<pre>
+metrics/utility@op.json sha256:...
+plots/roc_pr.html sha256:...
+</pre>
+
+<h2>Appendix: README Excerpt</h2>
+<pre>
+Open README.html first for a guided review flow: verify → read → decide.
+</pre>
+
+<h2>Closing Notes</h2>
+<p>Bundles that stand alone make decisions faster. <strong>AethergenPlatform</strong> ensures every buyer has what they need: signatures, hashes, dashboards, and SBOM—no surprises.</p>
+
+

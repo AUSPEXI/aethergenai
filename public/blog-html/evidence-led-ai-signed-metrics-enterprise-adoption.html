@@ -1,0 +1,58 @@
+<h1>Evidence‑Led AI: How Signed Metrics Accelerate Enterprise Adoption</h1>
+<p><em>By Gwylym Owen — 18–24 min read</em></p>
+
+<h2>Executive Summary</h2>
+<p>Enterprises adopt AI faster when claims ship with <strong>signed, reproducible metrics</strong>. AethergenPlatform turns evaluations into <strong>evidence bundles</strong>—operating‑point utility with confidence intervals, segment stability, latency SLOs, and privacy probes—so procurement signs in days, not months.</p>
+
+<h2>Why Evidence Wins</h2>
+<ul>
+  <li>Risk teams need reproducibility, not anecdotes.</li>
+  <li>Operations need metrics at <strong>operating points</strong>, not just AUC.</li>
+  <li>Procurement needs artifacts they can file offline.</li>
+</ul>
+
+<h2>What We Sign</h2>
+<ul>
+  <li>Utility@OP with CIs and segment stability.</li>
+  <li>Latency distributions (p50/p95/p99).</li>
+  <li>Privacy probes; optional DP budgets.</li>
+  <li>SBOM and manifest hashes.</li>
+  <li>Configs and seeds for regeneration.</li>
+</ul>
+
+<h2>Operating Points</h2>
+<p>We pick thresholds with your teams (alerts/day, safety budgets) and publish effect sizes around OP. Thresholds live in config tables, not hard‑coded.</p>
+
+<h2>Segment Stability</h2>
+<p>We compute deltas vs global KPI across product, region, and lifecycle bands with confidence intervals and gates. Promotion fails if bands are breached.</p>
+
+<h2>Latency & Privacy</h2>
+<p>We report p50/p95/p99 latency and probe privacy leakage. Optional DP budgets are disclosed with expected utility impact.</p>
+
+<h2>Evidence Manifest (Sketch)</h2>
+<pre>
+{
+  "version": "2025.01",
+  "artifacts": ["metrics/utility@op.json", "plots/stability.html", "sbom.json"],
+  "hashes": {"metrics/utility@op.json": "sha256:..."},
+  "seeds": "seeds/seeds.txt"
+}
+</pre>
+
+<h2>Case Study</h2>
+<p>A regulated buyer accepted a detector after reviewing OP utility, stability bands, latency, and probes—all offline. Time‑to‑contract: two weeks.</p>
+
+<h2>FAQ</h2>
+<details>
+  <summary>Isn’t AUC enough?</summary>
+  <p>No—teams operate at fixed budgets. We prove utility where you work.</p>
+ </details>
+<details>
+  <summary>How do we verify?</summary>
+  <p>Use the manifest and signatures; dashboards are HTML/PDF for offline review.</p>
+ </details>
+
+<h2>Closing</h2>
+<p>Signed metrics de‑risk adoption. <strong>AethergenPlatform</strong> ships proof with every release so buyers can say “yes” faster.</p>
+
+

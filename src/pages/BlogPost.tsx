@@ -211,6 +211,9 @@ const BlogPost = () => {
               color: #0f172a !important; 
               font-weight: 700 !important;
             }
+            /* Ensure CTA buttons are readable everywhere */
+            .aeg-btn { color: #ffffff !important; }
+            .prose a.aeg-btn { color: #ffffff !important; }
           `}</style>
           <div 
             dangerouslySetInnerHTML={{ __html: (post as any).content_html || (post as any).content || '' }} 

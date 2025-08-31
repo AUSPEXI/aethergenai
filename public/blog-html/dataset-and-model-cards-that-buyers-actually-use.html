@@ -1,0 +1,342 @@
+<h1>Dataset & Model Cards that Buyers Actually Use</h1>
+<p><em>By Gwylym Owen — 24–35 min read</em></p>
+
+<h2>Executive Summary</h2>
+<p>Most “cards” read like marketing. Buyers need <strong>operational</strong> cards that help them evaluate, adopt, and govern AI assets. AethergenPlatform ships dataset and model cards that are evidence‑backed, Unity Catalog‑aware, and procurement‑ready—so risk teams sign faster and engineers succeed on day one.</p>
+
+<h2>What Buyers Actually Need</h2>
+<ul>
+  <li>Clarity on <strong>intended use</strong> and <strong>limits</strong> to avoid misuse.</li>
+  <li>Evidence at declared <strong>operating points</strong> with confidence intervals.</li>
+  <li>Segment <strong>stability</strong> and <strong>drift</strong> expectations.</li>
+  <li>Data <strong>lineage</strong>, <strong>SBOM</strong>, and change‑control hooks.</li>
+  <li>Install/run <strong>SOPs</strong>, sample notebooks, and rollback guidance.</li>
+  <li>Clear <strong>entitlements</strong>, <strong>support</strong>, and <strong>update cadence</strong>.</li>
+</ul>
+
+<h2>Dataset Card: Structure</h2>
+<ul>
+  <li><strong>Overview</strong>: purpose, domain, target tasks.</li>
+  <li><strong>Schema</strong>: entities, relations, fields, types, vocabularies.</li>
+  <li><strong>Quality</strong>: coverage, nulls, ranges, constraint checks.</li>
+  <li><strong>Fidelity/Utility</strong>: alignment with target tasks and baselines.</li>
+  <li><strong>Privacy</strong>: probes, budgets (if applicable), non‑goals.</li>
+  <li><strong>Packaging</strong>: formats, Unity Catalog registration.</li>
+  <li><strong>Evidence</strong>: metrics, plots, seeds, hashes.</li>
+  <li><strong>Limits</strong>: intended use, failure modes, caveats.</li>
+  <li><strong>Support</strong>: refresh cadence, contact, SLAs.</li>
+</ul>
+
+<h2>Model Card: Structure</h2>
+<ul>
+  <li><strong>Overview</strong>: problem, scope, intended use.</li>
+  <li><strong>Training data</strong>: sources, synthetic notes (if any), constraints.</li>
+  <li><strong>Evaluation</strong>: operating‑point utility with CIs; stability; drift sensitivity.</li>
+  <li><strong>Calibration</strong>: threshold selection SOP; trade‑offs.</li>
+  <li><strong>Robustness</strong>: corruptions (if relevant) and failure analysis.</li>
+  <li><strong>Limits</strong>: out‑of‑scope inputs, known weaknesses.</li>
+  <li><strong>Packaging</strong>: MLflow/ONNX/GGUF; device profiles; example notebooks.</li>
+  <li><strong>Evidence</strong>: signed bundle manifest; SBOM; lineage.</li>
+  <li><strong>Governance</strong>: change‑control, rollback, and audit hooks.</li>
+</ul>
+
+<h2>Evidence‑Led Philosophy</h2>
+<p>Cards are not brochures. They are <strong>contracts</strong> about performance, limits, and support. Each statement links to a verifiable artifact in the evidence bundle. If the card says “at 1% FPR”, the evidence includes the exact threshold, CI bands, seeds, and configs that reproduce it.</p>
+
+<h2>Dataset Card Template (Illustrative)</h2>
+<pre>
+name: Healthcare Claims (Synthetic)
+version: 2025.01
+purpose: Fraud detection prototyping and evaluation
+schema:
+  entities: [patient*, provider*, facility*, claim, line_item, rx]
+  relations:
+    - patient* 1..* claim
+    - claim 1..* line_item
+  fields:
+    - claim: {date: date, pos: code, amount_billed: decimal}
+quality:
+  coverage: {claim.amount_billed: 100%, line_item.cpt: 99.7%}
+  constraints: [amount_billed>=0, date<=today]
+fidelity:
+  marginals: aligned within ±X; joints: aligned on key pairs
+utility:
+  baseline_rules@1%FPR: +15% lift vs legacy
+privacy:
+  seeds: minimal/redacted; probes: no elevation; dp: off
+packaging:
+  format: Delta/Parquet; unity_catalog: catalog.schema.table
+evidence:
+  metrics: metrics/utility@op.json
+  plots: plots/roc_pr.html
+  manifest: manifest.json
+limits:
+  not for clinical diagnosis; rare codes underrepresented
+support:
+  refresh: monthly; contact: sales@auspexi.com
+# *synthetic identifiers only; no PHI/PII
+</pre>
+
+<h2>Model Card Template (Illustrative)</h2>
+<pre>
+name: Claims Fraud Detector
+version: 2025.01
+intended_use: triage and analyst prioritization
+training_data: synthetic claims corpus; see dataset card
+evaluation:
+  op_1%fpr: {tp: ..., fp: ..., ci: [..,..]}
+  stability: {region_delta<=0.03, specialty_delta<=0.05}
+calibration:
+  method: threshold sweep; target: analyst capacity
+robustness:
+  corruptions: n/a; drift: monitored, rollback defined
+limits:
+  out_of_scope: clinical outcomes; extreme rare codes
+packaging:
+  format: mlflow; example_notebook: notebooks/infer.ipynb
+evidence:
+  bundle: evidence-2025.01/manifest.json
+governance:
+  change_control: ticket refs; rollback: script id
+</pre>
+
+<h2>Unity Catalog Integration</h2>
+<ul>
+  <li>Register dataset tables and model functions with grants.</li>
+  <li>Attach card metadata as table/model comments for catalog UIs.</li>
+  <li>Track lineage from sources to publishable assets.</li>
+  <li>Export an HTML/PDF card with links to evidence artifacts.</li>
+</ul>
+
+<h2>Operating Points: Tell Buyers Where to Look</h2>
+<ul>
+  <li>Pick thresholds that map to analyst capacity (alerts/day).</li>
+  <li>Publish effect sizes and CIs; avoid only AUC/roc rhetoric.</li>
+  <li>Explain segment stability bands; highlight limits.</li>
+  <li>Document rollback triggers and SOPs.</li>
+</ul>
+
+<h2>Card Review Checklist (Internal)</h2>
+<ul>
+  <li>Intended use and non‑goals are explicit.</li>
+  <li>Evidence links resolve to signed artifacts.</li>
+  <li>Operating points and stability bands match governance.</li>
+  <li>Limits and known failure modes are concrete.</li>
+  <li>Support cadence and entitlements are correct.</li>
+</ul>
+
+<h2>Case Study: Buyers Who Converted</h2>
+<p>An insurer’s risk committee approved a claims corpus and detector in two weeks after using our cards: they could <em>reproduce</em> utility@OP, inspect segment stability, and file the SBOM/manifest with procurement. Adoption time dropped from months to days.</p>
+
+<h2>Common Failure Modes (and Fixes)</h2>
+<ul>
+  <li><strong>Vague claims</strong>: Replace with OP metrics and CIs; link to plots.</li>
+  <li><strong>No limits stated</strong>: Add out‑of‑scope inputs and known weaknesses.</li>
+  <li><strong>Unclear packaging</strong>: Provide install notebooks and Unity Catalog paths.</li>
+  <li><strong>No rollback</strong>: Document triggers and scripts; rehearse.</li>
+  <li><strong>Drift ignored</strong>: Add monitors and playbooks; include thresholds.</li>
+</ul>
+
+<h2>From Card to Contract</h2>
+<p>Cards map to <strong>contractual expectations</strong>: refresh cadence, support windows, evidence refresh, and deprecation policies. Legal references the card’s version and evidence manifest IDs.</p>
+
+<h2>Evidence Excerpts (Illustrative)</h2>
+<pre>
+metrics/utility@op.json
+{
+  "op": "fpr=0.01",
+  "lift_vs_legacy": 0.18,
+  "ci": [0.161, 0.202],
+  "segments": {"region": {"max_delta": 0.028}}
+}
+
+metrics/stability_by_segment.json
+{
+  "region": {"NA": 0.74, "EU": 0.73, "APAC": 0.72},
+  "product": {"A": 0.77, "B": 0.75}
+}
+</pre>
+
+<h2>Card Publishing SOP</h2>
+<ol>
+  <li>Generate evidence; sign and store artifacts.</li>
+  <li>Draft card from templates; populate with linked metrics.</li>
+  <li>Legal and QA review; assign version and manifest ID.</li>
+  <li>Publish to Unity Catalog and Marketplace listing.</li>
+  <li>Attach to change‑control; notify sales/support.</li>
+</ol>
+
+<h2>Governance Hooks</h2>
+<ul>
+  <li>Card versions align with artifact hashes and SEMVER.</li>
+  <li>Promotion gates tied to operating points and stability bands.</li>
+  <li>Incident runbooks reference card limits and rollback SOPs.</li>
+</ul>
+
+<h2>FAQ</h2>
+<details>
+  <summary>Are cards mandatory for all releases?</summary>
+  <p>Yes—cards and evidence make adoption predictable and audit‑ready.</p>
+ </details>
+<details>
+  <summary>Do cards expose IP?</summary>
+  <p>No. We publish metrics, limits, and manifests—not internal recipes.</p>
+ </details>
+<details>
+  <summary>Can we customize for private listings?</summary>
+  <p>Yes—entitlements and private annexes are supported; core evidence remains consistent.</p>
+ </details>
+
+<h2>Glossary</h2>
+<ul>
+  <li><strong>Operating point</strong>: chosen threshold that maps to business capacity.</li>
+  <li><strong>Evidence bundle</strong>: signed metrics/configs/seeds/hashes.</li>
+  <li><strong>SBOM</strong>: software bill of materials for artifacts.</li>
+  <li><strong>Unity Catalog</strong>: governed registry for data/AI assets.</li>
+</ul>
+
+<h2>Checklists</h2>
+<ul>
+  <li>Intent/limits stated</li>
+  <li>OP metrics + CIs linked</li>
+  <li>Stability bands documented</li>
+  <li>Rollback SOP present</li>
+  <li>Packaging/paths verified</li>
+  <li>Support/refresh declared</li>
+</ul>
+
+<h2>Appendix: Minimal HTML Card</h2>
+<pre>
+<section class="card">
+  <h3>Purpose</h3>
+  <p>...</p>
+  <h3>Evidence</h3>
+  <ul>
+    <li>Utility@OP: ...</li>
+    <li>Stability: ...</li>
+  </ul>
+</section>
+</pre>
+
+<h2>Appendix: JSON Card Schema (Sketch)</h2>
+<pre>
+{
+  "name": "string",
+  "version": "string",
+  "intended_use": "string",
+  "limits": ["string"],
+  "operating_points": [{"name": "string", "threshold": 0.0}],
+  "evidence": {"metrics": ["path"], "plots": ["path"]},
+  "packaging": {"format": "mlflow|onnx|gguf", "uc_path": "catalog.schema.table"}
+}
+</pre>
+
+<h2>Closing</h2>
+<p>Cards that buyers actually use are <strong>boring in the best way</strong>—they answer the questions risk and engineering teams ask, with evidence and SOPs. That’s how you turn interest into adoption.</p>
+
+<p><a class="aeg-btn" href="/contact">Contact Sales →</a></p>
+
+<h2>Extended Buyer Checklist</h2>
+<ul>
+  <li>Card version and evidence manifest ID recorded.</li>
+  <li>Operating point thresholds reproducible from configs.</li>
+  <li>Segment stability deltas within declared bands.</li>
+  <li>Drift monitors described with alarm/rollback gates.</li>
+  <li>Install notebook executes end‑to‑end on target workspace.</li>
+  <li>Unity Catalog path and grants verified by admin.</li>
+  <li>SBOM scanned; licenses approved.</li>
+  <li>Support contacts and SLAs filed.</li>
+</ul>
+
+<h2>Unity Catalog Metadata Examples</h2>
+<pre>
+COMMENT ON TABLE catalog.schema.claims
+IS 'Purpose: fraud triage. OP: fpr=0.01. Evidence: manifest 2025.01.';
+
+COMMENT ON FUNCTION catalog.schema.fraud_infer
+IS 'Model v2025.01; threshold=0.73; see evidence bundle.';
+</pre>
+
+<h2>Notebook Snippet (Install)</h2>
+<pre>
+# Databricks notebook pseudo-code
+%sql
+CREATE CATALOG IF NOT EXISTS catalog;
+CREATE SCHEMA IF NOT EXISTS catalog.schema;
+-- register tables
+-- set grants
+</pre>
+
+<h2>Support & Update Cadence</h2>
+<ul>
+  <li>Refresh: monthly; security patches ad‑hoc.</li>
+  <li>Deprecation: 60‑day notice with migration notes.</li>
+  <li>Channels: email + portal; priority by tier.</li>
+</ul>
+
+<h2>Versioning Strategy</h2>
+<ul>
+  <li>SEMVER with evidence ID ties.</li>
+  <li>Minor updates keep OP/stability bands constant.</li>
+  <li>Major updates may change OP; gates must re‑pass.</li>
+</ul>
+
+<h2>Security Annex (Public)</h2>
+<ul>
+  <li>Artifacts signed; hashes in manifest.</li>
+  <li>No PHI/PII in published evidence.</li>
+  <li>Private annexes allowed for enterprise customers.</li>
+</ul>
+
+<h2>Accessibility & Localization</h2>
+<ul>
+  <li>Cards export to HTML/PDF for low‑access contexts.</li>
+  <li>Plain‑language summaries for non‑technical stakeholders.</li>
+  <li>Optional localized summaries (EN first).</li>
+</ul>
+
+<h2>Procurement Mapping</h2>
+<ul>
+  <li>Evidence bundle → contract exhibit.</li>
+  <li>Card version → SOW appendix reference.</li>
+  <li>SLAs → schedule with metrics and response windows.</li>
+</ul>
+
+<h2>Evidence Regeneration (CI)</h2>
+<pre>
+steps:
+  - run: make evidence
+  - upload: evidence/**
+  - sign: manifest.json
+</pre>
+
+<h2>Troubleshooting</h2>
+<ul>
+  <li>Threshold mismatch → load thresholds.yaml from bundle.</li>
+  <li>Notebook fails on perms → verify UC grants/group mapping.</li>
+  <li>Plot not rendering → open static HTML export in browser.</li>
+</ul>
+
+<h2>Change History (Excerpt)</h2>
+<pre>
+2025.01: Initial release; OP=0.73; evidence manifest ID 8e7...
+2025.02: Stability improvement in APAC; OP unchanged; new plots.
+</pre>
+
+<h2>Operational Notes</h2>
+<ul>
+  <li>Keep OP thresholds in config, not code.</li>
+  <li>Automate drift alarms; avoid manual overrides.</li>
+  <li>Attach card/evidence to incidents and releases.</li>
+</ul>
+
+<h2>Data Lineage</h2>
+<ul>
+  <li>Seeds → generation → validation → packaging → catalog.</li>
+  <li>Lineage recorded in evidence for audit trails.</li>
+</ul>
+
+<h2>Closing Notes</h2>
+<p>When cards answer real buying, risk, and operational questions—grounded in evidence—adoption accelerates. AethergenPlatform treats cards as living documents tied to reproducible artifacts.</p>
+
+

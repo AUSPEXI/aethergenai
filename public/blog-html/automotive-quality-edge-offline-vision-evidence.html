@@ -1,0 +1,157 @@
+<h1>Automotive Quality at the Edge: Offline Vision with Verifiable Results</h1>
+<p><em>By Gwylym Owen — 20–28 min read</em></p>
+
+<h2>Executive Summary</h2>
+<p>Assembly lines demand deterministic latency, zero‑trust packaging, and auditable quality evidence. AethergenPlatform ships edge bundles for air‑gapped stations: camera ingest, calibration, inference, policy actions, and signed evidence logs. This guide details station architecture, timing budgets, acceptance gates, and the evidence bundle that lets QA and procurement sign with confidence.</p>
+
+<h2>Station Context and Constraints</h2>
+<ul>
+  <li><strong>Latency</strong>: 5–50 ms/frame typical; actions must not stall conveyors.</li>
+  <li><strong>Uptime</strong>: operate through network outages; local watchdogs and restart policies.</li>
+  <li><strong>Traceability</strong>: link decisions to lot, shift, operator, and configuration state.</li>
+  <li><strong>Change‑control</strong>: versioned policies, thresholds, and binaries with checksums.</li>
+.</ul>
+
+<h2>Station Types</h2>
+<ul>
+  <li><strong>Surface defects</strong>: paint, scratches, dents.</li>
+  <li><strong>Assembly checks</strong>: fasteners, gaps, alignment.</li>
+  <li><strong>Electrical</strong>: connector presence, indicator tests.</li>
+  <li><strong>Interior</strong>: stitching, wrinkles, fit.</li>
+</ul>
+
+<h2>Defect Taxonomy</h2>
+<ul>
+  <li>Critical (stop line), Major (rework), Minor (tally for trends).</li>
+  <li>Per‑class thresholds and escalation routes are part of the policy pack.</li>
+</ul>
+
+<h2>Golden Run Protocol</h2>
+<ol>
+  <li>Capture golden images after calibration.</li>
+  <li>Run model with logging at full verbosity.</li>
+  <li>Freeze operating points and store signed evidence.</li>
+ </ol>
+
+<h2>Lighting Scenarios</h2>
+<ul>
+  <li>Day, night, mixed; seasonal presets.</li>
+  <li>Histogram alarms; auto switch profiles within bounds.</li>
+</ul>
+
+<h2>Security Model</h2>
+<ul>
+  <li>Offline signed packages; QR hash verification.</li>
+  <li>Role‑based access; local audit logs.</li>
+  <li>Rollback artifacts stored locally with checksums.</li>
+</ul>
+
+<h2>Maintenance SOP</h2>
+<ol>
+  <li>Enter maintenance mode; snapshot current state.</li>
+  <li>Recalibrate camera/lighting; record deltas.</li>
+  <li>Re‑run golden set; compare drift and accept/reject.</li>
+ </ol>
+
+<h2>FAQ</h2>
+<details>
+  <summary>What if inference spikes above budget?</summary>
+  <p>Policy triggers fallback model or raises thresholds temporarily; evidence logs the event and recovery.</p>
+ </details>
+<details>
+  <summary>Can we run two models per station?</summary>
+  <p>Yes—ensemble or shadow modes are supported. Shadow output is retained in evidence for future promotions.</p>
+ </details>
+<details>
+  <summary>How do we prove nothing changed?</summary>
+  <p>Manifest + SBOM hashes must match the release notes; QR hash scan is the quick check.</p>
+ </details>
+
+<h2>Glossary</h2>
+<ul>
+  <li><strong>Operating point</strong>: defect score threshold per class.</li>
+  <li><strong>Golden set</strong>: curated frames used to verify station health.</li>
+  <li><strong>Rework loop</strong>: policy route for flagged items.</li>
+</ul>
+
+<h2>Checklist for Go‑Live</h2>
+<ul>
+  <li>Calibration signed off.</li>
+  <li>Golden run stored; hashes match.</li>
+  <li>Operating points documented with effect sizes.</li>
+  <li>Rollback and maintenance SOP rehearsed.</li>
+</ul>
+
+<h2>Reference Architecture</h2>
+<ul>
+  <li><strong>Capture & preprocess</strong>: camera sync, lens distortion correction, illumination normalization.</li>
+  <li><strong>On‑device inference</strong>: defect detection/classification; model variants per station.</li>
+  <li><strong>Policy layer</strong>: accept/reject/flag routing; rework loop integration; safety interlocks.</li>
+  <li><strong>Evidence logger</strong>: signed summaries; sample frame retention under configurable policies.</li>
+</ul>
+
+<h2>Calibration & Robustness</h2>
+<ul>
+  <li><strong>Golden images</strong> and alignment targets for camera reposition events.</li>
+  <li><strong>Lighting profiles</strong> with seasonal/shift presets; drift alarms on histogram shifts.</li>
+  <li><strong>Tooling changes</strong> tracked in metadata to de‑risk false alarms after maintenance.</li>
+</ul>
+
+<h2>KPIs That Operations Care About</h2>
+<ul>
+  <li><strong>Per‑class sensitivity/specificity</strong> at chosen operating points.</li>
+  <li><strong>False‑call cost</strong> and rework minutes per 1k units by shift.</li>
+  <li><strong>Throughput impact</strong> (units/hour) at current thresholds.</li>
+  <li><strong>Stability</strong> across lighting/tooling/seasonal shifts.</li>
+</ul>
+
+<h2>Evidence Bundle (QA, Audit, Procurement)</h2>
+<ul>
+  <li><strong>Model cards</strong> with training data specs, limits, and known failure modes.</li>
+  <li><strong>Operating points</strong> per class with ROC/PR curves and confidence intervals.</li>
+  <li><strong>Traceability</strong>: lot/shift decisions, policy thresholds, and rework triggers.</li>
+  <li><strong>SBOM</strong> and signed manifests (hashes) for all binaries and configs.</li>
+</ul>
+
+<h2>Offline Packaging & Policy Packs</h2>
+<p>Device‑specific builds (INT8/Q4/FP16) and <strong>policy packs</strong> (thresholds, logging) ship as a signed tarball. Optional QR‑encoded manifest hashes enable handheld verification at the line—no network required.</p>
+
+<h2>Acceptance and Rollout</h2>
+<ol>
+  <li><strong>Pilot</strong>: one station, one defect class; freeze acceptance criteria and rework policy.</li>
+  <li><strong>Gates</strong>: select operating points; document effect sizes; capture golden runs.</li>
+  <li><strong>Rollback</strong>: define drift alarms and reversion triggers; rehearse the procedure.</li>
+  <li><strong>Scale‑out</strong>: replicate station bundles; keep gates identical to preserve evidence.</li>
+ </ol>
+
+<blockquote>
+  <p>With <strong>AethergenPlatform</strong> you don’t just deploy models—you deploy <em>proof</em>. QA signs off on numbers that map to throughput and rework, not vibes.</p>
+ </blockquote>
+
+<p><a class="aeg-btn" href="/contact">Contact Sales →</a></p>
+
+<h2>Timing Budgets</h2>
+<ul>
+  <li><strong>Capture</strong>: 1–3 ms</li>
+  <li><strong>Preprocess</strong>: 1–5 ms</li>
+  <li><strong>Inference</strong>: 3–25 ms (model‑dependent)</li>
+  <li><strong>Policy & I/O</strong>: 1–5 ms</li>
+</ul>
+
+<h2>Failure Modes and Safeguards</h2>
+<ul>
+  <li>Camera dropout → failover to redundant sensor; alert operator.</li>
+  <li>Lighting shift → alarm and auto‑adjust profile; hold thresholds if needed.</li>
+  <li>Model error spike → revert to last good operating point; log evidence.</li>
+</ul>
+
+<h2>Rework Integration</h2>
+<p>Policy layer integrates with rework cells; defects above severity S route automatically. Evidence links each rework to the original frame and decision context.</p>
+
+<h2>Procurement Checklist</h2>
+<ul>
+  <li>SBOM + signed manifests</li>
+  <li>Per‑class operating points with CIs</li>
+  <li>Golden image sets and calibration procedures</li>
+  <li>Rollback scripts and rehearsal records</li>
+</ul>

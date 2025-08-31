@@ -7,3 +7,240 @@
 <p><a href="/pricing" class="aeg-btn">View Pricing →</a> <a href="/contact" class="aeg-btn">Contact Sales →</a></p>
 
 
+<h2>Principles</h2>
+<ul>
+  <li>Design then build: schemas, constraints, and interfaces first.</li>
+  <li>Validate small: prove patterns at tiny scale before you scale.</li>
+  <li>Write gates: promote only when evidence passes.</li>
+  <li>Document decisions: avoid re‑debating settled topics.</li>
+ </ul>
+
+<h2>Architecture Discipline</h2>
+<ul>
+  <li>Module boundaries and contracts.</li>
+  <li>Source of truth for thresholds and configuration.</li>
+  <li>Versioning and deprecation paths.</li>
+ </ul>
+
+<h2>Small‑Scale Validation</h2>
+<ul>
+  <li>Prototype recipes and pipelines on tiny slices.</li>
+  <li>Measure effect sizes and drift behavior early.</li>
+  <li>Lock seeds and record hashes for reproducibility.</li>
+ </ul>
+
+<h2>Evidence Gates</h2>
+<ul>
+  <li>Utility at OP with CIs.</li>
+  <li>Stability within segment bands.</li>
+  <li>Latency SLOs; privacy probes.</li>
+ </ul>
+
+<h2>Master Document (Outline)</h2>
+<pre>
+goals: outcomes and constraints
+architecture: modules, contracts, data schemas
+pipelines: steps, artifacts, owners
+gates: thresholds and metrics
+rollbacks: triggers and scripts
+evidence: bundles and manifests
+</pre>
+
+<h2>Pipeline Templates</h2>
+<pre>
+ingest → normalise → join → validate → package → deploy → evidence
+                     ↘ tests & gates ↗
+</pre>
+
+<h2>SOPs</h2>
+<ul>
+  <li>Promotion: gates pass; evidence signed; change‑control updated.</li>
+  <li>Rollback: trigger, revert, verify, document.</li>
+  <li>Incident: snapshot evidence; root cause; prevention actions.</li>
+ </ul>
+
+<h2>Governance</h2>
+<ul>
+  <li>Catalog comments reference evidence IDs.</li>
+  <li>Config tables hold thresholds; no hard‑coding.</li>
+  <li>Deprecation schedules and migration guides.</li>
+ </ul>
+
+<h2>Examples</h2>
+<pre>
+gate.utility@op.min = 0.75
+gate.stability.region.max_delta = 0.03
+gate.latency.p95_ms = 120
+</pre>
+
+<h2>Case Study</h2>
+<p>A team moved from ad‑hoc merges to evidence‑led promotion. Incidents dropped 40%, and releases accelerated because the master document removed ambiguity.</p>
+
+<h2>Checklist</h2>
+<pre>
+[ ] Architecture & schemas set
+[ ] Small‑scale validation complete
+[ ] Gates defined & automated
+[ ] Rollbacks rehearsed
+[ ] Evidence bundling wired into CI
+</pre>
+
+<h2>FAQ</h2>
+<details>
+  <summary>Isn’t this overhead?</summary>
+  <p>It’s leverage—minutes now save weeks later, and audits become routine.</p>
+ </details>
+<details>
+  <summary>What if gates block too often?</summary>
+  <p>Tune thresholds responsibly; don’t remove the guardrails.</p>
+ </details>
+
+<h2>Closing</h2>
+<p>Preparation is velocity. With a master document and evidence gates, <strong>AethergenPlatform</strong> teams ship faster, safer, and with confidence.</p>
+
+<h2>Blueprint (Master Document Contents)</h2>
+<pre>
+1. Goals & Constraints
+2. Architecture & Module Contracts
+3. Data Schemas & Vocabularies
+4. Pipelines & Artifacts
+5. Evidence Gates & Thresholds
+6. Rollback Triggers & SOPs
+7. Security, Privacy, and Compliance
+8. Runbooks & On‑Call
+9. Glossary & Appendix Templates
+</pre>
+
+<h2>Goals & Constraints</h2>
+<ul>
+  <li>Define KPIs at operating points (OPs) with business owners.</li>
+  <li>Budget latency and resource envelopes (p95/p99; device caps).</li>
+  <li>Privacy posture (probes; optional DP budgets) and evidence cadence.</li>
+ </ul>
+
+<h2>Architecture & Contracts</h2>
+<ul>
+  <li>Module inputs/outputs; error handling; idempotency rules.</li>
+  <li>Config tables as source of truth (no hard‑coding thresholds).</li>
+  <li>Deprecation paths and migration windows.</li>
+ </ul>
+
+<h2>Data Schemas & Vocabularies</h2>
+<pre>
+entities:
+  Patient: {id, age, region}
+  Provider: {id, specialty, region}
+  Claim: {id, patient_id, provider_id, date, pos, amount}
+  LineItem: {id, claim_id, cpt, icd10, units}
+constraints:
+  amount ≥ 0; units ≥ 1; CPT in CPT_v12
+relations:
+  Patient 1..* Claim; Claim 1..* LineItem
+vocabularies:
+  CPT_v12, ICD10_subset (with region overlays)
+</pre>
+
+<h2>Pipelines & Artifacts</h2>
+<pre>
+ingest → normalise → join → validate → package → deploy → evidence
+                     ↘ tests & gates ↗
+artifacts: parquet/delta, notebooks, dashboards, manifests, sbom
+</pre>
+
+<h2>Evidence Gates & Thresholds</h2>
+<pre>
+gate.utility@op.min = 0.75
+gate.stability.region.max_delta = 0.03
+gate.latency.p95_ms = 120; p99_ms = 180
+gate.privacy.membership_advantage_max = 0.05
+</pre>
+
+<h2>Rollback Triggers & SOPs</h2>
+<ul>
+  <li>Trigger: gate breach (utility, stability, latency, privacy).</li>
+  <li>Actions: revert to last good bundle; verify OP; open incident.</li>
+  <li>Documentation: snapshot evidence; post‑mortem within 48h.</li>
+ </ul>
+
+<h2>Security, Privacy, Compliance</h2>
+<ul>
+  <li>Signed manifests; key rotation; revocation lists.</li>
+  <li>Privacy probes and optional DP budgets with impact notes.</li>
+  <li>SBOM per release; export control statements (if applicable).</li>
+ </ul>
+
+<h2>Runbooks & On‑Call</h2>
+<pre>
+promotion:
+  - ensure gates PASS; sign evidence; update change‑control
+  - notify stakeholders; update catalog comments with evidence ID
+rollback:
+  - run revert script; verify OP; attach logs; notify
+incident:
+  - snapshot; classify; mitigate; file root cause; assign actions
+</pre>
+
+<h2>Templates (Copy‑Paste Ready)</h2>
+<pre>
+acceptance_form:
+  bundle_id: string
+  op_utility: PASS|FAIL
+  stability: PASS|FAIL
+  latency: PASS|FAIL
+  privacy: PASS|FAIL
+  decision: APPROVE|REJECT
+  signoff: name, date
+
+change_control:
+  release: string
+  gates: {utility@op: PASS, stability: PASS, latency: PASS, privacy: PASS}
+  bundle_id: string
+  notes: string
+</pre>
+
+<h2>Dashboards (Sections)</h2>
+<ul>
+  <li>Executive summary: OP, stability, latency, privacy.</li>
+  <li>Segment tables with CIs and deltas.</li>
+  <li>Ablation forest plots and threshold sweeps.</li>
+  <li>Appendix: configs, hashes, environment.</li>
+ </ul>
+
+<h2>Red‑Team Checks</h2>
+<ul>
+  <li>Try to promote with missing dashboards → packaging gate blocks.</li>
+  <li>Tamper thresholds mid‑run → config hash mismatch stops pipeline.</li>
+  <li>Skip stability calculation → gates fail closed by default.</li>
+ </ul>
+
+<h2>Case Studies (Expanded)</h2>
+<p>By drafting the master document up‑front, a team cut incident rate by 40% and shrank promotion cycles from weeks to days. Audits moved from meetings to checks, because the evidence and SOPs were already bundled.</p>
+
+<h2>Checklist (Extended)</h2>
+<pre>
+[ ] Goals & OPs set with owners
+[ ] Module contracts written
+[ ] Schemas & vocabs versioned
+[ ] Pipelines templated and tested
+[ ] Gates automated in CI
+[ ] Rollbacks rehearsed quarterly
+[ ] Security keys rotated; SBOM generated
+[ ] Dashboards export to HTML/PDF
+</pre>
+
+<h2>FAQ (Extended)</h2>
+<details>
+  <summary>What if the plan changes?</summary>
+  <p>Version the master doc; record decisions; re‑run validation at small scale before merging.</p>
+ </details>
+<details>
+  <summary>How do we avoid over‑planning?</summary>
+  <p>Time‑box drafting; validate fast; keep documents concise and living.</p>
+ </details>
+<details>
+  <summary>Is every gate mandatory?</summary>
+  <p>For production promotions—yes. Experimental branches can skip but cannot deploy.</p>
+ </details>
+
+<h2>Closing (Comprehensive)</h2>
+<p>Preparation eliminates chaos. With architecture discipline, small‑scale validation, and fail‑closed gates, <strong>AethergenPlatform</strong> turns delivery into a reliable, auditable process.</p>

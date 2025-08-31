@@ -1,0 +1,470 @@
+<h1>Shipping AethergenPlatform: Evidence‑Led, Privacy‑Preserving AI Training</h1>
+<p><em>By Gwylym Owen — 40–60 min read</em></p>
+
+<h2>Executive Summary</h2>
+<p>AethergenPlatform ships a modular pipeline that generates high‑fidelity synthetic data, designs schemas, and trains models—Databricks‑ready and enterprise‑focused. Every release carries <strong>evidence bundles</strong> with signed metrics, stability bands, latency SLOs, and privacy probes. SLAs reference evidence, not hype.</p>
+
+<h2>Architecture</h2>
+<ul>
+  <li>Schema designer with vocabularies and constraints.</li>
+  <li>Generators (copula, sequence, graph) with overlays.</li>
+  <li>Validation and privacy stages with CI gates.</li>
+  <li>Packaging to Unity Catalog and Marketplace.</li>
+  <li>Evidence and catalog delivery for procurement.</li>
+ </ul>
+
+<h2>Pipeline</h2>
+<pre>
+schema → seeds → generation → overlays → validation → privacy → training → packaging → evidence
+                               ↘ ablations ↗
+</pre>
+
+<h2>Evidence</h2>
+<ul>
+  <li>Utility at OP with CIs and segment stability.</li>
+  <li>Latency distributions (p50/p95/p99).</li>
+  <li>Privacy probes; optional DP budgets.</li>
+  <li>SBOM; manifest; environment fingerprints.</li>
+ </ul>
+
+<h2>SLAs</h2>
+<ul>
+  <li>Evidence regeneration: next business day.</li>
+  <li>Incident triage: same day for production promotions.</li>
+  <li>Refresh cadence: monthly or on change.</li>
+ </ul>
+
+<h2>Case Studies</h2>
+<ul>
+  <li>Healthcare claims detector: OP + stability within bands; procurement in 2 weeks.</li>
+  <li>AML graph detector: private listing; week‑long trial; conversion post‑evidence.</li>
+ </ul>
+
+<h2>Buyer Quickstart</h2>
+<pre>
+# 1) Register assets in Unity Catalog
+# 2) Load sample table; run UDF at OP
+# 3) Verify OP utility and stability summaries
+# 4) File SBOM and manifest; sign acceptance
+</pre>
+
+<h2>Closing</h2>
+<p>We ship proof, not promises. With <strong>AethergenPlatform</strong>, adoption accelerates because every release is a verifiable unit of trust.</p>
+
+<h2>Platform Modules</h2>
+<ul>
+  <li>Schema Designer: entities, relations, constraints, vocabularies.</li>
+  <li>Generators: copula, sequence, and graph with overlays.</li>
+  <li>Validation: marginals, joints, temporal checks, effect sizes.</li>
+  <li>Privacy: membership/attribute probes; optional DP budgets.</li>
+  <li>Training: adapters, instruction tuning, domain adaptation.</li>
+  <li>Packaging: MLflow/ONNX/GGUF, Unity Catalog, Marketplace.</li>
+  <li>Evidence: signed metrics, dashboards, SBOM, manifests.</li>
+ </ul>
+
+<h2>Reference Architecture (Text)</h2>
+<pre>
+sources → schema → seeds → generation → overlays → validation → privacy → training
+                                                              ↘ ablations ↗
+                             packaging → catalog/marketplace → evidence → procurement
+</pre>
+
+<h2>Data Schemas (Illustrative)</h2>
+<pre>
+entities:
+  Patient: {id, age, region}
+  Provider: {id, specialty, region}
+  Claim: {id, patient_id, provider_id, date, pos, amount}
+  LineItem: {id, claim_id, cpt, icd10, units}
+relations:
+  Patient 1..* Claim; Claim 1..* LineItem; Claim.provider_id → Provider.id
+constraints:
+  amount ≥ 0; units ≥ 1; CPT in CPT_v12
+</pre>
+
+<h2>Generation Recipes</h2>
+<pre>
+claims_v3:
+  generator: copula+sequence
+  params:
+    amount.ln_mu: 4.1
+    amount.ln_sigma: 0.7
+    interarrival.mixexp: {lambda: [0.3,0.8], weight: [0.4,0.6]}
+  overlays:
+    upcoding: {prevalence: 0.03, factor: 1.2}
+    duplicate_billing: {delay_days: 7}
+</pre>
+
+<h2>Overlay Library</h2>
+<ul>
+  <li>Upcoding, Unbundling, Phantom Providers</li>
+  <li>Duplicate Billing, Doctor Shopping, Kickback Rings</li>
+  <li>Mule Rings, Structuring, Velocity Spikes (graphs)</li>
+ </ul>
+
+<h2>Validation & KPIs</h2>
+<ul>
+  <li>Fidelity: marginals/joints/temporal within tolerances.</li>
+  <li>Utility@OP: KPI at chosen threshold with CIs.</li>
+  <li>Stability: max deltas across segments (region/product/lifecycle).</li>
+  <li>Ablations: effect sizes; keep what helps, revert what harms.</li>
+ </ul>
+
+<h2>Operating Point (OP) Selection</h2>
+<pre>
+capacity:
+  analysts_per_day: 20
+  cases_per_analyst: 100
+budget:
+  alerts_per_day: 2000
+op:
+  target_fpr: 0.01
+  threshold_sweep: [0.70, 0.76]
+</pre>
+
+<h2>Privacy Program</h2>
+<ul>
+  <li>Membership inference: report AUC−0.5 with CIs.</li>
+  <li>Attribute disclosure: compare to baseline leakage.</li>
+  <li>Optional DP: disclose ε, δ and expected utility impact.</li>
+ </ul>
+
+<h2>Training Flows</h2>
+<ul>
+  <li>Adapters for instruction tuning; OP‑aligned eval suites.</li>
+  <li>Domain adaptation with synthetic augmentations; limits documented.</li>
+  <li>Robustness (where relevant): noise/OCR, corruptions.</li>
+ </ul>
+
+<h2>Packaging</h2>
+<ul>
+  <li>MLflow/ONNX/GGUF artifacts with device profiles (INT8/FP16/Q4).</li>
+  <li>Unity Catalog objects (tables, UDFs) with comments linking evidence.</li>
+  <li>Marketplace listing artifacts: README, pricing JSON, trial notebook.</li>
+ </ul>
+
+<h2>Evidence Bundle (Index)</h2>
+<pre>
+index.json
+├─ metrics/utility@op.json
+├─ metrics/stability_by_segment.json
+├─ metrics/latency.json
+├─ privacy/probes.json
+├─ plots/op_tradeoffs.html
+├─ plots/stability_bars.html
+├─ configs/evaluation.yaml
+├─ configs/thresholds.yaml
+├─ sbom.json
+├─ manifest.json
+└─ seeds/seeds.txt
+</pre>
+
+<h2>Manifest (Sample)</h2>
+<pre>
+{
+  "version": "2025.01",
+  "artifacts": ["metrics/utility@op.json", "plots/op_tradeoffs.html", "sbom.json"],
+  "hashes": {"metrics/utility@op.json": "sha256:..."},
+  "env": {"python": "3.11", "numpy": "1.26.4"}
+}
+</pre>
+
+<h2>CI/CD Stages</h2>
+<pre>
+evaluate → evidence → gates → package → publish
+fail‑closed on any gate breach
+</pre>
+
+<h2>SLAs (Detailed)</h2>
+<ul>
+  <li>Response: 1bd (assisted), 4h (full‑service).</li>
+  <li>Refresh: monthly or on material change.</li>
+  <li>Dashboards/export fixes: 24h.</li>
+ </ul>
+
+<h2>Unity Catalog Delivery</h2>
+<pre>
+COMMENT ON TABLE prod.ai.claims IS 'Purpose: fraud triage; OP: fpr=1%; Evidence: manifest 2025.01.';
+GRANT SELECT ON TABLE prod.ai.claims TO `buyer-group`;
+</pre>
+
+<h2>Case Study: Healthcare</h2>
+<p>OP utility 0.758 [0.749,0.767]; region stability ≤0.03; procurement signed in two weeks. Evidence and SBOM filed with contract.</p>
+
+<h2>Case Study: AML Graph</h2>
+<p>Motif features improved OP utility by +3.8% (CI +3.0,+4.6); buyers reproduced metrics in a trial workspace; listing converted post‑trial.</p>
+
+<h2>Acceptance Form (Template)</h2>
+<pre>
+bundle_id: 8e7...
+op_utility: PASS
+stability: PASS
+latency: PASS
+privacy: PASS
+decision: APPROVE | REJECT
+signoff: ____________  date: ________
+</pre>
+
+<h2>Operational Dashboards</h2>
+<ul>
+  <li>OP utility and stability over time.</li>
+  <li>Latency distributions; incidents and rollbacks.</li>
+  <li>Adoption/usage metrics by segment.</li>
+ </ul>
+
+<h2>Security & Compliance</h2>
+<ul>
+  <li>SBOM per release; vulnerabilities tracked.</li>
+  <li>Signed manifests; key rotation and revocation lists.</li>
+  <li>Export control statements where applicable.</li>
+ </ul>
+
+<h2>Buyer Quickstart (Notebook)</h2>
+<pre>
+# 1) Load sample
+# 2) Run UDF at OP
+# 3) Compute OP utility
+# 4) Review stability summary
+</pre>
+
+<h2>Runbook</h2>
+<ol>
+  <li>Detect change → regenerate evidence.</li>
+  <li>Gates pass → package and publish.</li>
+  <li>Gates fail → fix and rerun; incident if needed.</li>
+ </ol>
+
+<h2>Incident Template</h2>
+<pre>
+INC‑2025‑0012: stability breach in APAC → rollback to 8e7...; patch overlay; re‑evaluate; promote 2025.02
+</pre>
+
+<h2>FAQs</h2>
+<details>
+  <summary>Can we run fully offline?</summary>
+  <p>Yes—air‑gapped bundles with offline dashboards and QR‑verifiable manifests.</p>
+ </details>
+<details>
+  <summary>Do we support private listings?</summary>
+  <p>Yes—Unity Catalog private schemas and Marketplace private listings.</p>
+ </details>
+<details>
+  <summary>How do we verify claims?</summary>
+  <p>Use the bundled dashboards, manifests, and signatures; re‑compute OP metrics with provided notebooks.</p>
+ </details>
+
+<h2>Closing (Extended)</h2>
+<p><strong>AethergenPlatform</strong> turns AI delivery into a governed, evidence‑first process. Every artifact is audit‑ready; every claim is reproducible; every deployment has a rollback plan.</p>
+
+<h2>Module Deep Dives</h2>
+<h3>Schema Designer</h3>
+<ul>
+  <li>Entity modeling with visibility labels and constraints.</li>
+  <li>Versioned vocabularies with regional overlays and diffs.</li>
+  <li>Automated migration notes for breaking changes.</li>
+ </ul>
+
+<h3>Generators</h3>
+<ul>
+  <li>Copula modeling for joint distributions.</li>
+  <li>Sequence generators for temporal flows.</li>
+  <li>Graph generators for AML/fraud networks.</li>
+  <li>Overlay library to preserve tails and stress operating points.</li>
+ </ul>
+
+<h3>Validation</h3>
+<ul>
+  <li>Marginals, joints, temporal cadences with tolerances.</li>
+  <li>Baseline detectors with OP sweeps and effect sizes.</li>
+  <li>Drift early‑warning and change‑point analysis.</li>
+ </ul>
+
+<h3>Privacy</h3>
+<ul>
+  <li>Membership/attribute probes with confidence intervals.</li>
+  <li>Optional differential privacy (ε, δ) with impact notes.</li>
+  <li>Process isolation and access logging for seeds.</li>
+ </ul>
+
+<h3>Training</h3>
+<ul>
+  <li>Instruction tuning with adapters; OP‑aligned evaluation suites.</li>
+  <li>Domain adaptation with synthetic augmentations; limits documented.</li>
+  <li>Robustness checks (noise/OCR where relevant).</li>
+ </ul>
+
+<h3>Packaging & Delivery</h3>
+<ul>
+  <li>MLflow/ONNX/GGUF artifacts with device profiles (INT8/FP16/Q4).</li>
+  <li>Unity Catalog registration (tables, UDFs) with evidence comments.</li>
+  <li>Marketplace listing assets (README, pricing JSON, trial notebooks).</li>
+ </ul>
+
+<h2>Schema Catalog (Illustrative)</h2>
+<pre>
+entities:
+  Patient: {id: string, age: int, region: enum[NA,EU,APAC]}
+  Provider: {id: string, specialty: enum, region: enum}
+  Facility: {id: string, type: enum, region: enum}
+  Claim: {id: string, patient_id: ref Patient.id, provider_id: ref Provider.id,
+          facility_id: ref Facility.id, date: date, pos: enum, amount: decimal}
+  LineItem: {id: string, claim_id: ref Claim.id, cpt: string, icd10: string, units: int}
+relations:
+  Patient 1..* Claim
+  Claim 1..* LineItem
+constraints:
+  Claim.amount >= 0
+  LineItem.units > 0
+vocabularies:
+  CPT_v12: {...}
+  ICD10_subset: {...}
+</pre>
+
+<h2>Overlay Composition</h2>
+<pre>
+overlays:
+  upcoding: {prevalence: 0.03, factor: 1.2}
+  unbundling: {prevalence: 0.01}
+  phantom_provider: {distance_km: >150, time_collision: true}
+  duplicate_billing: {delay_days: 7}
+  doctor_shopping: {window_days: 14, device_reuse: 0.25}
+</pre>
+
+<h2>Validation Worksheets (Examples)</h2>
+<pre>
+field, ks_pvalue, pass
+amount, 0.21, yes
+units, 0.34, yes
+pos, 0.08, borderline (flag)
+</pre>
+
+<h2>Operating Point Selection (Math)</h2>
+<pre>
+Given alerts/day budget B and daily volume V, choose threshold θ such that FPR(θ) ≈ B / V.
+Validate precision/recall at θ with bootstrap confidence intervals.
+</pre>
+
+<h2>Ablations & Effect Sizes</h2>
+<pre>
+factor, delta@op, ci_low, ci_high, decision
+graph_motifs, +0.038, +0.030, +0.046, keep
+remove_residuals, -0.012, -0.019, -0.006, revert
+</pre>
+
+<h2>Drift Monitors</h2>
+<pre>
+monitors:
+  input_psi:
+    fields: [amount, pos]
+    threshold: 0.2
+  outcome_delta:
+    by_segment: [region, product]
+    threshold: 0.05
+</pre>
+
+<h2>Evidence Manifest (Sample)</h2>
+<pre>
+{
+  "version": "2025.01",
+  "artifacts": ["metrics/utility@op.json", "plots/op_tradeoffs.html", "sbom.json"],
+  "hashes": {"metrics/utility@op.json": "sha256:..."},
+  "env": {"python": "3.11", "numpy": "1.26.4"}
+}
+</pre>
+
+<h2>CI/CD Pipeline</h2>
+<pre>
+evaluate → evidence → gates → package → publish
+fail‑closed on gate breach; incidents opened with bundle IDs.
+</pre>
+
+<h2>SLAs (Tables)</h2>
+<pre>
+Capability               Assisted       Full‑Service
+Response                 1 business day 4 hours
+Refresh                  Monthly        Negotiated
+Dashboard fixes          24 hours       24 hours
+</pre>
+
+<h2>Unity Catalog Delivery (SQL)</h2>
+<pre>
+COMMENT ON TABLE prod.ai.claims IS 'Purpose: fraud triage; OP: fpr=1%; Evidence: manifest 2025.01.';
+GRANT SELECT ON TABLE prod.ai.claims TO `buyer-group`;
+</pre>
+
+<h2>Case Studies (Expanded)</h2>
+<h3>Healthcare</h3>
+<p>OP utility 0.758 [0.749,0.767]; region stability ≤0.03; procurement signed in two weeks. Evidence and SBOM filed with the contract; thresholds stored in config tables.</p>
+<h3>AML Graph</h3>
+<p>Motif features improved OP utility by +3.8% (CI +3.0,+4.6); buyers reproduced metrics in a trial workspace; listing converted after a week‑long pilot.</p>
+
+<h2>Acceptance Form</h2>
+<pre>
+bundle_id: 8e7...
+op_utility: PASS
+stability: PASS
+latency: PASS
+privacy: PASS
+decision: APPROVE | REJECT
+signoff: ____________  date: ________
+</pre>
+
+<h2>Operational Dashboards</h2>
+<ul>
+  <li>OP utility and stability over time; per‑segment breakdowns.</li>
+  <li>Latency distributions; incident/rollback timelines.</li>
+  <li>Adoption and usage metrics by segment.</li>
+ </ul>
+
+<h2>Security & Compliance</h2>
+<ul>
+  <li>SBOM per release; vulnerabilities tracked and disclosed.</li>
+  <li>Signed manifests; key rotation and revocation lists.</li>
+  <li>Export control statements where applicable.</li>
+ </ul>
+
+<h2>Buyer Quickstart</h2>
+<pre>
+# 1) Load sample
+# 2) Run UDF at OP
+# 3) Compute OP utility
+# 4) Review stability summary
+</pre>
+
+<h2>Runbook</h2>
+<ol>
+  <li>Detect change → regenerate evidence.</li>
+  <li>Gates pass → package and publish.</li>
+  <li>Gates fail → fix and rerun; incident if needed.</li>
+ </ol>
+
+<h2>Incident Template</h2>
+<pre>
+INC‑2025‑0012: stability breach in APAC → rollback to 8e7...; patch overlay; re‑evaluate; promote 2025.02
+</pre>
+
+<h2>FAQs (Extended)</h2>
+<details>
+  <summary>Can we run fully offline?</summary>
+  <p>Yes—air‑gapped bundles with offline dashboards and QR‑verifiable manifests.</p>
+ </details>
+<details>
+  <summary>Do we support private listings?</summary>
+  <p>Yes—Unity Catalog private schemas and Marketplace private listings.</p>
+ </details>
+<details>
+  <summary>How do we verify claims?</summary>
+  <p>Use the bundled dashboards, manifests, and signatures; re‑compute OP metrics with provided notebooks.</p>
+ </details>
+
+<h2>Procurement Mapping</h2>
+<ul>
+  <li>Evidence bundle → contract exhibit; SBOM → supply chain annex.</li>
+  <li>SLAs → response and refresh windows tied to OP/stability.</li>
+  <li>Evidence IDs referenced in POs/renewals.</li>
+ </ul>
+
+<h2>Closing (Comprehensive)</h2>
+<p>Shipping is not a press release—it’s a proof release. <strong>AethergenPlatform</strong> ensures every change is measurable, reproducible, and acceptable to audit, procurement, and operations.</p>
+
+

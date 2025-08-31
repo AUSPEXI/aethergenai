@@ -26,6 +26,7 @@ import ResourcesVisibilityScore from './pages/ResourcesVisibilityScore';
 import AI from './pages/AI';
 import Whitepaper from './pages/Whitepaper';
 import Publisher from './pages/Publisher';
+import BlogManager from './pages/BlogManager';
 
 import Footer from './components/Footer';
 
@@ -74,6 +75,7 @@ function RoutedApp() {
           <Route path="/resources/visibility-score" element={<ResourcesVisibilityScore />} />
           <Route path="/whitepaper" element={<Whitepaper />} />
           <Route path="/publisher" element={<Publisher />} />
+          <Route path="/blog-manager" element={<BlogManager />} />
         </Routes>
       </div>
       {!hideChrome && <Footer />}

@@ -30,6 +30,7 @@ import BlogManager from './pages/BlogManager';
 import { AirGappedDemo } from './pages/AirGappedDemo';
 import { AutomotiveDemo } from './pages/AutomotiveDemo';
 import { MarketplaceDemo } from './pages/MarketplaceDemo';
+import { CardsDemo } from './pages/CardsDemo';
 
 import Footer from './components/Footer';
 
@@ -82,6 +83,7 @@ function RoutedApp() {
                         <Route path="/air-gapped-demo" element={<AirGappedDemo />} />
                         <Route path="/automotive-demo" element={<AutomotiveDemo />} />
                         <Route path="/marketplace-demo" element={<MarketplaceDemo />} />
+                        <Route path="/cards-demo" element={<CardsDemo />} />
         </Routes>
       </div>
       {!hideChrome && <Footer />}

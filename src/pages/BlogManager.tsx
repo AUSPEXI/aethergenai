@@ -64,11 +64,11 @@ const BlogManager: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white text-slate-900">
       <header className="bg-white border-b border-slate-200">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <h1 className="text-3xl font-bold text-slate-900">Blog Manager (Local)</h1>
-          <p className="text-slate-600 mt-2">No backend writes. Load → edit → Download → place into public/blog-html → git commit.</p>
+          <p className="text-slate-800 mt-2">No backend writes. Load → edit → Download → place into public/blog-html → git commit.</p>
         </div>
       </header>
 
@@ -96,14 +96,14 @@ const BlogManager: React.FC = () => {
                 <li key={e.slug} className="p-4 hover:bg-slate-50 flex items-center justify-between">
                   <div>
                     <div className="text-slate-900 font-medium line-clamp-1">{e.title}</div>
-                    <div className="text-slate-500 text-xs">{e.slug} {e.readTime ? `• ${e.readTime}` : ''}</div>
+                    <div className="text-slate-800 text-xs">{e.slug} {e.readTime ? `• ${e.readTime}` : ''}</div>
                   </div>
                   <button className="text-blue-600 hover:text-blue-700 text-sm" onClick={() => loadPost(e)}>Load</button>
                 </li>
               ))}
             </ul>
           </div>
-          <div className="text-xs text-slate-500 mt-3">
+          <div className="text-xs text-slate-800 mt-3">
             Delete instructions: run git rm public/blog-html/&lt;slug&gt;.html then commit.
           </div>
         </aside>
@@ -133,17 +133,17 @@ const BlogManager: React.FC = () => {
               <textarea
                 value={html}
                 onChange={(e) => setHtml(e.target.value)}
-                className="w-full h-[60vh] border border-slate-300 rounded-lg p-3 font-mono text-sm"
+                className="w-full h-[60vh] border border-slate-300 rounded-lg p-3 font-mono text-sm bg-white text-slate-900"
                 spellCheck={false}
               />
-              {message ? <div className="text-sm text-slate-600 mt-2">{message}</div> : null}
+              {message ? <div className="text-sm text-slate-800 mt-2">{message}</div> : null}
             </div>
           </div>
         </section>
       </main>
 
       <footer className="bg-white border-t border-slate-200 py-6">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-sm text-slate-600">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-sm text-slate-800">
           Local-only editing tool. Paste over an existing file or drop the downloaded file into public/blog-html/, then commit.
         </div>
       </footer>

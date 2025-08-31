@@ -433,6 +433,17 @@ const Blog = () => {
       slug: 'innovators-website-challenge'
     },
     {
+      title: '🔒 Air‑Gapped AI: Packaging, SBOMs, and QR‑Verified Manifests for the Field',
+      excerpt: 'Secure AI deployment in disconnected environments with software bill of materials, QR-verified manifests, and tamper-proof packaging for military and critical infrastructure.',
+      author: 'Gwylym Owen',
+      date: 'January 23, 2025',
+      readTime: '4 min read',
+      category: 'Technology',
+      icon: Shield,
+      published: true,
+      slug: 'air-gapped-ai-packaging-sbom-qr-manifests'
+    },
+    {
       title: '🚀 Shipping AethergenPlatform: Evidence‑Led, Privacy‑Preserving AI Training',
       excerpt: 'A modular pipeline that generates high‑fidelity synthetic data, designs schemas, and trains models—Databricks‑ready and enterprise‑focused.',
       author: 'Gwylym Owen',

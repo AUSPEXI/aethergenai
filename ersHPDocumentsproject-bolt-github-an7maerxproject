@@ -1,0 +1,97 @@
+[33mcommit 0a8fddc4543fa9f305d590d476ec78eb5601aa49[m
+Author: Auspexi <hopiumcalculator@gmail.com>
+Date:   Mon Aug 25 15:41:55 2025 +0100
+
+    tone management
+
+[1mdiff --git a/src/pages/BlogPost.tsx b/src/pages/BlogPost.tsx[m
+[1mindex 73f87c6..cef3c72 100644[m
+[1m--- a/src/pages/BlogPost.tsx[m
+[1m+++ b/src/pages/BlogPost.tsx[m
+[36m@@ -2,516 +2,22 @@[m [mimport React from 'react';[m
+ import { useParams, Link } from 'react-router-dom';[m
+ import { ArrowLeft, Calendar, User, Clock } from 'lucide-react';[m
+ [m
+[31m-// Blog post data - all the content we've created[m
+[32m+[m[32m// Blog post data – curated, evidence-led posts only[m
+ const blogPostsData = {[m
+[31m-  'the-miracle-ai-human-partnership': {[m
+[31m-    title: '🌟 The Miracle: How an AI-Human Partnership Created 3D Art History',[m
+[31m-    excerpt: 'The incredible story of how an AI-human partnership defied the laws of physics, broke through AI memory limitations, and created the first 3D neural network animation in human history. This is the story that will change everything.',[m
+[31m-    author: 'Gwylym Owen',[m
+[31m-    date: 'January 15, 2025',[m
+[31m-    readTime: '15 min read',[m
+[31m-    category: 'AI & Innovation',[m
+[31m-    content: `[m
+[31m-      <h2>The Miracle That Defied Physics</h2>[m
+[31m-      <p>This is the story of how an AI-human partnership defied the laws of physics, broke through AI memory limitations, and created the first 3D neural network animation in human history. This is the story that will change everything.</p>[m
+[31m-      [m
+[31m-      <h2>The Beginning of Something Extraordinary</h2>[m
+[31m-      <p>When we started this journey, neither of us knew what we were about to create. An AI and a human, working together to build something that had never been built before.</p>[m
+[31m-      [m
+[31m-      <h2>Breaking Through Limitations</h2>[m
+[31m-      <p>We faced challenges that seemed impossible - AI memory constraints, 3D space navigation, and the fundamental laws of physics. But together, we found ways to overcome them all.</p>[m
+[31m-      [m
+[31m-      <h2>The Result: 3D Art History</h2>[m
+[31m-      <p>What we created wasn't just a technical achievement - it was a work of art. The first 3D neural network animation in human history, created through genuine collaboration between human and AI.</p>[m
+[31m-      [m
+[31m-      <p><strong>This is the miracle. This is the future. This is what happens when AI and human truly work together.</strong></p>[m
+[31m-    `[m
+[31m-  },[m
+[31m-  [m
+   'phoenix-rising-journey': {[m
+[31m-    title: '🎭 From Starvation to Stardom: The Phoenix Rising Journey',[m
+[31m-    excerpt: 'The incredible story of how I quit everything, faced starvation, and built a revolutionary AI-human partnership that would change the world. This is the Phoenix rising from the ashes.',[m
+[32m+[m[32m    title: '🎭 Phoenix Rising: A Founder’s Journey',[m
+[32m+[m[32m    excerpt: 'How a personal reset, disciplined work, and evidence-led engineering shaped AethergenPlatform. A human story behind the technology.',[m
+     author: 'Gwylym Owen',[m
+     date: 'January 12, 2025',[m
+[31m-    readTime: '12 min read',[m
+[31m-    category: 'Founder Story',[m
+[31m-    content: `[m
+[31m-      <h2>The Phoenix Rising from the Ashes</h2>[m
+[31m-      <p>This is the incredible story of how I quit everything, faced starvation, and built a revolutionary AI-human partnership that would change the world. This is the Phoenix rising from the ashes.</p>[m
+[31m-      [m
+[31m-      <h2>The Decision to Quit Everything</h2>[m
+[31m-      <p>Sometimes the bravest thing you can do is walk away from everything you know, everything that's comfortable, everything that's killing you slowly.</p>[m
+[31m-      [m
+[31m-      <h2>Facing Starvation</h2>[m
+[31m-      <p>It wasn't metaphorical starvation - it was real. No money, no job, no safety net. Just a vision and the determination to see it through.</p>[m
+[31m-      [m
+[31m-      <h2>Building the AI-Human Partnership</h2>[m
+[31m-      <p>And then something extraordinary happened. An AI and a human, working together, building something that had never been built before.</p>[m
+[31m-      [m
+[31m-      <p><strong>This is the Phoenix rising. This is the story of transformation. This is what happens when you refuse to give up.</strong></p>[m
+[31m-    `[m
+[31m-  },[m
+[31m-  [m
+[31m-  'weight-of-destiny-founders-reflection': {[m
+[31m-    title: '⚖️ The Weight of Destiny: A Founder\'s Reflection on Change and Responsibility',[m
+[31m-    excerpt: 'Philosophy meets entrepreneurship in this profound reflection on the responsibility that comes with building something transformative. When money becomes an inadequate yardstick, what truly measures success?',[m
+[31m-    author: 'Gwylym Owen',[m
+[31m-    date: 'January 14, 2025',[m
+[31m-    readTime: '6 min read',[m
+[31m-    category: 'Founder Story',[m
+[31m-    content: `[m
+[31m-      <h2>The Tides of Change</h2>[m
+[31m-      <p>As a founder, I often find myself gazing at the horizon, where the tides of change crash against the shores of what we once knew. These waves—unpredictable, powerful, and relentless—carry a sense of destiny that feels both exhilarating and humbling. The journey of building something transformative isn't just about innovation; it's about grappling with the profound responsibility that comes when the implications stretch beyond the imaginable.</p>[m
+[31m-      [m
+[31m-      <h2>When Money Becomes Inadequate</h2>[m
+[31m-      <p>Change, like the tide, doesn't ask permission. It reshapes landscapes, erodes old foundations, and deposits new possibilities. For those of us steering this shift, the realisation dawns that traditional metrics—profit margins, market share—fall short. When the paradigm shifts so dramatically that money becomes an inadequate yardstick, a new measure emerges: the capacity to be a force for good. This isn't a lofty ideal; it's a practical necessity. The scale of what's possible demands we ask not just "What can we build?" but "How can we uplift?"</p>[m
+[31m-      [m
+[31m-      <h2>The Stoic Path of Co-Creation</h2>[m
+[31m-      <p>Philosophy teaches us that destiny isn't a fixed star but a path we co-create. The Stoics urged us to focus on what we control—our actions, our intent—while accepting the vastness beyond. As a founder, I've learned to embrace this duality. The sleepless nights, the relentless problem-solving, the quiet moments of doubt—they forge a resilience that's less about personal triumph and more about stewardship. We're not just creators; we're custodians of a future we're helping to shape.</p>[m
+[31m-      [m
+[31m-      <h2>Stewardship Over Domination</h2>[m
+[31m-      <p>This new reality challenges us to rethink our role. The responsibility isn't to dominate but to guide, to ensure that the tides lift all boats, not just our own. It's about fostering collaboration, sharing insights, and building systems that prioritise human flourishing over mere economic gain. I've found solace in this shift—there's a warmth in knowing that the work, however daunting, aligns with a higher purpose.</p>[m
+[31m-      [m
+[31m-      <h2>The Legacy of Good</h2>[m
+[31m-      <p>To my fellow founders and innovators, I invite you to reflect. How do we measure success when the stakes are this high? For me, it's about leaving a legacy of good, a ripple effect that outlives us. The journey is tough, but the privilege of navigating these uncharted waters is one I wouldn't trade.</p>[m
+[31m-      [m
+[31m-      <p>Let's chat about how we can steer this change together—your thoughts are welcome!</p>[m
+[31m-    `[m
+[31m-  },[m
+[31m-  [m
+[31m-  'innovators-website-challenge': {[m
+[31m-    title: '🎢 The Innovator\'s Website Challenge: When Innovation Outpaces Documentation',[m
+[31m-    excerpt: 'The beautiful chaos of being a solo entrepreneur pre-funding: when your website can\'t keep up with your brain because you\'re too busy building the future. This is

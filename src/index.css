@@ -9,6 +9,14 @@
   .text-neutral-300, .text-neutral-200, .text-neutral-100 {
     color: #334155; /* slate-700 equivalent */
   }
+  /* Blog readability: force high-contrast text inside prose on light backgrounds */
+  .prose, .prose * {
+    color: #0f172a !important; /* slate-900 */
+    opacity: 1 !important;
+  }
+  .prose a { color: #1d4ed8 !important; } /* blue-700 links */
+  .prose strong { color: #0b1220 !important; }
+  .prose code { color: #0f172a !important; }
 }
 
 @layer utilities {

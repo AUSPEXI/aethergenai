@@ -1,0 +1,64 @@
+<h1>Insurance Fraud Playbooks: Synthetic Scenarios for Safer Evaluation</h1>
+<p><em>By Gwylym Owen — 20–28 min read</em></p>
+
+<h2>Executive Summary</h2>
+<p>AethergenPlatform provides <strong>synthetic playbooks</strong>—parameterised fraud scenarios that let investigators and data teams evaluate safely without PHI/PII. Each playbook ships with evidence at operating points and privacy probes so procurement can sign quickly.</p>
+
+<h2>Typology Library</h2>
+<ul>
+  <li>Upcoding (banded by specialty; overbilling factor).</li>
+  <li>Unbundling (components split; bundle pressure).</li>
+  <li>Phantom providers (distance/time collisions).</li>
+  <li>Doctor shopping (overlapping scripts; device reuse).</li>
+  <li>Duplicate billing (delay windows; modifiers).</li>
+  <li>Kickback rings (referral cycles; abnormal amounts).</li>
+ </ul>
+
+<h2>Parameters</h2>
+<ul>
+  <li>Prevalence and severity distributions.</li>
+  <li>Co‑occurrence rates and timing windows.</li>
+  <li>Regional and plan overlays.</li>
+ </ul>
+
+<h2>Evidence at OP</h2>
+<ul>
+  <li>Detection at fixed FPR budgets (alerts/day).</li>
+  <li>Segment stability across regions and specialties.</li>
+  <li>Cost curves: cases per analyst‑hour.</li>
+ </ul>
+
+<h2>Privacy</h2>
+<ul>
+  <li>Probes (membership/attribute) with CIs.</li>
+  <li>Optional DP budgets per policy.</li>
+ </ul>
+
+<h2>Playbook YAML (Sketch)</h2>
+<pre>
+playbooks:
+  upcoding:
+    prevalence: 0.04
+    factor: {min: 1.1, max: 1.5}
+  doctor_shopping:
+    window_days: 14
+    device_reuse: 0.25
+</pre>
+
+<h2>Case Study</h2>
+<p>With playbooks, a payer improved yield +23% at 1% FPR versus legacy rules, while privacy probes stayed under thresholds. Procurement accepted with quarterly refresh and rollback SOPs.</p>
+
+<h2>FAQ</h2>
+<details>
+  <summary>Can we tune prevalence on the fly?</summary>
+  <p>Yes—parameters are surfaced in notebooks and dashboards for safe rehearsal.</p>
+ </details>
+<details>
+  <summary>How do we avoid overfitting to synthetic quirks?</summary>
+  <p>We use ablations and sanity checks; playbooks include limits in evidence.</p>
+ </details>
+
+<h2>Closing</h2>
+<p>Playbooks make fraud evaluations repeatable, safe, and auditable. <strong>AethergenPlatform</strong> ships scenarios with the proof buyers need.</p>
+
+

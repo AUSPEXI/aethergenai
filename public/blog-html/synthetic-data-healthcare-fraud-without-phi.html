@@ -1,0 +1,216 @@
+<h1>Synthetic Data 101 for Healthcare: Fraud Detection Without PHI/PII</h1>
+<p><em>By Gwylym Owen — 20–28 min read</em></p>
+
+<h2>Executive Summary</h2>
+<p>Healthcare fraud programs stall when privacy constraints block sharing, testing, and independent verification. AethergenPlatform provides a synthetic‑first pipeline that recreates <strong>behavior</strong> without leaking <strong>identity</strong>. Teams prototype, evaluate, and evidence fraud detectors using corpora that mirror the structure and edge‑cases of real claims—without carrying PHI/PII. This article lays out the data model, generation recipes, typology library, evaluation gates, and evidence packaging required to move from pilot to production in regulated settings.</p>
+
+<h2>Problem Context</h2>
+<p>Fraud typologies evolve faster than change‑control. Rules go stale; learned models drift; analysts are flooded. Meanwhile, collaboration is limited because real data cannot leave protected enclaves. The result is under‑tested tooling, local best‑efforts, and vendor claims that are hard to verify. Synthetic corpora allow <strong>safe iteration</strong>, <strong>repeatable evaluation</strong>, and <strong>clear procurement evidence</strong>.</p>
+
+<h2>Clinical‑Claims Data Model (Simplified)</h2>
+<ul>
+  <li><strong>Entities</strong>: patient (de‑identified), provider, facility, payer plan, claim, line item, prescription, lab event.</li>
+  <li><strong>Core attributes</strong>: dates, CPT/HCPCS/ICD codes, NPI/specialty (synthetic), amounts (billed/allowed/paid), place of service, modifiers, units, referrals, prior auth flags.</li>
+  <li><strong>Relations</strong>: provider↔facility affiliation, patient↔provider panels, claim↔line items, episodes of care, referral chains, pharmacy fill sequences.</li>
+</ul>
+
+<h2>Dataset Schema Example (Illustrative)</h2>
+<pre>
+claims(
+  claim_id, patient_id*, provider_id*, facility_id*, date, pos,
+  cpt, icd10, modifiers, units, amount_billed, amount_allowed, amount_paid,
+  payer_plan, referral_flag, prior_auth_flag
+)
+
+lines(
+  line_id, claim_id, cpt, icd10, modifiers, units, npi*, specialty,
+  amount_billed, amount_allowed, amount_paid
+)
+
+rx(
+  rx_id, patient_id*, provider_id*, date, drug_class, dose, days_supply,
+  payment_amount, device_id*
+)
+
+labs(
+  lab_id, patient_id*, loinc_code, result_band, units, date
+)
+
+*Synthetic identifiers only; no PHI/PII in evaluation corpora.
+</pre>
+
+<h2>Metrics Appendix</h2>
+<ul>
+  <li><strong>Lift@Budget</strong>: cases found at fixed FPR (0.5%, 1%, 2%).</li>
+  <li><strong>Stability</strong>: max segment delta across specialty/region/plan bands.</li>
+  <li><strong>Drift Early‑Warning</strong>: change‑point scores for code usage and cadence.</li>
+  <li><strong>Analyst Yield</strong>: cases per analyst‑hour at chosen thresholds.</li>
+  <li><strong>Privacy</strong>: membership/attribute probe advantage vs random.</li>
+</ul>
+
+<h2>Acceptance Checklist</h2>
+<ul>
+  <li>Target KPI defined and linked to analyst staffing.</li>
+  <li>Operating points fixed; CI bands reported.</li>
+  <li>Privacy probes under thresholds (and DP budgets if used).</li>
+  <li>Drift monitors and rollback rules documented.</li>
+  <li>Evidence bundle signed and archived.</li>
+</ul>
+
+<h2>Case Study: Regional Upcoding Sweep</h2>
+<p>A payer ran a four‑week pilot on orthopedic claims. With operating points fixed at 1% FPR, the synthetic‑trained baseline improved reviewed‑case yield by 23% versus legacy rules while reducing false escalations by 11%. Stability held across three regions; privacy probes showed no elevated risk. Procurement accepted with gates and rollback defined.</p>
+
+<h2>FAQ</h2>
+<details>
+  <summary>Does synthetic data replace real investigations?</summary>
+  <p>No. Synthetic data replaces unsafe sharing and one‑off vendor demos with repeatable, safe evaluation. Real investigations remain the gold standard for adjudication; synthetic primes the system to be effective before touching live data.</p>
+ </details>
+<details>
+  <summary>Can we tune prevalence to stress analysts?</summary>
+  <p>Yes. Typologies are parameterised. You can simulate surges or rare outliers to rehearse workload and triage policy.</p>
+ </details>
+<details>
+  <summary>How do you prevent overfitting to synthetic quirks?</summary>
+  <p>We use ablation to ensure improvements rely on robust features; we sanity‑check relative rankings on permitted internal samples; and we publish known limits in the evidence bundle.</p>
+ </details>
+
+<h2>Glossary</h2>
+<ul>
+  <li><strong>Operating point</strong>: the threshold where the detector runs in production.</li>
+  <li><strong>Evidence bundle</strong>: signed package of metrics, configs, seeds, and hashes.</li>
+  <li><strong>Membership inference</strong>: attack asking if a specific record influenced training.</li>
+  <li><strong>DP</strong>: differential privacy; controls contribution of any one record.</li>
+</ul>
+
+<h2>Procurement Q&A</h2>
+<ul>
+  <li><strong>Export formats</strong>: Parquet/Delta; dashboards as HTML/PDF; notebooks as HTML.</li>
+  <li><strong>Runtime</strong>: on‑prem preferred; VPC supported; no PHI/PII leaves enclave.</li>
+  <li><strong>Support</strong>: SLAs for evidence regeneration and drift incident triage.</li>
+</ul>
+
+<h2>Contact</h2>
+<p>Ready to evaluate fraud detectors safely and decisively? <a href="/contact">Talk to us</a> about a focused pilot.</p>
+
+<h2>Generation Pipeline</h2>
+<ol>
+  <li><strong>Schema design</strong>: choose fields and ranges that preserve utility for fraud analysis. Encode controlled vocabularies and constraints (e.g., CPT families, ICD hierarchies).</li>
+  <li><strong>Distribution learning</strong>: learn marginals and <em>joint</em> structure from permitted seeds/redacted aggregates. Fit copulas or conditional generators that keep cross‑field dependencies.</li>
+  <li><strong>Sequence synthesis</strong>: generate episode timelines (admissions→procedures→discharge; prescription refills) with realistic inter‑arrival times and seasonality.</li>
+  <li><strong>Typology injection</strong>: overlay parameterised fraud behaviors (below) at configurable prevalence and severity.</li>
+  <li><strong>Validation</strong>: run fidelity checks (utility metrics) and privacy probes; iterate until thresholds pass.</li>
+</ol>
+
+<h2>Fidelity: What “Good Enough” Means</h2>
+<ul>
+  <li><strong>Marginals</strong>: code, specialty, geography, and amount distributions aligned within declared tolerances.</li>
+  <li><strong>Joints</strong>: realistic provider–procedure–amount relationships; plausible co‑coding; age‑procedure compatibility.</li>
+  <li><strong>Temporal</strong>: weekday/season effects; episode lengths; refill cadences; denial/rebill loops.</li>
+  <li><strong>Tail coverage</strong>: retain rare but plausible events; cap impossible ones via constraints.</li>
+  <li><strong>Utility checks</strong>: baseline detectors trained on synthetic achieve target lift on hold‑out synthetic and maintain relative rankings when sanity‑checked on approved internal samples.</li>
+</ul>
+
+<h2>Privacy: What We Measure (Not Assume)</h2>
+<ul>
+  <li><strong>Process isolation</strong>: evaluation corpora contain no raw PHI/PII. Seeds are minimized and handled under separate controls.</li>
+  <li><strong>Membership inference</strong>: attacks show low advantage at chosen release parameters.</li>
+  <li><strong>Attribute disclosure</strong>: sensitive attribute prediction remains at/below baseline leakage.</li>
+  <li><strong>Differential Privacy (optional)</strong>: per‑policy budgets (ε, δ) when mandated; we include the budget, composition notes, and expected utility impact.</li>
+</ul>
+
+<h2>Fraud Typology Library (Parameterised)</h2>
+<ul>
+  <li><strong>Upcoding</strong>: inflate CPT within specialty bands; tune overbilling factor, code families, audit risk.</li>
+  <li><strong>Unbundling</strong>: emit components separately; parameterize bundle compliance pressure and recurrence.</li>
+  <li><strong>Phantom billing</strong>: claims without evidence of service; vary facility mix, distance anomalies, and timing collisions.</li>
+  <li><strong>Doctor shopping</strong>: overlapping scripts across providers; control window, substance class, and device correlation.</li>
+  <li><strong>Duplicate billing</strong>: repeat claims with modifiers; adjust delay and payer rules.</li>
+  <li><strong>Kickback rings</strong>: referral cycles with abnormal financials; expose graph motifs and monetary flows.</li>
+</ul>
+
+<h2>Feature Families</h2>
+<ul>
+  <li><strong>Code semantics</strong>: family distance, incompatible pairs, specialty adherence.</li>
+  <li><strong>Temporal</strong>: visit cadence, inter‑arrival z‑scores, day‑of‑week and holiday effects.</li>
+  <li><strong>Financial</strong>: amount residuals vs peers, payer mix anomalies, denial/rebill patterns.</li>
+  <li><strong>Graph</strong>: provider‑patient bipartite motifs, referral cycles, shared devices/addresses.</li>
+</ul>
+
+<h2>Modeling and Thresholds</h2>
+<p>Use transparent baselines (rules, tree ensembles) alongside deep models to balance interpretability and lift. Choose <strong>operating points</strong> that match investigator capacity (alerts/day/team) and publish the trade‑off. For pilots, we often target “+X% cases found at fixed FPR” rather than raw AUC.</p>
+
+<h2>Evaluation Gates (Procurement‑Grade)</h2>
+<ul>
+  <li><strong>Operating point utility</strong>: detection at fixed FPR budgets with CIs.</li>
+  <li><strong>Segment stability</strong>: specialty, region, and plan type deltas within bounds.</li>
+  <li><strong>Drift sensitivity</strong>: early‑warning KPIs under simulated code/practice shifts.</li>
+  <li><strong>Analyst cost curves</strong>: incremental cases per analyst‑hour.</li>
+  <li><strong>Privacy gates</strong>: probes under thresholds; DP budgets honored if used.</li>
+</ul>
+
+<h2>Evidence Bundle (Shipped With Every Release)</h2>
+<ul>
+  <li>Schema, recipe, and environment hashes; SBOM for artifacts.</li>
+  <li>Fidelity metrics with confidence intervals; visual comparisons for key marginals/joints.</li>
+  <li>Privacy probe results and interpretations; DP parameters where applicable.</li>
+  <li>Ablation table: which features/recipes moved the needle and which did not.</li>
+  <li>Intended use, limits, drift monitors, rollback rules, and change‑control notes.</li>
+</ul>
+
+<h2>Pilot → Policy in Four Weeks</h2>
+<ol>
+  <li><strong>Week 1</strong>: select one typology and one KPI; freeze schema; generate v1 corpora.</li>
+  <li><strong>Week 2</strong>: train baselines; tune operating points; run fidelity/privacy checks.</li>
+  <li><strong>Week 3</strong>: red‑team failure modes; finalize gates; package evidence.</li>
+  <li><strong>Week 4</strong>: run acceptance with stakeholders; sign off thresholds and rollback.</li>
+ </ol>
+
+<h2>Integration</h2>
+<ul>
+  <li><strong>Deployment</strong>: on‑prem or private cloud. Edge bundles available for air‑gapped review stations.</li>
+  <li><strong>Data interchange</strong>: Parquet/Delta; Databricks‑ready jobs for training and scoring.</li>
+  <li><strong>Governance</strong>: signed evidence bundles land in CI/CD and document control.</li>
+</ul>
+
+<blockquote>
+  <p><strong>AethergenPlatform</strong> proves claims with <em>evidence</em>. You get realism without identifiers, clear utility at your alert budget, and reproducible packages that satisfy audit.</p>
+</blockquote>
+
+<p><a class="aeg-btn" href="/contact">Contact Sales →</a></p>
+
+<h2>Worked Example: Upcoding Review</h2>
+<ol>
+  <li>Define CPT family and specialty constraints; set expected cost bands.</li>
+  <li>Generate cohort with tunable upcoding prevalence and overbilling factor.</li>
+  <li>Train baseline trees + simple rules; calibrate thresholds to 1% FPR.</li>
+  <li>Report cases per analyst‑hour; include explanations and feature contributions.</li>
+ </ol>
+
+<h2>Worked Example: Doctor Shopping</h2>
+<ol>
+  <li>Emit overlapping prescription sequences across providers and pharmacies.</li>
+  <li>Construct device/address correlations and windowed cadence features.</li>
+  <li>Compare rules vs learned models; tune escalation policies.</li>
+  <li>Publish stability across regions and plan types.</li>
+ </ol>
+
+<h2>Analyst Experience</h2>
+<ul>
+  <li><strong>Reproducible notebooks</strong> tied to evidence bundle versions.</li>
+  <li><strong>Scenario sliders</strong> to adjust prevalence/severity without code.</li>
+  <li><strong>One‑click reruns</strong> with fixed seeds for investigation training.</li>
+</ul>
+
+<h2>Limits and Non‑Goals</h2>
+<ul>
+  <li>We do not claim synthetic perfectly reproduces protected micro‑populations; we measure fidelity and disclose limits.</li>
+  <li>We do not export PHI/PII; evaluation corpora remain identifier‑free.</li>
+  <li>We avoid fragile heuristics; features are validated via ablation.</li>
+</ul>
+
+<h2>Next Steps</h2>
+<ul>
+  <li>Pick one typology and KPI; schedule a two‑week pilot.</li>
+  <li>Align acceptance gates with investigator capacity.</li>
+  <li>Review draft evidence bundle before promotion.</li>
+</ul>

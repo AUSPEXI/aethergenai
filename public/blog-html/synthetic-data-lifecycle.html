@@ -1,0 +1,413 @@
+<h1>The Synthetic Data Lifecycle: From Seeds to Evidence</h1>
+<p><em>By Gwylym Owen — 18–24 min read</em></p>
+
+<h2>Executive Summary</h2>
+<p>AethergenPlatform takes you from schema design to generation, validation, and evidence packaging—so teams can build and deploy safely without PHI/PII, and buyers can trust what they adopt.</p>
+
+<h2>Lifecycle Stages</h2>
+<ol>
+  <li><strong>Schema</strong>: define entities, relations, vocabularies, and constraints.</li>
+  <li><strong>Seeds</strong>: minimal/redacted aggregates to learn structure.</li>
+  <li><strong>Generation</strong>: produce realistic corpora with parameterised scenarios.</li>
+  <li><strong>Validation</strong>: fidelity/utility metrics with CIs.</li>
+  <li><strong>Privacy</strong>: probes and optional DP budgets.</li>
+  <li><strong>Packaging</strong>: Parquet/Delta, notebooks, and samples.</li>
+  <li><strong>Evidence</strong>: signed bundle with metrics/configs/seeds/hashes.</li>
+ </ol>
+
+<h2>Design Patterns</h2>
+<ul>
+  <li>Copulas/conditional generators for joint structure.</li>
+  <li>Sequence models for episodes and temporal effects.</li>
+  <li>Scenario overlays for rare events and stress tests.</li>
+ </ul>
+
+<h2>KPIs</h2>
+<ul>
+  <li>Fidelity to marginals and joints.</li>
+  <li>Utility against baseline detectors.</li>
+  <li>Privacy probe advantage vs random.</li>
+  <li>Analyst yield at operating budgets.</li>
+ </ul>
+
+<h2>Evidence Integration</h2>
+<ul>
+  <li>CI builds evidence; hashes recorded; dashboards exported.</li>
+  <li>Bundle attached to change‑control and procurement files.</li>
+  <li>Refresh cadence declared (e.g., monthly).</li>
+ </ul>
+
+<h2>Case Study</h2>
+<p>An insurer used the lifecycle to ship a claims corpus plus detectors. Procurement signed off after evidence showed stability across three regions and a clear rollback SOP.</p>
+
+<h2>FAQ</h2>
+<details>
+  <summary>Can we skip seeds?</summary>
+  <p>Seeds (or aggregates) anchor realism; without them, fidelity risks rise. We can start with public priors and tighten later.</p>
+ </details>
+<details>
+  <summary>What about rare classes?</summary>
+  <p>Scenario overlays and targeted augmentations help preserve tails; we disclose limits in evidence.</p>
+ </details>
+
+<h2>Glossary</h2>
+<ul>
+  <li><strong>Evidence bundle</strong>: signed metrics/configs/hashes for reproducibility.</li>
+  <li><strong>Operating point</strong>: threshold aligned to business costs.</li>
+  <li><strong>DP</strong>: differential privacy.</li>
+ </ul>
+
+<h2>Checklist</h2>
+<ul>
+  <li>Schema and vocabularies versioned.</li>
+  <li>Generation recipes and parameters logged.</li>
+  <li>Validation and privacy probes pass thresholds.</li>
+  <li>Packaging and evidence verified.</li>
+ </ul>
+
+<p><a class="aeg-btn" href="/contact">Contact Sales →</a></p>
+
+<h2>Recipe Manifest (Illustrative)</h2>
+<pre>
+recipe:
+  schema: schemas/claims_v3.yaml
+  generator: copula+sequence
+  scenarios:
+    - upcoding: {prevalence: 0.03, factor: 1.2}
+    - duplicate_billing: {delay_days: 7}
+  outputs: parquet
+</pre>
+
+<h2>Validation Dashboard Contents</h2>
+<ul>
+  <li>Marginals and joint comparisons (key fields).</li>
+  <li>Temporal effects (seasonality, inter‑arrival).</li>
+  <li>Utility baselines at candidate thresholds.</li>
+</ul>
+
+<h2>Privacy Probes</h2>
+<ul>
+  <li>Membership inference advantage vs random.</li>
+  <li>Attribute disclosure on sensitive fields.</li>
+  <li>Optional DP budget and composition notes.</li>
+</ul>
+
+<h2>CI Example</h2>
+<pre>
+steps:
+  - generate_small
+  - validate
+  - run_probes
+  - evidence_bundle
+artifacts: [parquet, metrics.json, plots.html, manifest.json]
+</pre>
+
+<h2>Evidence Manifest</h2>
+<pre>
+{
+  "version": "2025.01",
+  "artifacts": ["metrics.json", "plots.html", "sbom.json"],
+  "hashes": {"metrics.json": "..."}
+}
+</pre>
+
+<h2>Runbook</h2>
+<ol>
+  <li>Change detected → regenerate evidence.</li>
+  <li>Compare against gates; if fail, fix or revert.</li>
+  <li>Attach bundle to change‑control; notify stakeholders.</li>
+</ol>
+
+<h2>Risks & Mitigations</h2>
+<ul>
+  <li>Tail under‑coverage → targeted augmentations; disclose limits.</li>
+  <li>Overfitting to synthetic quirks → ablation checks; sanity tests.</li>
+  <li>Schema drift → versioning and automated diffs.</li>
+</ul>
+
+<h2>Procurement Checklist</h2>
+<ul>
+  <li>Evidence meets thresholds with CIs.</li>
+  <li>Privacy probes under limits.</li>
+  <li>SBOM and hashes verified.</li>
+  <li>Refresh cadence and rollback defined.</li>
+</ul>
+
+<h2>FAQ (More)</h2>
+<details>
+  <summary>Can we export dashboards?</summary>
+  <p>Yes—HTML/PDF artifacts are included in the bundle.</p>
+ </details>
+<details>
+  <summary>How do we handle regulator audits?</summary>
+  <p>We provide reproducible artifacts and documented limits; sensitive data stays on your infra.</p>
+ </details>
+
+
+<h2>Schema Designer (Expanded)</h2>
+<ul>
+  <li>Entity definitions with visibility labels and constraints.</li>
+  <li>Vocabulary management with versions and diffs.</li>
+  <li>Referential integrity checks and range constraints.</li>
+ </ul>
+
+<h2>Seeds (Policy)</h2>
+<ul>
+  <li>Minimal seeds; access controls; retention timelines.</li>
+  <li>Provenance logs and review cadence.</li>
+ </ul>
+
+<h2>Generation (Deep Dive)</h2>
+<ul>
+  <li>Copulas for joint distributions; sequence models for timelines.</li>
+  <li>Graph generators for networks (AML/fraud).</li>
+  <li>Scenario overlays with prevalence/severity controls.</li>
+ </ul>
+
+<h2>Validation (Details)</h2>
+<ul>
+  <li>Marginals, joints, temporal checks with tolerances.</li>
+  <li>Baseline detectors at OP; effect sizes with CIs.</li>
+  <li>Drift early‑warning indicators.</li>
+ </ul>
+
+<h2>Privacy (Details)</h2>
+<ul>
+  <li>Membership and attribute probes with thresholds and CIs.</li>
+  <li>Optional DP budgets with expected impact notes.</li>
+ </ul>
+
+<h2>Packaging (Details)</h2>
+<ul>
+  <li>Parquet/Delta outputs; notebooks and sample slices.</li>
+  <li>Unity Catalog registration; comments linking evidence IDs.</li>
+ </ul>
+
+<h2>Evidence (Details)</h2>
+<ul>
+  <li>Signed metrics, configs, seeds, and hashes.</li>
+  <li>HTML/PDF dashboards; SBOM; manifest.</li>
+  <li>Change‑control references and deprecation notes.</li>
+ </ul>
+
+<h2>Case Studies (Additional)</h2>
+<ul>
+  <li>Payments AML: graph overlay with mule rings; OP gains with stability bands.</li>
+  <li>Industrial vision: lighting profiles; fallback models; golden sets.</li>
+ </ul>
+
+<h2>Templates (Appendix)</h2>
+<pre>
+acceptance:
+  bundle_id: string
+  op: string
+  stability: string
+  privacy: string
+  latency: string
+  decision: APPROVE|REJECT
+</pre>
+
+<h2>Extended Glossary</h2>
+<ul>
+  <li><strong>Overlay</strong>: parameterised scenario added atop base generation.</li>
+  <li><strong>Evidence bundle</strong>: signed metrics/configs/hashes for filing.</li>
+  <li><strong>OP</strong>: operating point aligned to business capacity/cost.</li>
+ </ul>
+
+<h2>Closing (Extended)</h2>
+<p>The lifecycle is disciplined and repeatable. With <strong>AethergenPlatform</strong>, each stage leaves artifacts that make reviews faster and deployments safer.</p>
+
+<h2>Detailed Schema Catalog (Illustrative)</h2>
+<pre>
+entities:
+  Patient: {id: string, age: int, region: enum[NA,EU,APAC]}
+  Provider: {id: string, specialty: enum, region: enum}
+  Facility: {id: string, type: enum, region: enum}
+  Claim: {id: string, patient_id: ref Patient.id, provider_id: ref Provider.id,
+          facility_id: ref Facility.id, date: date, pos: enum, amount: decimal}
+  LineItem: {id: string, claim_id: ref Claim.id, cpt: string, icd10: string, units: int}
+relations:
+  Patient 1..* Claim
+  Claim 1..* LineItem
+constraints:
+  Claim.amount >= 0
+  LineItem.units > 0
+vocabularies:
+  CPT_v12: {...}
+  ICD10_subset: {...}
+</pre>
+
+<h2>Reference Constraints (Examples)</h2>
+<ul>
+  <li>Foreign keys enforced in packaging QA (referential integrity).</li>
+  <li>Domain ranges (age ∈ [0, 120], units ∈ [1, 99]).</li>
+  <li>Semantic checks (CPT family compatibility with specialty).</li>
+</ul>
+
+<h2>Entity–Relationship Examples</h2>
+<pre>
+Patient(id) ──&lt; Claim(id) ──&lt; LineItem(id)
+   │                 │                \
+   └── region       └── provider_id ──&gt; Provider(id)
+                                 \
+                                  └─ facility_id ──&gt; Facility(id)
+</pre>
+
+<h2>Seeds Governance Checklist</h2>
+<ul>
+  <li>Minimise fields; aggregate whenever feasible.</li>
+  <li>Access logged and reviewed; time‑bound permissions.</li>
+  <li>Retention policy documented; periodic purge windows.</li>
+</ul>
+
+<h2>Generation Parameter Tables</h2>
+<pre>
+param, default, min, max, note
+amount.ln_mu, 4.1, 3.8, 4.6, log‑normal mean
+amount.ln_sigma, 0.7, 0.5, 0.9, tail width
+interarrival.lambda1, 0.3, 0.1, 0.6, short gap component
+interarrival.lambda2, 0.8, 0.4, 1.2, long gap component
+mix.weight, 0.4, 0.2, 0.6, mixture proportion
+</pre>
+
+<h2>Overlay Library (Sketch)</h2>
+<pre>
+overlays:
+  upcoding: {prevalence: 0.03, factor: 1.2}
+  unbundling: {prevalence: 0.01}
+  phantom_provider: {distance_km: &gt;150, time_collision: true}
+  duplicate_billing: {delay_days: 7}
+  doctor_shopping: {window_days: 14, device_reuse: 0.25}
+</pre>
+
+<h2>Overlay Composition Rules</h2>
+<ul>
+  <li>Prevent impossible co‑occurrences (e.g., mutually exclusive scenarios).</li>
+  <li>Cap total prevalence to preserve realism.</li>
+  <li>Log overlay seeds and parameters in manifest.</li>
+</ul>
+
+<h2>Validation Worksheets</h2>
+<pre>
+field, ks_pvalue, pass
+amount, 0.21, yes
+units, 0.34, yes
+pos, 0.08, borderline (flag)
+</pre>
+
+<h2>Operating Point Selection (Math Sketch)</h2>
+<pre>
+Given budget alerts/day = B and volume/day = V, choose threshold θ s.t.
+FPR(θ) ≈ B / V. Validate precision/recall at θ with CIs.
+</pre>
+
+<h2>Effect Size Computation (Pseudo)</h2>
+<pre>
+base = evaluate(cfg_base)
+for factor in factors:
+  cfg = tweak(cfg_base, factor)
+  result = evaluate(cfg)
+  delta = result.kpi_op - base.kpi_op
+  ci = bootstrap_ci(result - base)
+  record(factor, delta, ci)
+</pre>
+
+<h2>Drift Monitors (Config)</h2>
+<pre>
+monitors:
+  input_psi:
+    fields: [amount, pos]
+    threshold: 0.2
+  outcome_delta:
+    by_segment: [region, product]
+    threshold: 0.05
+</pre>
+
+<h2>Privacy Methodology (Notes)</h2>
+<ul>
+  <li>Training an attacker classifier to distinguish real vs synthetic; report AUC−0.5.</li>
+  <li>Attribute disclosure via predictive models compared to baselines.</li>
+  <li>Optional DP with composition accounting; disclose ε, δ and expected utility change.</li>
+</ul>
+
+<h2>Packaging Artifacts Catalog</h2>
+<ul>
+  <li>Data (Parquet/Delta) with Unity Catalog registration.</li>
+  <li>Notebooks (trial, OP evaluation).</li>
+  <li>Docs (README, schema, limits).</li>
+  <li>Evidence bundle (metrics, plots, configs, sbom, manifest).</li>
+ </ul>
+
+<h2>Evidence Manifests (Examples)</h2>
+<pre>
+{
+  "version": "2025.01",
+  "artifacts": ["metrics/utility@op.json", "plots/stability_bars.html"],
+  "hashes": {"metrics/utility@op.json": "sha256:..."},
+  "env": {"python": "3.11", "numpy": "1.26.4"}
+}
+</pre>
+
+<h2>Unity Catalog Comments</h2>
+<pre>
+COMMENT ON TABLE prod.ai.claims IS 'Purpose: fraud triage; OP: fpr=1%; Evidence: manifest 2025.01.';
+</pre>
+
+<h2>Buyer Notebook (Outline)</h2>
+<pre>
+# 1) Load sample table
+# 2) Run UDF at OP threshold
+# 3) Compute OP metrics with CIs
+# 4) Review stability summary
+</pre>
+
+<h2>Audit File Tree</h2>
+<pre>
+release_2025_01/
+├─ metrics/
+├─ plots/
+├─ configs/
+├─ privacy/
+├─ sbom.json
+├─ manifest.json
+└─ README.html
+</pre>
+
+<h2>Risk Register (Excerpt)</h2>
+<pre>
+risk, likelihood, impact, control, owner
+tail_undercoverage, med, med, overlays+limits, data_lead
+probe_regression, low, high, gates+waiver_policy, privacy_lead
+</pre>
+
+<h2>SLA Mapping (Examples)</h2>
+<ul>
+  <li>Evidence regeneration: next business day; bundle ID increments.</li>
+  <li>Incident triage: same day for production promotions.</li>
+  <li>Dashboard export fixes: 24h.</li>
+ </ul>
+
+<h2>Extended FAQ (More)</h2>
+<details>
+  <summary>Can we attach private annexes for regulators?</summary>
+  <p>Yes—annexes ship with independent manifests; public bundles reference them without leakage.</p>
+ </details>
+<details>
+  <summary>How do we keep OP thresholds in sync?</summary>
+  <p>Store thresholds in config tables; notebooks and packaging read from the same source of truth.</p>
+ </details>
+<details>
+  <summary>What if drift alarms are noisy?</summary>
+  <p>Use moving averages and confirmatory tests; document alarm policy in evidence.</p>
+ </details>
+
+<h2>Glossary (Full)</h2>
+<ul>
+  <li><strong>PSI</strong>: Population Stability Index for drift measurement.</li>
+  <li><strong>CI</strong>: Confidence interval around estimates.</li>
+  <li><strong>Overlay</strong>: Scenario added to preserve tails or stress KPIs.</li>
+  <li><strong>Bundle ID</strong>: Identifier for an evidence package.</li>
+</ul>
+
+<h2>Closing (Comprehensive)</h2>
+<p>Schema, seeds, generation, overlays, validation, privacy, packaging, evidence—each stage leaves a paper trail. <strong>AethergenPlatform</strong> ensures the trail is reproducible and auditable, so you move from pilot to production with confidence.</p>

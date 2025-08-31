@@ -1,36 +1,128 @@
 <h1>From Starlings to Swarms: 8D Safety for Thousands of Drones</h1>
-<p>This article outlines how AethergenPlatform’s 8D manifold control and non‑linear methods enable large‑scale, resilient swarms (1k–15k+) with evidence‑backed safety—sharing the safety/evaluation concepts without disclosing proprietary control laws.</p>
+<p><em>By Gwylym Owen — 20–28 min read</em></p>
 
-<h2>8D State Manifold</h2>
-<p>An agent’s control state lives on an 8‑dimensional manifold capturing kinematics and mission/safety context: position/velocity plus health/risk and link/latency/role. Variants include local density, goal progress, altitude band, or airspace mode.</p>
+<h2>Purpose and Scope</h2>
+<p>This article sketches how <strong>AethergenPlatform</strong> uses 8‑dimensional state control and non‑linear field methods to enable large‑scale, resilient drone swarms (1k–15k+) with evidence‑backed safety. It shares safety architecture, evaluation philosophy, and packaging—without disclosing proprietary control laws. The aim is procurement‑grade clarity: what we do, what we measure, and how we prove it.</p>
 
-<h2>Topological Flocking</h2>
-<p>Each drone tracks ≈7 nearest neighbors by graph connectivity, improving resilience in variable density (starling heuristic). Fields and SDFs define cohesion/alignment/separation, formation/goal, density regulation, and wind compensation. Control follows negative gradients on the manifold with hard constraints.</p>
+<h2>Problem Statement</h2>
+<p>Current shows and industrial swarms can fail catastrophically when command/control links degrade or a subset of agents misbehave. A fragile metric neighbor model collapses under variable density; one bad node can cascade. We design <strong>decentralized, topology‑aware control</strong> with hard safety constraints and resilience, so local failures do not propagate.</p>
 
-<h2>Safety Layer</h2>
+<h2>8D State Manifold (Agent State)</h2>
+<p>Each agent’s control state lives on an 8‑dimensional manifold <em>M</em> that captures kinematics and mission/safety context. Example coordinates (choose 8 based on use‑case):</p>
 <ul>
-  <li>Control Barrier Functions enforce min‑separation, altitude bands, geofences.</li>
-  <li>Real‑Time Assurance overrides learned/heuristic actions to safe modes (hover/rise/land).</li>
-  <li>Resilient consensus filters outliers/Byzantine nodes to prevent cascades.</li>
-  <li>Fault isolation repairs local graph “holes”; role reassignment maintains coverage/connectivity.</li>
+  <li><strong>Position</strong>: x, y, z</li>
+  <li><strong>Velocity</strong>: v_x, v_y, v_z</li>
+  <li><strong>Health/risk</strong>: h (battery, IMU confidence, ESC thermal)</li>
+  <li><strong>Link/latency/role</strong>: ℓ (QoS tier, comm health, role index)</li>
+</ul>
+<p>Alternative dimensions: local density estimate, goal progress, formation slot, altitude band, airspace rule mode. The manifold formulation keeps the controller compact and device‑portable while allowing a rich safety layer.</p>
+
+<h2>Behavioral Fields and Topology</h2>
+<p>We operate in <strong>topological</strong> rather than purely metric neighborhoods: each drone tracks k≈7 nearest neighbors by graph connectivity (a starling heuristic), which is more resilient in variable density. Behavioral fields on the manifold combine:</p>
+<ul>
+  <li><strong>Cohesion/Alignment/Separation</strong> terms</li>
+  <li><strong>Goal/formation fields</strong> and waypoints</li>
+  <li><strong>Geofences</strong> encoded as hard signed distance function (SDF) constraints</li>
+  <li><strong>Density regulation</strong> (avoid crowding), turbulence/wind compensation</li>
+</ul>
+<p>Control follows negative gradients on <em>M</em>, then the safety layer enforces hard constraints before actuation.</p>
+
+<h2>Safety Layer (Hard Constraints)</h2>
+<ul>
+  <li><strong>Control Barrier Functions (CBFs)</strong>: enforce h_j(x) ≥ 0 for min‑separation, altitude bands, and geofence/no‑fly constraints.</li>
+  <li><strong>Real‑Time Assurance (RTA)</strong> supervisor: overrides learned/heuristic commands when constraint violation is imminent; degrades to safe modes (hover/rise/land) by context.</li>
+  <li><strong>Resilient consensus (W‑MSR)</strong>: filters outliers/Byzantine neighbors to avoid cascading failures.</li>
+  <li><strong>Fault isolation</strong>: local graph repairs “holes”; role reassignment preserves connectivity and coverage.</li>
  </ul>
 
-<h2>Simulation & Training</h2>
-<p>Using NVIDIA Omniverse/Isaac: physics (wind, GNSS bias, latency), failure injection (motor/GPS/partitions/spikes), multi‑agent RL + imitation atop the safety layer, and curricula that scale 100→1k→10k agents under tighter latency budgets.</p>
-
-<h2>Evidence & Evaluation</h2>
+<h2>Communications & Graph Model</h2>
 <ul>
-  <li>Safety: violations per flight‑hour, min‑sep breaches, geofence intrusions, k‑failure recovery.</li>
-  <li>Connectivity/resilience: largest connected subgraph over time; completion under partitions.</li>
-  <li>Efficiency: energy, smoothness, throughput. All signed in evidence bundles.</li>
+  <li><strong>Middleware</strong>: ROS 2/DDS or equivalent pub/sub with bounded message sizes; periodic heartbeat; local broadcast range limits.</li>
+  <li><strong>Neighbor graph</strong>: dynamic k‑NN in the topological sense; timeouts and packet‑loss handling; link quality contributes to ℓ.</li>
+  <li><strong>Compliance hooks</strong>: geofence updates, ATC directives, remote ID integration where applicable.</li>
+</ul>
+
+<h2>Simulation & Training (NVIDIA Omniverse / Isaac Sim)</h2>
+<ul>
+  <li><strong>Physics</strong>: 3D kinematics, wind gusts, GNSS bias/drift, sensor latency; domain randomization across weather/time of day.</li>
+  <li><strong>Failure injection</strong>: motor loss, GPS dropouts, communications partitions, sensor spikes.</li>
+  <li><strong>Policy learning</strong>: multi‑agent RL + imitation (murmuration traces/expert), GNN/attention for decentralized policies atop the safety layer.</li>
+  <li><strong>Curriculum</strong>: scale agents 100 → 1k → 10k with staged constraints and tighter latency budgets.</li>
+</ul>
+
+<h2>Evaluation & Evidence (for procurement and audit)</h2>
+<ul>
+  <li><strong>Safety</strong>: violations per flight‑hour, minimum separation breaches, geofence intrusions (target: zero with RTA), recovery time from k failures.</li>
+  <li><strong>Connectivity & resilience</strong>: largest connected subgraph component over time; mission completion under partitions.</li>
+  <li><strong>Efficiency</strong>: energy per mission, trajectory smoothness, task throughput.</li>
+  <li><strong>Packaging</strong>: signed evidence bundle with metrics, seeds, config, and hashes (ties into platform evidence system).</li>
 </ul>
 
 <h2>Edge Packaging & Deployment</h2>
-<p>Export compact policies and safety controllers (INT8/Q4/FP16) with device profiles. Offline policy packs carry default CBFs, geofences, RTA thresholds, logging toggles, and checksums/SBOM. On‑device watchdog controls fail‑safe modes.</p>
+<ul>
+  <li><strong>Export</strong> compact policies and safety controllers for Jetson/PC GPUs (INT8/Q4/FP16).</li>
+  <li>Use <strong>Aethergen Edge Bundle</strong> (GGUF/ONNX/LoRA options) with device profiles.</li>
+  <li><strong>Offline policy packs</strong>: default CBFs, geofences, RTA thresholds, and logging toggles; checksum/SBOM inclusion.</li>
+  <li><strong>On‑device watchdog</strong> and flight‑mode selection to ensure fail‑safe degradation.</li>
+</ul>
 
-<h2>Governance & Risk</h2>
-<p>Geofencing, altitude limits, restricted zones, offline logs with signed digests, SBOM and signatures, license controls. Mitigations include topological limits, sparse comms, robust estimators, authenticated comms, and jurisdictional profiles.</p>
+<h2>Governance, Security, Compliance</h2>
+<ul>
+  <li><strong>Airspace</strong>: configurable geofencing, altitude limits, restricted zones per locale.</li>
+  <li><strong>Logging</strong>: append‑only offline logs; periodic signed digests.</li>
+  <li><strong>Supply chain</strong>: SBOM for artifacts, checksums, optional signatures; license controls and adapter watermarking.</li>
+</ul>
+
+<h2>Risks and Mitigations</h2>
+<ul>
+  <li><strong>Multi‑agent scalability</strong>: use topological neighbor limits, sparse comms, and GNN policies for linear scaling.</li>
+  <li><strong>Sensor/comms unreliability</strong>: RTA dominance with conservative fallbacks; robust estimators.</li>
+  <li><strong>Adversarial/Byzantine nodes</strong>: W‑MSR filtering; authenticated comms; anomaly detection on behaviors.</li>
+  <li><strong>Regulatory variance</strong>: policy profiles per jurisdiction; verifiable audit trails.</li>
+</ul>
+
+<h2>Roadmap (Shelved until core models ship)</h2>
+<h3>MVP (R&D)</h3>
+<ul>
+  <li>Baseline topological boids + CBF/RTA in Isaac for 1–3k agents; wind and GPS noise; failure injection.</li>
+  <li>Evidence kit v1: violation histograms, resilience curves, signed report.</li>
+ </ul>
+<h3>Beta</h3>
+<ul>
+  <li>GNN decentralized policy; domain randomization; device‑aware quantization; on‑device watchdog.</li>
+  <li>Policy pack and offline deploy guides; procurement‑grade evidence bundle.</li>
+ </ul>
+<h3>GA</h3>
+<ul>
+  <li>Expanded airspace compliance features, operator tools, and field telemetry integrations.</li>
+ </ul>
+
+<h2>Mathematical Sketch (high‑level)</h2>
+<ul>
+  <li><strong>CBF constraint</strong>: h_j(x) ≥ 0 (e.g., min‑sep − ||p_i − p_n||). Find u minimizing ||u − u_ref|| subject to ḣ_j(x,u) + α h_j(x) ≥ 0 for all j.</li>
+  <li><strong>Topological neighbor set</strong>: N_k(i) via robust k‑nearest by connectivity/quality score.</li>
+  <li><strong>Reward (RL)</strong>: w_safety·penalty(violations) + w_cohesion·cohesion + w_goal·goal − w_energy·usage − w_latency·delays.</li>
+ </ul>
+
+<h2>Public Case Study (future blog outline)</h2>
+<ul>
+  <li><strong>Title</strong>: “From Starlings to Swarms: 8D Safety for Thousands of Drones”</li>
+  <li><strong>Story beats</strong>: problem, 8D state, safety layer, simulation campaigns, resilience results, edge deployment, evidence.</li>
+  <li><strong>CTA</strong>: contact for regulated pilots; downloadable red‑team prompts and eval snippets.</li>
+  <li><strong>Status</strong>: concept complete, implementation shelved. When resumed, start with the MVP simulation harness and evidence kit v1.</li>
+</ul>
+
+<h2>What We Prove (and How)</h2>
+<ul>
+  <li><strong>Safety invariants hold</strong> across wind, GNSS bias, and injected failures at scale (1k+ agents).</li>
+  <li><strong>Resilience</strong>: partitions do not collapse the mission; largest connected component remains high.</li>
+  <li><strong>Efficiency</strong>: trajectories stay smooth; energy remains within budgets.</li>
+  <li><strong>Reproducibility</strong>: signed evidence bundles re‑create metrics with fixed seeds and configs.</li>
+</ul>
+
+<blockquote>
+  <p><strong>AethergenPlatform</strong> approaches swarms as <em>systems</em> with measurable invariants, not as demos. We ship proof, not poetry.</p>
+ </blockquote>
 
 <p><a href="/contact" class="aeg-btn">Contact Sales →</a></p>
-
 

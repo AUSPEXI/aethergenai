@@ -1,0 +1,312 @@
+<h1>Pricing & Entitlements Explained: Self‑Service vs Full‑Service</h1>
+<p><em>By Gwylym Owen — 16–22 min read</em></p>
+
+<h2>Executive Summary</h2>
+<p>AethergenPlatform offers transparent tiers that map to real‑world needs while avoiding cannibalisation. Compute ownership stays with customers; we price for rights, evidence, and support.</p>
+
+<h2>Principles</h2>
+<ul>
+  <li><strong>Evidence‑first</strong>: every claim backed by signed metrics.</li>
+  <li><strong>Rights‑based pricing</strong>: you pay for usage rights and support, not surprise compute.</li>
+  <li><strong>Non‑cannibalising tiers</strong>: each tier has a clear reason to exist.</li>
+</ul>
+
+<h2>Tiers</h2>
+<ul>
+  <li><strong>Self‑Service</strong>: access to packaged assets, docs, and community support.</li>
+  <li><strong>Assisted</strong>: guided setup, limited customization, priority support.</li>
+  <li><strong>Full‑Service</strong>: private listings, custom adapters, SLAs, roadmap input.</li>
+</ul>
+
+<h2>Entitlements</h2>
+<ul>
+  <li>Asset rights (trial, evaluation, production).</li>
+  <li>Support response windows (best‑effort → SLA).</li>
+  <li>Customization (none → limited → bespoke).</li>
+  <li>Update cadence (regular → priority → negotiated).</li>
+</ul>
+
+<h2>Compute Ownership</h2>
+<p>Customers own compute for training/inference. We publish expected costs so budgeting is predictable; we focus pricing on rights and service, not hidden cycles.</p>
+
+<h2>Evidence Alignment</h2>
+<ul>
+  <li>Operating points matched to business capacity.</li>
+  <li>Stability and drift thresholds set per deployment.</li>
+  <li>Evidence bundles attached to change‑control.</li>
+</ul>
+
+<h2>Anti‑Cannibalisation Design</h2>
+<ul>
+  <li>Each tier unlocks qualitatively different outcomes.</li>
+  <li>Higher tiers include governance and risk reductions, not just features.</li>
+  <li>Clear upgrade paths without discounting lower tiers’ value.</li>
+</ul>
+
+<h2>Billing Scenarios</h2>
+<ul>
+  <li>Dataset subscription (monthly/annual) with updates.</li>
+  <li>Model subscription with support and evidence refresh.</li>
+  <li>Project‑based full‑service engagements with milestones.</li>
+</ul>
+
+<h2>FAQ</h2>
+<details>
+  <summary>Do you charge for compute?</summary>
+  <p>No—we design for your infra; our pricing is rights and service.</p>
+ </details>
+<details>
+  <summary>What happens if we outgrow a tier?</summary>
+  <p>Upgrade paths are contractual; we keep evidence continuity across tiers.</p>
+ </details>
+<details>
+  <summary>Can we do pilots?</summary>
+  <p>Yes—time‑limited pilots with acceptance gates and rollback plans.</p>
+ </details>
+
+<h2>Glossary</h2>
+<ul>
+  <li><strong>Entitlement</strong>: the rights a customer has to use assets/services.</li>
+  <li><strong>Operating point</strong>: threshold where a model is evaluated/used.</li>
+  <li><strong>Evidence bundle</strong>: signed metrics/configs/hashes.</li>
+</ul>
+
+<h2>Checklist</h2>
+<ul>
+  <li>Choose tier based on outcomes and risk appetite.</li>
+  <li>Confirm compute ownership and expected costs.</li>
+  <li>Align evidence gates with operations.</li>
+</ul>
+
+<p><a class="aeg-btn" href="/contact">Contact Sales →</a></p>
+
+<h2>Why Rights‑Based Pricing</h2>
+<ul>
+  <li>Predictability: no surprise compute charges from our side.</li>
+  <li>Fairness: you pay for value (rights, support, evidence), not cycles.</li>
+  <li>Governance: pricing ties to audit‑ready bundles and SLAs.</li>
+ </ul>
+
+<h2>Tier Matrix (Detailed)</h2>
+<pre>
+Capability                    Self‑Service   Assisted        Full‑Service
+Evidence bundles              Included       Included        Included
+Private listings              –              Optional        Included
+Customization                 –              Limited         Extensive
+SLAs                          –              Basic           Contractual
+Refresh cadence               Monthly        Monthly         Negotiated
+Support                       Community      Priority        Dedicated
+</pre>
+
+<h2>Entitlements JSON (Illustrative)</h2>
+<pre>
+{
+  "entitlements": {
+    "self_service": ["samples", "docs", "updates"],
+    "assisted": ["priority_support", "guided_setup"],
+    "full_service": ["private_listing", "sla", "customization"]
+  },
+  "compute": "customer"
+}
+</pre>
+
+<h2>Contracts & SOW Templates</h2>
+<pre>
+SOW:
+  bundle_ids: ["2025.01-claims", "2025.02-detector"]
+  slas:
+    response: "1bd assisted / 4h full"
+    refresh: "monthly / negotiated"
+  pricing:
+    tier: "assisted|full"
+    amount: "$X/mo"
+</pre>
+
+<h2>SLAs (Expanded)</h2>
+<ul>
+  <li>Evidence regeneration: next business day (assisted), same day (full).</li>
+  <li>Incident triage: 1bd (assisted), 4h (full).</li>
+  <li>Dashboard export fixes: 24h.</li>
+ </ul>
+
+<h2>Governance Hooks</h2>
+<ul>
+  <li>Bundle IDs in contracts and renewal notices.</li>
+  <li>Unity Catalog tags reflect subscription tier.</li>
+  <li>Deprecation policy and migration notes included.</li>
+ </ul>
+
+<h2>Budgeting Scenarios (Examples)</h2>
+<pre>
+Scenario A: Self‑Service
+  Rights: $X/mo
+  Compute (customer): $Y/mo
+  Total: X + Y
+
+Scenario B: Assisted
+  Rights: $X2/mo (priority, guided setup)
+  Compute: $Y/mo
+  Total: X2 + Y
+
+Scenario C: Full‑Service
+  Rights: $X3/mo (private, SLA, customization)
+  Compute: $Y/mo
+  Total: X3 + Y
+</pre>
+
+<h2>Evidence Alignment (Deeper)</h2>
+<ul>
+  <li>Operating points documented; thresholds in config tables.</li>
+  <li>Stability bands and refresh cadence declared.</li>
+  <li>Evidence manifests included in renewals.</li>
+ </ul>
+
+<h2>Licensing Notes</h2>
+<ul>
+  <li>Redistribution restrictions for datasets and models.</li>
+  <li>Attribution and usage scopes documented.</li>
+  <li>Audit rights for private listings where applicable.</li>
+ </ul>
+
+<h2>Buyer Journey</h2>
+<ul>
+  <li>Evaluate with samples and dashboards.</li>
+  <li>Trial with OP evaluation notebook.</li>
+  <li>Contract referencing bundle IDs and SLAs.</li>
+ </ul>
+
+<h2>Pricing FAQ (Extended)</h2>
+<details>
+  <summary>Can we pause subscriptions?</summary>
+  <p>Yes—assets remain accessible for archival; updates resume on restart.</p>
+ </details>
+<details>
+  <summary>Do you offer enterprise discounts?</summary>
+  <p>Yes—based on term length and scope; evidence cadence remains constant.</p>
+ </details>
+<details>
+  <summary>What if we exceed incident quotas?</summary>
+  <p>We scale support with additional blocks; SLAs still apply.</p>
+ </details>
+
+<h2>Comparative Table</h2>
+<pre>
+Feature                 Self   Assisted   Full
+Private Listing         No     Optional   Yes
+Customization           No     Limited    Full
+SLA                     No     Basic      Contractual
+Evidence Cadence        Yes    Yes        Yes
+</pre>
+
+<h2>Unity Catalog Integration</h2>
+<pre>
+COMMENT ON TABLE prod.ai.asset IS 'Tier:self; Evidence:manifest 2025.01';
+</pre>
+
+<h2>Procurement Mapping</h2>
+<ul>
+  <li>Evidence bundle → contract exhibit attachment.</li>
+  <li>SBOM → supply chain clause.</li>
+  <li>Refresh cadence → maintenance clause.</li>
+ </ul>
+
+<h2>Change‑Control</h2>
+<pre>
+release: 2025.02
+changes: threshold=0.74
+bundle_id: 9ac...
+status: PASS
+</pre>
+
+<h2>Renewals</h2>
+<ul>
+  <li>Evidence continuity across terms.</li>
+  <li>Tier upgrades keep historical bundle references.</li>
+ </ul>
+
+<h2>Public vs Private Listings</h2>
+<ul>
+  <li>Public: broad reach; self‑service tier common.</li>
+  <li>Private: curated access; full‑service tier typical.</li>
+ </ul>
+
+<h2>Security & Compliance</h2>
+<ul>
+  <li>SBOM per release; signatures and hashes.</li>
+  <li>Optional privacy probes and DP budgets for synthetic content.</li>
+ </ul>
+
+<h2>Case Studies (Condensed)</h2>
+<ul>
+  <li>Healthcare buyer adopted assisted tier with monthly refresh, evidence‑driven SLAs.</li>
+  <li>Automotive plant chose full‑service for private listings and customization.</li>
+ </ul>
+
+<h2>Checklist (Extended)</h2>
+<pre>
+[ ] Tier selected and mapped to outcomes
+[ ] Entitlements configured
+[ ] Evidence manifests attached
+[ ] SBOM verified
+[ ] SLAs signed
+</pre>
+
+<h2>Closing</h2>
+<p>Rights‑based pricing keeps costs predictable and governance clean. With <strong>AethergenPlatform</strong>, tiers map to outcomes and evidence—so subscriptions reflect value, not surprises.</p>
+
+<h2>Tier Fit Matrix</h2>
+<pre>
+Use‑case            Self‑Service  Assisted  Full‑Service
+Marketplace eval    ✓            ✓         ✓
+Private listing     –            ✓         ✓
+Custom adapters     –            –         ✓
+SLAs                –            Limited   Comprehensive
+</pre>
+
+<h2>Contract Examples</h2>
+<ul>
+  <li>12‑month dataset subscription with monthly refresh and support window.</li>
+  <li>Model subscription with quarterly evidence refresh and priority tickets.</li>
+  <li>Full‑service SOW with milestones, SLAs, and change‑control.</li>
+</ul>
+
+<h2>SLAs</h2>
+<ul>
+  <li>Response: 1 business day (Assisted), 4 hours (Full‑Service).</li>
+  <li>Refresh: monthly (Assisted), negotiated (Full‑Service).</li>
+  <li>Incident triage: next business day / same day.</li>
+</ul>
+
+<h2>Renewals & Upgrades</h2>
+<ul>
+  <li>Evidence continuity preserved across tier upgrades.</li>
+  <li>Pro‑rated adjustments for mid‑term changes.</li>
+  <li>Migration notes for breaking updates.</li>
+</ul>
+
+<h2>Compliance Alignment</h2>
+<ul>
+  <li>Evidence bundles support audit readiness.</li>
+  <li>SBOM and license controls per release.</li>
+  <li>Access auditing via Unity Catalog.</li>
+</ul>
+
+<h2>Budgeting Example</h2>
+<pre>
+Rights (Assisted): $X/mo
+Expected compute (customer): $Y/mo
+Evidence refresh (quarterly): included
+Net TCO: X + Y (predictable)
+</pre>
+
+<h2>FAQ (More)</h2>
+<details>
+  <summary>Can we switch between tiers mid‑term?</summary>
+  <p>Yes—subject to contract; we preserve evidence history and entitlements.</p>
+ </details>
+<details>
+  <summary>How are usage caps enforced?</summary>
+  <p>Entitlements are tracked; private listings and keys can be rotated.</p>
+ </details>
+
+

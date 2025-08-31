@@ -7,3 +7,238 @@
 <p><a href="/pricing" class="aeg-btn">View Pricing →</a> <a href="/contact" class="aeg-btn">Contact Sales →</a></p>
 
 
+<h2>From Vibes to Verbs</h2>
+<ul>
+  <li>Replace “make it smarter” with measurable verbs: extract, classify, rank, route.</li>
+  <li>Define success at operating points (OPs), not vibes.</li>
+  <li>Freeze segment taxonomy per release to avoid target drift.</li>
+ </ul>
+
+<h2>Intent → Constraints</h2>
+<pre>
+intent.md
+  goal: triage claims for investigation
+  capacity: 2,000 alerts/day
+  constraints: fpr≈1%, region stability≤0.03, p95≤120ms
+  limits: not for eligibility determination; training only on synthetic
+</pre>
+
+<h2>Constraints → Contracts</h2>
+<pre>
+contracts.yaml
+  inputs: {amount: decimal, code: string, region: enum}
+  outputs: {score: float, at_op: bool}
+  thresholds: {op_threshold: 0.73}
+  slos: {latency_p95_ms: 120}
+</pre>
+
+<h2>Contracts → Architecture</h2>
+<pre>
+ingest → normalise → join → validate → package → deploy → evidence
+                     ↘ tests & gates ↗
+</pre>
+
+<h2>Evidence Gates (Copy‑Paste)</h2>
+<pre>
+gate.utility@op.min = 0.75
+gate.stability.region.max_delta = 0.03
+gate.latency.p95_ms = 120
+gate.privacy.membership_advantage_max = 0.05
+</pre>
+
+<h2>Seed Validation (Small First)</h2>
+<ul>
+  <li>Run on 1k rows; measure OP metrics with CIs; record seeds/hashes.</li>
+  <li>Exercise drift monitors and rollbacks before real traffic.</li>
+  <li>Iterate until green; only then scale.</li>
+ </ul>
+
+<h2>Prompt Hygiene</h2>
+<ul>
+  <li>Separate intent prompts (specification) from execution prompts (ops).</li>
+  <li>Template prompts; version them; test with fixtures.</li>
+  <li>Don’t bury thresholds or policy in prose—keep them in config.</li>
+ </ul>
+
+<h2>Scaffold: Files You Actually Need</h2>
+<pre>
+docs/intent.md
+docs/master_doc.md
+schemas/schema.yaml
+pipelines/pipeline.yaml
+ci/gates.yaml
+evidence/readme.md
+</pre>
+
+<h2>Master Doc (Outline)</h2>
+<pre>
+1. Goals & constraints
+2. Architecture & module contracts
+3. Data schemas & vocabularies
+4. Pipelines & artifacts
+5. Evidence gates & thresholds
+6. Rollbacks & incidents
+7. Security & privacy
+8. Runbooks & on‑call
+9. Templates & glossary
+</pre>
+
+<h2>Common Failure Modes</h2>
+<ul>
+  <li>Scope creep from natural‑language meandering.</li>
+  <li>Moving thresholds inside code; no single source of truth.</li>
+  <li>Promoting without stability checks; latent regressions by segment.</li>
+ </ul>
+
+<h2>Counter‑Patterns (Fixes)</h2>
+<ul>
+  <li>Freeze OPs and segment taxonomies per release.</li>
+  <li>Store thresholds in config tables.</li>
+  <li>Fail‑closed gates in CI; no manual side‑doors.</li>
+ </ul>
+
+<h2>Ablations (Make Changes Earn Their Keep)</h2>
+<pre>
+factor, delta@op, ci_low, ci_high, decision
+adapter_specialized, +0.021, +0.014, +0.028, keep
+quant_int8, -0.006, -0.011, -0.003, keep (speed↑)
+prune_10pct, -0.015, -0.024, -0.008, revert
+</pre>
+
+<h2>Latency & Energy (Reality)</h2>
+<ul>
+  <li>Budget p95/p99 latency; measure energy/task where available.</li>
+  <li>Publish device profiles and fallback behaviors.</li>
+  <li>Promote only if OP and SLOs hold.</li>
+ </ul>
+
+<h2>Runbooks (Copy/Paste)</h2>
+<pre>
+promotion:
+  - ensure gates PASS; sign evidence; update change‑control
+rollback:
+  - revert; verify OP; open incident; attach dashboards
+incident:
+  - snapshot; mitigate; root cause; prevention actions
+</pre>
+
+<h2>Catalog Comments</h2>
+<pre>
+COMMENT ON TABLE prod.ai.claims IS 'Purpose: triage; OP fpr=1%; Evidence: manifest 2025.01.';
+</pre>
+
+<h2>Case Study (Narrative)</h2>
+<p>A founder tried to “just prompt it better.” After three resets, they wrote a one‑page intent, froze OP/stability, and wired gates. Two weeks later they shipped, with incidents down and adoption up because the proof shipped with the product.</p>
+
+<h2>Checklist (Ship This)</h2>
+<pre>
+[ ] Intent → constraints → contracts
+[ ] Small‑scale validation green
+[ ] Gates automated in CI
+[ ] Rollbacks rehearsed
+[ ] Dashboards export HTML/PDF
+[ ] Catalog comments reference evidence IDs
+</pre>
+
+<h2>FAQ (Extended)</h2>
+<details>
+  <summary>Can I iterate in natural language?</summary>
+  <p>Yes—use it to capture intent. Translate to specs and gates before building.</p>
+ </details>
+<details>
+  <summary>What if stakeholders change requirements mid‑flight?</summary>
+  <p>Version the master doc; re‑validate small; then merge and promote.</p>
+ </details>
+<details>
+  <summary>How do we prevent endless tweaks?</summary>
+  <p>Require effect sizes at OP; no evidence, no merge.</p>
+ </details>
+
+<h2>Closing (Do The Boring Thing)</h2>
+<p>Turn the wall into a ramp: constraints, contracts, gates, and evidence. That’s how intent becomes software that survives contact with reality.</p>
+<h2>Anti‑Pattern: Prompt Pile</h2>
+<ul>
+  <li>Endless prompting without architecture or evidence.</li>
+  <li>Changing goals mid‑stream; no source of truth for thresholds.</li>
+  <li>Shipping screenshots instead of artifacts.</li>
+ </ul>
+
+<h2>Pattern: Translate Intent to Architecture</h2>
+<ul>
+  <li>Write constraints and contracts first (schemas, interfaces, thresholds).</li>
+  <li>Prototype small; validate; scale gradually.</li>
+  <li>Promote only on evidence gates (OP, stability, latency, privacy).</li>
+ </ul>
+
+<h2>Scaffolding</h2>
+<pre>
+intent.md → master_doc.md → schema.yaml → pipeline.yaml → ci.yaml → dashboards.html
+</pre>
+
+<h2>Evidence Gates</h2>
+<pre>
+utility@op.min: 0.75
+stability.region.max_delta: 0.03
+latency.p95_ms: 120
+privacy.membership_advantage_max: 0.05
+</pre>
+
+<h2>Small‑Scale Validation</h2>
+<ul>
+  <li>Run on tiny slices; compute OP metrics; record seeds/hashes.</li>
+  <li>Test drift monitors and rollback scripts.</li>
+  <li>Fix pain points before scaling.</li>
+ </ul>
+
+<h2>Ablations & Effect Sizes</h2>
+<pre>
+factor, delta@op, ci_low, ci_high, decision
+adapter_specialized, +0.021, +0.014, +0.028, keep
+quant_int8, -0.006, -0.011, -0.003, keep (speed↑)
+</pre>
+
+<h2>Guardrails</h2>
+<ul>
+  <li>Config tables as source of truth for thresholds.</li>
+  <li>Fail‑closed gates; incidents for breaches.</li>
+  <li>Catalog comments reference evidence IDs.</li>
+ </ul>
+
+<h2>Pipeline Template</h2>
+<pre>
+ingest → normalise → join → validate → package → deploy → evidence
+                     ↘ tests & gates ↗
+</pre>
+
+<h2>Runbooks</h2>
+<pre>
+promotion:
+  - gates PASS; sign evidence; update change‑control
+rollback:
+  - revert; verify OP; open incident; attach dashboards
+</pre>
+
+<h2>Case Study</h2>
+<p>A team replaced prompt pileups with architecture and gates. Incidents dropped, and velocity rose because decisions were documented and evidence automated in CI.</p>
+
+<h2>Checklist</h2>
+<pre>
+[ ] Intent → contracts
+[ ] Small‑scale validation
+[ ] Gates automated
+[ ] Rollbacks rehearsed
+[ ] Dashboards exportable
+</pre>
+
+<h2>FAQ</h2>
+<details>
+  <summary>Isn’t this slower?</summary>
+  <p>No—it’s discipline. You go faster by removing rework and surprises.</p>
+ </details>
+<details>
+  <summary>How do we keep requirements stable?</summary>
+  <p>Freeze OPs and segments per release; version changes; re‑validate small.</p>
+ </details>
+
+<h2>Closing</h2>
+<p>Natural language is a great starting point—not an engineering plan. Translate intent into constraints, gates, and artifacts. Then ship.</p>

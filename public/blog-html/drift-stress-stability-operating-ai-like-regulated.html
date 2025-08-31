@@ -1,0 +1,158 @@
+<h1>Drift, Stress, and Stability: Operating AI Like a Regulated System</h1>
+<p><em>By Gwylym Owen — 12–16 min read</em></p>
+
+<h2>Why Stability Beats Surprises</h2>
+<p>In regulated environments, surprises become incidents. AethergenPlatform treats models as <strong>operational systems</strong> with explicit SLOs, evidence‑backed promotion gates, continuous monitors, and rehearsed rollback. The goal is not just accuracy—it’s <em>predictability</em> under change.</p>
+
+<h2>Service‑Level Objectives (SLOs)</h2>
+<ul>
+  <li><strong>Utility SLO</strong>: detection at fixed false‑positive budgets with tolerance bands.</li>
+  <li><strong>Stability SLO</strong>: maximum delta across product/region/segment bands.</li>
+  <li><strong>Latency SLO</strong>: p95/p99 response at capacity.</li>
+  <li><strong>Privacy SLO</strong>: probe metrics remain below thresholds; DP budgets honored when used.</li>
+</ul>
+
+<h2>Test Suites That Matter</h2>
+<ul>
+  <li><strong>Time drift</strong>: rolling windows with KPI bands and alarms.</li>
+  <li><strong>Segment shifts</strong>: product/region/lifecycle stability checks.</li>
+  <li><strong>Corruptions</strong>: structured input noise; robustness baselines.</li>
+  <li><strong>Fault injection</strong>: missing/skewed inputs; degraded modes and fallbacks.</li>
+</ul>
+
+<h2>Promotion Policy (Fail‑Closed)</h2>
+<ol>
+  <li>Only promote if all SLO gates pass with confidence intervals.</li>
+  <li>Evidence bundle attached to the change; hashes recorded in change‑control.</li>
+  <li>Rollback plan rehearsed; on‑call and owners listed in the release.</li>
+ </ol>
+
+<h2>Monitors and Rollback</h2>
+<ul>
+  <li><strong>Early warning</strong>: drift monitors on inputs and outcomes; page at warning, rollback at breach.</li>
+  <li><strong>Shadow evaluation</strong>: candidate models score in parallel with live traffic; promotion only after shadow passes.</li>
+  <li><strong>Automated rollback</strong>: breach of SLO → revert to last good artifact; evidence logged.</li>
+</ul>
+
+<h2>Evidence in CI</h2>
+<p>Every change regenerates a signed evidence bundle—metrics, ablations, limits. Audits become checks, not meetings; engineering and risk share the same artifacts.</p>
+
+<blockquote>
+  <p><strong>AethergenPlatform</strong> replaces “it should be fine” with gates that either pass or block. That’s how you operate AI in regulated environments.</p>
+ </blockquote>
+
+<p><a class="aeg-btn" href="/contact">Contact Sales →</a></p>
+
+<h2>Test Matrix (Illustrative)</h2>
+<pre>
+time_windows: [7d, 14d, 28d]
+segments: [product, region, lifecycle]
+corruptions: [gaussian_noise, occlusion, typos]
+faults: [missing_feature_X, skewed_distribution_Y]
+gates:
+  utility@budget: >= target with CI
+  stability: <= delta_max
+  latency: p95 <= SLO
+</pre>
+
+<h2>Monitor Catalog</h2>
+<ul>
+  <li>Input distribution drift (PSI/KS).</li>
+  <li>Outcome drift by segment.</li>
+  <li>Latency and error budgets.</li>
+  <li>Privacy probes (where applicable).</li>
+</ul>
+
+<h2>Runbook (Breach → Rollback)</h2>
+<ol>
+  <li>Page on warning; evaluate evidence snapshot.</li>
+  <li>If breach confirmed, trigger automated rollback.</li>
+  <li>Open incident; attach evidence; schedule post‑mortem.</li>
+ </ol>
+
+<h2>Incident Checklist</h2>
+<ul>
+  <li>What changed? (artifact hashes, configs)</li>
+  <li>Which SLO breached? (utility/stability/latency)</li>
+  <li>Customer impact and mitigation</li>
+  <li>Prevention actions and owners</li>
+</ul>
+
+<h2>FAQ</h2>
+<details>
+  <summary>Can we promote with one failed gate?</summary>
+  <p>No—fail‑closed means promotion is blocked until all gates pass or an explicit waiver is approved with compensating controls.</p>
+ </details>
+<details>
+  <summary>How do we test rare segments?</summary>
+  <p>Use targeted synthetic augmentations for stability checks; disclose limits in evidence.</p>
+ </details>
+
+<h2>Glossary</h2>
+<ul>
+  <li><strong>SLO</strong>: service‑level objective—target for reliability/quality.</li>
+  <li><strong>Gate</strong>: required test a release must pass for promotion.</li>
+  <li><strong>Rollback</strong>: automated reversion to last good state.</li>
+</ul>
+
+<h2>Acceptance Template</h2>
+<pre>
+Release: model-X vA.B.C
+Gates Passed:
+  - utility@budget (1% FPR): PASS (delta +0.7% ±0.2%)
+  - stability (segment delta): PASS (<= 0.03)
+  - latency: PASS (p95 82ms)
+  - privacy: PASS (no elevation)
+Rollback Plan: ticket #1234 rehearsed 2025‑01‑12
+</pre>
+
+<h2>Evidence Bundle Contents</h2>
+<ul>
+  <li>Metrics: utility/stability/drift with CIs</li>
+  <li>Ablation table and feature catalog</li>
+  <li>Limits and known failure modes</li>
+  <li>Config and seed hashes; SBOM</li>
+</ul>
+
+<h2>Shadow Evaluation SOP</h2>
+<ol>
+  <li>Deploy candidate in shadow; log scores only.</li>
+  <li>Compare against live at operating point.</li>
+  <li>Run segment and drift checks; package evidence.</li>
+  <li>Promote if all gates pass; else iterate.</li>
+</ol>
+
+<h2>QA Questions</h2>
+<ul>
+  <li>How many alerts/day at budget X?</li>
+  <li>Which segments are most volatile?</li>
+  <li>What is the rollback trigger threshold?</li>
+  <li>What are the known limits?</li>
+</ul>
+
+<h2>Security & Compliance Hooks</h2>
+<ul>
+  <li>Evidence signing; retention policy.</li>
+  <li>Access control for promotion and rollback.</li>
+  <li>Audit trail for threshold changes.</li>
+</ul>
+
+<h2>Post‑Mortem Template</h2>
+<pre>
+Summary: what happened, impact
+Timeline: events and decisions
+Evidence: bundle IDs and dashboards
+Root Cause: technical & process
+Actions: immediate, preventive (owners, dates)
+</pre>
+
+<h2>Playbook for Drift Incidents</h2>
+<ol>
+  <li>Confirm breach; collect snapshot.</li>
+  <li>Rollback; notify stakeholders.</li>
+  <li>Analyze segment deltas; propose fix.</li>
+  <li>Run shadow with fix; re‑promote.</li>
+</ol>
+
+<h2>Contact</h2>
+<p>Operate AI with confidence and auditability. <a href="/contact">Get in touch</a> to implement fail‑closed gates and evidence in your CI.</p>

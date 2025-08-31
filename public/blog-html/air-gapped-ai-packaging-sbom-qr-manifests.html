@@ -1,0 +1,201 @@
+<h1>Air‑Gapped AI: Packaging, SBOMs, and QR‑Verified Manifests for the Field</h1>
+<p><em>By Gwylym Owen — 12–16 min read</em></p>
+
+<h2>Threat Model and Requirements</h2>
+<ul>
+  <li><strong>No live network</strong>: updates arrive via removable media; verification must be local.</li>
+  <li><strong>Provenance</strong>: field engineers need to prove what’s installed without calling home.</li>
+  <li><strong>Change‑control</strong>: every binary and policy change must be traceable and reversible.</li>
+</ul>
+
+<h2>Package Anatomy</h2>
+<ul>
+  <li><strong>SBOM</strong> for binaries and models (format compatible with vendor tools).</li>
+  <li><strong>Signed manifest</strong> listing files, SHA‑256 checksums, versions, and build metadata.</li>
+  <li><strong>Policy packs</strong> (thresholds, geofences, logging modes) with versioned diffs.</li>
+  <li><strong>Device profiles</strong> (VRAM, thermal envelope, power constraints) to avoid overload.</li>
+</ul>
+
+<h2>QR‑Verified Manifests</h2>
+<p>We include a QR‑encoded manifest hash. A handheld or kiosk compares the scanned hash to the local manifest and printed release notes. If hashes match, the install is verified—no cloud required.</p>
+
+<h2>Key Management (Offline)</h2>
+<ul>
+  <li><strong>Offline root</strong> and rotating signing keys; short‑lived field keys for emergency hotfixes.</li>
+  <li><strong>Revocation lists</strong> distributed with each release; kiosks cache recent lists.</li>
+  <li><strong>Dual‑control</strong> for promotion to production media.</li>
+</ul>
+
+<h2>Installation and Audit Procedure</h2>
+<ol>
+  <li>Scan media to generate and display the manifest hash.</li>
+  <li>Compare against printed/QR hash from release notes.</li>
+  <li>Install; device verifies signatures and checksums; snapshot previous state.</li>
+  <li>Run post‑install self‑tests; log results with signatures.</li>
+ </ol>
+
+<h2>Evidence Bundle</h2>
+<p>Each package carries signed evidence: lineage, metrics, ablations, and (if applicable) privacy probes. Procurement and security file the bundle with the install manifest for full provenance.</p>
+
+<blockquote>
+  <p><strong>AethergenPlatform</strong> turns “What’s running out there?” into a button press. No connectivity, no excuses—just verifiable state.</p>
+ </blockquote>
+
+<p><a class="aeg-btn" href="/contact">Contact Sales →</a></p>
+
+<h2>Packaging Formats</h2>
+<ul>
+  <li>Signed tarball with manifest and SBOM.</li>
+  <li>Optional split packages for models, policies, and tools.</li>
+  <li>Kiosk USB images with pre‑flight checks.</li>
+ </ul>
+
+<h2>Field SOP</h2>
+<ol>
+  <li>Verify media integrity (hash scan).</li>
+  <li>Snapshot current system; store rollback image.</li>
+  <li>Install and run self‑tests; print pass/fail ticket.</li>
+ </ol>
+
+<h2>Tamper Evidence</h2>
+<ul>
+  <li>Checksums at file and package levels.</li>
+  <li>QR hash on release notes; kiosk display comparison.</li>
+  <li>Local audit log with signed digests.</li>
+ </ul>
+
+<h2>Supply Chain</h2>
+<ul>
+  <li>SBOM with license metadata; vulnerability scan report.</li>
+  <li>Third‑party attestations stored with bundle.</li>
+  <li>Periodic key rotation and revocation lists.</li>
+ </ul>
+
+<h2>Troubleshooting</h2>
+<ul>
+  <li>Hash mismatch → stop install; fetch correct media.</li>
+  <li>Self‑test failure → revert to snapshot; attach logs.</li>
+  <li>Thermal throttle → switch to Q4 model profile.</li>
+ </ul>
+
+<h2>FAQ</h2>
+<details>
+  <summary>What if we lose signing keys?</summary>
+  <p>Offline root with recovery ceremony; field keys can be revoked via lists shipped in the next release.</p>
+ </details>
+<details>
+  <summary>Can sites customize policies?</summary>
+  <p>Yes—policy packs support site overlays; overlays are versioned and signed locally.</p>
+ </details>
+
+<h2>Glossary</h2>
+<ul>
+  <li><strong>SBOM</strong>: software bill of materials.</li>
+  <li><strong>QR hash</strong>: compact code of manifest hash for offline check.</li>
+  <li><strong>Kiosk</strong>: local station running verification UI.</li>
+ </ul>
+
+<h2>Release Notes Template (Offline)</h2>
+<pre>
+Release: Aethergen Edge Pack vX.Y.Z
+Manifest Hash (QR): abc123...
+Signed By: key-id 0xDEADBEEF
+Includes:
+  - Models: vision/lineA INT8, policy-pack plant-1
+  - SBOM: sbom.json (hash ...)
+  - Tools: kiosk v1.4
+Change Summary:
+  - Thresholds: class A +0.02; class B unchanged
+  - Logging: sample rate +10% for shift night
+Rollback:
+  - Last good: vX.Y.(Z-1) hash ...
+</pre>
+
+<h2>Manifest Snippet</h2>
+<pre>
+{
+  "files": [
+    {"path": "models/lineA.int8.gguf", "sha256": "..."},
+    {"path": "policy/plant-1.yaml", "sha256": "..."},
+    {"path": "sbom.json", "sha256": "..."}
+  ],
+  "version": "X.Y.Z",
+  "build": {
+    "time": "2025-01-20T12:00:00Z",
+    "env": "offline-builder-3"
+  }
+}
+</pre>
+
+<h2>QR Encoding</h2>
+<ul>
+  <li>Encode manifest SHA‑256 as base32; include version prefix.</li>
+  <li>QR error‑correction: M or Q; test readability under glare and dust.</li>
+  <li>Sticker with tamper stripe for enclosure panels.</li>
+</ul>
+
+<h2>Roles & Responsibilities</h2>
+<ul>
+  <li><strong>Build owner</strong>: signs artifacts and assembles package.</li>
+  <li><strong>QA lead</strong>: verifies golden self‑tests and evidence.</li>
+  <li><strong>Field engineer</strong>: performs install and kiosk checks.</li>
+  <li><strong>Security</strong>: manages keys, revocation lists, audits.</li>
+</ul>
+
+<h2>Security Audit Checklist</h2>
+<ul>
+  <li>SBOM present; third‑party scans attached.</li>
+  <li>Manifests and binaries signed; keys in valid period.</li>
+  <li>QR hash matches manifest; kiosk verification passed.</li>
+  <li>Local audit log enabled and rotating.</li>
+</ul>
+
+<h2>Disaster Recovery (Air‑Gapped)</h2>
+<ol>
+  <li>Power loss during install → boot to recovery media.</li>
+  <li>Restore snapshot; re‑run self‑tests.</li>
+  <li>File incident with logs and kiosk screenshots.</li>
+ </ol>
+
+<h2>Device Profiles (Examples)</h2>
+<ul>
+  <li>Jetson Orin 16GB: INT8 models; thermal cap 30W; fan curve profile B.</li>
+  <li>Industrial PC 32GB: FP16 or Q4; dual‑camera ingest; SSD wear limits.</li>
+</ul>
+
+<h2>Policy Overlays (Site‑Specific)</h2>
+<pre>
+policy:
+  thresholds:
+    surface.scratch: 0.62
+    gap.alignment: 0.55
+  logging:
+    sample_rate: 0.15
+  rework:
+    severity: {critical: stop, major: route, minor: tally}
+</pre>
+
+<h2>Change‑Control Form</h2>
+<ul>
+  <li>Requester, approver, date/time.</li>
+  <li>Artifact hashes and versions.</li>
+  <li>Risk assessment; rollback plan.</li>
+  <li>Post‑install verification evidence ID.</li>
+</ul>
+
+<h2>Legal & Compliance Notes</h2>
+<ul>
+  <li>License obligations listed in SBOM.</li>
+  <li>Site policies for removable media handling.</li>
+  <li>Retention policy for evidence logs.</li>
+</ul>
+
+<h2>Field Tips</h2>
+<ul>
+  <li>Carry spare QR labels and anti‑glare protectors.</li>
+  <li>Photograph kiosk pass screen for incident links.</li>
+  <li>Label USBs with release and hash fragment.</li>
+</ul>
+
+<h2>Contact</h2>
+<p>Need an offline deployment that procurement and security can sign with confidence? <a href="/contact">Talk to us</a>.</p>

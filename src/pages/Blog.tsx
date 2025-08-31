@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight, Shield, Database, Brain, Lightbulb, TrendingUp } from 'lucide-react';
-import React from 'react';
+ 
 
 const Blog = () => {
   // reserved: featuredPost (not used currently)
@@ -147,6 +147,17 @@ const Blog = () => {
 
   const blogPosts = [
     {
+      title: '📈 Evidence‑Led AI: How Signed Metrics Accelerate Enterprise Adoption',
+      excerpt: 'Turn evaluations into evidence. Signed metrics at operating points get procurement to yes, fast.',
+      author: 'Gwylym Owen',
+      date: 'January 22, 2025',
+      readTime: '14 min read',
+      category: 'Technology',
+      icon: Shield,
+      published: true,
+      slug: 'evidence-led-ai-signed-metrics-enterprise-adoption'
+    },
+    {
       title: '🕊️ From Starlings to Swarms: 8D Safety for Thousands of Drones',
       excerpt: 'How an 8D state manifold, safety controllers, and evidence-led evaluation can enable resilient drone swarms—without disclosing proprietary algorithms.',
       author: 'Gwylym Owen',
@@ -189,6 +200,171 @@ const Blog = () => {
       icon: Database,
       published: true,
       slug: 'databricks-marketplace-lab-to-revenue'
+    },
+    {
+      title: '🧾 Dataset & Model Cards that Buyers Actually Use',
+      excerpt: 'Cards as contracts: OP metrics, stability bands, limits, and evidence that buyers can file.',
+      author: 'Gwylym Owen',
+      date: 'January 22, 2025',
+      readTime: '24 min read',
+      category: 'Technology',
+      icon: Shield,
+      published: true,
+      slug: 'dataset-and-model-cards-that-buyers-actually-use'
+    },
+    {
+      title: '🧪 Insurance Fraud Playbooks: Synthetic Scenarios for Safer Evaluation',
+      excerpt: 'Parameterised typologies with OP evidence and privacy probes for safer fraud evaluation.',
+      author: 'Gwylym Owen',
+      date: 'January 22, 2025',
+      readTime: '20 min read',
+      category: 'Technology',
+      icon: Shield,
+      published: true,
+      slug: 'insurance-fraud-playbooks-synthetic-scenarios'
+    },
+    {
+      title: '🏛️ Public Sector AI: Secure Deployments Without Cloud Entanglements',
+      excerpt: 'Air‑gapped packaging, signed manifests, and offline dashboards for secure approvals.',
+      author: 'Gwylym Owen',
+      date: 'January 22, 2025',
+      readTime: '18 min read',
+      category: 'Technology',
+      icon: Shield,
+      published: true,
+      slug: 'public-sector-ai-secure-deployments-without-cloud-entanglements'
+    },
+    {
+      title: '🛠️ Managed Delivery on Databricks: SLAs Referencing Evidence (Not Hype)',
+      excerpt: 'SLAs tied to OP, stability, and refresh cadence inside your Databricks environment.',
+      author: 'Gwylym Owen',
+      date: 'January 22, 2025',
+      readTime: '20 min read',
+      category: 'Business Strategy',
+      icon: TrendingUp,
+      published: true,
+      slug: 'managed-delivery-on-databricks-slas-referencing-evidence'
+    },
+    {
+      title: '🧰 Scaling Synthetic Generation Safely: Schemas, Seeds, and Controls',
+      excerpt: 'Discipline for billions of records: schemas, seeds, overlays, gates, and evidence.',
+      author: 'Gwylym Owen',
+      date: 'January 22, 2025',
+      readTime: '28 min read',
+      category: 'Technology',
+      icon: Database,
+      published: true,
+      slug: 'scaling-synthetic-generation-safely-schemas-seeds-controls'
+    },
+    {
+      title: '📏 Ablations with Effect Sizes: Proving What Moves the Needle',
+      excerpt: 'Effect sizes at operating points with CIs. Keep what helps; block what harms.',
+      author: 'Gwylym Owen',
+      date: 'January 22, 2025',
+      readTime: '26 min read',
+      category: 'Technology',
+      icon: Brain,
+      published: true,
+      slug: 'ablations-with-effect-sizes-proving-what-moves-the-needle'
+    },
+    {
+      title: '🗂️ Unity Catalog Delivery: Turning Models into Procurement‑Ready Products',
+      excerpt: 'Governed catalog assets with evidence manifests, entitlements, and migration guides.',
+      author: 'Gwylym Owen',
+      date: 'January 22, 2025',
+      readTime: '30 min read',
+      category: 'Technology',
+      icon: Database,
+      published: true,
+      slug: 'unity-catalog-delivery-turning-models-into-procurement-ready-products'
+    },
+    {
+      title: '🔒 Privacy in Practice: Probes, Budgets, and Measurable Boundaries',
+      excerpt: 'Privacy proven by probes and optional DP budgets—documented and signed.',
+      author: 'Gwylym Owen',
+      date: 'January 22, 2025',
+      readTime: '30 min read',
+      category: 'Technology',
+      icon: Shield,
+      published: true,
+      slug: 'privacy-in-practice-probes-budgets-measurable-boundaries'
+    },
+    {
+      title: '📊 Segment‑Aware Evaluation: Stability that Survives Real‑World Change',
+      excerpt: 'OP metrics with stability bands across regions, products, and lifecycle.',
+      author: 'Gwylym Owen',
+      date: 'January 22, 2025',
+      readTime: '32 min read',
+      category: 'Technology',
+      icon: Shield,
+      published: true,
+      slug: 'segment-aware-evaluation-stability-that-survives-real-world-change'
+    },
+    {
+      title: '📦 Offline Readiness: Designing Models for Harsh, Disconnected Environments',
+      excerpt: 'Device‑aware bundles, QR manifests, and policy packs for field reliability.',
+      author: 'Gwylym Owen',
+      date: 'January 22, 2025',
+      readTime: '32 min read',
+      category: 'Technology',
+      icon: Database,
+      published: true,
+      slug: 'offline-readiness-designing-models-for-harsh-disconnected-environments'
+    },
+    {
+      title: '🧾 Evidence Bundles & Testing: Trustworthy AI Without Exposing IP',
+      excerpt: 'What we publish (and what we deliberately withhold) to satisfy risk teams and protect IP.',
+      author: 'Gwylym Owen',
+      date: 'January 22, 2025',
+      readTime: '22 min read',
+      category: 'Technology',
+      icon: Shield,
+      published: true,
+      slug: 'evidence-bundles-and-testing'
+    },
+    {
+      title: '🧩 Schema Designer & Multi‑Data Pipelines for LLMs',
+      excerpt: 'Harmonise domains, validate quality, and package LLM‑ready corpora with evidence.',
+      author: 'Gwylym Owen',
+      date: 'January 22, 2025',
+      readTime: '24 min read',
+      category: 'Technology',
+      icon: Database,
+      published: true,
+      slug: 'schema-designer-multi-data-llm'
+    },
+    {
+      title: '🧱 The Synthetic Data Lifecycle: From Seeds to Evidence',
+      excerpt: 'Schema → generation → validation → packaging → evidence—without PHI/PII.',
+      author: 'Gwylym Owen',
+      date: 'January 22, 2025',
+      readTime: '24 min read',
+      category: 'Technology',
+      icon: Brain,
+      published: true,
+      slug: 'synthetic-data-lifecycle'
+    },
+    {
+      title: '🛡️ Evidence in CI: Failing Closed and Passing Audits with Confidence',
+      excerpt: 'Regenerate proof on every change; gates block risky promotions; bundles file cleanly.',
+      author: 'Gwylym Owen',
+      date: 'January 22, 2025',
+      readTime: '45 min read',
+      category: 'Technology',
+      icon: Shield,
+      published: true,
+      slug: 'evidence-in-ci-failing-closed-passing-audits'
+    },
+    {
+      title: '📦 The Procurement Bundle: Signatures, Hashes, and Filing Made Simple',
+      excerpt: 'Self‑contained packages with dashboards, manifests, and SBOMs for fast approvals.',
+      author: 'Gwylym Owen',
+      date: 'January 22, 2025',
+      readTime: '45 min read',
+      category: 'Business Strategy',
+      icon: TrendingUp,
+      published: true,
+      slug: 'the-procurement-bundle-signatures-hashes-filing-made-simple'
     },
     {
       title: '💡 Pricing & Entitlements Explained: Self‑Service vs Full‑Service',
@@ -387,8 +563,34 @@ const Blog = () => {
       icon: Brain,
       published: false,
       slug: 'ai-human-partnership-friendship'
+    },
+    {
+      title: '🛡️ From First Pilot to Policy: Building Trust with Quality Gates',
+      excerpt: 'Turn pilots into policy with OP gates, stability bands, and signed evidence.',
+      author: 'Gwylym Owen',
+      date: 'January 22, 2025',
+      readTime: '20 min read',
+      category: 'Technology',
+      icon: Shield,
+      published: true,
+      slug: 'from-first-pilot-to-policy'
     }
   ];
+
+  // Filter out posts the user marked for deletion
+  const postsToShow = blogPosts.filter((p: any) => ![
+    'phoenix-rising-journey',
+    'weight-of-destiny-founders-reflection',
+    'innovators-website-challenge',
+    '4200-hour-course-abandoned-destiny',
+    'autistic-innovator-dilemma-building-tribe',
+    'agi-consciousness-test-grok-transcendence',
+    'buzz-lightyear-scale-3d-navigation',
+    'recursive-nightmare-navigator',
+    'bmw-pivot-strategy',
+    '90-percent-cost-savings',
+    'ai-human-partnership-friendship'
+  ].includes(p.slug));
 
   // reserved: categories
 
@@ -412,7 +614,7 @@ const Blog = () => {
       <section className="py-16 bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {blogPosts.map((post: any, index: number) => {
+            {postsToShow.map((post: any, index: number) => {
               const IconComp = (post && post.icon) || Database;
               return (
                 <article

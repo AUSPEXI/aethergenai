@@ -1,17 +1,350 @@
 <h1>Databricks Marketplace: From Lab to Revenue in Days</h1>
-<p>Turn synthetic datasets and niche models into Marketplace listings with evidence and enterprise‑ready packaging. AethergenPlatform handles packaging, evidence export, and Unity Catalog delivery so buyers evaluate quickly and safely.</p>
+<p><em>By Gwylym Owen — 18–24 min read</em></p>
 
-<h2>Runbook</h2>
+<h2>Executive Summary</h2>
+<p>AethergenPlatform turns experimental datasets and niche models into <strong>Databricks Marketplace</strong> listings with <em>procurement‑grade</em> evidence. You get packaging, validation, and automated listing artifacts—so buyers can evaluate, adopt, and pay without months of red tape.</p>
+
+<h2>Who This Is For</h2>
 <ul>
-  <li>Create Delta tables; OPTIMIZE/Z‑ORDER</li>
-  <li>Register in Unity Catalog; add tags (domain, license, sensitivity)</li>
-  <li>Export signed evidence bundle (utility, privacy, ablations)</li>
-  <li>Attach quickstart notebook and listing docs</li>
+  <li>Data teams with high‑value synthetic datasets or harmonised corpora.</li>
+  <li>Model builders offering specialized detectors or LLM adapters for regulated domains.</li>
+  <li>Enterprises needing private listings and entitlements mapped to legal/compliance.</li>
 </ul>
+
+<h2>Buyer Expectations (What Converts)</h2>
+<ul>
+  <li><strong>Evidence</strong>: clear, reproducible metrics at declared operating points.</li>
+  <li><strong>Documentation</strong>: schema, intended use, limits, and support policy.</li>
+  <li><strong>Packaging</strong>: install scripts, Unity Catalog entries, and samples.</li>
+  <li><strong>Pricing clarity</strong>: tiers, entitlements, and compute ownership.</li>
+  <li><strong>Trial flows</strong>: sandboxable assets that prove value fast.</li>
+</ul>
+
+<h2>Packaging: Datasets</h2>
+<ul>
+  <li><strong>Format</strong>: Delta/Parquet with Unity Catalog registration.</li>
+  <li><strong>Schema docs</strong>: field types, ranges, constraints, vocabularies.</li>
+  <li><strong>Samples</strong>: small public slice for quick exploration.</li>
+  <li><strong>Evidence</strong>: fidelity/utility metrics, drift baselines, CIs.</li>
+  <li><strong>Licensing</strong>: usage scope, redistribution limits, retention.</li>
+</ul>
+
+<h2>Packaging: Models</h2>
+<ul>
+  <li><strong>Formats</strong>: MLflow, ONNX, or GGUF (edge) with device notes.</li>
+  <li><strong>Inference notebooks</strong>: examples at target operating points.</li>
+  <li><strong>Calibration</strong>: threshold selection guidance and SOPs.</li>
+  <li><strong>Evidence</strong>: utility, segment stability, robustness tests.</li>
+  <li><strong>Limits</strong>: intended use, known failure modes, guardrails.</li>
+</ul>
+
+<h2>Evidence Bundle (Marketplace‑Ready)</h2>
+<ul>
+  <li>Metrics with confidence intervals; plots for buyers and auditors.</li>
+  <li>Ablation tables showing what truly drives performance.</li>
+  <li>Privacy notes (if synthetic) and optional DP budgets.</li>
+  <li>Seeds/config/hash manifest for reproducibility.</li>
+  <li>Support policy, SLAs, upgrade cadence.</li>
+</ul>
+
+<h2>Listing Artifacts</h2>
+<ul>
+  <li><strong>README</strong> with value proposition, evidence highlights, and CTA.</li>
+  <li><strong>Unity Catalog</strong> object definitions (schemas, grants).</li>
+  <li><strong>Install notebooks</strong> and sample queries.</li>
+  <li><strong>Pricing & entitlements</strong> JSON for self‑serve checkout.</li>
+  <li><strong>Change‑log</strong> and migration notes.</li>
+</ul>
+
+<h2>Promotion Gates</h2>
+<ul>
+  <li>Evidence thresholds pass at chosen operating points.</li>
+  <li>Stability across declared segments within tolerance.</li>
+  <li>Packaging validation (schema, notebooks, tests) is green.</li>
+  <li>Legal review: license terms, export controls, usage limits.</li>
+  <li>Support readiness: runbook, escalation, on‑call rotation.</li>
+  </ul>
+
+<h2>Unity Catalog & Governance</h2>
+<ul>
+  <li>Secure sharing to target workspaces with fine‑grained grants.</li>
+  <li>Audit trails for listing access and asset downloads.</li>
+  <li>Lineage from raw seeds to packaged assets.</li>
+  <li>Automated schema diffs and deprecation notices.</li>
+</ul>
+
+<h2>Pricing & Entitlements</h2>
+<ul>
+  <li><strong>Self‑Service</strong>: fixed monthly/annual; basic support; asset updates included.</li>
+  <li><strong>Assisted</strong>: premium updates, limited custom fields, guided setup.</li>
+  <li><strong>Full‑Service</strong>: private listings, SLAs, customization, and shared roadmap.</li>
+  <li><strong>Compute ownership</strong>: buyer pays for inference/ETL; we price by rights and refresh.</li>
+</ul>
+
+<h2>Trial Design</h2>
+<ul>
+  <li>Time‑limited access to a sample dataset or evaluation notebook.</li>
+  <li>Evidence summaries and dashboards pre‑wired for quick validation.</li>
+  <li>Conversion helpers: upgrade call‑to‑actions and contact links.</li>
+</ul>
+
+<h2>Case Study: Claims Fraud Dataset → Listing in 5 Days</h2>
+<ol>
+  <li><strong>Day 1</strong>: finalize schema, run evidence, generate README and samples.</li>
+  <li><strong>Day 2</strong>: register in Unity Catalog; wire grants and notebooks.</li>
+  <li><strong>Day 3</strong>: pass promotion gates; legal/license review.</li>
+  <li><strong>Day 4</strong>: publish private listing to design partners.</li>
+  <li><strong>Day 5</strong>: open self‑serve tier; monitor conversions and feedback.</li>
+</ol>
+
+<h2>Ops & SLAs</h2>
+<ul>
+  <li>Update cadence declared per listing (e.g., monthly refresh).</li>
+  <li>Support windows and escalation times (e.g., 1 business day).</li>
+  <li>Deprecation policy for breaking changes with migration notes.</li>
+</ul>
+
+<h2>Security & Compliance</h2>
+<ul>
+  <li>SBOM and artifact hashes for packaged assets.</li>
+  <li>License compliance for all dependencies.</li>
+  <li>Optionally, privacy probes and DP parameters for synthetic content.</li>
+</ul>
+
+<h2>FAQ</h2>
+<details>
+  <summary>Can we run private listings only?</summary>
+  <p>Yes. We support private, invite‑only listings with entitlements mapped to partner accounts.</p>
+ </details>
+<details>
+  <summary>How do you prevent listing churn?</summary>
+  <p>Evidence‑backed positioning, clear pricing, and consistent refresh cadence. We avoid over‑promising and publish limits.</p>
+ </details>
+<details>
+  <summary>Can buyers fork our datasets?</summary>
+  <p>License terms restrict redistribution; we monitor access via Unity Catalog audits.</p>
+ </details>
+
+<h2>Glossary</h2>
+<ul>
+  <li><strong>Operating point</strong>: threshold where models are evaluated and sold.</li>
+  <li><strong>Evidence bundle</strong>: signed metrics, configs, and hashes for reproducibility.</li>
+  <li><strong>Unity Catalog</strong>: Databricks governance for data and AI assets.</li>
+</ul>
+
+<h2>Checklist</h2>
+<ul>
+  <li>Evidence passes gates with CIs.</li>
+  <li>README, notebooks, samples verified.</li>
+  <li>Pricing and entitlements declared.</li>
+  <li>Legal, security, support sign‑off complete.</li>
+</ul>
+
+<p><a class="aeg-btn" href="/contact">Contact Sales →</a></p>
+
+<h2>Unity Catalog SQL (Illustrative)</h2>
+<pre>
+CREATE CATALOG IF NOT EXISTS prod;
+CREATE SCHEMA IF NOT EXISTS prod.ai;
+CREATE TABLE prod.ai.claims USING DELTA AS SELECT * FROM tmp_claims;
+COMMENT ON TABLE prod.ai.claims IS 'Purpose: fraud triage. Evidence: manifest 2025.01.';
+GRANT SELECT ON TABLE prod.ai.claims TO `buyer-group`;
+</pre>
+
+<h2>Pricing & Entitlements JSON</h2>
+<pre>
+{
+  "tiers": [
+    {"name": "self-service", "price": "$X/mo", "rights": ["samples", "docs", "updates"]},
+    {"name": "assisted", "price": "$Y/mo", "rights": ["priority", "guided-setup"]},
+    {"name": "full-service", "price": "$Z/mo", "rights": ["private-listing", "SLA", "customization"]}
+  ],
+  "compute": "buyer"
+}
+</pre>
+
+<h2>Trial Notebook Outline</h2>
+<pre>
+# 1) Load sample table
+# 2) Run UDF at OP threshold
+# 3) Compute OP utility
+# 4) View stability summary
+</pre>
+
+<h2>Listing README Skeleton</h2>
+<pre>
+# Title
+What it does, who it's for, evidence highlights, OP threshold, stability bands.
+</pre>
+
+<h2>Deprecation & Migration</h2>
+<ul>
+  <li>Views for backward compatibility; end‑of‑life dates in comments.</li>
+  <li>Migration notes shipped with listing updates.</li>
+</ul>
+
+<h2>Second Case Study: AML Graph Listing</h2>
+<p>Graph motifs and device reuse features were documented with effect sizes. Buyers reproduced OP metrics in their workspace using our notebook; conversion followed after a week‑long trial.</p>
+
+<h2>Support Playbook</h2>
+<ul>
+  <li>Ticket triage within SLA; evidence bundle regeneration if needed.</li>
+  <li>Listing updates on cadence; change‑logs and bundle IDs posted.</li>
+ </ul>
+
+<h2>Security Annex</h2>
+<ul>
+  <li>SBOM included; vulnerabilities tracked and disclosed.</li>
+  <li>Signed manifests with key rotation policy.</li>
+ </ul>
 
 <h2>Why Us</h2>
 <p>We ship <em>evidence‑first</em> releases. Listings fail closed unless gates pass, protecting your brand and accelerating acceptance.</p>
 
 <p><a href="/pricing" class="aeg-btn">View Pricing →</a> <a href="/contact" class="aeg-btn">Contact Sales →</a></p>
 
+<h2>End‑to‑End SOP (Seller)</h2>
+<ol>
+  <li>Prepare assets (Delta/MLflow) and register in Unity Catalog.</li>
+  <li>Run evaluation at OP; export evidence bundle with CIs.</li>
+  <li>Generate README, pricing JSON, and trial notebook.</li>
+  <li>Pass promotion gates; legal and license checks.</li>
+  <li>Publish private listing; iterate with design partners.</li>
+  <li>Open self‑serve tier; monitor conversions and NPS.</li>
+ </ol>
+
+<h2>Buyer Quickstart Notebook (Pseudo)</h2>
+<pre>
+-- Load sample table
+SELECT * FROM prod.ai.claims SAMPLE 1000;
+
+-- Run UDF at OP
+SELECT id, prod.ai.fraud_infer(amount, code, ...) AS score FROM prod.ai.claims;
+
+-- Compute OP utility
+-- (helper functions provided in notebook)
+
+-- View stability summary
+-- (prebuilt dashboard widgets)
+</pre>
+
+<h2>Governance Tags</h2>
+<ul>
+  <li>domain: healthcare|finance|public</li>
+  <li>sensitivity: public|internal|restricted</li>
+  <li>license: proprietary|oss</li>
+  <li>tier: self|assisted|full</li>
+</ul>
+
+<h2>Evidence Highlights Section (README)</h2>
+<ul>
+  <li>OP: fpr=1%; Utility: 0.758 [0.749, 0.767]</li>
+  <li>Stability bands: region ≤ 0.03; product ≤ 0.02</li>
+  <li>Latency: p95 97ms; p99 142ms</li>
+  <li>Privacy: membership advantage 0.03 (≤ 0.05)</li>
+</ul>
+
+<h2>Acceptance Form (Buyer)</h2>
+<pre>
+bundle_id: 8e7...
+op_utility: PASS
+stability: PASS
+latency: PASS
+privacy: PASS
+decision: APPROVE | REJECT
+signoff: ____________  date: ________
+</pre>
+
+<h2>Extended Pricing Examples</h2>
+<pre>
+tiers:
+  - name: self-service
+    price: "$X/mo"
+    rights: [samples, docs, updates]
+  - name: assisted
+    price: "$Y/mo"
+    rights: [priority_support, guided_setup]
+  - name: full-service
+    price: "$Z/mo"
+    rights: [private_listing, SLA, customization]
+compute: buyer
+</pre>
+
+<h2>Legal Annex Checklist</h2>
+<ul>
+  <li>License scope and redistribution terms.</li>
+  <li>SBOM and vulnerability report.</li>
+  <li>Export control statement (if applicable).</li>
+  <li>Privacy posture and probe thresholds.</li>
+  <li>Evidence manifest IDs.</li>
+</ul>
+
+<h2>Operational Dashboards</h2>
+<ul>
+  <li>Adoption and usage (queries, users).</li>
+  <li>OP utility and stability over time.</li>
+  <li>Incident tracker and response times.</li>
+</ul>
+
+<h2>Third Case Study: Public Sector Listing</h2>
+<p>We shipped an air‑gapped listing with offline dashboards and signed manifests. Security verified signatures and hashes inside their enclave, then filed SBOMs and acceptance forms. The listing moved from private to contracted in under three weeks.</p>
+
+<h2>Performance Notes</h2>
+<ul>
+  <li>OPTIMIZE and Z‑ORDER Delta tables for fast trial queries.</li>
+  <li>Cache common views used by trial notebooks.</li>
+  <li>Document expected cluster sizes for evaluation.</li>
+</ul>
+
+<h2>Publishing Pitfalls (and Fixes)</h2>
+<ul>
+  <li>Thin docs → add README and quickstart notebook.</li>
+  <li>No evidence → listings without proof stall; ship bundles.</li>
+  <li>Confusing pricing → publish entitlements JSON and examples.</li>
+</ul>
+
+<h2>Security & Privacy (Deeper)</h2>
+<ul>
+  <li>Sign all artifacts; rotate keys; ship revocation lists.</li>
+  <li>Optional DP budgets for synthetic datasets with impact notes.</li>
+  <li>Separate public and private annexes cleanly.</li>
+ </ul>
+
+<h2>Support FAQ</h2>
+<details>
+  <summary>How do we raise issues?</summary>
+  <p>Open a ticket via the portal; include bundle ID and workspace link.</p>
+ </details>
+<details>
+  <summary>How do we request a refresh?</summary>
+  <p>Specify listing and bundle; we regenerate evidence and update artifacts on cadence.</p>
+ </details>
+
+<h2>Contract Mapping Examples</h2>
+<pre>
+contract:
+  listing: claims_fraud_v1
+  bundle: 2025.01
+  tier: assisted
+  slas: {response: "1bd", refresh: "monthly"}
+</pre>
+
+<h2>Migration Example</h2>
+<pre>
+VIEW prod.ai.claims_v_prev AS SELECT * FROM prod.ai.claims WHERE version='2025.01';
+-- EOL: 2025-06-30; see migration_guide.md
+</pre>
+
+<h2>Appendix: Template Files</h2>
+<ul>
+  <li>README.md</li>
+  <li>pricing.json</li>
+  <li>trial_notebook.py</li>
+  <li>evidence/manifest.json</li>
+  <li>sbom.json</li>
+  <li>release_notes.md</li>
+</ul>
+
+<h2>Closing (Extended)</h2>
+<p>Marketplace success is simple: ship governed assets with proof buyers can file. <strong>AethergenPlatform</strong> handles packaging, evidence, and governance so your listings convert faster and renew reliably.</p>
 

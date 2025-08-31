@@ -1,0 +1,222 @@
+<h1>Schema Designer & Multi‑Data Pipelines for LLMs</h1>
+<p><em>By Gwylym Owen — 18–24 min read</em></p>
+
+<h2>Executive Summary</h2>
+<p>AethergenPlatform harmonises multi‑domain data (tables, events, documents) into <strong>LLM‑ready</strong> schemas and pipelines. You design once, then scale generation and training from millions to billions of records—with governance and evidence.</p>
+
+<h2>Design Goals</h2>
+<ul>
+  <li>Clear, typed schemas across domains with constraints and vocabularies.</li>
+  <li>Composable pipelines that generate, validate, and package training corpora.</li>
+  <li>Evidence that the data supports the target tasks/models.</li>
+</ul>
+
+<h2>Schema Designer</h2>
+<ul>
+  <li>Visual and code views for entities, relations, and constraints.</li>
+  <li>Vocabulary management and versioned dictionaries.</li>
+  <li>Validation rules (range, regex, referential integrity).</li>
+</ul>
+
+<h2>Multi‑Data Pipelines</h2>
+<ul>
+  <li>Structured: tables/events with Delta/Parquet outputs.</li>
+  <li>Semi‑structured: JSON/Avro; schema evolution handled.</li>
+  <li>Unstructured: documents/images with annotations and embeddings.</li>
+</ul>
+
+<h2>LLM Training Flows</h2>
+<ul>
+  <li>Instruction tuning with curated prompts and adapters.</li>
+  <li>Domain adaptation with synthetic augmentations.</li>
+  <li>Evaluation suites tied to tasks (extraction, reasoning, QA).</li>
+</ul>
+
+<h2>Evidence</h2>
+<ul>
+  <li>Data quality metrics and coverage reports.</li>
+  <li>Task performance at fixed operating points.</li>
+  <li>Ablations: which features/augmentations matter.</li>
+</ul>
+
+<h2>Scaling</h2>
+<ul>
+  <li>Sharded generation; checkpointed validation.</li>
+  <li>Device‑aware training (INT8/FP16) with quota controls.</li>
+  <li>Packaging to MLflow/ONNX/GGUF with device profiles.</li>
+</ul>
+
+<h2>Case Study</h2>
+<p>A customer harmonised clinical notes, claims tables, and device logs, then trained extraction and reasoning models. Evidence showed 19% F1 lift vs baseline at fixed error budgets, with robust performance across facilities.</p>
+
+<h2>FAQ</h2>
+<details>
+  <summary>Can we import existing schemas?</summary>
+  <p>Yes—SQL/JSON schemas, plus inference from sample corpora.</p>
+ </details>
+<details>
+  <summary>How do we manage schema drift?</summary>
+  <p>Versioned schemas and automated diffs; evidence highlights impacted tasks.</p>
+ </details>
+
+<h2>Glossary</h2>
+<ul>
+  <li><strong>Vocabulary</strong>: controlled list of allowed values.</li>
+  <li><strong>Adapter</strong>: lightweight tuning layer for LLMs.</li>
+  <li><strong>Operating point</strong>: threshold aligned to business cost/benefit.</li>
+</ul>
+
+<h2>Checklist</h2>
+<ul>
+  <li>Define tasks and success metrics.</li>
+  <li>Design schemas and constraints.</li>
+  <li>Build pipelines; run evidence; package models.</li>
+</ul>
+
+<p><a class="aeg-btn" href="/contact">Contact Sales →</a></p>
+
+<h2>Schema Example (Illustrative)</h2>
+<pre>
+entity Patient { id: string, age: int, region: enum[NA,EU,APAC] }
+entity Note { id: string, patient_id: ref Patient.id, ts: datetime, text: string }
+entity Claim { id: string, patient_id: ref Patient.id, code: string, amount: decimal }
+relation R1: Patient 1..* Note
+relation R2: Patient 1..* Claim
+constraints: Claim.amount >= 0, Note.text nonempty
+vocab: Claim.code in CPT_dict_v12
+</pre>
+
+<h2>Validation Rules</h2>
+<ul>
+  <li>Range checks (amount, age); regex for codes; referential integrity.</li>
+  <li>Coverage targets for rare vocab entries.</li>
+  <li>Segment balance for training/evaluation splits.</li>
+</ul>
+
+<h2>Pipeline DAG</h2>
+<pre>
+seed_ingest → schema_normalise → joins → augmentation → validation → packaging
+                                   ↘ evidence_metrics ↗
+</pre>
+
+<h2>LLM Data Cards</h2>
+<ul>
+  <li>Task: extraction, reasoning, QA; datasets and splits listed.</li>
+  <li>Known limits and bias notes; refresh cadence.</li>
+  <li>Intended use and out‑of‑scope behaviors.</li>
+</ul>
+
+<h2>Evaluation Suites</h2>
+<ul>
+  <li>Extraction F1 at fixed error budgets.</li>
+  <li>Reasoning accuracy on templated and free‑form prompts.</li>
+  <li>Robustness to noise/ocr corruptions (where relevant).</li>
+</ul>
+
+<h2>Security & Governance</h2>
+<ul>
+  <li>Lineage tracked from seeds to packaged corpora.</li>
+  <li>SBOM for tools and artifacts; signatures on releases.</li>
+  <li>Access grants aligned to Unity Catalog roles.</li>
+</ul>
+
+<h2>SOP: From Design to Train</h2>
+<ol>
+  <li>Define tasks and KPIs; draft schema.</li>
+  <li>Run small‑scale generation; validate and iterate.</li>
+  <li>Scale generation; compute evidence; package.</li>
+  <li>Train adapters; evaluate; attach evidence; release.</li>
+</ol>
+
+<h2>Appendix: Prompt Template Snippet</h2>
+<pre>
+Given the schema and vocabularies, extract (code, amount) from the note.
+Return JSON: {"code": "...", "amount": 0.0}
+</pre>
+
+
+<h2>Schema Governance</h2>
+<ul>
+  <li>Visibility labels per field; masking where required.</li>
+  <li>Version diffs with automated migration notes.</li>
+  <li>Approval workflow for schema breaking changes.</li>
+ </ul>
+
+<h2>Vocabulary Catalog</h2>
+<ul>
+  <li>Controlled lists (CPT, ICD) with region overlays.</li>
+  <li>Deprecation windows and replacement guidance.</li>
+  <li>Coverage dashboards for rare entries.</li>
+ </ul>
+
+<h2>Pipelines (Deep Dive)</h2>
+<pre>
+ingest → normalise → join → annotate → validate → package → catalog
+                         ↘ evidence ↗
+</pre>
+
+<h2>Annotations & Embeddings</h2>
+<ul>
+  <li>Span annotations for extraction tasks; quality audits.</li>
+  <li>Embeddings for retrieval; index packaging.</li>
+ </ul>
+
+<h2>Training Flows (Details)</h2>
+<ul>
+  <li>Instruction tuning with adapters; OP evaluation suites.</li>
+  <li>Domain adaptation with synthetic augmentations; limits documented.</li>
+  <li>Robustness checks (noise/OCR) where relevant.</li>
+ </ul>
+
+<h2>Evidence & Cards</h2>
+<ul>
+  <li>Data quality metrics; coverage by vocab and segment.</li>
+  <li>Task performance at OP with CIs.</li>
+  <li>Limits, intended use, and refresh cadence.</li>
+ </ul>
+
+<h2>Scaling (More)</h2>
+<ul>
+  <li>Sharded generation and distributed validation.</li>
+  <li>Quota controls and device‑aware batching.</li>
+  <li>Packaging to MLflow/ONNX/GGUF with device profiles.</li>
+ </ul>
+
+<h2>Case Studies (Additional)</h2>
+<ul>
+  <li>Claims extraction: schema harmonised across systems; +19% F1 lift at OP.</li>
+  <li>Device logs + notes: reasoning model with evidence‑backed stability.</li>
+ </ul>
+
+<h2>Security & Governance (Expanded)</h2>
+<ul>
+  <li>Lineage from seeds to corpora; SBOM for data tooling.</li>
+  <li>Signatures on releases; catalog comments link evidence IDs.</li>
+  <li>Access controls aligned to Unity Catalog roles.</li>
+ </ul>
+
+<h2>SOP (Extended)</h2>
+<ol>
+  <li>Define tasks; write schema with constraints and vocabularies.</li>
+  <li>Ingest small sample; validate; iterate.</li>
+  <li>Scale generation; compute evidence; package.</li>
+  <li>Train; evaluate at OP; publish cards and bundles.</li>
+ </ol>
+
+<h2>FAQs (Expanded)</h2>
+<details>
+  <summary>Can we merge multiple vocabularies?</summary>
+  <p>Yes—namespace and map; document coverage and conflicts.</p>
+ </details>
+<details>
+  <summary>How do we keep splits stable?</summary>
+  <p>Stratify by segments and vocab; lock seeds; record hashes.</p>
+ </details>
+
+<h2>Appendix: Schemas & Prompts</h2>
+<pre>
+schema.yaml, prompts.jsonl, eval_suites.json
+</pre>
+
+<h2>Closing (Comprehensive)</h2>
+<p>With strong schemas and governed pipelines, LLM training becomes reproducible and safe. <strong>AethergenPlatform</strong> provides the scaffolding—so models ship with evidence, not surprises.</p>

@@ -34,9 +34,10 @@ const Navigation = () => {
     { name: 'Hero Art', href: '/hero-art', current: location.pathname === '/hero-art' },
     { name: 'Press', href: '/press', current: location.pathname === '/press' },
                       { name: 'Contact', href: '/contact', current: location.pathname === '/contact' },
-                  { name: 'Air-Gapped Demo', href: '/air-gapped-demo', current: location.pathname === '/air-gapped-demo' },
-                  { name: 'Automotive Demo', href: '/automotive-demo', current: location.pathname === '/automotive-demo' },
-                  { name: 'Marketplace Demo', href: '/marketplace-demo', current: location.pathname === '/marketplace-demo' }
+                                      { name: 'Air-Gapped Demo', href: '/air-gapped-demo', current: location.pathname === '/air-gapped-demo' },
+                    { name: 'Automotive Demo', href: '/automotive-demo', current: location.pathname === '/automotive-demo' },
+                    { name: 'Marketplace Demo', href: '/marketplace-demo', current: location.pathname === '/marketplace-demo' },
+                    { name: 'Cards Demo', href: '/cards-demo', current: location.pathname === '/cards-demo' }
   ];
 
   // Technology dropdown removed - now single page with sections

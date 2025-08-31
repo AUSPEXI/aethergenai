@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, Shield, Database, Brain, Lightbulb, TrendingUp } from 'lucide-react';
+import { ArrowRight, Shield, Database, Brain, Lightbulb, TrendingUp, FileText } from 'lucide-react';
  
 
 const Blog = () => {
@@ -453,6 +453,17 @@ const Blog = () => {
       icon: Shield,
       published: true,
       slug: 'automotive-quality-edge-offline-vision-evidence'
+    },
+    {
+      title: '📋 Dataset & Model Cards that Buyers Actually Use',
+      excerpt: 'Evidence-backed, Unity Catalog-aware, and procurement-ready cards that help buyers evaluate, adopt, and govern AI assets with operating points and stability monitoring.',
+      author: 'Gwylym Owen',
+      date: 'January 25, 2025',
+      readTime: '20 min read',
+      category: 'Technology',
+      icon: FileText,
+      published: true,
+      slug: 'dataset-and-model-cards-that-buyers-actually-use'
     },
     {
       title: '🚀 Shipping AethergenPlatform: Evidence‑Led, Privacy‑Preserving AI Training',

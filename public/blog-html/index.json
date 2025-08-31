@@ -1,0 +1,182 @@
+[
+  {
+    "slug": "ablations-with-effect-sizes-proving-what-moves-the-needle",
+    "title": "Ablations with Effect Sizes: Proving What Moves the Needle",
+    "readTime": "3 min read"
+  },
+  {
+    "slug": "air-gapped-ai-packaging-sbom-qr-manifests",
+    "title": "Air‑Gapped AI: Packaging, SBOMs, and QR‑Verified Manifests for the Field",
+    "readTime": "4 min read"
+  },
+  {
+    "slug": "automotive-quality-edge-offline-vision-evidence",
+    "title": "Automotive Quality at the Edge: Offline Vision with Verifiable Results",
+    "readTime": "4 min read"
+  },
+  {
+    "slug": "buzz-lightyear-scale-3d-navigation",
+    "title": "Buzz Lightyear Scale: Navigating 3D Space in Neural Networks",
+    "readTime": "2 min read"
+  },
+  {
+    "slug": "databricks-marketplace-lab-to-revenue",
+    "title": "Databricks Marketplace: From Lab to Revenue in Days",
+    "readTime": "7 min read"
+  },
+  {
+    "slug": "dataset-and-model-cards-that-buyers-actually-use",
+    "title": "Dataset & Model Cards that Buyers Actually Use",
+    "readTime": "6 min read"
+  },
+  {
+    "slug": "drift-stress-stability-operating-ai-like-regulated",
+    "title": "Drift, Stress, and Stability: Operating AI Like a Regulated System",
+    "readTime": "3 min read"
+  },
+  {
+    "slug": "democratising-ai-post-moores-law-revolution",
+    "title": "Efficient AI Beyond Moore’s Law",
+    "readTime": "3 min read"
+  },
+  {
+    "slug": "evidence-bundles-and-testing",
+    "title": "Evidence Bundles & Testing: Trustworthy AI Without Exposing IP",
+    "readTime": "6 min read"
+  },
+  {
+    "slug": "evidence-in-ci-failing-closed-passing-audits",
+    "title": "Evidence in CI: Failing Closed and Passing Audits with Confidence",
+    "readTime": "6 min read"
+  },
+  {
+    "slug": "evidence-led-ai-regulated-industries",
+    "title": "Evidence‑Led AI in Regulated Industries: A Practical Guide",
+    "readTime": "10 min read"
+  },
+  {
+    "slug": "evidence-led-ai-signed-metrics-enterprise-adoption",
+    "title": "Evidence‑Led AI: How Signed Metrics Accelerate Enterprise Adoption",
+    "readTime": "2 min read"
+  },
+  {
+    "slug": "financial-crime-labs-synthetic-graphs-risk-evidence",
+    "title": "Financial Crime Labs: Safe Scenario Testing with Synthetic Graphs",
+    "readTime": "2 min read"
+  },
+  {
+    "slug": "from-first-pilot-to-policy",
+    "title": "From First Pilot to Policy: Building Trust with Quality Gates",
+    "readTime": "2 min read"
+  },
+  {
+    "slug": "from-starlings-to-swarms-8d-safety",
+    "title": "From Starlings to Swarms: 8D Safety for Thousands of Drones",
+    "readTime": "5 min read"
+  },
+  {
+    "slug": "phoenix-rising-journey",
+    "title": "From Starvation to Stardom: The Phoenix Rising Journey",
+    "readTime": "2 min read"
+  },
+  {
+    "slug": "insurance-fraud-playbooks-synthetic-scenarios",
+    "title": "Insurance Fraud Playbooks: Synthetic Scenarios for Safer Evaluation",
+    "readTime": "2 min read"
+  },
+  {
+    "slug": "managed-delivery-on-databricks-slas-referencing-evidence",
+    "title": "Managed Delivery on Databricks: SLAs Referencing Evidence (Not Hype)",
+    "readTime": "2 min read"
+  },
+  {
+    "slug": "offline-readiness-designing-models-for-harsh-disconnected-environments",
+    "title": "Offline Readiness: Designing Models for Harsh, Disconnected Environments",
+    "readTime": "4 min read"
+  },
+  {
+    "slug": "pricing-and-entitlements-explained",
+    "title": "Pricing & Entitlements Explained: Self‑Service vs Full‑Service",
+    "readTime": "5 min read"
+  },
+  {
+    "slug": "privacy-in-practice-probes-budgets-measurable-boundaries",
+    "title": "Privacy in Practice: Probes, Budgets, and Measurable Boundaries",
+    "readTime": "4 min read"
+  },
+  {
+    "slug": "public-sector-ai-secure-deployments-without-cloud-entanglements",
+    "title": "Public Sector AI: Secure Deployments Without Cloud Entanglements",
+    "readTime": "2 min read"
+  },
+  {
+    "slug": "scaling-synthetic-generation-safely-schemas-seeds-controls",
+    "title": "Scaling Synthetic Generation Safely: Schemas, Seeds, and Controls",
+    "readTime": "4 min read"
+  },
+  {
+    "slug": "schema-designer-multi-data-llm",
+    "title": "Schema Designer & Multi‑Data Pipelines for LLMs",
+    "readTime": "4 min read"
+  },
+  {
+    "slug": "segment-aware-evaluation-stability-that-survives-real-world-change",
+    "title": "Segment‑Aware Evaluation: Stability that Survives Real‑World Change",
+    "readTime": "4 min read"
+  },
+  {
+    "slug": "aethergenai-shipped-evidence-led-ai-training",
+    "title": "Shipping AethergenPlatform: Evidence‑Led, Privacy‑Preserving AI Training",
+    "readTime": "7 min read"
+  },
+  {
+    "slug": "synthetic-data-healthcare-fraud-without-phi",
+    "title": "Synthetic Data 101 for Healthcare: Fraud Detection Without PHI/PII",
+    "readTime": "7 min read"
+  },
+  {
+    "slug": "4200-hour-course-abandoned-destiny",
+    "title": "The 4200-Hour Course I Abandoned for My True Destiny",
+    "readTime": "2 min read"
+  },
+  {
+    "slug": "autistic-innovator-dilemma-building-tribe",
+    "title": "The Autistic Innovator's Dilemma: Building a Tribe When Your Mind Craves Solitude",
+    "readTime": "2 min read"
+  },
+  {
+    "slug": "complexity-wall-natural-language-ai-engineering",
+    "title": "The Complexity Wall: When Natural Language Meets AI Engineering",
+    "readTime": "4 min read"
+  },
+  {
+    "slug": "the-miracle-ai-human-partnership",
+    "title": "The Miracle: How an AI‑Human Partnership Created 3D Art History",
+    "readTime": "2 min read"
+  },
+  {
+    "slug": "the-procurement-bundle-signatures-hashes-filing-made-simple",
+    "title": "The Procurement Bundle: Signatures, Hashes, and Filing Made Simple",
+    "readTime": "3 min read"
+  },
+  {
+    "slug": "recursive-nightmare-navigator",
+    "title": "The Recursive Nightmare Navigator: When AI Poetry Breaks Everything",
+    "readTime": "2 min read"
+  },
+  {
+    "slug": "synthetic-data-lifecycle",
+    "title": "The Synthetic Data Lifecycle: From Seeds to Evidence",
+    "readTime": "6 min read"
+  },
+  {
+    "slug": "triumph-of-preparation-strategic-planning",
+    "title": "The Triumph of Preparation: How Strategic Planning Eliminates Development Chaos",
+    "readTime": "4 min read"
+  },
+  {
+    "slug": "unity-catalog-delivery-turning-models-into-procurement-ready-products",
+    "title": "Unity Catalog Delivery: Turning Models into Procurement‑Ready Products",
+    "readTime": "5 min read"
+  }
+]

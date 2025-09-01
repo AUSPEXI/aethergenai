@@ -7,6 +7,7 @@ import {
 import { datasetCardService, DatasetCard, DatasetCardOptions } from '../services/datasetCardService'
 import { modelCardService, ModelCard, ModelCardOptions } from '../services/modelCardService'
 import { unityCatalogService, UnityCatalogConfig, UnityCatalogExport } from '../services/unityCatalogService'
+import { buildEvidenceBundle, downloadSignedEvidenceZip } from '../services/evidenceService'
 
 export const CardsDemo: React.FC = () => {
   const [datasetCards, setDatasetCards] = useState<DatasetCard[]>([])
@@ -113,6 +114,31 @@ export const CardsDemo: React.FC = () => {
       URL.revokeObjectURL(url)
     } catch (error) {
       console.error('Export error:', error)
+    }
+  }
+
+  const handleExportSignedEvidence = async (card: DatasetCard | ModelCard) => {
+    try {
+      const bundle = buildEvidenceBundle({
+        app_version: 'web-demo',
+        schema_hash: 'demo-schema-hash',
+        recipe_hash: 'demo-recipe-hash',
+        dataset_hash: 'demo-dataset-hash',
+        notes: [
+          'Auto-generated demo evidence bundle',
+          'Contains safe-to-share metrics only'
+        ],
+        performance_metrics: {
+          statistical_fidelity: 0.96,
+          privacy_score: 0.98,
+          utility_score: 0.94,
+          generation_speed: 50000,
+          memory_efficiency: 0.185
+        }
+      })
+      await downloadSignedEvidenceZip(bundle, `${card.name.toLowerCase().replace(/\s+/g, '_')}_evidence.zip`)
+    } catch (error) {
+      console.error('Signed evidence export error:', error)
     }
   }
 
@@ -297,6 +323,13 @@ export const CardsDemo: React.FC = () => {
                       <Download className="w-4 h-4 mr-2" />
                       JSON
                     </button>
+                    <button
+                      onClick={() => handleExportSignedEvidence(card)}
+                      className="flex items-center px-3 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition"
+                    >
+                      <Shield className="w-4 h-4 mr-2" />
+                      Evidence (Signed)
+                    </button>
                   </div>
                 </div>
                 
@@ -357,6 +390,13 @@ export const CardsDemo: React.FC = () => {
                     >
                       <Download className="w-4 h-4 mr-2" />
                       JSON
+                    </button>
+                    <button
+                      onClick={() => handleExportSignedEvidence(card)}
+                      className="flex items-center px-3 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition"
+                    >
+                      <Shield className="w-4 h-4 mr-2" />
+                      Evidence (Signed)
                     </button>
                   </div>
                 </div>

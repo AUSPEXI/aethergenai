@@ -25,6 +25,7 @@ const Navigation = () => {
     { name: 'Account', href: '/account', current: location.pathname === '/account' },
     { name: 'Home', href: '/', current: location.pathname === '/' },
     { name: 'About', href: '/about', current: location.pathname === '/about' },
+    { name: 'Features', href: '/features', current: location.pathname === '/features' },
     { name: 'Technology', href: '/technology', current: location.pathname === '/technology' },
     { name: 'Roadmap', href: '/roadmap', current: location.pathname === '/roadmap' },
     { name: 'Pricing', href: '/pricing', current: location.pathname === '/pricing' },
@@ -33,11 +34,13 @@ const Navigation = () => {
     { name: 'Resources', href: '/resources', current: location.pathname === '/resources' },
     { name: 'Hero Art', href: '/hero-art', current: location.pathname === '/hero-art' },
     { name: 'Press', href: '/press', current: location.pathname === '/press' },
-                      { name: 'Contact', href: '/contact', current: location.pathname === '/contact' },
-                                      { name: 'Air-Gapped Demo', href: '/air-gapped-demo', current: location.pathname === '/air-gapped-demo' },
-                    { name: 'Automotive Demo', href: '/automotive-demo', current: location.pathname === '/automotive-demo' },
-                    { name: 'Marketplace Demo', href: '/marketplace-demo', current: location.pathname === '/marketplace-demo' },
-                    { name: 'Cards Demo', href: '/cards-demo', current: location.pathname === '/cards-demo' }
+    { name: 'Contact', href: '/contact', current: location.pathname === '/contact' },
+    { name: 'Stability Demo', href: '/stability-demo', current: location.pathname === '/stability-demo' },
+    { name: 'Efficiency Demo', href: '/efficiency-demo', current: location.pathname === '/efficiency-demo' },
+    { name: 'Air-Gapped Demo', href: '/air-gapped-demo', current: location.pathname === '/air-gapped-demo' },
+    { name: 'Automotive Demo', href: '/automotive-demo', current: location.pathname === '/automotive-demo' },
+    { name: 'Marketplace Demo', href: '/marketplace-demo', current: location.pathname === '/marketplace-demo' },
+    { name: 'Cards Demo', href: '/cards-demo', current: location.pathname === '/cards-demo' }
   ];
 
   // Technology dropdown removed - now single page with sections

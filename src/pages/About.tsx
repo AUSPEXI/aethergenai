@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import SEO from '../components/SEO';
-import { User, Target, Globe, Lightbulb, ArrowRight, Eye, Award, Brain, Lock, Database, Building, CheckCircle, Sparkles, Rocket, Shield, Zap, Atom, Users } from 'lucide-react';
+import { User, Target, Globe, Lightbulb, ArrowRight, Eye, Award, Brain, Lock, Database, Building, CheckCircle, Sparkles, Rocket, Shield, Zap, Atom, Users, FileText, Activity, TrendingUp, Car, RotateCcw } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Logo from '../components/Logo';
 import FoundersStory from '../components/PressSection/FoundersStory';

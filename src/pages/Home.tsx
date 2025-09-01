@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Shield, Activity, Target, Flame, Siren, RotateCcw, FileText, Lock, Database, Zap, Globe, CheckCircle, TrendingUp, Users, Brain, ExternalLink, Code, BarChart3, Award, Star, Eye, Sparkles, Cpu, Rocket } from 'lucide-react';
+import { ArrowRight, Shield, Activity, Target, Flame, Siren, RotateCcw, FileText, Lock, Database, Zap, Globe, CheckCircle, TrendingUp, Users, Brain, ExternalLink, Code, BarChart3, Award, Star, Eye, Sparkles, Cpu, Rocket, Package, Car } from 'lucide-react';
 import AethergenHero from '../components/UI/AethergenHero';
 
 const Home = () => {
@@ -76,36 +76,189 @@ const Home = () => {
       <section className="py-16 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-white mb-6">Capabilities & Innovation</h2>
-            <p className="text-xl text-blue-100 mb-8 max-w-3xl mx-auto">
-              We're honest enough to say we may not be the only ones when we aren't, but confident enough to say so when we are - after verifying through scientific rigor. 
-              We're the first to achieve high fidelity synthetic data at scale, and we can prove it.
+            <h1 className="text-5xl font-bold text-gray-900 mb-6">
+              Revolutionise Your AI Operations
+            </h1>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
+              The only platform built for regulated AI operations with fail-closed gates, automated rollback, and evidence-backed stability
             </p>
-            
-            {/* Key Metrics */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
-              {metrics.map((metric, index) => (
-                <div key={index} className="text-center">
-                  <metric.icon className="h-8 w-8 text-blue-300 mx-auto mb-2" />
-                  <div className="text-2xl font-bold text-white">{metric.value}</div>
-                  <div className="text-sm text-blue-200">{metric.label}</div>
-                </div>
-              ))}
-            </div>
-            
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
-                to="/about"
-                className="bg-white text-blue-600 px-8 py-3 rounded-lg hover:bg-blue-50 transition-colors flex items-center justify-center font-semibold"
+                to="/stability-demo"
+                className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-300 flex items-center justify-center"
               >
-                Learn Our Full Story
-                <ArrowRight className="ml-2 h-5 w-5" />
+                <Shield className="w-5 h-5 mr-2" />
+                See Stability Demo
               </Link>
               <Link
-                to="/technology"
-                className="border border-white text-white px-8 py-3 rounded-lg hover:bg-white hover:text-blue-600 transition-colors font-semibold"
+                to="/air-gapped-demo"
+                className="bg-green-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-700 transition duration-300 flex items-center justify-center"
               >
-                Explore Technology
+                <Package className="w-5 h-5 mr-2" />
+                Air-Gapped Demo
+              </Link>
+            </div>
+          </div>
+
+          {/* Key Differentiators */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+            <div className="bg-white rounded-xl p-6 shadow-md text-center">
+              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <RotateCcw className="w-8 h-8 text-red-500" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Fail-Closed by Design</h3>
+              <p className="text-gray-600">
+                Every model promotion blocked until SLO gates pass with confidence intervals. No surprises, no incidents.
+              </p>
+            </div>
+            
+            <div className="bg-white rounded-xl p-6 shadow-md text-center">
+              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Eye className="w-8 h-8 text-blue-500" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Shadow Evaluation</h3>
+              <p className="text-gray-600">
+                Test candidate models in parallel with live traffic before promotion. Zero-risk model deployment.
+              </p>
+            </div>
+            
+            <div className="bg-white rounded-xl p-6 shadow-md text-center">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <FileText className="w-8 h-8 text-green-500" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Evidence in CI</h3>
+              <p className="text-gray-600">
+                Every change regenerates signed evidence bundles. Complete audit trail for regulated environments.
+              </p>
+            </div>
+          </div>
+
+          {/* Operational Features Grid */}
+          <div className="bg-white rounded-xl p-8 shadow-md mb-16">
+            <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">
+              Operational AI Features
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="flex items-start space-x-3">
+                <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
+                  <Target className="w-4 h-4 text-purple-500" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-1">SLO Management</h3>
+                  <p className="text-sm text-gray-600">Utility, stability, latency, and privacy SLOs with automated breach detection</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start space-x-3">
+                <div className="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center flex-shrink-0">
+                  <TrendingUp className="w-4 h-4 text-yellow-500" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-1">Drift Monitoring</h3>
+                  <p className="text-sm text-gray-600">PSI/KS metrics with time-window analysis and segment tracking</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start space-x-3">
+                <div className="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center flex-shrink-0">
+                  <Lock className="w-4 h-4 text-indigo-500" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-1">Privacy Probes</h3>
+                  <p className="text-sm text-gray-600">Membership inference and attribute disclosure monitoring</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start space-x-3">
+                <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
+                  <RotateCcw className="w-4 h-4 text-red-500" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-1">Automated Rollback</h3>
+                  <p className="text-sm text-gray-600">Breach of SLO → revert to last good artifact with evidence logged</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start space-x-3">
+                <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                  <Package className="w-4 h-4 text-green-500" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-1">Air-Gapped Packaging</h3>
+                  <p className="text-sm text-gray-600">Secure edge bundles with manifests, QR codes, and field verification</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start space-x-3">
+                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                  <FileText className="w-4 h-4 text-blue-500" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-1">Dataset & Model Cards</h3>
+                  <p className="text-sm text-gray-600">Comprehensive documentation that buyers actually use</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Use Cases */}
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-8 mb-16">
+            <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">
+              Designed for Regulated Industries
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="text-center">
+                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Activity className="w-8 h-8 text-blue-500" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">Healthcare</h3>
+                <p className="text-gray-600">
+                  HIPAA-compliant AI operations with privacy probes and evidence-backed model cards
+                </p>
+              </div>
+              
+              <div className="text-center">
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <TrendingUp className="w-8 h-8 text-green-500" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">Financial Services</h3>
+                <p className="text-gray-600">
+                  Model risk management with fail-closed gates and automated rollback capabilities
+                </p>
+              </div>
+              
+              <div className="text-center">
+                <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Car className="w-8 h-8 text-purple-500" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">Automotive</h3>
+                <p className="text-gray-600">
+                  Quality control with golden run systems and automotive-specific edge packaging
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Call to Action */}
+          <div className="text-center">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              Ready to Operate AI with Confidence?
+            </h2>
+            <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+              Join organizations that are transforming their AI operations with evidence-backed stability and fail-closed design principles.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link
+                to="/stability-demo"
+                className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-300"
+              >
+                Start with Stability Demo
+              </Link>
+              <Link
+                to="/contact"
+                className="border border-blue-600 text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-blue-50 transition duration-300"
+              >
+                Contact Sales
               </Link>
             </div>
           </div>

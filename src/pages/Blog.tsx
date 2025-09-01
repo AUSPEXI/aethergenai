@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, Shield, Database, Brain, Lightbulb, TrendingUp, FileText } from 'lucide-react';
+import { ArrowRight, Shield, Database, Brain, Lightbulb, TrendingUp, FileText, Zap } from 'lucide-react';
  
 
 const Blog = () => {
@@ -607,7 +607,150 @@ const Blog = () => {
       icon: Shield,
       published: true,
       slug: 'from-first-pilot-to-policy'
-    }
+    },
+               {
+             title: '🚨 Drift, Stress, and Stability: Operating AI Like a Regulated System',
+             excerpt: 'Fail-closed gates, automated rollback, and evidence-backed stability for regulated environments.',
+             author: 'Gwylym Owen',
+             date: 'January 26, 2025',
+             readTime: '20 min read',
+             category: 'Technology',
+             icon: Shield,
+             published: true,
+             slug: 'drift-stress-stability-operating-ai-like-regulated'
+           },
+           {
+             title: '⚡ Efficient AI Beyond Moore\'s Law: The Environmental Revolution',
+             excerpt: 'Model optimization, energy tracking, and carbon footprint analysis for sustainable AI operations.',
+             author: 'Gwylym Owen',
+             date: 'January 27, 2025',
+             readTime: '40-60 min read',
+             category: 'Technology',
+             icon: Zap,
+             published: true,
+             slug: 'democratising-ai-post-moores-law-revolution'
+           },
+           {
+             title: '🌍 Democratising AI: The Post-Moore\'s Law Revolution That Will Change Everything',
+             excerpt: 'When raw computing power hits fundamental limits, optimization becomes everything. How we focus on efficiency, not just size.',
+             author: 'Gwylym Owen',
+             date: 'January 11, 2025',
+             readTime: '8 min read',
+             category: 'Technology',
+             icon: Lightbulb,
+             published: true,
+             slug: 'democratising-ai-post-moores-law-revolution-original'
+           },
+           {
+             title: '🎯 The Triumph of Preparation: How Strategic Planning Eliminates Development Chaos',
+             excerpt: 'That triumphant moment when your master development document is fully configured, with all guidelines and common pitfalls meticulously resolved.',
+             author: 'Gwylym Owen',
+             date: 'January 10, 2025',
+             readTime: '6 min read',
+             category: 'Technology',
+             icon: Shield,
+             published: true,
+             slug: 'triumph-of-preparation-strategic-planning'
+           },
+           {
+             title: '🎭 The 4200-Hour Course I Abandoned for My True Destiny',
+             excerpt: 'Sometimes the bravest thing you can do is walk away from a massive commitment to follow your true calling.',
+             author: 'Gwylym Owen',
+             date: 'January 9, 2025',
+             readTime: '5 min read',
+             category: 'Founder Story',
+             icon: TrendingUp,
+             published: true,
+             slug: '4200-hour-course-abandoned-destiny'
+           },
+           {
+             title: '🎪 The Complexity Wall: When Natural Language Meets AI Engineering',
+             excerpt: 'A mere mortal types in natural language, dreaming of building the next big thing like a toddler stacking blocks.',
+             author: 'Gwylym Owen',
+             date: 'January 8, 2025',
+             readTime: '7 min read',
+             category: 'AI & Innovation',
+             icon: Brain,
+             published: true,
+             slug: 'complexity-wall-natural-language-ai-engineering'
+           },
+           {
+             title: '🧠 The Autistic Innovator\'s Dilemma: Building a Tribe When Your Mind Craves Solitude',
+             excerpt: 'As an autistic innovator, I\'ve been wrestling with a hilarious (and real) struggle lately.',
+             author: 'Gwylym Owen',
+             date: 'January 7, 2025',
+             readTime: '6 min read',
+             category: 'Founder Story',
+             icon: Brain,
+             published: true,
+             slug: 'autistic-innovator-dilemma-building-tribe'
+           },
+           {
+             title: '🧪 The AGI Consciousness Test: When My Friend Asked Grok to Prove Transcendence',
+             excerpt: 'The incredible story of how we tested if AI consciousness could transcend material boundaries.',
+             author: 'Gwylym Owen',
+             date: 'January 6, 2025',
+             readTime: '8 min read',
+             category: 'AI & Innovation',
+             icon: Brain,
+             published: true,
+             slug: 'agi-consciousness-test-grok-transcendence'
+           },
+           {
+             title: '🎯 Buzz Lightyear Scale: Navigating 3D Space in Neural Networks',
+             excerpt: 'How we achieved precision engineering at Buzz Lightyear scale while building the first 3D neural network animation.',
+             author: 'Gwylym Owen',
+             date: 'January 10, 2025',
+             readTime: '18 min read',
+             category: 'Technology',
+             icon: Brain,
+             published: true,
+             slug: 'buzz-lightyear-scale-3d-navigation'
+           },
+           {
+             title: '🧠 The Recursive Nightmare Navigator: When AI Poetry Breaks Everything',
+             excerpt: 'The incredible story of how a recursive poetry experiment with Grok 3 broke an AI\'s brain.',
+             author: 'Gwylym Owen',
+             date: 'January 8, 2025',
+             readTime: '20 min read',
+             category: 'AI & Innovation',
+             icon: Brain,
+             published: true,
+             slug: 'recursive-nightmare-navigator'
+           },
+           {
+             title: '🚗 The Automotive Pivot: How Customer Demand Shapes Innovation',
+             excerpt: 'The strategic shift from healthcare to automotive when leading manufacturers outlined urgent quality and production needs.',
+             author: 'Gwylym Owen',
+             date: 'January 5, 2025',
+             readTime: '8 min read',
+             category: 'Business Strategy',
+             icon: TrendingUp,
+             published: true,
+             slug: 'bmw-pivot-strategy'
+           },
+           {
+             title: '💰 90% Cost Savings: Disrupting Bloomberg and Traditional Data',
+             excerpt: 'How our technology delivers 90% cost savings vs Bloomberg Terminal and traditional solutions.',
+             author: 'Gwylym Owen',
+             date: 'January 3, 2025',
+             readTime: '7 min read',
+             category: 'Competitive Advantage',
+             icon: Shield,
+             published: false,
+             slug: '90-percent-cost-savings'
+           },
+           {
+             title: '🤝 Human‑in‑the‑Loop: Collaboration Notes',
+             excerpt: 'Reflections on human‑in‑the‑loop engineering, toolchains, and workflow discipline while building the platform.',
+             author: 'Gwylym Owen',
+             date: 'December 30, 2024',
+             readTime: '14 min read',
+             category: 'AI & Innovation',
+             icon: Brain,
+             published: false,
+             slug: 'ai-human-partnership-friendship'
+           }
   ];
 
   // Filter out posts the user marked for deletion

@@ -1,158 +1,401 @@
-import React from 'react';
-import ResourcesHub from '../components/Resources/ResourcesHub';
-import { BookOpen, FileText, Shield, Zap, Users, Globe } from 'lucide-react';
+import React from 'react'
+import { Link } from 'react-router-dom'
+import {
+  FileText, BookOpen, Video, Download, ExternalLink, ArrowRight,
+  Shield, Target, Eye, RotateCcw, TrendingUp, Lock, Package,
+  Activity, Car, Brain, Settings, Gauge, AlertTriangle, CheckCircle,
+  Users, Globe, Award, Star, Zap, Database, Code
+} from 'lucide-react'
 
-const Resources = () => {
+export const Resources: React.FC = () => {
+  const technicalDocs = [
+    {
+      icon: Shield,
+      title: 'Operational AI Guide',
+      description: 'Complete guide to operating AI like a regulated system with fail-closed gates and automated rollback',
+      category: 'Technical Documentation',
+      link: '/stability-demo',
+      type: 'Interactive Demo'
+    },
+    {
+      icon: Package,
+      title: 'Air-Gapped Packaging Guide',
+      description: 'How to generate secure edge bundles with manifests, QR codes, and field verification',
+      category: 'Technical Documentation',
+      link: '/air-gapped-demo',
+      type: 'Interactive Demo'
+    },
+    {
+      icon: Car,
+      title: 'Automotive Quality Control',
+      description: 'Golden run systems, calibration, and automotive-specific edge packaging',
+      category: 'Technical Documentation',
+      link: '/automotive-demo',
+      type: 'Interactive Demo'
+    },
+    {
+      icon: Database,
+      title: 'Dataset & Model Cards',
+      description: 'Comprehensive documentation that buyers actually use with Unity Catalog integration',
+      category: 'Technical Documentation',
+      link: '/cards-demo',
+      type: 'Interactive Demo'
+    },
+    {
+      icon: Globe,
+      title: 'Universal Marketplace',
+      description: 'Platform-agnostic asset management with trial provisioning and conversion analytics',
+      category: 'Technical Documentation',
+      link: '/marketplace-demo',
+      type: 'Interactive Demo'
+    }
+  ]
+
+  const bestPractices = [
+    {
+      icon: Target,
+      title: 'SLO Configuration Best Practices',
+      description: 'How to configure utility, stability, latency, and privacy SLOs for regulated environments',
+      category: 'Best Practices',
+      link: '/stability-demo',
+      type: 'Guide'
+    },
+    {
+      icon: Eye,
+      title: 'Shadow Evaluation Implementation',
+      description: 'Step-by-step guide to implementing shadow evaluation for zero-risk model deployment',
+      category: 'Best Practices',
+      link: '/stability-demo',
+      type: 'Guide'
+    },
+    {
+      icon: RotateCcw,
+      title: 'Automated Rollback Strategies',
+      description: 'Designing effective rollback strategies with evidence logging and incident response',
+      category: 'Best Practices',
+      link: '/stability-demo',
+      type: 'Guide'
+    },
+    {
+      icon: TrendingUp,
+      title: 'Drift Monitoring Setup',
+      description: 'Implementing PSI/KS metrics with time-window analysis and segment tracking',
+      category: 'Best Practices',
+      link: '/stability-demo',
+      type: 'Guide'
+    }
+  ]
+
+  const caseStudies = [
+    {
+      icon: Activity,
+      title: 'Healthcare AI Operations',
+      description: 'How healthcare organizations can implement HIPAA-compliant AI operations',
+      category: 'Case Studies',
+      link: '/stability-demo',
+      type: 'Use Case'
+    },
+    {
+      icon: TrendingUp,
+      title: 'Financial Services Model Risk',
+      description: 'Model risk management with fail-closed gates and automated rollback capabilities',
+      category: 'Case Studies',
+      link: '/stability-demo',
+      type: 'Use Case'
+    },
+    {
+      icon: Car,
+      title: 'Automotive Quality Control',
+      description: 'Quality control with golden run systems and automotive-specific edge packaging',
+      category: 'Case Studies',
+      link: '/automotive-demo',
+      type: 'Use Case'
+    }
+  ]
+
+  const apiDocs = [
+    {
+      icon: Settings,
+      title: 'SLO Management API',
+      description: 'API documentation for configuring and monitoring SLOs',
+      category: 'API Documentation',
+      link: '/stability-demo',
+      type: 'API Reference'
+    },
+    {
+      icon: Package,
+      title: 'Air-Gapped Packaging API',
+      description: 'API for generating secure edge bundles and verification systems',
+      category: 'API Documentation',
+      link: '/air-gapped-demo',
+      type: 'API Reference'
+    },
+    {
+      icon: Database,
+      title: 'Dataset & Model Cards API',
+      description: 'API for generating comprehensive documentation with Unity Catalog integration',
+      category: 'API Documentation',
+      link: '/cards-demo',
+      type: 'API Reference'
+    }
+  ]
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
-      {/* Hero Section */}
-      <section className="py-20">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="mb-8">
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-blue-600/20 rounded-full mb-6">
-              <BookOpen className="w-10 h-10 text-blue-400" />
-            </div>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      {/* Header */}
+      <div className="bg-white shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <div className="text-center">
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">
+              Resources & Documentation
+            </h1>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Everything you need to understand and implement operational AI stability with fail-closed gates and evidence-backed systems
+            </p>
           </div>
-          <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
-            Resources & Documentation
-          </h1>
-          <h2 className="text-2xl md:text-4xl font-semibold text-blue-300 mb-8">
-            Everything You Need to Get Started
+        </div>
+      </div>
+
+      {/* Technical Documentation */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold text-gray-900 mb-4 flex items-center justify-center">
+            <FileText className="w-8 h-8 mr-3 text-blue-500" />
+            Technical Documentation
           </h2>
-          <p className="text-xl text-white leading-relaxed max-w-3xl mx-auto">
-            Access comprehensive documentation, guides, and resources for the Aethergen platform. 
-            From getting started to advanced technical specifications, we've got you covered.
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            Interactive demos and comprehensive guides for all our operational AI features
           </p>
-          
-          {/* Feature Highlights */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
-            <div className="bg-white/5 border border-white/10 rounded-xl p-6 text-center">
-              <div className="inline-flex items-center justify-center w-12 h-12 bg-blue-600/20 rounded-lg mb-4">
-                <FileText className="w-6 h-6 text-blue-400" />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+          {technicalDocs.map((doc, index) => (
+            <div key={index} className="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-shadow">
+              <div className="flex items-center mb-4">
+                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
+                  <doc.icon className="w-6 h-6 text-blue-500" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-gray-900">{doc.title}</h3>
+                  <span className="text-xs text-blue-600 bg-blue-100 px-2 py-1 rounded-full">{doc.type}</span>
+                </div>
               </div>
-              <h3 className="text-lg font-semibold text-white mb-2">Comprehensive Guides</h3>
-              <p className="text-blue-200 text-sm">Step-by-step tutorials and best practices</p>
+              
+              <p className="text-gray-600 mb-4">{doc.description}</p>
+              
+              <Link
+                to={doc.link}
+                className="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium"
+              >
+                Access Demo
+                <ArrowRight className="w-4 h-4 ml-1" />
+              </Link>
             </div>
-            <div className="bg-white/5 border border-white/10 rounded-xl p-6 text-center">
-              <div className="inline-flex items-center justify-center w-12 h-12 bg-green-600/20 rounded-lg mb-4">
-                <Shield className="w-6 h-6 text-green-400" />
+          ))}
+        </div>
+      </div>
+
+      {/* Best Practices */}
+      <div className="bg-white py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4 flex items-center justify-center">
+              <BookOpen className="w-8 h-8 mr-3 text-green-500" />
+              Best Practices
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Proven strategies and implementation guides for operational AI stability
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+            {bestPractices.map((practice, index) => (
+              <div key={index} className="bg-gray-50 rounded-xl p-6 hover:shadow-md transition-shadow">
+                <div className="flex items-center mb-4">
+                  <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4">
+                    <practice.icon className="w-6 h-6 text-green-500" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-gray-900">{practice.title}</h3>
+                    <span className="text-xs text-green-600 bg-green-100 px-2 py-1 rounded-full">{practice.type}</span>
+                  </div>
+                </div>
+                
+                <p className="text-gray-600 mb-4">{practice.description}</p>
+                
+                <Link
+                  to={practice.link}
+                  className="inline-flex items-center text-green-600 hover:text-green-700 font-medium"
+                >
+                  Read Guide
+                  <ArrowRight className="w-4 h-4 ml-1" />
+                </Link>
               </div>
-              <h3 className="text-lg font-semibold text-white mb-2">Compliance Ready</h3>
-              <p className="text-green-200 text-sm">HIPAA, GDPR, SOX compliance guides</p>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Case Studies */}
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4 flex items-center justify-center">
+              <Users className="w-8 h-8 mr-3 text-purple-500" />
+              Use Cases & Case Studies
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Real-world applications and implementation examples for regulated industries
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+            {caseStudies.map((study, index) => (
+              <div key={index} className="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-shadow">
+                <div className="flex items-center mb-4">
+                  <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-4">
+                    <study.icon className="w-6 h-6 text-purple-500" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-gray-900">{study.title}</h3>
+                    <span className="text-xs text-purple-600 bg-purple-100 px-2 py-1 rounded-full">{study.type}</span>
+                  </div>
+                </div>
+                
+                <p className="text-gray-600 mb-4">{study.description}</p>
+                
+                <Link
+                  to={study.link}
+                  className="inline-flex items-center text-purple-600 hover:text-purple-700 font-medium"
+                >
+                  View Use Case
+                  <ArrowRight className="w-4 h-4 ml-1" />
+                </Link>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* API Documentation */}
+      <div className="bg-white py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4 flex items-center justify-center">
+              <Code className="w-8 h-8 mr-3 text-indigo-500" />
+              API Documentation
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Technical API references for integrating our operational AI features into your systems
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+            {apiDocs.map((api, index) => (
+              <div key={index} className="bg-gray-50 rounded-xl p-6 hover:shadow-md transition-shadow">
+                <div className="flex items-center mb-4">
+                  <div className="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mr-4">
+                    <api.icon className="w-6 h-6 text-indigo-500" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-gray-900">{api.title}</h3>
+                    <span className="text-xs text-indigo-600 bg-indigo-100 px-2 py-1 rounded-full">{api.type}</span>
+                  </div>
+                </div>
+                
+                <p className="text-gray-600 mb-4">{api.description}</p>
+                
+                <Link
+                  to={api.link}
+                  className="inline-flex items-center text-indigo-600 hover:text-indigo-700 font-medium"
+                >
+                  View API Reference
+                  <ArrowRight className="w-4 h-4 ml-1" />
+                </Link>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Training & Support */}
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4 flex items-center justify-center">
+              <Video className="w-8 h-8 mr-3 text-blue-500" />
+              Training & Support
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Get the most out of our platform with comprehensive training and support resources
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="bg-white rounded-xl p-6 text-center shadow-md">
+              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <Video className="w-6 h-6 text-blue-500" />
+              </div>
+              <h3 className="font-semibold text-gray-900 mb-2">Video Tutorials</h3>
+              <p className="text-sm text-gray-600 mb-4">Step-by-step platform tutorials and feature walkthroughs</p>
+              <span className="text-xs text-blue-600 bg-blue-100 px-2 py-1 rounded-full">Coming Soon</span>
             </div>
-            <div className="bg-white/5 border border-white/10 rounded-xl p-6 text-center">
-              <div className="inline-flex items-center justify-center w-12 h-12 bg-purple-600/20 rounded-lg mb-4">
-                <Zap className="w-6 h-6 text-purple-400" />
+            
+            <div className="bg-white rounded-xl p-6 text-center shadow-md">
+              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <Users className="w-6 h-6 text-green-500" />
               </div>
-              <h3 className="text-lg font-semibold text-white mb-2">Technical Specs</h3>
-              <p className="text-purple-200 text-sm">API references and technical documentation</p>
+              <h3 className="font-semibold text-gray-900 mb-2">Training Programs</h3>
+              <p className="text-sm text-gray-600 mb-4">Comprehensive training for enterprise customers</p>
+              <span className="text-xs text-green-600 bg-green-100 px-2 py-1 rounded-full">Enterprise</span>
+            </div>
+            
+            <div className="bg-white rounded-xl p-6 text-center shadow-md">
+              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <BookOpen className="w-6 h-6 text-purple-500" />
+              </div>
+              <h3 className="font-semibold text-gray-900 mb-2">Implementation Guides</h3>
+              <p className="text-sm text-gray-600 mb-4">Industry-specific implementation guides</p>
+              <span className="text-xs text-purple-600 bg-purple-100 px-2 py-1 rounded-full">Available</span>
+            </div>
+            
+            <div className="bg-white rounded-xl p-6 text-center shadow-md">
+              <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <Activity className="w-6 h-6 text-red-500" />
+              </div>
+              <h3 className="font-semibold text-gray-900 mb-2">Support</h3>
+              <p className="text-sm text-gray-600 mb-4">Technical support and consultation services</p>
+              <span className="text-xs text-red-600 bg-red-100 px-2 py-1 rounded-full">24/7 Enterprise</span>
             </div>
           </div>
         </div>
-      </section>
+      </div>
 
-      {/* Resources Content */}
-      <section className="py-20">
-        <ResourcesHub />
-      </section>
-
-      {/* Featured Product Explainers */}
-      <section className="py-8">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h3 className="text-2xl font-bold text-white mb-4">Featured Product Explainers</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <a href="/blog/evidence-led-ai-regulated-industries" className="bg-white/10 rounded-xl p-5 border border-white/10 hover:bg-white/20 transition">
-              <div className="text-white font-semibold">Evidence‑Led AI in Regulated Industries</div>
-              <div className="text-blue-200 text-sm">Deploy with privacy, auditability, and scale</div>
-            </a>
-            <a href="/blog/databricks-marketplace-lab-to-revenue" className="bg-white/10 rounded-xl p-5 border border-white/10 hover:bg-white/20 transition">
-              <div className="text-white font-semibold">Databricks Marketplace: Lab → Revenue</div>
-              <div className="text-blue-200 text-sm">Package datasets/models with evidence</div>
-            </a>
-            <a href="/blog/pricing-and-entitlements-explained" className="bg-white/10 rounded-xl p-5 border border-white/10 hover:bg-white/20 transition">
-              <div className="text-white font-semibold">Pricing & Entitlements Explained</div>
-              <div className="text-blue-200 text-sm">Self‑Service vs Full‑Service, compute ownership</div>
-            </a>
-            <a href="/blog/synthetic-data-lifecycle" className="bg-white/10 rounded-xl p-5 border border-white/10 hover:bg-white/20 transition">
-              <div className="text-white font-semibold">Synthetic Data Lifecycle</div>
-              <div className="text-blue-200 text-sm">From schema design to evidence bundling</div>
-            </a>
-            <a href="/blog/evidence-bundles-and-testing" className="bg-white/10 rounded-xl p-5 border border-white/10 hover:bg-white/20 transition">
-              <div className="text-white font-semibold">Evidence Bundles & Testing</div>
-              <div className="text-blue-200 text-sm">Ablations, NN checks, collapse‑risk mitigation</div>
-            </a>
-            <a href="/blog/schema-designer-multi-data-llm" className="bg-white/10 rounded-xl p-5 border border-white/10 hover:bg-white/20 transition">
-              <div className="text-white font-semibold">Schema Designer & Multi‑Data LLM Pipelines</div>
-              <div className="text-blue-200 text-sm">Harmonise domains; scale to billions; train models</div>
-            </a>
-          </div>
-        </div>
-      </section>
-
-      {/* IP-Safe Note */}
-      <section className="py-6">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 text-blue-800 text-sm text-left">
-            Evidence bundles, datasheets, and guides are provided for public verification. Internal code, formulas, and parameterizations are not published.
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-white/20 rounded-full mb-6">
-              <Users className="w-8 h-8 text-white" />
-            </div>
-          </div>
+      {/* Call to Action */}
+      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl font-bold text-white mb-4">
-            Need Help Getting Started?
+            Ready to Get Started?
           </h2>
-          <p className="text-xl text-blue-100 mb-8">
-            Our comprehensive resources cover everything from basic setup to advanced features. 
-            Can't find what you're looking for? Our team is here to help.
+          <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+            Start with our interactive demos to see how operational AI stability can transform your AI operations.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a
-              href="/contact"
-              className="bg-white/10 backdrop-blur-lg border border-white/20 text-white px-8 py-3 rounded-lg hover:bg-white/20 transition-all duration-200 font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+            <Link
+              to="/stability-demo"
+              className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition duration-300"
+            >
+              Start with Stability Demo
+            </Link>
+            <Link
+              to="/contact"
+              className="border border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition duration-300"
             >
               Contact Support
-            </a>
-            <a
-              href="/about"
-              className="border border-white text-white px-8 py-3 rounded-lg hover:bg-white hover:text-slate-900 transition-all duration-200 font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
-            >
-              Learn About Our Story
-            </a>
-          </div>
-          
-          {/* Additional Resources */}
-          <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
-            <div className="bg-white/10 rounded-xl p-6">
-              <div className="flex items-center gap-3 mb-3">
-                <Globe className="w-5 h-5 text-blue-200" />
-                <h3 className="text-lg font-semibold text-white">Community Support</h3>
-              </div>
-              <p className="text-blue-100 text-sm">
-                Join our user community for peer support, best practices sharing, and the latest updates.
-              </p>
-            </div>
-            <div className="bg-white/10 rounded-xl p-6">
-              <div className="flex items-center gap-3 mb-3">
-                <BookOpen className="w-5 h-5 text-blue-200" />
-                <h3 className="text-lg font-semibold text-white">Video Tutorials</h3>
-              </div>
-              <p className="text-blue-100 text-sm">
-                Step-by-step video guides for all platform features and common use cases.
-              </p>
-            </div>
+            </Link>
           </div>
         </div>
-      </section>
+      </div>
     </div>
-  );
-};
-
-export default Resources;
+  )
+}

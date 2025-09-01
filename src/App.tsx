@@ -31,6 +31,10 @@ import { AirGappedDemo } from './pages/AirGappedDemo';
 import { AutomotiveDemo } from './pages/AutomotiveDemo';
 import { MarketplaceDemo } from './pages/MarketplaceDemo';
 import { CardsDemo } from './pages/CardsDemo';
+import { StabilityDemo } from './pages/StabilityDemo'
+import { Features } from './pages/Features'
+import { Resources } from './pages/Resources'
+import { EfficiencyDemo } from './pages/EfficiencyDemo'
 
 import Footer from './components/Footer';
 
@@ -84,6 +88,10 @@ function RoutedApp() {
                         <Route path="/automotive-demo" element={<AutomotiveDemo />} />
                         <Route path="/marketplace-demo" element={<MarketplaceDemo />} />
                         <Route path="/cards-demo" element={<CardsDemo />} />
+                        <Route path="/stability-demo" element={<StabilityDemo />} />
+                        <Route path="/features" element={<Features />} />
+                        <Route path="/resources" element={<Resources />} />
+                        <Route path="/efficiency-demo" element={<EfficiencyDemo />} />
         </Routes>
       </div>
       {!hideChrome && <Footer />}

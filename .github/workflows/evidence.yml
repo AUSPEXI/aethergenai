@@ -1,0 +1,49 @@
+name: Evidence Bundle (CI)
+
+on:
+  pull_request:
+  push:
+    tags: ['v*']
+
+jobs:
+  build-evidence:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          if [ -f package-lock.json ]; then npm ci; else npm i; fi
+          npm i --no-save puppeteer
+
+      - name: Generate signed evidence bundle
+        id: gen
+        run: |
+          node scripts/generate-evidence.cjs
+          echo "bundle_hash=$(cat artifacts/bundle-hash.txt)" >> $GITHUB_OUTPUT
+          echo "manifest_hash=$(cat artifacts/manifest-hash.txt)" >> $GITHUB_OUTPUT
+        env:
+          GITHUB_SHA: ${{ github.sha }}
+          GITHUB_REF: ${{ github.ref }}
+
+      - name: Upload evidence artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: evidence-bundle
+          path: artifacts/**
+
+      - name: Comment manifest hash (PR only)
+        if: github.event_name == 'pull_request'
+        uses: thollander/actions-comment-pull-request@v3
+        with:
+          message: |
+            Evidence bundle generated.
+            Bundle hash: ${{ steps.gen.outputs.bundle_hash }}
+            Manifest hash: ${{ steps.gen.outputs.manifest_hash }}
+

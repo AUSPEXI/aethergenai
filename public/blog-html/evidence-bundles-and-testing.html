@@ -163,16 +163,16 @@
   <p><em>By Gwylym Owen — 18–24 min read</em></p>
 
   <h2>Executive Summary</h2>
-  <p>AethergenPlatform ships <strong>evidence bundles</strong> with every model and dataset release: signed metrics, configs, seeds, and hashes that let buyers and auditors reproduce claims—without revealing proprietary internals. This approach, live as of September 1, 2025, builds trust while protecting IP, streamlining adoption across regulated domains like healthcare and finance.</p>
+  <p>AethergenPlatform ships <strong>evidence bundles</strong> with every model and dataset release: signed metrics, configs, seeds, and hashes that enable buyers and auditors to reproduce claims—without revealing proprietary internals. This approach, live as of September 1, 2025, builds trust while protecting IP, streamlining adoption for regulated domains like healthcare and finance.</p>
 
   <h2>What We Publish</h2>
   <ul>
     <li>Utility at operating points with confidence intervals.</li>
     <li>Stability across segments; drift sensitivity.</li>
-    <li>Ablation tables: what changed outcomes.</li>
+    <li>Ablation tables: what can change outcomes.</li>
     <li>Limits and intended-use statements.</li>
     <li>SBOM, artifact hashes, and lineage.</li>
-    <li>Privacy probes (and DP budgets if used).</li>
+    <li>Privacy probes and optional DP budgets.</li>
   </ul>
 
   <h2>What We Withhold</h2>
@@ -192,16 +192,16 @@
 
   <h2>Signing & CI</h2>
   <ul>
-    <li>Evidence built in CI; signed; attached to change-control.</li>
-    <li>Hashes recorded; dashboards exported to HTML/PDF.</li>
-    <li>Artifacts tracked with SBOM for supply-chain integrity.</li>
+    <li>Evidence built via GitHub Actions workflow (`.github/workflows/evidence.yml`) on PRs/tags, running a Node script (`scripts/generate-evidence.cjs`) to create signed ZIPs.</li>
+    <li>ZIP includes `metrics/`, `plots/`, `configs/`, `seeds/`, `sbom.json`, `manifest.json` (per-file SHA-256 hashes), and `index.json`; appends `.aethergen/change-log.json` for traceability.</li>
+    <li>Artifacts uploaded with `manifest-hash.txt` for audit; PR comments link to downloads.</li>
   </ul>
 
-  <h2>Case Study: Healthcare Detector Deployment</h2>
-  <p>For a healthcare fraud detector, we released an evidence bundle with operating-point utility (1% FPR: +18% cases found, CI ±2.1%), stability across NA, EU, and APAC (max delta 2.8%), and drift monitors triggered quarterly. Procurement reviewed the HTML dashboard offline, verified hashes, and accepted with a 6-month refresh cadence and rollback SOP. Adoption took two weeks—down from months—proving the system’s efficiency, live as of September 1, 2025.</p>
+  <h2>Case Study: Healthcare Detector Potential</h2>
+  <p>For healthcare-type customers, we can provide an evidence bundle with operating-point utility (e.g., 1% FPR: +18% cases found, CI ±2.1%), stability across NA, EU, and APAC (max delta 2.8%), and drift monitors triggered quarterly. Procurement can review the HTML dashboard offline, verify hashes, and establish a 6-month refresh cadence with a rollback SOP. This can reduce adoption time from months to weeks, live as of September 1, 2025.</p>
 
   <h2>Worked Example: Payments Mule-Ring Detector</h2>
-  <p>We published a mule-ring detector bundle for a payments firm, including operating-point charts (2,000 alerts/day: +11% true positives, stable weekends), parameter logs for ring size/reuse, and stability by product (max delta 1.9%). Buyers reproduced metrics within CI bands using provided seeds, adopted with a quarterly refresh SLA, and integrated the SBOM into their supply-chain audit, live as of September 1, 2025.</p>
+  <p>For payments-type customers, we can deliver a mule-ring detector bundle with operating-point charts (e.g., 2,000 alerts/day: +11% true positives, stable weekends), parameter logs for ring size/reuse, and stability by product (max delta 1.9%). Buyers can reproduce metrics within CI bands using provided seeds, adopt with a quarterly refresh SLA, and integrate the SBOM into their supply-chain audit, live as of September 1, 2025.</p>
 
   <h2>FAQ</h2>
   <details>
@@ -210,16 +210,16 @@
   </details>
   <details>
     <summary>What if regulators ask for raw data?</summary>
-    <p>We provide synthetic corpora with measured fidelity/utility; for restricted cases, data stays within the customer enclave. We also offer privacy probes to validate compliance, live as of September 1, 2025.</p>
+    <p>We can provide synthetic corpora with measured fidelity/utility; for restricted cases, data can stay within the customer enclave. We also offer privacy probes to validate compliance, live as of September 1, 2025.</p>
   </details>
   <details>
     <summary>Can buyers request custom evidence?</summary>
-    <p>Yes, within scope—e.g., additional segment stability or robustness tests. CI regenerates the bundle with a new manifest ID, live as of September 1, 2025.</p>
+    <p>Yes, within scope—e.g., additional segment stability or robustness tests. CI can regenerate the bundle with a new manifest ID, live as of September 1, 2025.</p>
   </details>
 
   <h2>Glossary</h2>
   <ul>
-    <li><strong>Evidence bundle</strong>: signed package of metrics/configs/hashes.</li>
+    <li><strong>Evidence bundle</strong>: signed ZIP package of metrics/configs/hashes.</li>
     <li><strong>Operating point</strong>: threshold where buyers should evaluate.</li>
     <li><strong>SBOM</strong>: software bill of materials.</li>
   </ul>
@@ -264,9 +264,9 @@ index.json
 
   <h2>Audit Workflow</h2>
   <ol>
-    <li>Recompute metrics using provided configs and seeds.</li>
+    <li>Recompute metrics using provided configs and seeds from the ZIP.</li>
     <li>Check CI bands and confirm alignment with published values.</li>
-    <li>Verify SBOM and artifact hashes; review change-log.</li>
+    <li>Verify SBOM, artifact hashes, and `manifest-hash.txt`; review `.aethergen/change-log.json`.</li>
     <li>Record acceptance and attach evidence IDs to change-control.</li>
   </ol>
 
@@ -288,7 +288,10 @@ index.json
     "configs": ["configs/evaluation.yaml", "configs/thresholds.yaml"],
     "sbom": "sbom.json"
   },
-  "hashes": {"metrics/utility@op.json": "..."},
+  "hashes": {
+    "metrics/utility@op.json": "sha256:abc123...",
+    "metrics/stability_by_segment.json": "sha256:def456..."
+  },
   "seeds": "seeds/seeds.txt"
 }
   </pre>
@@ -303,9 +306,9 @@ index.json
 
   <h2>Security & Privacy Notes</h2>
   <ul>
-    <li>Evidence contains no PHI/PII; synthetic corpora documented separately.</li>
-    <li>Optional DP budgets published where applicable.</li>
-    <li>Access logs and signatures recorded for all artifacts.</li>
+    <li>Evidence contains no PHI/PII; synthetic corpora can be documented separately.</li>
+    <li>DP budgets can be included via a toggle, publishing epsilon and synthetic ratio where applicable.</li>
+    <li>Access logs and signatures are recorded for all artifacts in the signed ZIP.</li>
   </ul>
 
   <h2>Closing (Comprehensive)</h2>

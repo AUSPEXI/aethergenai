@@ -44,8 +44,9 @@
       font-size: 1.1rem;
     }
     pre {
-      background-color: #1a202c;
-      color: #e2e8f0;
+      background-color: #f8f9fa;
+      color: #2d3748;
+      border: 1px solid #e2e8f0;
       padding: 1rem;
       border-radius: 0.5rem;
       overflow-x: auto;
@@ -129,6 +130,90 @@
         margin: 0 -1rem;
       }
     }
+    
+    .requirement-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+    
+    .requirement-item {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      transition: all 0.2s ease;
+    }
+    
+    .requirement-item:hover {
+      border-color: #3b82f6;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+    }
+    
+    .requirement-item strong {
+      display: block;
+      color: #1e40af;
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+    
+    .requirement-item span {
+      color: #4a5568;
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+    
+    .highlight-box {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 2rem;
+      border-radius: 1rem;
+      margin: 2rem 0;
+    }
+    
+    .highlight-box h3 {
+      color: white;
+      margin-bottom: 1rem;
+      font-size: 1.4rem;
+    }
+    
+    .highlight-box ul {
+      list-style: none;
+      padding: 0;
+    }
+    
+    .highlight-box li {
+      padding: 0.5rem 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .highlight-box li:last-child {
+      border-bottom: none;
+    }
+    
+    .key-point {
+      background: #f0f9ff;
+      border-left: 4px solid #0ea5e9;
+      padding: 1rem;
+      margin: 1.5rem 0;
+      border-radius: 0 0.5rem 0.5rem 0;
+    }
+    
+    .key-point strong {
+      color: #0369a1;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    /* Contrast guardrails to override inline or theme dark styles */
+    pre, code, pre *, code * { color: #1f2937 !important; background: #f8fafc !important; opacity: 1 !important; text-shadow: none !important; mix-blend-mode: normal !important; }
+    /* Common code container classes in themes */
+    .highlight, .hljs, .shiki, .code, .code-block, [class*="code"], [class*="Code"], [class*="pre"], .not-prose pre {
+      background: #f8fafc !important; color: #1f2937 !important; border: 1px solid #e2e8f0 !important; border-radius: 0.5rem !important;
+    }
+    [style*="color:#000"], [style*="color: #000"], [style*="color:black"], [style*="color: black"], [style*="color:rgb(0,0,0)"] { color: #1f2937 !important; }
+    [style*="background:#000"], [style*="background: #000"], [style*="background-color:#000"], [style*="background-color: #000"], [style*="background:#0f172a"], [style*="background:#111827"], [style*="background:#1f2937"], [style*="background-color:#0f172a"], [style*="background-color:#111827"], [style*="background-color:#1f2937"], [style*="background:rgb(0,0,0)"], [style*="background-color:rgb(0,0,0)"] { background-color: #f8fafc !important; }
   </style>
 </head>
 <body>
@@ -239,7 +324,7 @@
 
   <h2>Release Notes Template (Offline)</h2>
   <p>Here’s what you’ll see:</p>
-  <pre><code>
+  <div class="aeg-codebox" style="background:#f8fafc !important;color:#1f2937 !important;border:1px solid #e2e8f0 !important;border-radius:8px !important;padding:16px !important;white-space:pre-wrap !important;font-family:'Fira Code',monospace !important;line-height:1.5 !important;mix-blend-mode:normal !important;text-shadow:none !important;opacity:1 !important;"><code style="background:transparent !important;color:inherit !important;white-space:inherit !important;display:block !important;">
 Release: Aethergen Edge Pack vX.Y.Z
 Manifest Hash (QR): abc123...
 Signed By: key-id 0xDEADBEEF
@@ -252,11 +337,11 @@ Change Summary:
   - Logging: sample rate +10% for shift night
 Rollback:
   - Last good: vX.Y.(Z-1) hash ...
-  </code></pre>
+  </code></div>
 
   <h2>Manifest Snippet</h2>
   <p>A peek inside:</p>
-  <pre><code>
+  <div class="aeg-codebox" style="background:#f8fafc !important;color:#1f2937 !important;border:1px solid #e2e8f0 !important;border-radius:8px !important;padding:16px !important;white-space:pre-wrap !important;font-family:'Fira Code',monospace !important;line-height:1.5 !important;mix-blend-mode:normal !important;text-shadow:none !important;opacity:1 !important;"><code style="background:transparent !important;color:inherit !important;white-space:inherit !important;display:block !important;">
 {
   "files": [
     {"path": "models/lineA.int8.gguf", "sha256": "..."},
@@ -269,7 +354,7 @@ Rollback:
     "env": "offline-builder-3"
   }
 }
-  </code></pre>
+  </code></div>
 
   <h2>QR Encoding</h2>
   <p>We make QR codes rugged:</p>
@@ -314,7 +399,7 @@ Rollback:
 
   <h2>Policy Overlays (Site-Specific)</h2>
   <p>Custom rules in action:</p>
-  <pre><code>
+  <div class="aeg-codebox" style="background:#f8fafc !important;color:#1f2937 !important;border:1px solid #e2e8f0 !important;border-radius:8px !important;padding:16px !important;white-space:pre-wrap !important;font-family:'Fira Code',monospace !important;line-height:1.5 !important;mix-blend-mode:normal !important;text-shadow:none !important;opacity:1 !important;"><code style="background:transparent !important;color:inherit !important;white-space:inherit !important;display:block !important;">
 policy:
   thresholds:
     surface.scratch: 0.62
@@ -323,7 +408,7 @@ policy:
     sample_rate: 0.15
   rework:
     severity: {critical: stop, major: route, minor: tally}
-  </code></pre>
+  </code></div>
 
   <h2>Change-Control Form</h2>
   <p>Every change documented:</p>

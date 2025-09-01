@@ -42,6 +42,14 @@ export const Resources: React.FC = () => {
       type: 'Interactive Demo'
     },
     {
+      icon: Target,
+      title: 'Financial Crime Lab (Synthetic Graphs)',
+      description: 'Generate synthetic transaction graphs, run typology sweeps, and evaluate OP utility & stability',
+      category: 'Technical Documentation',
+      link: '/financial-crime-demo',
+      type: 'Interactive Demo'
+    },
+    {
       icon: Globe,
       title: 'Universal Marketplace',
       description: 'Platform-agnostic asset management with trial provisioning and conversion analytics',
@@ -280,6 +288,28 @@ export const Resources: React.FC = () => {
       {/* API Documentation */}
       <div className="bg-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* CI & Evidence quick section */}
+          <div className="mb-16 bg-indigo-50 border border-indigo-100 rounded-xl p-6">
+            <h3 className="text-2xl font-bold text-gray-900 mb-2 flex items-center">
+              <Shield className="w-6 h-6 mr-2 text-indigo-500" /> CI & Evidence Bundles
+            </h3>
+            <p className="text-gray-600 mb-4">Signed, reproducible evidence is generated automatically in CI. Review workflow, script, and bundle layout.</p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <Link to="/blog/evidence-bundles-and-testing" className="block bg-white rounded-lg p-4 border hover:shadow-md transition">
+                <div className="font-semibold text-gray-900 mb-1">Evidence Bundles Overview</div>
+                <div className="text-sm text-gray-600">ZIP layout, hashes, PDFs, privacy, and index</div>
+              </Link>
+              <a href="https://github.com" target="_blank" rel="noreferrer" className="block bg-white rounded-lg p-4 border hover:shadow-md transition">
+                <div className="font-semibold text-gray-900 mb-1">CI Workflow & Script</div>
+                <div className="text-sm text-gray-600">.github/workflows/evidence.yml and scripts/generate-evidence.cjs</div>
+              </a>
+              <Link to="/cards-demo" className="block bg-white rounded-lg p-4 border hover:shadow-md transition">
+                <div className="font-semibold text-gray-900 mb-1">Export Signed Evidence</div>
+                <div className="text-sm text-gray-600">Use Cards demo to download signed ZIPs locally</div>
+              </Link>
+            </div>
+          </div>
+
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-4 flex items-center justify-center">
               <Code className="w-8 h-8 mr-3 text-indigo-500" />

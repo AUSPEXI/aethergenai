@@ -7,7 +7,7 @@ import {
 import { datasetCardService, DatasetCard, DatasetCardOptions } from '../services/datasetCardService'
 import { modelCardService, ModelCard, ModelCardOptions } from '../services/modelCardService'
 import { unityCatalogService, UnityCatalogConfig, UnityCatalogExport } from '../services/unityCatalogService'
-import { buildEvidenceBundle, downloadSignedEvidenceZip } from '../services/evidenceService'
+import { buildEvidenceBundle, downloadSignedEvidenceZip, generateEvidenceIndex, downloadEvidenceIndex } from '../services/evidenceService'
 
 export const CardsDemo: React.FC = () => {
   const [datasetCards, setDatasetCards] = useState<DatasetCard[]>([])
@@ -23,6 +23,7 @@ export const CardsDemo: React.FC = () => {
     api_token: 'demo_token'
   })
   const [showUnityConfig, setShowUnityConfig] = useState(false)
+  const [includeDPBudgets, setIncludeDPBudgets] = useState<boolean>(false)
 
   useEffect(() => {
     loadDemoData()
@@ -128,6 +129,7 @@ export const CardsDemo: React.FC = () => {
           'Auto-generated demo evidence bundle',
           'Contains safe-to-share metrics only'
         ],
+        privacy: includeDPBudgets ? { epsilon: 2.5, synthetic_ratio: 1.0 } : undefined,
         performance_metrics: {
           statistical_fidelity: 0.96,
           privacy_score: 0.98,
@@ -140,6 +142,31 @@ export const CardsDemo: React.FC = () => {
     } catch (error) {
       console.error('Signed evidence export error:', error)
     }
+  }
+
+  const handleExportEvidenceIndex = async () => {
+    const items = [
+      ...datasetCards.map(dc => ({
+        id: `dataset-${dc.name}-${dc.version}`,
+        title: `Dataset: ${dc.name} v${dc.version}`,
+        artifact_path: `${dc.name.toLowerCase().replace(/\s+/g, '_')}_evidence.zip`,
+        hash: 'pending',
+        signed: true,
+        created_at: new Date(dc.created_at).toISOString(),
+        tags: ['dataset', dc.domain]
+      })),
+      ...modelCards.map(mc => ({
+        id: `model-${mc.name}-${mc.version}`,
+        title: `Model: ${mc.name} v${mc.version}`,
+        artifact_path: `${mc.name.toLowerCase().replace(/\s+/g, '_')}_evidence.zip`,
+        hash: 'pending',
+        signed: true,
+        created_at: new Date(mc.created_at).toISOString(),
+        tags: ['model', mc.task]
+      }))
+    ]
+    const index = generateEvidenceIndex(items)
+    downloadEvidenceIndex(index)
   }
 
   const getOperatingPointMetrics = (card: ModelCard) => {
@@ -281,6 +308,18 @@ export const CardsDemo: React.FC = () => {
                 Generate Cards
               </button>
             </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <input
+              id="dp-toggle"
+              type="checkbox"
+              checked={includeDPBudgets}
+              onChange={(e) => setIncludeDPBudgets(e.target.checked)}
+              className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+            />
+            <label htmlFor="dp-toggle" className="text-sm text-gray-700">
+              Include DP budgets (epsilon) in evidence bundles
+            </label>
           </div>
           
           {generationStatus && (

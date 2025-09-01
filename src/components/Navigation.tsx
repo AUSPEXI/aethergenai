@@ -5,6 +5,7 @@ import Logo from './Logo';
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isDemosOpen, setIsDemosOpen] = useState(false);
   const location = useLocation();
   const closeTimer = useRef<number | null>(null);
 
@@ -31,16 +32,21 @@ const Navigation = () => {
     { name: 'Pricing', href: '/pricing', current: location.pathname === '/pricing' },
     { name: 'Funding', href: '/funding', current: location.pathname === '/funding' },
     { name: 'Blog', href: '/blog', current: location.pathname === '/blog' },
+    { name: 'Docs', href: '/docs', current: location.pathname === '/docs' || location.pathname.startsWith('/docs/') },
     { name: 'Resources', href: '/resources', current: location.pathname === '/resources' },
     { name: 'Hero Art', href: '/hero-art', current: location.pathname === '/hero-art' },
     { name: 'Press', href: '/press', current: location.pathname === '/press' },
     { name: 'Contact', href: '/contact', current: location.pathname === '/contact' },
-    { name: 'Stability Demo', href: '/stability-demo', current: location.pathname === '/stability-demo' },
-    { name: 'Efficiency Demo', href: '/efficiency-demo', current: location.pathname === '/efficiency-demo' },
-    { name: 'Air-Gapped Demo', href: '/air-gapped-demo', current: location.pathname === '/air-gapped-demo' },
-    { name: 'Automotive Demo', href: '/automotive-demo', current: location.pathname === '/automotive-demo' },
-    { name: 'Marketplace Demo', href: '/marketplace-demo', current: location.pathname === '/marketplace-demo' },
-    { name: 'Cards Demo', href: '/cards-demo', current: location.pathname === '/cards-demo' }
+  ];
+
+  const demoItems = [
+    { name: 'Operational Stability (Drift & SLOs)', href: '/stability-demo' },
+    { name: 'Efficiency & Optimization', href: '/efficiency-demo' },
+    { name: 'Air‑Gapped Packaging & Verification', href: '/air-gapped-demo' },
+    { name: 'Automotive Quality (Golden Run)', href: '/automotive-demo' },
+    { name: 'Marketplace & Trials', href: '/marketplace-demo' },
+    { name: 'Dataset & Model Cards', href: '/cards-demo' },
+    { name: 'Financial Crime Lab (Synthetic Graphs)', href: '/financial-crime-demo' },
   ];
 
   // Technology dropdown removed - now single page with sections
@@ -107,6 +113,35 @@ const Navigation = () => {
                     {item.name}
                   </Link>
                 ))}
+
+                {/* Demos parent with right-side popout */}
+                <div
+                  className={`relative px-4 py-2 text-sm text-slate-700 hover:text-blue-600 hover:bg-slate-50 cursor-pointer`}
+                  onMouseEnter={() => setIsDemosOpen(true)}
+                  onMouseLeave={() => setIsDemosOpen(false)}
+                >
+                  Demos ▸
+                  <div
+                    className={`absolute top-0 right-full mr-1 w-80 bg-white rounded-md shadow-lg border border-slate-200 transition-all duration-200 ${
+                      isDemosOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
+                    }`}
+                  >
+                    <div className="py-2">
+                      {demoItems.map((d) => (
+                        <Link
+                          key={d.name}
+                          to={d.href}
+                          className={`block px-4 py-2 text-sm text-slate-700 hover:text-blue-600 hover:bg-slate-50 transition-colors ${
+                            isActive(d.href) ? 'text-blue-600 bg-blue-50' : ''
+                          }`}
+                          onClick={() => { setIsOpen(false); setIsDemosOpen(false); }}
+                        >
+                          {d.name}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

@@ -34,6 +34,10 @@ import { CardsDemo } from './pages/CardsDemo';
 import { StabilityDemo } from './pages/StabilityDemo'
 import { Features } from './pages/Features'
 import { EfficiencyDemo } from './pages/EfficiencyDemo'
+import { FinancialCrimeDemo } from './pages/FinancialCrimeDemo'
+import { Docs } from './pages/Docs'
+import { DocsCIEvidence } from './pages/DocsCIEvidence'
+import { DocsDemos } from './pages/DocsDemos'
 
 import Footer from './components/Footer';
 
@@ -91,6 +95,10 @@ function RoutedApp() {
                         <Route path="/features" element={<Features />} />
                         {/* duplicate /resources route removed */}
                         <Route path="/efficiency-demo" element={<EfficiencyDemo />} />
+                        <Route path="/financial-crime-demo" element={<FinancialCrimeDemo />} />
+                        <Route path="/docs" element={<Docs />} />
+                        <Route path="/docs/ci-evidence" element={<DocsCIEvidence />} />
+                        <Route path="/docs/demos" element={<DocsDemos />} />
         </Routes>
       </div>
       {!hideChrome && <Footer />}

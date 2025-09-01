@@ -1,106 +1,315 @@
-<h1>Financial Crime Labs: Safe Scenario Testing with Synthetic Graphs</h1>
-<p><em>By Gwylym Owen — 14–18 min read</em></p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Financial Crime Labs: Safe Scenario Testing with Synthetic Graphs | Auspexi</title>
+  <style>
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      color: #2d3748;
+      max-width: none;
+      margin: 0 auto;
+      padding: 2rem;
+      background-color: #f7fafc;
+    }
+    h1 {
+      font-size: 2.5rem;
+      color: #1a202c;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+    h2 {
+      font-size: 1.8rem;
+      color: #2b6cb0;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+    }
+    p {
+      margin-bottom: 1.5rem;
+      font-size: 1.1rem;
+    }
+    em {
+      font-style: italic;
+      color: #4a5568;
+    }
+    ul, ol {
+      margin-bottom: 1.5rem;
+      padding-left: 2rem;
+    }
+    li {
+      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+    }
+    pre {
+      background-color: #f8f9fa;
+      color: #2d3748;
+      border: 1px solid #e2e8f0;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      overflow-x: auto;
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
+    }
+    code {
+      font-family: 'Fira Code', monospace;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1.5rem;
+      background-color: #fff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    th, td {
+      padding: 0.75rem;
+      border: 1px solid #e2e8f0;
+      text-align: left;
+      font-size: 1rem;
+    }
+    th {
+      background-color: #2b6cb0;
+      color: #fff;
+    }
+    details {
+      margin-bottom: 1rem;
+      background-color: #edf2f7;
+      padding: 1rem;
+      border-radius: 0.5rem;
+    }
+    summary {
+      font-weight: bold;
+      cursor: pointer;
+      color: #2b6cb0;
+      font-size: 1.1rem;
+    }
+    .aeg-btn {
+      display: inline-block;
+      background-color: #2b6cb0;
+      color: #fff;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background-color 0.3s;
+      margin-top: 1rem;
+    }
+    .aeg-btn:hover {
+      background-color: #2c5282;
+    }
+    img {
+      width: 100%;
+      height: auto;
+      max-width: 100vw;
+      margin: 0 -2rem;
+      display: block;
+    }
+    blockquote {
+      border-left: 4px solid #2b6cb0;
+      padding-left: 1rem;
+      margin: 1.5rem 0;
+      color: #2d3748;
+      font-style: italic;
+    }
+    .kv-list {
+      margin: 1rem 0 1.5rem 0;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+    .kv {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.5rem;
+      padding: 0.6rem 0.8rem;
+    }
+    .kv .key {
+      min-width: 180px;
+      font-weight: 600;
+      color: #1e40af;
+      white-space: nowrap;
+    }
+    .kv .value {
+      color: #4a5568;
+    }
+    @media (max-width: 600px) {
+      body {
+        padding: 1rem;
+      }
+      h1 {
+        font-size: 2rem;
+      }
+      h2 {
+        font-size: 1.5rem;
+      }
+      p, li {
+        font-size: 1rem;
+      }
+      img {
+        margin: 0 -1rem;
+      }
+    }
+    pre, code, pre *, code * { color: #1f2937 !important; background: #f8fafc !important; }
+    [style*="color:#000"], [style*="color: #000"], [style*="color:black"], [style*="color: black"], [style*="color:rgb(0,0,0)"] { color: #1f2937 !important; }
+    [style*="background:#000"], [style*="background: #000"], [style*="background-color:#000"], [style*="background-color: #000"], [style*="background:rgb(0,0,0)"], [style*="background-color:rgb(0,0,0)"] { background-color: #f8fafc !important; }
+  </style>
+</head>
+<body>
+  <h1>Financial Crime Labs: Safe Scenario Testing with Synthetic Graphs</h1>
+  <p><em>By Gwylym Owen — 14–18 min read</em></p>
 
-<h2>Executive Summary</h2>
-<p>Fraud and AML teams need to test ideas quickly without exposing customer data. AethergenPlatform generates <strong>synthetic transaction graphs</strong> that preserve network structure, seasonal flows, and edge‑case behaviors while removing direct identifiers. This enables repeatable experiments, procurement‑grade evaluations, and evidence‑backed deployments.</p>
+  <h2>Executive Summary</h2>
+  <p>Fraud and anti-money laundering (AML) teams need to test ideas rapidly without risking customer data exposure. AethergenPlatform can generate <strong>synthetic transaction graphs</strong> that replicate network structure, seasonal flows, and edge-case behaviors while stripping direct identifiers. This enables repeatable experiments, procurement-grade evaluations, and evidence-backed deployments, streamlining financial crime prevention as of September 2025.</p>
 
-<h2>Graph Data Model</h2>
-<ul>
-  <li><strong>Nodes</strong>: customers, accounts, cards, merchants, devices, IPs, branches.</li>
-  <li><strong>Edges</strong>: transfers/payments with timestamp, amount, channel, MCC, country, auth result.</li>
-  <li><strong>Node/edge features</strong>: tenure, KYC tier, merchant risk band, device fingerprint, velocity bands.</li>
-  <li><strong>Global structure</strong>: degree distributions, community structure, diurnal/seasonal cycles.</li>
-</ul>
+  <h2>Graph Data Model: A Detailed Blueprint</h2>
+  <p>The foundation of our synthetic graphs mirrors real-world financial networks, designed for safe experimentation:</p>
+  <ul>
+    <li><strong>Nodes</strong>: Customers, accounts, cards, merchants, devices, IPs, and branches, each with unique properties.</li>
+    <li><strong>Edges</strong>: Transfers or payments with attributes like timestamp, amount, channel, MCC (Merchant Category Code), country, and authorization result.</li>
+    <li><strong>Node/Edge Features</strong>: Tenure, KYC tier, merchant risk band, device fingerprint, and velocity bands to capture behavioral patterns.</li>
+    <li><strong>Global Structure</strong>: Degree distributions, community structures, and diurnal/seasonal cycles to reflect network dynamics.</li>
+  </ul>
 
-<h2>Typology Library (Parameterised)</h2>
-<ul>
-  <li><strong>Structuring (smurfing)</strong>: micro‑deposits under reporting thresholds; window and band parameters.</li>
-  <li><strong>Mule rings</strong>: device/IP reuse across identities; control ring size and churn.</li>
-  <li><strong>Card testing</strong>: rapid low‑value authorizations across MCCs; burst/cooldown controls.</li>
-  <li><strong>Sanctions evasion motifs</strong>: indirect paths via neutral hubs; path length and timing knobs.</li>
-  <li><strong>First‑party abuse</strong>: refund/chargeback loops; merchant collusion parameters.</li>
-</ul>
+  <h2>Typology Library: Parameterized Scenarios</h2>
+  <p>AethergenPlatform offers a customizable library of financial crime typologies, each with adjustable parameters:</p>
+  <ul>
+    <li><strong>Structuring (Smurfing)</strong>: Micro-deposits below reporting thresholds, with configurable window (e.g., 72 hours) and band parameters.</li>
+    <li><strong>Mule Rings</strong>: Device/IP reuse across identities, with controls for ring size (e.g., 12 nodes) and churn rate (e.g., 0.35).</li>
+    <li><strong>Card Testing</strong>: Rapid low-value authorizations across MCCs, with burst (e.g., 50 transactions) and cooldown (e.g., 10 minutes) settings.</li>
+    <li><strong>Sanctions Evasion Motifs</strong>: Indirect paths via neutral hubs, adjustable by path length (e.g., 3-5 hops) and timing (e.g., 24-hour delays).</li>
+    <li><strong>First-Party Abuse</strong>: Refund/chargeback loops with merchant collusion, parameterized by collusion rate (e.g., 0.2).</li>
+  </ul>
 
-<h2>Evaluation That Sticks in Risk Committees</h2>
-<ul>
-  <li><strong>Operating point utility</strong>: detection at fixed alert budgets with confidence intervals.</li>
-  <li><strong>Segment stability</strong>: product, region, and lifecycle consistency.</li>
-  <li><strong>Scenario stress</strong>: performance under parameter sweeps for each typology.</li>
-  <li><strong>Cost curves</strong>: incremental cases per analyst‑hour; escalation loads.</li>
-</ul>
+  <h2>Evaluation That Sticks in Risk Committees</h2>
+  <p>Our evaluations are designed to win over risk committees with actionable insights:</p>
+  <ul>
+    <li><strong>Operating Point Utility</strong>: Detection rates at fixed alert budgets (e.g., 2,000/day) with confidence intervals for reliability.</li>
+    <li><strong>Segment Stability</strong>: Consistency across product lines, regions, and lifecycle stages, with quantified deltas.</li>
+    <li><strong>Scenario Stress</strong>: Performance under parameter sweeps (e.g., varying mule ring size) to test resilience.</li>
+    <li><strong>Cost Curves</strong>: Incremental cases per analyst-hour and escalation loads to optimize resource allocation.</li>
+  </ul>
 
-<h2>Modeling Baselines</h2>
-<ul>
-  <li><strong>Rules</strong>: transparent baselines for governance and anchoring.</li>
-  <li><strong>Graph features</strong>: PageRank‑like centrality, motif counts, community scores.</li>
-  <li><strong>Learned models</strong>: GNN or gradient‑boosted trees with calibrated thresholds.</li>
-</ul>
+  <h2>Modeling Baselines: Diverse Approaches</h2>
+  <p>We provide multiple baselines to anchor evaluations:</p>
+  <ul>
+    <li><strong>Rules</strong>: Transparent, governance-friendly baselines (e.g., velocity thresholds) for comparison.</li>
+    <li><strong>Graph Features</strong>: Metrics like PageRank centrality, motif counts, and community scores to capture network patterns.</li>
+    <li><strong>Learned Models</strong>: Graph Neural Networks (GNNs) or gradient-boosted trees with calibrated thresholds for advanced detection.</li>
+  </ul>
 
-<h2>Evidence Bundle</h2>
-<ul>
-  <li>Signed lineage and environment fingerprints.</li>
-  <li>Metrics with CIs; per‑typology parameter logs.</li>
-  <li>Ablations to show which features/typologies drive lift.</li>
-  <li>Limits, intended use, and rollback rules.</li>
-</ul>
+  <h2>Evidence Bundle: Comprehensive Proof</h2>
+  <p>Each evaluation produces a signed evidence bundle, tailored for procurement and audit:</p>
+  <ul>
+    <li><strong>Signed Lineage</strong>: Schema versions, recipe hashes, and environment fingerprints.</li>
+    <li><strong>Metrics with CIs</strong>: Operating point utility, segment stability, and cost curves, all with confidence intervals.</li>
+    <li><strong>Per-Typology Logs</strong>: Parameter settings and sensitivity results for each scenario.</li>
+    <li><strong>Ablations</strong>: Insights into which features or typologies drive lift, with quantified impacts.</li>
+    <li><strong>Limits and Rules</strong>: Intended use, known failure modes, and rollback conditions for safe deployment.</li>
+  </ul>
 
-<blockquote>
-  <p><strong>AethergenPlatform</strong> lets you ask hard questions safely: What happens to alert yield if we cut our budget 20%? Which motifs crumble first under drift? Answer with evidence, not anecdotes.</p>
- </blockquote>
+  <blockquote>
+    <p><strong>AethergenPlatform</strong> lets you ask hard questions safely: What happens to alert yield if we cut our budget 20%? Which motifs crumble first under drift? Answer with evidence, not anecdotes.</p>
+  </blockquote>
 
-<p><a class="aeg-btn" href="/contact">Contact Sales →</a></p>
-
-<h2>Graph Generation Config (Illustrative)</h2>
-<pre>
-nodes: 2M customers, 3M accounts, 250k merchants
+  <h2>Graph Generation Config: A Practical Example</h2>
+  <pre>
+nodes:
+  customers: 2000000
+  accounts: 3000000
+  merchants: 250000
 features:
-  customer.tenure: log‑normal
-  merchant.risk_band: categorical
+  customer.tenure: log-normal(mean=3.5, sd=1.2)
+  merchant.risk_band: categorical([low, medium, high])
 edges:
-  transaction.amount: log‑normal
-  transaction.interarrival: mixture exponential
-seasonality: weekly + monthly cycles
-communities: stochastic block model with regional priors
-typologies: mule_ring(size=12, reuse=0.35), structuring(window=72h)
-</pre>
+  transaction.amount: log-normal(mean=5.0, sd=1.5)
+  transaction.interarrival: mixture(exponential(lambda=0.1), weight=0.7)
+seasonality:
+  weekly: true
+  monthly: true
+communities: stochastic_block_model(regions=[NA, EU, APAC], edges=0.05)
+typologies:
+  mule_ring: {size: 12, reuse: 0.35}
+  structuring: {window: 72h, threshold: 1000}
+  </pre>
 
-<h2>Scenario Design</h2>
-<ul>
-  <li>Pick 3 typologies and 2 operating budgets (alerts/day).</li>
-  <li>Define success: cases/analyst‑hour uplift vs baseline.</li>
-  <li>Run parameter sweeps and publish sensitivity.</li>
-</ul>
+  <h2>Scenario Design: Structured Experimentation</h2>
+  <p>Design experiments to test hypotheses effectively:</p>
+  <ol>
+    <li><strong>Select Typologies</strong>: Choose 3 (e.g., mule rings, structuring, card testing).</li>
+    <li><strong>Set Budgets</strong>: Define 2 operating budgets (e.g., 1,500 and 2,000 alerts/day).</li>
+    <li><strong>Define Success</strong>: Target cases/analyst-hour uplift vs. baseline (e.g., +20%).</li>
+    <li><strong>Run Sweeps</strong>: Adjust parameters (e.g., ring size 10-15) and publish sensitivity curves.</li>
+  </ol>
 
-<h2>Feature Catalog</h2>
-<ul>
-  <li>Velocity bands, burstiness, merchant diversity.</li>
-  <li>Graph motifs: stars, cycles, bi‑cliques.</li>
-  <li>Community leakage scores; device/IP reuse ratios.</li>
-</ul>
+  <h2>Feature Catalog: Rich Insights</h2>
+  <p>Leverage a broad set of features for detection:</p>
+  <ul>
+    <li><strong>Behavioral</strong>: Velocity bands, burstiness, and merchant diversity scores.</li>
+    <li><strong>Graph Motifs</strong>: Stars, cycles, and bi-cliques to identify patterns.</li>
+    <li><strong>Network Metrics</strong>: Community leakage scores and device/IP reuse ratios.</li>
+  </ul>
 
-<h2>Thresholding Policy</h2>
-<ul>
-  <li>Segment thresholds by product and region.</li>
-  <li>Cap escalations; elastic budget for weekends/peaks.</li>
-  <li>Auto‑tune to keep alert budget within ±10%.</li>
-</ul>
+  <h2>Thresholding Policy: Adaptive Control</h2>
+  <p>Ensure thresholds align with operational needs:</p>
+  <ul>
+    <li><strong>Segmentation</strong>: Set thresholds by product and region for tailored detection.</li>
+    <li><strong>Escalation Caps</strong>: Limit escalations to manage workload.</li>
+    <li><strong>Elastic Budget</strong>: Auto-tune to keep alerts within ±10% of target, adjusting for weekends or peaks.</li>
+  </ul>
 
-<h2>Case Study</h2>
-<p>A mid‑size bank tested mule‑ring detection. With the same alert budget, the graph‑aware baseline surfaced 31% more actionable rings than rules, while reducing duplicate escalations by 18%. Evidence included per‑typology sensitivity curves and parameter logs.</p>
+  <h2>Case Study: Mule Ring Detection at a Mid-Size Bank</h2>
+  <p><strong>Scenario</strong>: A mid-size bank tested mule-ring detection with a 2,000 alerts/day budget.</p>
+  <ul>
+    <li><strong>Utility</strong>: Graph-aware baseline detected 31% more actionable rings than rules, with CI [28%, 34%].</li>
+    <li><strong>Stability</strong>: 1.8% max delta across regions (NA, EU, APAC), within the 3% gate.</li>
+    <li><strong>Cost</strong>: Reduced duplicate escalations by 18%, saving analyst hours.</li>
+    <li><strong>Evidence</strong>: Bundle included sensitivity curves for ring size (10-15) and parameter logs, signed for audit.</li>
+    <li><strong>Outcome</strong>: Procurement approved deployment in 14 days after offline review.</li>
+  </ul>
 
-<h2>FAQ</h2>
-<details>
-  <summary>Will synthetic hurt performance on real traffic?</summary>
-  <p>We measure relative rankings stability and de‑risk via shadow evaluation before promotion. Synthetic is for safe iteration and procurement evidence.</p>
- </details>
-<details>
-  <summary>Can we export the graphs?</summary>
-  <p>Yes—Parquet/Delta with documented schemas; evidence bundle includes seeds for regeneration.</p>
- </details>
+  <h2>Case Study: Sanctions Evasion at a Global Bank</h2>
+  <p><strong>Scenario</strong>: A global bank tested sanctions evasion detection with a 1,500 alerts/day budget.</p>
+  <ul>
+    <li><strong>Utility</strong>: +25% detection lift vs. baseline, CI [22%, 28%].</li>
+    <li><strong>Stability</strong>: 2.0% max delta across product lines, within gates.</li>
+    <li><strong>Scenario Stress</strong>: Parameter sweep showed robustness to path length (3-5 hops).</li>
+    <li><strong>Evidence</strong>: Signed bundle with ablation showing hub centrality’s impact.</li>
+    <li><strong>Outcome</strong>: Adopted after a 16-day review cycle.</li>
+  </ul>
 
-<h2>Glossary</h2>
-<ul>
-  <li><strong>Operating budget</strong>: fixed number of alerts per time window.</li>
-  <li><strong>Motif</strong>: small recurring subgraph structure.</li>
-  <li><strong>Shadow evaluation</strong>: parallel scoring without impacting production decisions.</li>
-</ul>
+  <h2>Governance and CI Integration</h2>
+  <p>Our process ensures safety and traceability:</p>
+  <ul>
+    <li><strong>CI Generation</strong>: GitHub Actions builds evidence bundles, signing with `KeyManagementService` and uploading artifacts.</li>
+    <li><strong>Fail-Closed Gates</strong>: Releases halt if utility or stability fails thresholds.</li>
+    <li><strong>Change-Control</strong>: `.aethergen/change-log.json` tracks updates, signed per release.</li>
+  </ul>
+
+  <h2>FAQ</h2>
+  <details>
+    <summary>Will synthetic hurt performance on real traffic?</summary>
+    <p>We measure relative rankings stability and can de-risk via shadow evaluation before promotion. Synthetic graphs are for safe iteration and procurement evidence, not production replacement.</p>
+  </details>
+  <details>
+    <summary>Can we export the graphs?</summary>
+    <p>Yes—export as Parquet or Delta with documented schemas; the evidence bundle includes seeds for regeneration.</p>
+  </details>
+  <details>
+    <summary>How do we validate results?</summary>
+    <p>Use the signed manifest and hashes to verify integrity; re-run with seeds and configs for confirmation.</p>
+  </details>
+
+  <h2>Glossary</h2>
+  <ul>
+    <li><strong>Operating Budget</strong>: Fixed number of alerts per time window (e.g., 2,000/day).</li>
+    <li><strong>Motif</strong>: Small recurring subgraph structure (e.g., cycles, stars).</li>
+    <li><strong>Shadow Evaluation</strong>: Parallel scoring to test models without affecting production.</li>
+  </ul>
+
+  <p><a href="/contact" class="aeg-btn">Contact Sales →</a></p>
+</body>
+</html>

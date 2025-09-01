@@ -5,6 +5,8 @@ import { CheckCircle, Shield, Database, Zap, Users, Building, Globe, Lock, Award
 const Pricing = () => {
   const [selectedIndustry, setSelectedIndustry] = useState<string>('automotive');
   const [pricingCatalog, setPricingCatalog] = useState<any | null>(null);
+  const [entitlements, setEntitlements] = useState<any[]>([]);
+  const [calcInput, setCalcInput] = useState({ seats: 3, rowsM: 50, streamsMPerDay: 0 });
 
   useEffect(() => {
     (async () => {
@@ -17,6 +19,13 @@ const Pricing = () => {
       } catch (_) {
         // fallback to static
       }
+      try {
+        const r2 = await fetch('/.netlify/functions/get-entitlements');
+        if (r2.ok) {
+          const data = await r2.json();
+          setEntitlements(Array.isArray(data?.entitlements) ? data.entitlements : []);
+        }
+      } catch(_) {}
     })();
   }, []);
 
@@ -1015,6 +1024,21 @@ const Pricing = () => {
                 Platform tiers are <strong>tools only</strong> (no managed compute or Databricks delivery). <strong>Datasets sold separately</strong>. Use Enterprise (Databricks) for managed delivery and production SLAs.
               </p>
             </div>
+            {/* Read-only current entitlements */}
+            <div className="max-w-3xl mx-auto bg-white border mt-4 border-slate-200 text-slate-800 rounded-xl p-4">
+              <div className="text-sm font-semibold mb-2">Your Entitlements (read‑only)</div>
+              {entitlements.length === 0 ? (
+                <div className="text-sm text-slate-600">No active entitlements detected.</div>
+              ) : (
+                <ul className="text-sm text-slate-700 list-disc pl-5">
+                  {entitlements.map((e, i) => (
+                    <li key={i}>
+                      {String(e.stripe_price || 'UNKNOWN')} – {e.active ? 'Active' : 'Inactive'}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -1511,6 +1535,45 @@ const Pricing = () => {
               <div>Managed (Full‑Service) or Customer (Self‑Hosted)</div>
             </div>
             <p className="mt-3 text-xs text-slate-800">*“Unlimited” subject to negotiated contract and fair use.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Quick Pricing Calculator */}
+      <section className="py-16 bg-slate-50">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-bold text-slate-900 mb-2">Quick Pricing Calculator (estimate)</h2>
+            <p className="text-slate-600">Non‑binding estimate to help scope. Final pricing via quote.</p>
+          </div>
+          <div className="bg-white rounded-2xl p-6 border border-slate-200 grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+            <div>
+              <label className="block text-sm text-slate-700 mb-1">Seats</label>
+              <input type="number" min={1} value={calcInput.seats} onChange={e=>setCalcInput({...calcInput, seats: Number(e.target.value)||0})} className="w-full border rounded-lg px-3 py-2" />
+            </div>
+            <div>
+              <label className="block text-sm text-slate-700 mb-1">Rows/month (Millions)</label>
+              <input type="number" min={0} value={calcInput.rowsM} onChange={e=>setCalcInput({...calcInput, rowsM: Number(e.target.value)||0})} className="w-full border rounded-lg px-3 py-2" />
+            </div>
+            <div>
+              <label className="block text-sm text-slate-700 mb-1">Stream/day (Millions)</label>
+              <input type="number" min={0} value={calcInput.streamsMPerDay} onChange={e=>setCalcInput({...calcInput, streamsMPerDay: Number(e.target.value)||0})} className="w-full border rounded-lg px-3 py-2" />
+            </div>
+            <div className="bg-blue-50 rounded-xl p-3 border border-blue-200">
+              {(() => {
+                const seatCost = calcInput.seats * 299;
+                const rowsCost = Math.max(0, calcInput.rowsM - 10) * 10; // £10 per extra M beyond 10M
+                const streamCost = calcInput.streamsMPerDay * 100; // £100 per M/day baseline
+                const estimate = Math.round(seatCost + rowsCost + streamCost);
+                return (
+                  <div>
+                    <div className="text-sm text-slate-700">Estimated monthly (GBP)</div>
+                    <div className="text-2xl font-bold text-slate-900">£{estimate.toLocaleString()}</div>
+                    <div className="text-xs text-slate-600">Indicative; excludes Enterprise services and taxes.</div>
+                  </div>
+                )
+              })()}
+            </div>
           </div>
         </div>
       </section>

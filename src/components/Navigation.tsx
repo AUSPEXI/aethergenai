@@ -47,6 +47,8 @@ const Navigation = () => {
     { name: 'Marketplace & Trials', href: '/marketplace-demo' },
     { name: 'Dataset & Model Cards', href: '/cards-demo' },
     { name: 'Financial Crime Lab (Synthetic Graphs)', href: '/financial-crime-demo' },
+    { name: 'Swarm Safety (8D Topology)', href: '/swarm-safety-demo' },
+    { name: 'Insurance Fraud Playbooks', href: '/insurance-fraud-demo' },
   ];
 
   // Technology dropdown removed - now single page with sections

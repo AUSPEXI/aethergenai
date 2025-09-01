@@ -105,6 +105,33 @@ Beta hardening
 - Observability: jobs/events/metrics; failure notifications (email/webhooks).
 - Docs and samples: domain adapters (DICOM, geospatial/time-series, finance), seed datasets, end-to-end examples.
 
+---
+
+Left To Do (Next up)
+
+- Databricks managed delivery
+  - Add CI envs and secrets: SITE_URL, DATABRICKS_HOST, DATABRICKS_TOKEN, UC_TABLE.
+  - Post-gate CI step: upload full evidence bundle (ZIP) to UC Volume path and write object comments for tables/models (bundle/manifest IDs, OP text).
+  - Job wiring: create/schedule Databricks Job for monthly refresh + on-demand “Regenerate Evidence”; emit webhook to PR and incident channel.
+  - Incident hooks: on gate breach, create incident record and optional Slack/Teams webhook; link last good bundle.
+  - Unity Catalog lineage/tags: attach manifest IDs, OP thresholds, and refresh cadence as object tags.
+
+- Insurance Fraud Playbooks
+  - Add Parquet export (and sample Delta conversion notebook) for claims dataset.
+  - Flesh out cost curves with measured analyst throughput from scenario runs.
+  - Include `playbooks/playbook.yaml` and `metrics/*` in UI-exported ZIP (not just CI script).
+  - Demo polish: segment selector (plan/region), typology co-occurrence controls, full CSV/Parquet download.
+
+- Swarm Safety (8D)
+  - Visualization: canvas WebGL preview (positions, geofence, violations overlay).
+  - Metrics: add geofence violations/time-to-recover and partition stress tests; export `swarm/metrics/*` from UI as well.
+  - Isaac Sim harness (placeholder notebooks) for future large-scale sims.
+
+- Evidence & Docs
+  - Acceptance template generation in UI exports; keep parity with CI `acceptance.txt`.
+  - Resources page: add tiles for Swarm Safety, Insurance Playbooks, and Managed Delivery docs.
+  - Blog: ensure cards exist for recent articles and link demos/docs consistently.
+
 8D track (signposted)
 - Phase 1: 4–6D geospatial/time-series synthetic backends; ablation of dimensional relevance.
 - Phase 2: agent-based sim + octonion/8D embeddings; release gated by ablation evidence.

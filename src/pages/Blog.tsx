@@ -224,6 +224,28 @@ const Blog = () => {
       slug: 'insurance-fraud-playbooks-synthetic-scenarios'
     },
     {
+      title: '🕊️ From Starlings to Swarms: 8D Safety for Thousands of Drones',
+      excerpt: '8D state, CBF/RTA safety, and topological neighbors for resilient swarms—evidence-ready.',
+      author: 'Gwylym Owen',
+      date: 'January 20, 2025',
+      readTime: '9 min read',
+      category: 'Case Study',
+      icon: Shield,
+      published: true,
+      slug: 'from-starlings-to-swarms-8d-safety'
+    },
+    {
+      title: '🛠️ Managed Delivery on Databricks: SLAs Referencing Evidence (Not Hype)',
+      excerpt: 'Unity Catalog delivery with SLAs tied to OP, stability, and refresh cadence—backed by signed evidence.',
+      author: 'Gwylym Owen',
+      date: 'January 22, 2025',
+      readTime: '20 min read',
+      category: 'Business Strategy',
+      icon: TrendingUp,
+      published: true,
+      slug: 'managed-delivery-on-databricks-slas-referencing-evidence'
+    },
+    {
       title: '🏛️ Public Sector AI: Secure Deployments Without Cloud Entanglements',
       excerpt: 'Air‑gapped packaging, signed manifests, and offline dashboards for secure approvals.',
       author: 'Gwylym Owen',
@@ -488,6 +510,39 @@ const Blog = () => {
       slug: 'democratising-ai-post-moores-law-revolution'
     },
     {
+      title: 'The AI Carbon Footprint Revolution: Sustainable Computing Beyond Moore\'s Law',
+      excerpt: 'Evidence-led optimization to cut energy per task and carbon footprint while meeting latency and utility targets.',
+      author: 'Gwylym Owen',
+      date: 'January 27, 2025',
+      readTime: '12 min read',
+      category: 'Technology',
+      icon: Zap,
+      published: true,
+      slug: 'ai-carbon-footprint-revolution-sustainable-computing'
+    },
+    {
+      title: 'Energy‑Efficient AI: How Optimization Beats Scaling in the Post‑Moore\'s Law Era',
+      excerpt: 'Adapters, quantization, pruning, and serving alignment—measured with evidence and tied to operating points.',
+      author: 'Gwylym Owen',
+      date: 'January 27, 2025',
+      readTime: '15 min read',
+      category: 'Technology',
+      icon: Zap,
+      published: true,
+      slug: 'energy-efficient-ai-optimization-beats-scaling'
+    },
+    {
+      title: 'Green AI: Building Carbon‑Neutral Machine Learning Systems',
+      excerpt: 'Govern energy budgets, measure carbon per task, and publish evidence for procurement and audit.',
+      author: 'Gwylym Owen',
+      date: 'January 27, 2025',
+      readTime: '18 min read',
+      category: 'Technology',
+      icon: Lightbulb,
+      published: true,
+      slug: 'green-ai-carbon-neutral-machine-learning'
+    },
+    {
       title: '🎯 The Triumph of Preparation: How Strategic Planning Eliminates Development Chaos',
       excerpt: 'That triumphant moment when your master development document is fully configured, with all guidelines and common pitfalls meticulously resolved. This is the art of building bulletproof systems.',
       author: 'Gwylym Owen',
@@ -508,6 +563,17 @@ const Blog = () => {
       icon: TrendingUp,
       published: true,
       slug: '4200-hour-course-abandoned-destiny'
+    },
+    {
+      title: 'Financial Crime Labs: Safe Scenario Testing with Synthetic Graphs',
+      excerpt: 'Generate synthetic transaction graphs, run typology sweeps, and evaluate OP utility & stability—without exposing customer data.',
+      author: 'Gwylym Owen',
+      date: 'January 28, 2025',
+      readTime: '14–18 min read',
+      category: 'Technology',
+      icon: Shield,
+      published: true,
+      slug: 'financial-crime-labs-synthetic-graphs-risk-evidence'
     },
     {
       title: '🎪 The Complexity Wall: When Natural Language Meets AI Engineering',

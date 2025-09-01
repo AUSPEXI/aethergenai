@@ -1,3 +1,6 @@
+import JSZip from 'jszip'
+import { keyManagementService, KeyPair } from './keyManagementService'
+
 export type EvidenceBundle = {
   bundle_version: string;
   generated_at: string;
@@ -120,6 +123,111 @@ export function simpleHashString(s: string): string {
 export function hashArray(arr: any[], limit = 1000): string {
   const s = JSON.stringify(arr.slice(0, limit));
   return simpleHashString(s);
+}
+
+
+// --- Signing & Index Generation ---
+
+async function sha256HexBrowser(input: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(input);
+  const hash = await crypto.subtle.digest('SHA-256', data);
+  const arr = Array.from(new Uint8Array(hash));
+  return arr.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+export type EvidenceSignatureRecord = {
+  bundle_hash: string;
+  signature: string;
+  signed_at: string;
+  signer: {
+    key_id: string;
+    key_name: string;
+    public_key: string;
+  };
+};
+
+export type EvidenceManifest = {
+  manifest_version: string;
+  bundle_version: string;
+  generated_at: string;
+  bundle_hash: string;
+  files: string[];
+};
+
+export async function signEvidenceBundle(bundle: EvidenceBundle, approver = 'system'):
+  Promise<{ manifest: EvidenceManifest; signatureRecord: EvidenceSignatureRecord; key: KeyPair; bundleJson: string }>
+{
+  const bundleJson = JSON.stringify(bundle, null, 2);
+  const bundleHash = await sha256HexBrowser(bundleJson);
+  const key = await keyManagementService.generateKeyPair('evidence-signing-key');
+  const signature = await keyManagementService.signManifestWithApproval(bundleHash, key, approver);
+
+  const manifest: EvidenceManifest = {
+    manifest_version: '1.0',
+    bundle_version: bundle.bundle_version,
+    generated_at: bundle.generated_at,
+    bundle_hash: bundleHash,
+    files: ['evidence.json', 'manifest.json', 'signature.json', 'signing-key.json']
+  };
+
+  const signatureRecord: EvidenceSignatureRecord = {
+    bundle_hash: bundleHash,
+    signature,
+    signed_at: new Date().toISOString(),
+    signer: {
+      key_id: key.id,
+      key_name: key.name,
+      public_key: key.publicKey
+    }
+  };
+
+  return { manifest, signatureRecord, key, bundleJson };
+}
+
+export async function downloadSignedEvidenceZip(bundle: EvidenceBundle, filename?: string, approver = 'system') {
+  const { manifest, signatureRecord, key, bundleJson } = await signEvidenceBundle(bundle, approver);
+  const zip = new JSZip();
+  zip.file('evidence.json', bundleJson);
+  zip.file('manifest.json', JSON.stringify(manifest, null, 2));
+  zip.file('signature.json', JSON.stringify(signatureRecord, null, 2));
+  zip.file('signing-key.json', JSON.stringify({
+    keyId: key.id,
+    keyName: key.name,
+    publicKey: key.publicKey,
+    createdAt: key.createdAt,
+    expiresAt: key.expiresAt,
+    permissions: key.permissions
+  }, null, 2));
+
+  const blob = await zip.generateAsync({ type: 'blob' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename || `evidence_signed_${Date.now()}.zip`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+export type EvidenceIndexItem = {
+  id: string;
+  title: string;
+  artifact_path: string;
+  hash: string;
+  signed: boolean;
+  created_at: string;
+  tags?: string[];
+};
+
+export function generateEvidenceIndex(items: EvidenceIndexItem[]) {
+  return {
+    version: '1.0',
+    generated_at: new Date().toISOString(),
+    total: items.length,
+    items
+  };
 }
 
 

@@ -10,7 +10,7 @@ import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
 import Contact from './pages/Contact';
 import Press from './pages/Press';
-import Resources from './pages/Resources';
+import { Resources } from './pages/Resources';
 import HeroArt from './pages/HeroArt';
 import Funding from './pages/Funding';
 import AuthPage from './components/Auth/AuthPage';
@@ -33,7 +33,6 @@ import { MarketplaceDemo } from './pages/MarketplaceDemo';
 import { CardsDemo } from './pages/CardsDemo';
 import { StabilityDemo } from './pages/StabilityDemo'
 import { Features } from './pages/Features'
-import { Resources } from './pages/Resources'
 import { EfficiencyDemo } from './pages/EfficiencyDemo'
 
 import Footer from './components/Footer';
@@ -90,7 +89,7 @@ function RoutedApp() {
                         <Route path="/cards-demo" element={<CardsDemo />} />
                         <Route path="/stability-demo" element={<StabilityDemo />} />
                         <Route path="/features" element={<Features />} />
-                        <Route path="/resources" element={<Resources />} />
+                        {/* duplicate /resources route removed */}
                         <Route path="/efficiency-demo" element={<EfficiencyDemo />} />
         </Routes>
       </div>

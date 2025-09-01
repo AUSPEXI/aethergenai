@@ -128,7 +128,7 @@ const BlogPost = () => {
   React.useEffect(() => {
     (async () => {
       try {
-        const rh = await fetch(`/blog-html/${encodeURIComponent(slug || '')}.html`).catch(()=>null as any)
+        const rh = await fetch(`/blog-html/${encodeURIComponent(slug || '')}.html?ts=${Date.now()}`).catch(()=>null as any)
         if (rh && rh.ok) {
           const htmlRaw = await rh.text()
           const h1 = htmlRaw.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i)
@@ -193,7 +193,24 @@ const BlogPost = () => {
           {post.title}
         </h1>
         
-        <div className="prose prose-lg max-w-none">
+        <div className="prose prose-lg max-w-none" style={{
+          // Force light code/pre theme across injected HTML
+          ['--tw-prose-body' as any]: '#1e293b',
+          ['--tw-prose-headings' as any]: '#0f172a',
+          ['--tw-prose-links' as any]: '#2563eb',
+          ['--tw-prose-bold' as any]: '#0f172a',
+          ['--tw-prose-counters' as any]: '#64748b',
+          ['--tw-prose-bullets' as any]: '#cbd5e1',
+          ['--tw-prose-hr' as any]: '#e2e8f0',
+          ['--tw-prose-quotes' as any]: '#0f172a',
+          ['--tw-prose-quote-borders' as any]: '#e2e8f0',
+          ['--tw-prose-captions' as any]: '#64748b',
+          ['--tw-prose-code' as any]: '#1f2937',
+          ['--tw-prose-pre-code' as any]: '#1f2937',
+          ['--tw-prose-pre-bg' as any]: '#f8fafc',
+          ['--tw-prose-th-borders' as any]: '#cbd5e1',
+          ['--tw-prose-td-borders' as any]: '#e2e8f0'
+        }}>
           <style>{`
             .prose h2 { 
               margin-top: 2rem !important; 
@@ -211,6 +228,24 @@ const BlogPost = () => {
               color: #0f172a !important; 
               font-weight: 700 !important;
             }
+            /* Force readable pre/code regardless of inline or theme styles */
+            .prose pre, .prose pre *, .prose code, .prose code * {
+              background: #f8fafc !important;
+              color: #1f2937 !important;
+              text-shadow: none !important;
+              mix-blend-mode: normal !important;
+            }
+            /* Tailwind Typography uses :where() selectors; override them explicitly */
+            .prose :where(pre):not(:where(.not-prose *)),
+            .prose :where(pre):not(:where(.not-prose *)) *,
+            .prose :where(code):not(:where(pre code)) {
+              background: #f8fafc !important;
+              color: #1f2937 !important;
+            }
+            .prose pre {
+              border: 1px solid #e2e8f0 !important;
+              border-radius: 0.5rem !important;
+            }
             /* Ensure CTA buttons are readable everywhere */
             .aeg-btn { color: #ffffff !important; }
             .prose a.aeg-btn { color: #ffffff !important; }
@@ -218,23 +253,6 @@ const BlogPost = () => {
           <div 
             dangerouslySetInnerHTML={{ __html: (post as any).content_html || (post as any).content || '' }} 
             className="space-y-8"
-            style={{
-              '--tw-prose-body': '#1e293b',
-              '--tw-prose-headings': '#0f172a',
-              '--tw-prose-links': '#2563eb',
-              '--tw-prose-bold': '#0f172a',
-              '--tw-prose-counters': '#64748b',
-              '--tw-prose-bullets': '#cbd5e1',
-              '--tw-prose-hr': '#e2e8f0',
-              '--tw-prose-quotes': '#0f172a',
-              '--tw-prose-quote-borders': '#e2e8f0',
-              '--tw-prose-captions': '#64748b',
-              '--tw-prose-code': '#0f172a',
-              '--tw-prose-pre-code': '#e2e8f0',
-              '--tw-prose-pre-bg': '#1e293b',
-              '--tw-prose-th-borders': '#cbd5e1',
-              '--tw-prose-td-borders': '#e2e8f0'
-            } as React.CSSProperties}
           />
         </div>
       </article>

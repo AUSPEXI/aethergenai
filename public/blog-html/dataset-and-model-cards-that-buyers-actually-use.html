@@ -43,8 +43,9 @@
       font-size: 1.1rem;
     }
     pre {
-      background-color: #1a202c;
-      color: #e2e8f0;
+      background-color: #f8f9fa;
+      color: #2d3748;
+      border: 1px solid #e2e8f0;
       padding: 1rem;
       border-radius: 0.5rem;
       overflow-x: auto;
@@ -128,6 +129,111 @@
         margin: 0 -1rem;
       }
     }
+    
+    .requirement-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+    
+    .requirement-item {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      transition: all 0.2s ease;
+    }
+    
+    .requirement-item:hover {
+      border-color: #3b82f6;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+    }
+    
+    .requirement-item strong {
+      display: block;
+      color: #1e40af;
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+    
+    .requirement-item span {
+      color: #4a5568;
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+    
+    .highlight-box {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 2rem;
+      border-radius: 1rem;
+      margin: 2rem 0;
+    }
+    
+    .highlight-box h3 {
+      color: white;
+      margin-bottom: 1rem;
+      font-size: 1.4rem;
+    }
+    
+    .highlight-box ul {
+      list-style: none;
+      padding: 0;
+    }
+    
+    .highlight-box li {
+      padding: 0.5rem 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .highlight-box li:last-child {
+      border-bottom: none;
+    }
+    
+    .key-point {
+      background: #f0f9ff;
+      border-left: 4px solid #0ea5e9;
+      padding: 1rem;
+      margin: 1.5rem 0;
+      border-radius: 0 0.5rem 0.5rem 0;
+    }
+    
+    .key-point strong {
+      color: #0369a1;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    /* Contrast guardrails to override inline dark styles */
+    pre, code, pre *, code * { color: #1f2937 !important; background: #f8fafc !important; }
+    [style*="color:#000"], [style*="color: #000"], [style*="color:black"], [style*="color: black"], [style*="color:rgb(0,0,0)"] { color: #1f2937 !important; }
+    [style*="background:#000"], [style*="background: #000"], [style*="background-color:#000"], [style*="background-color: #000"], [style*="background:rgb(0,0,0)"], [style*="background-color:rgb(0,0,0)"] { background-color: #f8fafc !important; }
+    /* Key-Value styling for label:value lines */
+    .kv-list {
+      margin: 1rem 0 1.5rem 0;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+    .kv {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.5rem;
+      padding: 0.6rem 0.8rem;
+    }
+    .kv .key {
+      min-width: 180px;
+      font-weight: 600;
+      color: #1e40af;
+      white-space: nowrap;
+    }
+    .kv .value {
+      color: #4a5568;
+    }
   </style>
 </head>
 <body>
@@ -140,7 +246,36 @@
   <p>Most “cards” read like marketing. Buyers need <strong>operational</strong> cards that help them evaluate, adopt, and govern AI assets. AethergenPlatform ships dataset and model cards that are evidence-backed, Unity Catalog-aware, and procurement-ready—so risk teams sign faster and engineers succeed on day one. This system is fully operational as of September 1, 2025.</p>
 
   <h2>What Buyers Actually Need</h2>
-  <p>Buyers demand clarity to trust your assets. <strong>Clarity on intended use and limits</strong> prevents misuse in critical applications. <strong>Evidence at declared operating points with confidence intervals</strong> proves performance. <strong>Segment stability and drift expectations</strong> ensures reliability over time. <strong>Data lineage, SBOM, and change-control hooks</strong> supports audits. <strong>Install/run SOPs, sample notebooks, and rollback guidance</strong> aids deployment. <strong>Clear entitlements, support, and update cadence</strong> sets expectations. Imagine an insurer reviewing a fraud-detection model—this checklist drives their decision, live as of September 1, 2025.</p>
+  <p>Buyers demand clarity to trust your assets. Each requirement below prevents critical failures and builds trust:</p>
+  
+  <div class="requirement-grid">
+    <div class="requirement-item">
+      <strong>Clarity on intended use and limits</strong>
+      <span>Prevents misuse in critical applications</span>
+    </div>
+    <div class="requirement-item">
+      <strong>Evidence at declared operating points</strong>
+      <span>Proves performance with confidence intervals</span>
+    </div>
+    <div class="requirement-item">
+      <strong>Segment stability and drift expectations</strong>
+      <span>Ensures reliability over time</span>
+    </div>
+    <div class="requirement-item">
+      <strong>Data lineage, SBOM, and change-control hooks</strong>
+      <span>Supports audits and compliance</span>
+    </div>
+    <div class="requirement-item">
+      <strong>Install/run SOPs, sample notebooks, and rollback guidance</strong>
+      <span>Aids deployment and troubleshooting</span>
+    </div>
+    <div class="requirement-item">
+      <strong>Clear entitlements, support, and update cadence</strong>
+      <span>Sets expectations for ongoing service</span>
+    </div>
+  </div>
+  
+  <p>Imagine an insurer reviewing a fraud-detection model—this checklist drives their decision, live as of September 1, 2025.</p>
   <ul>
     <li><strong>Clarity on intended use and limits</strong> to avoid misuse.</li>
     <li><strong>Evidence at declared operating points</strong> with confidence intervals.</li>
@@ -151,7 +286,48 @@
   </ul>
 
   <h2>Dataset Card: Structure</h2>
-  <p>A dataset card is a detailed label. <strong>Overview: purpose, domain, target tasks</strong> sets the context. <strong>Schema: entities, relations, fields, types, vocabularies</strong> defines structure. <strong>Quality: coverage, nulls, ranges, constraint checks</strong> ensures integrity. <strong>Fidelity/Utility: alignment with target tasks and baselines</strong> measures value. <strong>Privacy: probes, budgets (if applicable), non-goals</strong> addresses risks. <strong>Packaging: formats, Unity Catalog registration</strong> aids use. <strong>Evidence: metrics, plots, seeds, hashes</strong> proves reliability. <strong>Limits: intended use, failure modes, caveats</strong> warns of boundaries. <strong>Support: refresh cadence, contact, SLAs</strong> commits to service. A healthcare team using a claims dataset would rely on this, live as of September 1, 2025.</p>
+  <p>A dataset card is a detailed label that provides comprehensive information for buyers. Each component serves a specific purpose:</p>
+  
+  <div class="requirement-grid">
+    <div class="requirement-item">
+      <strong>Overview</strong>
+      <span>Purpose, domain, and target tasks to set context</span>
+    </div>
+    <div class="requirement-item">
+      <strong>Schema</strong>
+      <span>Entities, relations, fields, types, and vocabularies</span>
+    </div>
+    <div class="requirement-item">
+      <strong>Quality</strong>
+      <span>Coverage, nulls, ranges, and constraint checks</span>
+    </div>
+    <div class="requirement-item">
+      <strong>Fidelity/Utility</strong>
+      <span>Alignment with target tasks and baselines</span>
+    </div>
+    <div class="requirement-item">
+      <strong>Privacy</strong>
+      <span>Probes, budgets (if applicable), and non-goals</span>
+    </div>
+    <div class="requirement-item">
+      <strong>Packaging</strong>
+      <span>Formats and Unity Catalog registration</span>
+    </div>
+    <div class="requirement-item">
+      <strong>Evidence</strong>
+      <span>Metrics, plots, seeds, and hashes</span>
+    </div>
+    <div class="requirement-item">
+      <strong>Limits</strong>
+      <span>Intended use, failure modes, and caveats</span>
+    </div>
+    <div class="requirement-item">
+      <strong>Support</strong>
+      <span>Refresh cadence, contact, and SLAs</span>
+    </div>
+  </div>
+  
+  <p>A healthcare team using a claims dataset would rely on this comprehensive structure, live as of September 1, 2025.</p>
   <ul>
     <li><strong>Overview</strong>: purpose, domain, target tasks.</li>
     <li><strong>Schema</strong>: entities, relations, fields, types, vocabularies.</li>
@@ -165,7 +341,48 @@
   </ul>
 
   <h2>Model Card: Structure</h2>
-  <p>A model card is a blueprint. <strong>Overview: problem, scope, intended use</strong> frames the purpose. <strong>Training data: sources, synthetic notes (if any), constraints</strong> details origins. <strong>Evaluation: operating-point utility with CIs; stability; drift sensitivity</strong> measures performance. <strong>Calibration: threshold selection SOP; trade-offs</strong> guides tuning. <strong>Robustness: corruptions (if relevant) and failure analysis</strong> tests resilience. <strong>Limits: out-of-scope inputs, known weaknesses</strong> sets boundaries. <strong>Packaging: MLflow/ONNX/GGUF; device profiles; example notebooks</strong> aids deployment. <strong>Evidence: signed bundle manifest; SBOM; lineage</strong> ensures trust. <strong>Governance: change-control, rollback, and audit hooks</strong> manages updates. A fraud-detection team would use this, live as of September 1, 2025.</p>
+  <p>A model card is a blueprint that guides deployment and governance. Each component addresses critical aspects:</p>
+  
+  <div class="requirement-grid">
+    <div class="requirement-item">
+      <strong>Overview</strong>
+      <span>Problem, scope, and intended use to frame purpose</span>
+    </div>
+    <div class="requirement-item">
+      <strong>Training Data</strong>
+      <span>Sources, synthetic notes (if any), and constraints</span>
+    </div>
+    <div class="requirement-item">
+      <strong>Evaluation</strong>
+      <span>Operating-point utility with CIs, stability, drift sensitivity</span>
+    </div>
+    <div class="requirement-item">
+      <strong>Calibration</strong>
+      <span>Threshold selection SOP and trade-offs</span>
+    </div>
+    <div class="requirement-item">
+      <strong>Robustness</strong>
+      <span>Corruptions (if relevant) and failure analysis</span>
+    </div>
+    <div class="requirement-item">
+      <strong>Limits</strong>
+      <span>Out-of-scope inputs and known weaknesses</span>
+    </div>
+    <div class="requirement-item">
+      <strong>Packaging</strong>
+      <span>MLflow/ONNX/GGUF, device profiles, example notebooks</span>
+    </div>
+    <div class="requirement-item">
+      <strong>Evidence</strong>
+      <span>Signed bundle manifest, SBOM, and lineage</span>
+    </div>
+    <div class="requirement-item">
+      <strong>Governance</strong>
+      <span>Change-control, rollback, and audit hooks</span>
+    </div>
+  </div>
+  
+  <p>A fraud-detection team would use this comprehensive structure, live as of September 1, 2025.</p>
   <ul>
     <li><strong>Overview</strong>: problem, scope, intended use.</li>
     <li><strong>Training data</strong>: sources, synthetic notes (if any), constraints.</li>
@@ -182,7 +399,20 @@
   <p>Cards are not brochures—they’re contracts. <strong>Contracts about performance, limits, and support</strong> bind promises to reality. Each statement links to a verifiable artifact in the evidence bundle. If the card says “at 1% FPR,” the evidence includes the exact threshold, CI bands, seeds, and configs that reproduce it. Picture a risk team auditing a healthcare model—this rigor wins them over, live as of September 1, 2025.</p>
 
   <h2>Dataset Card Template (Illustrative)</h2>
-  <p>This template structures a dataset card. <strong>name: Healthcare Claims (Synthetic)</strong> identifies it. <strong>version: 2025.01</strong> tracks updates. <strong>purpose: Fraud detection prototyping and evaluation</strong> sets goals. <strong>schema: entities, relations, fields</strong> defines structure. <strong>quality: coverage, constraints</strong> ensures data health. <strong>fidelity: marginals, utility</strong> measures alignment. <strong>privacy: seeds, probes</strong> addresses risks. <strong>packaging: format, unity_catalog</strong> aids use. <strong>evidence: metrics, plots, manifest</strong> proves reliability. <strong>limits: not for clinical diagnosis</strong> warns of boundaries. <strong>support: refresh, contact</strong> commits to service. Live as of September 1, 2025.</p>
+  <p>This template structures a dataset card. Each field is presented as a clear label/value line:</p>
+  <div class="kv-list">
+    <div class="kv"><span class="key">name:</span> <span class="value">Healthcare Claims (Synthetic)</span></div>
+    <div class="kv"><span class="key">version:</span> <span class="value">2025.01</span></div>
+    <div class="kv"><span class="key">purpose:</span> <span class="value">Fraud detection prototyping and evaluation</span></div>
+    <div class="kv"><span class="key">schema:</span> <span class="value">entities, relations, fields</span></div>
+    <div class="kv"><span class="key">quality:</span> <span class="value">coverage, constraints</span></div>
+    <div class="kv"><span class="key">fidelity:</span> <span class="value">marginals, utility</span></div>
+    <div class="kv"><span class="key">privacy:</span> <span class="value">seeds, probes</span></div>
+    <div class="kv"><span class="key">packaging:</span> <span class="value">format, unity_catalog</span></div>
+    <div class="kv"><span class="key">evidence:</span> <span class="value">metrics, plots, manifest</span></div>
+    <div class="kv"><span class="key">limits:</span> <span class="value">not for clinical diagnosis</span></div>
+    <div class="kv"><span class="key">support:</span> <span class="value">refresh, contact</span></div>
+  </div>
   <pre>
 name: Healthcare Claims (Synthetic)
 version: 2025.01
@@ -217,7 +447,20 @@ support:
   </pre>
 
   <h2>Model Card Template (Illustrative)</h2>
-  <p>This template structures a model card. <strong>name: Claims Fraud Detector</strong> identifies it. <strong>version: 2025.01</strong> tracks updates. <strong>intended_use: triage and analyst prioritization</strong> sets goals. <strong>training_data: synthetic claims corpus</strong> details origins. <strong>evaluation: op_1%fpr, stability</strong> measures performance. <strong>calibration: method, target</strong> guides tuning. <strong>robustness: drift, rollback</strong> tests resilience. <strong>limits: out_of_scope</strong> sets boundaries. <strong>packaging: format, notebook</strong> aids deployment. <strong>evidence: bundle</strong> ensures trust. <strong>governance: change_control</strong> manages updates. Live as of September 1, 2025.</p>
+  <p>This template structures a model card. Each field is presented as a clear label/value line:</p>
+  <div class="kv-list">
+    <div class="kv"><span class="key">name:</span> <span class="value">Claims Fraud Detector</span></div>
+    <div class="kv"><span class="key">version:</span> <span class="value">2025.01</span></div>
+    <div class="kv"><span class="key">intended_use:</span> <span class="value">triage and analyst prioritization</span></div>
+    <div class="kv"><span class="key">training_data:</span> <span class="value">synthetic claims corpus</span></div>
+    <div class="kv"><span class="key">evaluation:</span> <span class="value">op_1%fpr, stability</span></div>
+    <div class="kv"><span class="key">calibration:</span> <span class="value">method, target</span></div>
+    <div class="kv"><span class="key">robustness:</span> <span class="value">drift, rollback</span></div>
+    <div class="kv"><span class="key">limits:</span> <span class="value">out_of_scope</span></div>
+    <div class="kv"><span class="key">packaging:</span> <span class="value">format, notebook</span></div>
+    <div class="kv"><span class="key">evidence:</span> <span class="value">bundle</span></div>
+    <div class="kv"><span class="key">governance:</span> <span class="value">change_control</span></div>
+  </div>
   <pre>
 name: Claims Fraud Detector
 version: 2025.01

@@ -3,3 +3,169 @@ import { Download, QrCode, Shield, CheckCircle, FileText, Package } from 'lucide
 import JSZip from 'jszip'
 import { generateAirGappedBundle, AirGappedOptions } from '../services/edgePackagingService'
 import { VerificationKiosk } from '../components/VerificationKiosk'
+
+export const AirGappedDemo: React.FC = () => {
+  const [generationStatus, setGenerationStatus] = useState<string>('')
+  const [bundleInfo, setBundleInfo] = useState<any>(null)
+
+  const demoOptions: AirGappedOptions = {
+    modelId: 'demo-model-v1.0',
+    modelPath: '/models/demo-model.bin',
+    configPath: '/config/demo-config.json',
+    includeSBOM: true,
+    includeManifest: true,
+    includeQRCode: true,
+    includeKeys: true,
+    includeSOPs: true,
+    dualControl: true
+  }
+
+  const handleGenerateBundle = async () => {
+    setGenerationStatus('Generating air-gapped bundle...')
+    
+    try {
+      const bundle = await generateAirGappedBundle(demoOptions)
+      setBundleInfo(bundle)
+      setGenerationStatus('Bundle generated successfully!')
+    } catch (error) {
+      setGenerationStatus(`Error: ${error}`)
+    }
+  }
+
+  const handleDownloadBundle = () => {
+    if (bundleInfo?.blob) {
+      const url = URL.createObjectURL(bundleInfo.blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `air-gapped-bundle-${demoOptions.modelId}.zip`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
+    }
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
+      <div className="max-w-6xl mx-auto">
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+            Air-Gapped AI Packaging Demo
+          </h1>
+          <p className="text-xl text-gray-600">
+            Generate secure, air-gapped edge bundles with manifests, QR codes, and SOPs
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Generation Panel */}
+          <div className="bg-white rounded-lg shadow-lg p-6">
+            <h2 className="text-2xl font-semibold text-gray-800 mb-4 flex items-center">
+              <Package className="mr-2 text-blue-600" />
+              Bundle Generation
+            </h2>
+            
+            <div className="space-y-4">
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h3 className="font-medium text-gray-700 mb-2">Demo Configuration:</h3>
+                <ul className="text-sm text-gray-600 space-y-1">
+                  <li>• Model ID: {demoOptions.modelId}</li>
+                  <li>• Include SBOM: {demoOptions.includeSBOM ? 'Yes' : 'No'}</li>
+                  <li>• Include Manifest: {demoOptions.includeManifest ? 'Yes' : 'No'}</li>
+                  <li>• Include QR Code: {demoOptions.includeQRCode ? 'Yes' : 'No'}</li>
+                  <li>• Dual Control: {demoOptions.dualControl ? 'Yes' : 'No'}</li>
+                </ul>
+              </div>
+
+              <button
+                onClick={handleGenerateBundle}
+                className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center"
+              >
+                <Download className="mr-2" />
+                Generate Air-Gapped Bundle
+              </button>
+
+              {generationStatus && (
+                <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                  <p className="text-blue-800">{generationStatus}</p>
+                </div>
+              )}
+
+              {bundleInfo && (
+                <div className="space-y-3">
+                  <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                    <h4 className="font-medium text-green-800 mb-2">Bundle Generated:</h4>
+                    <ul className="text-sm text-green-700 space-y-1">
+                      <li>• Size: {bundleInfo.size} bytes</li>
+                      <li>• Files: {bundleInfo.fileCount}</li>
+                      <li>• Manifest: {bundleInfo.hasManifest ? 'Included' : 'Not included'}</li>
+                      <li>• QR Code: {bundleInfo.hasQRCode ? 'Included' : 'Not included'}</li>
+                    </ul>
+                  </div>
+
+                  <button
+                    onClick={handleDownloadBundle}
+                    className="w-full bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center"
+                  >
+                    <Download className="mr-2" />
+                    Download Bundle
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Verification Kiosk */}
+          <div className="bg-white rounded-lg shadow-lg p-6">
+            <h2 className="text-2xl font-semibold text-gray-800 mb-4 flex items-center">
+              <Shield className="mr-2 text-green-600" />
+              Field Verification Kiosk
+            </h2>
+            <VerificationKiosk />
+          </div>
+        </div>
+
+        {/* Features Overview */}
+        <div className="mt-12 bg-white rounded-lg shadow-lg p-6">
+          <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
+            Air-Gapped AI Features
+          </h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="text-center">
+              <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <QrCode className="w-8 h-8 text-blue-600" />
+              </div>
+              <h3 className="font-semibold text-gray-800 mb-2">QR Verification</h3>
+              <p className="text-sm text-gray-600">Quick verification with QR codes for field deployment</p>
+            </div>
+
+            <div className="text-center">
+              <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Shield className="w-8 h-8 text-green-600" />
+              </div>
+              <h3 className="font-semibold text-gray-800 mb-2">Secure Packaging</h3>
+              <p className="text-sm text-gray-600">Signed manifests and SBOMs for complete security</p>
+            </div>
+
+            <div className="text-center">
+              <div className="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <FileText className="w-8 h-8 text-purple-600" />
+              </div>
+              <h3 className="font-semibold text-gray-800 mb-2">Field SOPs</h3>
+              <p className="text-sm text-gray-600">Standard operating procedures for field engineers</p>
+            </div>
+
+            <div className="text-center">
+              <div className="bg-orange-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <CheckCircle className="w-8 h-8 text-orange-600" />
+              </div>
+              <h3 className="font-semibold text-gray-800 mb-2">Dual Control</h3>
+              <p className="text-sm text-gray-600">Two-person authorization for critical deployments</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}

@@ -24,9 +24,29 @@ export const CardsDemo: React.FC = () => {
   })
   const [showUnityConfig, setShowUnityConfig] = useState(false)
   const [includeDPBudgets, setIncludeDPBudgets] = useState<boolean>(false)
+  const [entitlements, setEntitlements] = useState<any[]>([])
+  const [canExportEvidence, setCanExportEvidence] = useState<boolean>(false)
 
   useEffect(() => {
-    loadDemoData()
+    (async () => {
+      try {
+        const res = await fetch('/.netlify/functions/get-entitlements')
+        if (res.ok) {
+          const data = await res.json()
+          const list = Array.isArray(data?.entitlements) ? data.entitlements : []
+          setEntitlements(list)
+          const allowed = list.some((e: any) => e?.active && e?.stripe_price && e.stripe_price !== 'DEV_FREE')
+          setCanExportEvidence(!!allowed)
+        } else {
+          setEntitlements([{ stripe_price: 'DEV_FREE', active: true }])
+          setCanExportEvidence(false)
+        }
+      } catch {
+        setEntitlements([{ stripe_price: 'DEV_FREE', active: true }])
+        setCanExportEvidence(false)
+      }
+      await loadDemoData()
+    })()
   }, [])
 
   const loadDemoData = async () => {
@@ -363,10 +383,13 @@ export const CardsDemo: React.FC = () => {
                       JSON
                     </button>
                     <button
-                      onClick={() => handleExportSignedEvidence(card)}
-                      className="flex items-center px-3 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition"
+                      onClick={() => canExportEvidence && handleExportSignedEvidence(card)}
+                      disabled={!canExportEvidence}
+                      className={`flex items-center px-3 py-2 rounded-lg transition ${
+                        canExportEvidence ? 'bg-indigo-500 text-white hover:bg-indigo-600' : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      }`}
                     >
-                      <Shield className="w-4 h-4 mr-2" />
+                      {canExportEvidence ? <Shield className="w-4 h-4 mr-2" /> : <Lock className="w-4 h-4 mr-2" />}
                       Evidence (Signed)
                     </button>
                   </div>
@@ -431,10 +454,13 @@ export const CardsDemo: React.FC = () => {
                       JSON
                     </button>
                     <button
-                      onClick={() => handleExportSignedEvidence(card)}
-                      className="flex items-center px-3 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition"
+                      onClick={() => canExportEvidence && handleExportSignedEvidence(card)}
+                      disabled={!canExportEvidence}
+                      className={`flex items-center px-3 py-2 rounded-lg transition ${
+                        canExportEvidence ? 'bg-indigo-500 text-white hover:bg-indigo-600' : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      }`}
                     >
-                      <Shield className="w-4 h-4 mr-2" />
+                      {canExportEvidence ? <Shield className="w-4 h-4 mr-2" /> : <Lock className="w-4 h-4 mr-2" />}
                       Evidence (Signed)
                     </button>
                   </div>

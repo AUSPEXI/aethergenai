@@ -50,6 +50,22 @@ export const Resources: React.FC = () => {
       type: 'Interactive Demo'
     },
     {
+      icon: Shield,
+      title: 'Swarm Safety (8D Topology)',
+      description: 'Topological neighbors with safety clamps; resilience metrics and export',
+      category: 'Technical Documentation',
+      link: '/swarm-safety-demo',
+      type: 'Interactive Demo'
+    },
+    {
+      icon: Shield,
+      title: 'Insurance Fraud Playbooks',
+      description: 'Generate playbooks, evaluate at OP, and export datasets for safe testing',
+      category: 'Technical Documentation',
+      link: '/insurance-fraud-demo',
+      type: 'Interactive Demo'
+    },
+    {
       icon: Globe,
       title: 'Universal Marketplace',
       description: 'Platform-agnostic asset management with trial provisioning and conversion analytics',
@@ -166,6 +182,23 @@ export const Resources: React.FC = () => {
 
       {/* Technical Documentation */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        {/* Pricing & Entitlements */}
+        <div className="mb-12 bg-amber-50 border border-amber-200 rounded-xl p-6">
+          <h3 className="text-2xl font-bold text-gray-900 mb-2 flex items-center">
+            <TrendingUp className="w-6 h-6 mr-2 text-amber-600" /> Pricing & Entitlements
+          </h3>
+          <p className="text-gray-700 mb-4">Rights-based tiers, compute ownership clarity, and evidence-linked SLAs.</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Link to="/blog/pricing-and-entitlements-explained" className="block bg-white rounded-lg p-4 border hover:shadow-md transition">
+              <div className="font-semibold text-gray-900 mb-1">Pricing & Entitlements Explained</div>
+              <div className="text-sm text-gray-600">How tiers map to real needs without cannibalisation</div>
+            </Link>
+            <Link to="/pricing" className="block bg-white rounded-lg p-4 border hover:shadow-md transition">
+              <div className="font-semibold text-gray-900 mb-1">Pricing Page & Calculator</div>
+              <div className="text-sm text-gray-600">Explore tiers and estimate costs quickly</div>
+            </Link>
+          </div>
+        </div>
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-gray-900 mb-4 flex items-center justify-center">
             <FileText className="w-8 h-8 mr-3 text-blue-500" />

@@ -348,6 +348,28 @@ export async function generateAirGappedBundle(options: AirGappedOptions): Promis
 	
 	// Add README
 	zip.file('README.txt', generateAirGappedReadme(options))
+
+	// Kiosk: self-test assets and SOPs (stubs)
+	const selftest = [
+		'## Self-Test Ticket (stub)',
+		`Date: ${new Date().toISOString()}`,
+		'HW: OK, CAM: OK, STORAGE: OK',
+		'GOLDEN: 100/100 PASS, p95=17ms',
+		'POLICY: thresholds loaded',
+		'SIGNATURE: <attach org signature here>'
+	].join('\n')
+	zip.folder('kiosk')?.file('selftest_ticket.txt', selftest)
+	zip.folder('kiosk')?.file('SOP_INSTALL.txt', '1) Verify QR 2) Snapshot 3) Install 4) Self-test 5) Store ticket')
+	zip.folder('kiosk')?.file('SOP_ROLLBACK.txt', '1) Pause station 2) Restore image 3) Run self-tests 4) Store ticket 5) Resume')
+	zip.folder('kiosk')?.file('CHECKLIST.txt', '[ ] Verify QR\n[ ] Run self-test\n[ ] Store ticket\n[ ] Print label')
+
+	// Golden set placeholders
+	zip.folder('golden')?.file('README.txt', 'Place golden images/video here for on-site validation.')
+
+	// Robustness matrix and placeholders
+	const matrixCsv = 'condition,test,pass_criteria\nlow_light,histogram_shift,stability_delta<=0.03\nhigh_glare,occlusion_sweep,delta<=0.04\nvibration,frame_drop,policy_safe_hold\ndust,sensor_dropout,recovery<=10s\nthermal,cpu_load,latency_spike<=5ms\n'
+	zip.folder('robustness')?.file('matrix.csv', matrixCsv)
+	zip.folder('robustness')?.file('RESULTS.txt', 'Populate results after on-site tests.')
 	
 	// Add optional files
 	if (options.harmonizedSchema) {
@@ -420,9 +442,30 @@ export async function generateAirGappedBundle(options: AirGappedOptions): Promis
 			qrCodeRequired: true,
 			checksumVerification: true,
 			offlineVerification: true
-		}
+		},
+		thresholds: {
+			'class.surface_scratch': 0.62,
+			'class.gap_alignment': 0.55
+		},
+		fallback: { fps_min: 15, safe_hold_on_error: true }
 	}
 	zip.folder('policy')?.file('policy.json', JSON.stringify(policy, null, 2))
+
+	// Device profile export and latency targets (stub)
+	const deviceProfile = {
+		recommendation: manifest.deviceProfileRecommendation,
+		latencyTargets: {
+			'Jetson Orin NX': { p95_ms: 25 },
+			'Industrial PC (RTX A2000)': { p95_ms: 18 },
+			'ARM SBC': { p95_ms: 40 }
+		}
+	}
+	zip.folder('device')?.file('profile.json', JSON.stringify(deviceProfile, null, 2))
+
+	// Signed daily log digest (stub)
+	const digest = { date: new Date().toISOString().slice(0,10), files: ['selftest_ticket.txt'], sha256: 'stub', signedBy: manifest.signedBy }
+	zip.folder('logs')?.file('daily_digest.json', JSON.stringify(digest, null, 2))
+	zip.folder('logs')?.file('SIGNATURE.txt', `Signed by: ${manifest.signedBy}`)
 	
 	return await zip.generateAsync({ type: 'blob' })
 }

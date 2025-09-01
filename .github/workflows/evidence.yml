@@ -32,6 +32,19 @@ jobs:
           GITHUB_SHA: ${{ github.sha }}
           GITHUB_REF: ${{ github.ref }}
 
+      - name: Gate on thresholds (fail-closed)
+        id: gates
+        run: |
+          echo "Checking acceptance gates..."
+          if grep -q "FAIL" artifacts/acceptance.txt; then
+            echo "One or more gates failed:" && cat artifacts/acceptance.txt
+            echo "summary=FAIL" >> $GITHUB_OUTPUT
+            exit 1
+          else
+            echo "All gates PASS" && cat artifacts/acceptance.txt
+            echo "summary=PASS" >> $GITHUB_OUTPUT
+          fi
+
       - name: Upload evidence artifact
         uses: actions/upload-artifact@v4
         with:
@@ -46,4 +59,28 @@ jobs:
             Evidence bundle generated.
             Bundle hash: ${{ steps.gen.outputs.bundle_hash }}
             Manifest hash: ${{ steps.gen.outputs.manifest_hash }}
+            Gates: ${{ steps.gates.outputs.summary }}
+            Tier: ${{ env.UC_TIER || 'DEV' }}
+            Catalog comment (copy/paste):
+            ```
+            Evidence: bundle=${{ steps.gen.outputs.bundle_hash }}, manifest=${{ steps.gen.outputs.manifest_hash }}, gates=${{ steps.gates.outputs.summary }}, tier=${{ env.UC_TIER || 'DEV' }}
+            ```
+
+      - name: Upload acceptance & manifest to Databricks UC Volume (optional)
+        if: ${{ env.DATABRICKS_HOST && env.DATABRICKS_TOKEN && steps.gates.outputs.summary == 'PASS' }}
+        run: |
+          set -e
+          ACC=$(base64 -w0 artifacts/acceptance.txt || base64 artifacts/acceptance.txt)
+          MAN=$(base64 -w0 artifacts/manifest-hash.txt || base64 artifacts/manifest-hash.txt)
+          curl -sS -X POST "${{ env.SITE_URL }}/.netlify/functions/databricks-uc?action=uploadEvidence" \
+            -H 'Content-Type: application/json' \
+            -d "{\"catalog\":\"aethergen\",\"schema\":\"evidence\",\"volume\":\"bundles\",\"subdir\":\"${{ steps.gen.outputs.manifest_hash }}\",\"files\":[{\"name\":\"acceptance.txt\",\"base64\":\"$ACC\"},{\"name\":\"manifest-hash.txt\",\"base64\":\"$MAN\"}]}"
+
+      - name: Set UC table comment with evidence (optional)
+        if: ${{ env.DATABRICKS_HOST && env.DATABRICKS_TOKEN && env.UC_TABLE && steps.gates.outputs.summary == 'PASS' }}
+        run: |
+          TIER="${{ env.UC_TIER || 'DEV' }}"
+          curl -sS -X POST "${{ env.SITE_URL }}/.netlify/functions/databricks-uc?action=setTableComment" \
+            -H 'Content-Type: application/json' \
+            -d '{"full_name":"'"${{ env.UC_TABLE }}"'","comment":"Evidence: bundle='"${{ steps.gen.outputs.bundle_hash }}"'', manifest='"${{ steps.gen.outputs.manifest_hash }}"'', gates='"${{ steps.gates.outputs.summary }}"'', tier='"$TIER"''"}'
 

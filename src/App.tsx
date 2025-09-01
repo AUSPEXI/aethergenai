@@ -38,6 +38,8 @@ import { FinancialCrimeDemo } from './pages/FinancialCrimeDemo'
 import { Docs } from './pages/Docs'
 import { DocsCIEvidence } from './pages/DocsCIEvidence'
 import { DocsDemos } from './pages/DocsDemos'
+import SwarmSafetyDemo from './pages/SwarmSafetyDemo'
+import InsuranceFraudDemo from './pages/InsuranceFraudDemo'
 
 import Footer from './components/Footer';
 
@@ -99,6 +101,8 @@ function RoutedApp() {
                         <Route path="/docs" element={<Docs />} />
                         <Route path="/docs/ci-evidence" element={<DocsCIEvidence />} />
                         <Route path="/docs/demos" element={<DocsDemos />} />
+                        <Route path="/swarm-safety-demo" element={<SwarmSafetyDemo />} />
+                        <Route path="/insurance-fraud-demo" element={<InsuranceFraudDemo />} />
         </Routes>
       </div>
       {!hideChrome && <Footer />}

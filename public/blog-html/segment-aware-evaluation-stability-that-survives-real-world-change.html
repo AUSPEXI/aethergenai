@@ -1,50 +1,215 @@
-<h1>Segment‑Aware Evaluation: Stability that Survives Real‑World Change</h1>
-<p><em>By Gwylym Owen — 32–48 min read</em></p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Segment-Aware Evaluation: Stability that Survives Real-World Change | Auspexi</title>
+  <style>
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      color: #2d3748;
+      max-width: none;
+      margin: 0 auto;
+      padding: 2rem;
+      background-color: #f7fafc;
+    }
+    h1 {
+      font-size: 2.5rem;
+      color: #1a202c;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+    h2 {
+      font-size: 1.8rem;
+      color: #2b6cb0;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+    }
+    p {
+      margin-bottom: 1.5rem;
+      font-size: 1.1rem;
+    }
+    em {
+      font-style: italic;
+      color: #4a5568;
+    }
+    ul, ol {
+      margin-bottom: 1.5rem;
+      padding-left: 2rem;
+    }
+    li {
+      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+    }
+    pre {
+      background-color: #f8f9fa;
+      color: #2d3748;
+      border: 1px solid #e2e8f0;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      overflow-x: auto;
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
+    }
+    code {
+      font-family: 'Fira Code', monospace;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1.5rem;
+      background-color: #fff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    th, td {
+      padding: 0.75rem;
+      border: 1px solid #e2e8f0;
+      text-align: left;
+      font-size: 1rem;
+    }
+    th {
+      background-color: #2b6cb0;
+      color: #fff;
+    }
+    details {
+      margin-bottom: 1rem;
+      background-color: #edf2f7;
+      padding: 1rem;
+      border-radius: 0.5rem;
+    }
+    summary {
+      font-weight: bold;
+      cursor: pointer;
+      color: #2b6cb0;
+      font-size: 1.1rem;
+    }
+    .aeg-btn {
+      display: inline-block;
+      background-color: #2b6cb0;
+      color: #fff;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background-color 0.3s;
+      margin-top: 1rem;
+    }
+    .aeg-btn:hover {
+      background-color: #2c5282;
+    }
+    img {
+      width: 100%;
+      height: auto;
+      max-width: 100vw;
+      margin: 0 -2rem;
+      display: block;
+    }
+    blockquote {
+      border-left: 4px solid #2b6cb0;
+      padding-left: 1rem;
+      margin: 1.5rem 0;
+      color: #2d3748;
+      font-style: italic;
+    }
+    .kv-list {
+      margin: 1rem 0 1.5rem 0;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+    .kv {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.5rem;
+      padding: 0.6rem 0.8rem;
+    }
+    .kv .key {
+      min-width: 180px;
+      font-weight: 600;
+      color: #1e40af;
+      white-space: nowrap;
+    }
+    .kv .value {
+      color: #4a5568;
+    }
+    @media (max-width: 600px) {
+      body {
+        padding: 1rem;
+      }
+      h1 {
+        font-size: 2rem;
+      }
+      h2 {
+        font-size: 1.5rem;
+      }
+      p, li {
+        font-size: 1rem;
+      }
+      img {
+        margin: 0 -1rem;
+      }
+    }
+    pre, code, pre *, code * { color: #1f2937 !important; background: #f8fafc !important; }
+    [style*="color:#000"], [style*="color: #000"], [style*="color:black"], [style*="color: black"], [style*="color:rgb(0,0,0)"] { color: #1f2937 !important; }
+    [style*="background:#000"], [style*="background: #000"], [style*="background-color:#000"], [style*="background-color: #000"], [style*="background:rgb(0,0,0)"], [style*="background-color:rgb(0,0,0)"] { background-color: #f8fafc !important; }
+  </style>
+</head>
+<body>
+  <h1>Segment-Aware Evaluation: Stability that Survives Real-World Change</h1>
+  <p><em>By Gwylym Owen — 32–48 min read</em></p>
 
-<h2>Executive Summary</h2>
-<p>Accuracy without <strong>stability</strong> fails in production. AethergenPlatform evaluates models at <strong>operating points</strong> across segments (product, region, lifecycle, device, station) and publishes <strong>stability bands</strong> with confidence intervals—so you promote artifacts that hold up under change, not just look good once.</p>
+  <h2>Executive Summary</h2>
+  <p>Hey, accuracy without <strong>stability</strong> is a flop in the real world, mate! AethergenPlatform evaluates models at <strong>operating points</strong> across segments (product, region, lifecycle, device, station) and dishes out <strong>stability bands</strong> with confidence intervals—so you can promote artifacts that tough it out under change, not just look shiny once, as of September 2025!</p>
 
-<h2>Why Segment‑Aware?</h2>
-<ul>
-  <li>Customer mixes shift, coding practices evolve, lighting and devices change.</li>
-  <li>Raw AUC hides pockets of failure; buyers operate at fixed budgets.</li>
-  <li>Procurement and audit want reproducible <strong>stability evidence</strong>.</li>
-</ul>
+  <h2>Why Segment-Aware?</h2>
+  <p>Life’s messy, and here’s why it matters:</p>
+  <ul>
+    <li><strong>Shifts Happen</strong>: Customer mixes change, coding evolves, lighting and devices throw curveballs—gotta adapt!</li>
+    <li><strong>AUC Lies</strong>: Raw AUC hides failure pockets; buyers care about fixed budgets (e.g., 1% FPR).</li>
+    <li><strong>Proof Demanded</strong>: Procurement and audit crave reproducible <strong>stability evidence</strong>—let’s give it to ‘em!</li>
+  </ul>
 
-<h2>Core Concepts</h2>
-<ul>
-  <li><strong>Operating point (OP)</strong>: threshold aligned to analyst capacity or safety budget.</li>
-  <li><strong>Segments</strong>: categorical slices (product, region, specialty) and temporal bands.</li>
-  <li><strong>Stability band</strong>: max delta vs global KPI within tolerance.</li>
-  <li><strong>Confidence interval</strong>: uncertainty on each segment KPI and delta.</li>
-</ul>
+  <h2>Core Concepts</h2>
+  <p>Here’s the backbone with a grin:</p>
+  <ul>
+    <li><strong>Operating Point (OP)</strong>: Threshold tied to analyst capacity or safety budget (e.g., 2k alerts/day).</li>
+    <li><strong>Segments</strong>: Slices like product, region, specialty, or temporal bands—your operational map!</li>
+    <li><strong>Stability Band</strong>: Max delta vs global KPI within tolerance (e.g., ≤0.03)—keeps it steady!</li>
+    <li><strong>Confidence Interval</strong>: Uncertainty on segment KPIs and deltas (e.g., [0.75, 0.77])—no guesswork!</li>
+  </ul>
 
-<h2>Evaluation Matrix</h2>
-<pre>
+  <h2>Evaluation Matrix</h2>
+  <pre>
 OPs: [fpr=1%, alerts/day=2k]
 Segments: product ∈ {A,B}, region ∈ {NA,EU,APAC}, lifecycle ∈ {new,mid,legacy}
 Metrics: utility@OP, delta_vs_global, CI
-</pre>
+  </pre>
 
-<h2>Procedure</h2>
-<ol>
-  <li>Freeze OP and base configuration.</li>
-  <li>Define segment taxonomy and minimum bin sizes.</li>
-  <li>Compute KPIs per segment and global; derive deltas and CIs.</li>
-  <li>Compare against <strong>stability gates</strong>; attach to evidence.</li>
-  <li>Decide promotion/iteration with risk and operations.</li>
- </ol>
+  <h2>Procedure</h2>
+  <p>Let’s walk through it, step by step:</p>
+  <ol>
+    <li><strong>Freeze OP</strong>: Lock it in with the base config—set the stage!</li>
+    <li><strong>Define Segments</strong>: Build a taxonomy with minimum bin sizes (e.g., 500 samples)—keep it meaningful!</li>
+    <li><strong>Compute KPIs</strong>: Per segment and global; calculate deltas and CIs—crunch the numbers!</li>
+    <li><strong>Check Gates</strong>: Compare against <strong>stability gates</strong>; tie it to evidence—pass or tweak!</li>
+    <li><strong>Decide</strong>: Promote or iterate with risk and ops in mind—make the call!</li>
+  </ol>
 
-<h2>Stability Gates (Examples)</h2>
-<ul>
-  <li>region_max_delta ≤ 0.03</li>
-  <li>product_max_delta ≤ 0.02</li>
-  <li>lifecycle_max_delta ≤ 0.04</li>
-  <li>All segments CI width ≤ 0.05</li>
-</ul>
+  <h2>Stability Gates</h2>
+  <p>These are your guardrails, buddy:</p>
+  <ul>
+    <li>region_max_delta ≤ 0.03</li>
+    <li>product_max_delta ≤ 0.02</li>
+    <li>lifecycle_max_delta ≤ 0.04</li>
+    <li>All segments CI width ≤ 0.05</li>
+  </ul>
 
-<h2>Evidence Snippet</h2>
-<pre>
+  <h2>Evidence Snippet</h2>
+  <pre>
 {
   "op": "fpr=0.01",
   "global": 0.758,
@@ -54,170 +219,151 @@ Metrics: utility@OP, delta_vs_global, CI
   },
   "max_delta": {"region": 0.012, "product": 0.015}
 }
-</pre>
+  </pre>
 
-<h2>Visualization (Described)</h2>
-<ul>
-  <li>Bar charts per segment with error bars (CIs).</li>
-  <li>Delta heatmap vs global KPI.</li>
-  <li>Temporal ribbon chart for rolling stability.</li>
-</ul>
+  <h2>Visualization</h2>
+  <p>Picture this on your dashboard:</p>
+  <ul>
+    <li><strong>Bar Charts</strong>: Per segment with error bars (CIs)—see the spread!</li>
+    <li><strong>Delta Heatmap</strong>: Vs global KPI—spot the hotspots!</li>
+    <li><strong>Temporal Ribbon</strong>: Rolling stability over time—track the pulse!</li>
+  </ul>
 
-<h2>Temporal Stability</h2>
-<ul>
-  <li>Rolling windows (7d/14d/28d) with KPI bands.</li>
-  <li>Change‑point detection for early warning.</li>
-  <li>Auto‑alerts on breach; rollback triggers documented.</li>
-</ul>
+  <h2>Temporal Stability</h2>
+  <p>Time’s a tricky beast—let’s tame it:</p>
+  <ul>
+    <li><strong>Rolling Windows</strong>: 7d/14d/28d KPI bands—catch the trends!</li>
+    <li><strong>Change-Point Detection</strong>: Early warnings when things shift—be proactive!</li>
+    <li><strong>Auto-Alerts</strong>: Breach triggers documented rollback plans—safety first!</li>
+  </ul>
 
-<h2>Data Sufficiency</h2>
-<ul>
-  <li>Minimum counts per segment to avoid wide CIs.</li>
-  <li>Merge rare cells; document in limits.</li>
-  <li>Use synthetic augmentations for pre‑deploy checks (disclosed).</li>
-</ul>
+  <h2>Data Sufficiency</h2>
+  <p>Got enough to work with? Let’s check:</p>
+  <ul>
+    <li><strong>Minimum Counts</strong>: Per segment to avoid wide CIs (e.g., 500 samples)—solid stats!</li>
+    <li><strong>Merge Rare Cells</strong>: Document limits when bins are thin—stay honest!</li>
+    <li><strong>Synthetic Boost</strong>: Augmentations for pre-deploy checks (disclosed)—fill the gaps!</li>
+  </ul>
 
-<h2>Segment Design</h2>
-<ul>
-  <li>Choose segments that map to operations and risk.</li>
-  <li>Limit taxonomy size to preserve power.</li>
-  <li>Iterate after pilot; lock for acceptance testing.</li>
-</ul>
+  <h2>Segment Design</h2>
+  <p>Pick your slices wisely:</p>
+  <ul>
+    <li><strong>Operational Fit</strong>: Choose segments tied to risk and ops (e.g., region for sales).</li>
+    <li><strong>Limit Size</strong>: Keep taxonomy lean to preserve power (e.g., 3-5 segments)—don’t overdo it!</li>
+    <li><strong>Iterate</strong>: Pilot, lock for acceptance testing—refine as you go!</li>
+  </ul>
 
-<h2>Operating Points</h2>
-<ul>
-  <li>Choose OP in collaboration with investigators or station owners.</li>
-  <li>Publish trade‑off curves and effect sizes around OP.</li>
-  <li>Store thresholds in config tables, not code.</li>
-</ul>
+  <h2>Operating Points</h2>
+  <p>Set the bar right:</p>
+  <ul>
+    <li><strong>Collaboration</strong>: Pick OP with investigators or station owners—team effort!</li>
+    <li><strong>Trade-Offs</strong>: Publish curves and effect sizes around OP (e.g., +2% utility vs +0.5% FPR).</li>
+    <li><strong>Config Storage</strong>: Store thresholds in tables, not code—flexible and clean!</li>
+  </ul>
 
-<h2>Segment‑Aware Ablations</h2>
-<ul>
-  <li>Compute effect sizes per segment for top factors.</li>
-  <li>Block changes that harm vulnerable segments beyond tolerance.</li>
-  <li>Publish forest plots split by segment.</li>
-</ul>
+  <h2>Segment-Aware Ablations</h2>
+  <p>Dig into what works:</p>
+  <ul>
+    <li><strong>Effect Sizes</strong>: Per segment for top factors (e.g., +3% with lighting tweak).</li>
+    <li><strong>Block Harm</strong>: Halt changes hurting vulnerable segments beyond tolerance—protect the weak!</li>
+    <li><strong>Forest Plots</strong>: Split by segment—visualize the impact!</li>
+  </ul>
 
-<h2>Real‑World Examples</h2>
-<ul>
-  <li><strong>Healthcare</strong>: region and specialty stability at 1% FPR.</li>
-  <li><strong>Payments</strong>: product and merchant band stability at alert budgets.</li>
-  <li><strong>Edge vision</strong>: station and shift stability under lighting changes.</li>
-</ul>
+  <h2>Real-World Examples</h2>
+  <p>Here’s where it shines, mate:</p>
+  <ul>
+    <li><strong>Healthcare</strong>: Region and specialty stability at 1% FPR—keeps docs happy!</li>
+    <li><strong>Payments</strong>: Product and merchant band stability at alert budgets—fraud fighters win!</li>
+    <li><strong>Edge Vision</strong>: Station and shift stability under lighting changes—cameras stay sharp!</li>
+  </ul>
 
-<h2>Case Study: Claims Detector</h2>
-<p>At fpr=1%, the global utility was 0.758. Max region delta was 0.012 and specialty delta 0.018—within gates. A weekly dip followed a coding update; drift monitors triggered a review without rollback. Stability held post‑patch.</p>
+  <h2>Case Study</h2>
+  <p><strong>Scenario</strong>: A simulated claims detector setup tested stability.</p>
+  <p>At fpr=1%, the global utility was 0.758. Max region delta was 0.012 and specialty delta 0.018—within gates. A weekly dip followed a coding update; drift monitors triggered a review without rollback. Stability held post-patch.</p>
 
-<h2>Case Study: Station Vision</h2>
-<p>A re‑aimed camera created a shift‑specific delta spike. Auto‑alarm fired; lighting profile switched; station returned within bands. Evidence documented the incident and mitigation.</p>
+  <h2>Case Study</h2>
+  <p><strong>Scenario</strong>: A simulated station vision system faced a lighting shift.</p>
+  <p>A re-aimed camera created a shift-specific delta spike. Auto-alarm fired; lighting profile switched; station returned within bands. Evidence documented the incident and mitigation.</p>
 
-<h2>Governance</h2>
-<ul>
-  <li>Stability gates are mandatory promotion checks.</li>
-  <li>Evidence bundle records segment taxonomy and results.</li>
-  <li>Change‑logs reference stability bands and OP.</li>
-</ul>
+  <h2>Governance</h2>
+  <p>Let’s keep it tight:</p>
+  <ul>
+    <li><strong>Mandatory Checks</strong>: Stability gates are promotion must-haves—no shortcuts!</li>
+    <li><strong>Evidence Bundle</strong>: Records segment taxonomy and results—full disclosure!</li>
+    <li><strong>Change-Logs</strong>: Reference stability bands and OP—track every move!</li>
+  </ul>
 
-<h2>Limits</h2>
-<ul>
-  <li>Very rare segments may show wide CIs; disclose and monitor.</li>
-  <li>Segment leakage must be avoided in training/evaluation splits.</li>
-</ul>
+  <h2>Limits</h2>
+  <p>Know the edges:</p>
+  <ul>
+    <li><strong>Rare Segments</strong>: Wide CIs disclosed and monitored—keep an eye on ‘em!</li>
+    <li><strong>Leakage</strong>: Avoid segment overlap in training/evaluation splits—stay pure!</li>
+  </ul>
 
-<h2>FAQ</h2>
-<details>
-  <summary>Isn’t global AUC enough?</summary>
-  <p>No—operations care about performance where they work (OP), and under which segments they operate. Stability prevents surprises.</p>
- </details>
-<details>
-  <summary>How many segments is too many?</summary>
-  <p>Enough to cover operational diversity without losing power; start focused, expand with evidence.</p>
- </details>
-<details>
-  <summary>Can we add segments later?</summary>
-  <p>Yes—document changes, rerun acceptance with updated taxonomy.</p>
- </details>
+  <h2>FAQ</h2>
+  <details>
+    <summary>Isn’t global AUC enough?</summary>
+    <p>Nah—ops care about performance at OP, under their segments. Stability stops surprises!</p>
+  </details>
+  <details>
+    <summary>How many segments is too many?</summary>
+    <p>Enough for diversity without losing power; start focused, grow with evidence—keep it smart!</p>
+  </details>
+  <details>
+    <summary>Can we add segments later?</summary>
+    <p>Yep—document changes, rerun acceptance with the new taxonomy—stay flexible!</p>
+  </details>
 
-<h2>Glossary</h2>
-<ul>
-  <li><strong>Stability band</strong>: allowed KPI deviation per segment.</li>
-  <li><strong>OP</strong>: operating point threshold for evaluation/operations.</li>
-  <li><strong>CI</strong>: confidence interval around metric estimates.</li>
-</ul>
+  <h2>Glossary</h2>
+  <ul>
+    <li><strong>Stability Band</strong>: Allowed KPI deviation per segment—your safety net!</li>
+    <li><strong>OP</strong>: Operating point threshold for evaluation/ops—your target!</li>
+    <li><strong>CI</strong>: Confidence interval around metric estimates—trust the math!</li>
+  </ul>
 
-<h2>Templates</h2>
-<pre>
+  <h2>Templates</h2>
+  <pre>
 stability_gates.yaml
 region_max_delta: 0.03
 product_max_delta: 0.02
 ci_width_max: 0.05
-</pre>
+  </pre>
 
-<h2>CI/CD Hooks</h2>
-<ul>
-  <li>Compute segment KPIs on every change; fail‑closed on breach.</li>
-  <li>Publish plots to the evidence bundle; link in release notes.</li>
-</ul>
+  <h2>CI/CD Hooks</h2>
+  <p>Automate the good stuff:</p>
+  <ul>
+    <li><strong>KPI Checks</strong>: Compute segment KPIs on every change; fail-closed on breach—rigorous!</li>
+    <li><strong>Plots</strong>: Publish to evidence bundle; link in release notes—visual proof!</li>
+  </ul>
 
-<h2>Operational Dashboards</h2>
-<ul>
-  <li>Rolling stability per segment.</li>
-  <li>Incidents and mitigations timeline.</li>
-  <li>OP thresholds and effect sizes history.</li>
-</ul>
+  <h2>Operational Dashboards</h2>
+  <p>Keep an eye on the pulse:</p>
+  <ul>
+    <li><strong>Rolling Stability</strong>: Per segment—track the trends!</li>
+    <li><strong>Incidents</strong>: Timeline of mitigations—learn from it!</li>
+    <li><strong>OP History</strong>: Thresholds and effect sizes—see the journey!</li>
+  </ul>
 
-<h2>AethergenPlatform Tie‑Ins</h2>
-<ul>
-  <li>Configurable segment taxonomies and OPs.</li>
-  <li>Automated stability gates in evidence generation.</li>
-  <li>Unity Catalog comments embedding stability summaries.</li>
-</ul>
+  <h2>AethergenPlatform Tie-Ins</h2>
+  <p>We’ve got you covered:</p>
+  <ul>
+    <li><strong>Configurable</strong>: Segment taxonomies and OPs—tailor it!</li>
+    <li><strong>Automated Gates</strong>: Stability checks in evidence generation—hands-off wins!</li>
+    <li><strong>Unity Catalog</strong>: Comments embedding stability summaries—easy access!</li>
+  </ul>
 
-<h2>Checklists</h2>
-<ul>
-  <li>Segments defined; minimum sizes enforced.</li>
-  <li>OP fixed and documented; thresholds stored in config.</li>
-  <li>Stability bands declared; evidence attached.</li>
-  <li>Drift monitors active; rollback triggers rehearsed.</li>
-</ul>
+  <h2>Checklists</h2>
+  <p>Your go-to list:</p>
+  <ul>
+    <li><strong>Segments</strong>: Defined; minimum sizes enforced—solid foundation!</li>
+    <li><strong>OP</strong>: Fixed and documented; thresholds in config—clear as day!</li>
+    <li><strong>Stability Bands</strong>: Declared; evidence attached—proof in hand!</li>
+    <li><strong>Drift Monitors</strong>: Active; rollback triggers rehearsed—ready for action!</li>
+  </ul>
 
-<h2>Closing</h2>
-<p>Segment‑aware evaluation turns accuracy into <strong>reliability</strong>. With stability bands, OP‑aligned metrics, and reproducible evidence, <strong>AethergenPlatform</strong> helps teams ship models that survive real‑world change.</p>
+  <h2>Closing</h2>
+  <p>Segment-aware evaluation turns accuracy into <strong>reliability</strong>, mate! With stability bands, OP-aligned metrics, and reproducible evidence, <strong>AethergenPlatform</strong> helps teams ship models that survive real-world change—let’s keep the good times rolling!</p>
 
-<p><a class="aeg-btn" href="/contact">Contact Sales →</a></p>
-
-<h2>Extended Templates</h2>
-<pre>
-segments:
-  region: [NA, EU, APAC]
-  product: [A, B]
-min_counts:
-  region: 500
-  product: 800
-</pre>
-
-<h2>Reviewer Guide</h2>
-<ul>
-  <li>Check CI widths; wide intervals imply insufficient data.</li>
-  <li>Focus on segments with operational impact first.</li>
-  <li>Ensure OP is consistent with analyst capacity.</li>
-</ul>
-
-<h2>Remediation Patterns</h2>
-<ul>
-  <li>Threshold nudges for specific segments (with governance).</li>
-  <li>Data augmentation or overlay expansion.</li>
-  <li>Feature calibration for drifted inputs.</li>
-</ul>
-
-<h2>Dashboard Panels</h2>
-<ul>
-  <li>Top deltas by segment.</li>
-  <li>Rolling 28‑day stability ribbons.</li>
-  <li>Incidents & actions timeline.</li>
-</ul>
-
-<h2>Closing Notes</h2>
-<p>Stability evidence reduces incidents and accelerates adoption. <strong>AethergenPlatform</strong> bakes segment‑aware evaluation into the release process so what’s shipped is what survives.</p>
-
-
+  <p><a href="/contact" class="aeg-btn">Contact Sales →</a></p>
+</body>
+</html>

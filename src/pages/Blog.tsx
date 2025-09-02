@@ -147,6 +147,17 @@ const Blog = () => {
 
   const blogPosts = [
     {
+      title: '🩺 Synthetic Data 101 for Healthcare: Fraud Detection Without PHI/PII',
+      excerpt: 'Build PHI/PII‑free claims corpora, tune typologies, and ship signed evidence for procurement.',
+      author: 'Gwylym Owen',
+      date: 'January 28, 2025',
+      readTime: '20 min read',
+      category: 'Technology',
+      icon: Shield,
+      published: true,
+      slug: 'synthetic-data-healthcare-fraud-without-phi'
+    },
+    {
       title: '📈 Evidence‑Led AI: How Signed Metrics Accelerate Enterprise Adoption',
       excerpt: 'Turn evaluations into evidence. Signed metrics at operating points get procurement to yes, fast.',
       author: 'Gwylym Owen',

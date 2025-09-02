@@ -349,6 +349,12 @@ export async function generateAirGappedBundle(options: AirGappedOptions): Promis
 	// Add README
 	zip.file('README.txt', generateAirGappedReadme(options))
 
+	// Offline dashboards (stubs)
+	const dashboards = zip.folder('dashboards')
+	dashboards?.file('utility_report.html', '<!doctype html><meta charset="utf-8"><title>Utility Report</title><body><h1>Utility@OP</h1><p>Stub: include CI metrics and plots.</p></body>')
+	dashboards?.file('stability_report.html', '<!doctype html><meta charset="utf-8"><title>Stability Report</title><body><h1>Stability</h1><p>Stub: segment deltas and bands.</p></body>')
+	dashboards?.file('privacy_report.html', '<!doctype html><meta charset="utf-8"><title>Privacy Report</title><body><h1>Privacy Probes</h1><p>Stub: membership advantage, attribute disclosure, linkage.</p></body>')
+
 	// Kiosk: self-test assets and SOPs (stubs)
 	const selftest = [
 		'## Self-Test Ticket (stub)',
@@ -371,6 +377,10 @@ export async function generateAirGappedBundle(options: AirGappedOptions): Promis
 	zip.folder('robustness')?.file('matrix.csv', matrixCsv)
 	zip.folder('robustness')?.file('RESULTS.txt', 'Populate results after on-site tests.')
 	
+	// Access controls and logs (stubs)
+	zip.folder('access')?.file('roles.json', JSON.stringify({ roles: [{ name: 'operator', permissions: ['install','selftest'] }, { name: 'auditor', permissions: ['verify','export_logs'] }] }, null, 2))
+	zip.folder('logs')?.file('access.log', '2025-01-01T00:00:00Z operator login OK\n')
+
 	// Add optional files
 	if (options.harmonizedSchema) {
 		zip.file('harmonized_schema.json', JSON.stringify(options.harmonizedSchema, null, 2))
@@ -383,7 +393,12 @@ export async function generateAirGappedBundle(options: AirGappedOptions): Promis
 	const integrityFiles = [
 		{ path: 'air-gapped-manifest.json', content: JSON.stringify(manifest) },
 		{ path: 'RELEASE_NOTES.txt', content: generateReleaseNotes(options) },
-		{ path: 'README.txt', content: generateAirGappedReadme(options) }
+		{ path: 'README.txt', content: generateAirGappedReadme(options) },
+		{ path: 'dashboards/utility_report.html', content: '<!doctype html><h1>Utility@OP</h1>' },
+		{ path: 'dashboards/stability_report.html', content: '<!doctype html><h1>Stability</h1>' },
+		{ path: 'dashboards/privacy_report.html', content: '<!doctype html><h1>Privacy</h1>' },
+		{ path: 'access/roles.json', content: JSON.stringify({ roles: [] }) },
+		{ path: 'logs/access.log', content: 'stub' }
 	]
 	
 	if (options.harmonizedSchema) {

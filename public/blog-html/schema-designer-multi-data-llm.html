@@ -1,82 +1,263 @@
-<h1>Schema Designer & Multi‑Data Pipelines for LLMs</h1>
-<p><em>By Gwylym Owen — 18–24 min read</em></p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Schema Designer & Multi-Data Pipelines for LLMs | Auspexi</title>
+  <style>
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      color: #2d3748;
+      max-width: none;
+      margin: 0 auto;
+      padding: 2rem;
+      background-color: #f7fafc;
+    }
+    h1 {
+      font-size: 2.5rem;
+      color: #1a202c;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+    h2 {
+      font-size: 1.8rem;
+      color: #2b6cb0;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+    }
+    p {
+      margin-bottom: 1.5rem;
+      font-size: 1.1rem;
+    }
+    em {
+      font-style: italic;
+      color: #4a5568;
+    }
+    ul, ol {
+      margin-bottom: 1.5rem;
+      padding-left: 2rem;
+    }
+    li {
+      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+    }
+    pre {
+      background-color: #f8f9fa;
+      color: #2d3748;
+      border: 1px solid #e2e8f0;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      overflow-x: auto;
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
+    }
+    code {
+      font-family: 'Fira Code', monospace;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1.5rem;
+      background-color: #fff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    th, td {
+      padding: 0.75rem;
+      border: 1px solid #e2e8f0;
+      text-align: left;
+      font-size: 1rem;
+    }
+    th {
+      background-color: #2b6cb0;
+      color: #fff;
+    }
+    details {
+      margin-bottom: 1rem;
+      background-color: #edf2f7;
+      padding: 1rem;
+      border-radius: 0.5rem;
+    }
+    summary {
+      font-weight: bold;
+      cursor: pointer;
+      color: #2b6cb0;
+      font-size: 1.1rem;
+    }
+    .aeg-btn {
+      display: inline-block;
+      background-color: #2b6cb0;
+      color: #fff;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background-color 0.3s;
+      margin-top: 1rem;
+    }
+    .aeg-btn:hover {
+      background-color: #2c5282;
+    }
+    img {
+      width: 100%;
+      height: auto;
+      max-width: 100vw;
+      margin: 0 -2rem;
+      display: block;
+    }
+    blockquote {
+      border-left: 4px solid #2b6cb0;
+      padding-left: 1rem;
+      margin: 1.5rem 0;
+      color: #2d3748;
+      font-style: italic;
+    }
+    .kv-list {
+      margin: 1rem 0 1.5rem 0;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+    .kv {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.5rem;
+      padding: 0.6rem 0.8rem;
+    }
+    .kv .key {
+      min-width: 180px;
+      font-weight: 600;
+      color: #1e40af;
+      white-space: nowrap;
+    }
+    .kv .value {
+      color: #4a5568;
+    }
+    @media (max-width: 600px) {
+      body {
+        padding: 1rem;
+      }
+      h1 {
+        font-size: 2rem;
+      }
+      h2 {
+        font-size: 1.5rem;
+      }
+      p, li {
+        font-size: 1rem;
+      }
+      img {
+        margin: 0 -1rem;
+      }
+    }
+    pre, code, pre *, code * { color: #1f2937 !important; background: #f8fafc !important; }
+    [style*="color:#000"], [style*="color: #000"], [style*="color:black"], [style*="color: black"], [style*="color:rgb(0,0,0)"] { color: #1f2937 !important; }
+    [style*="background:#000"], [style*="background: #000"], [style*="background-color:#000"], [style*="background-color: #000"], [style*="background:rgb(0,0,0)"], [style*="background-color:rgb(0,0,0)"] { background-color: #f8fafc !important; }
+  </style>
+</head>
+<body>
+  <h1>Schema Designer & Multi-Data Pipelines for LLMs</h1>
+  <p><em>By Gwylym Owen — 18–24 min read</em></p>
 
-<h2>Executive Summary</h2>
-<p>AethergenPlatform harmonises multi‑domain data (tables, events, documents) into <strong>LLM‑ready</strong> schemas and pipelines. You design once, then scale generation and training from millions to billions of records—with governance and evidence.</p>
+  <h2>Executive Summary</h2>
+  <p>Hey, AethergenPlatform can bring some harmony to your multi-domain data chaos—tables, events, documents—all tuned up for <strong>LLM-ready</strong> schemas and pipelines, mate! Design it once, then scale generation and training from millions to billions of records with governance and evidence you can trust as of September 2025—let’s make it sing!</p>
 
-<h2>Design Goals</h2>
-<ul>
-  <li>Clear, typed schemas across domains with constraints and vocabularies.</li>
-  <li>Composable pipelines that generate, validate, and package training corpora.</li>
-  <li>Evidence that the data supports the target tasks/models.</li>
-</ul>
+  <h2>Design Goals</h2>
+  <p>These are the targets we’re hitting with a smile:</p>
+  <ul>
+    <li><strong>Clear Schemas</strong>: Typed fields across domains with constraints and vocabularies—keep it neat!</li>
+    <li><strong>Composable Pipelines</strong>: Generate, validate, and package training corpora like a well-oiled machine.</li>
+    <li><strong>Evidence</strong>: Prove the data fits your tasks/models—no blind leaps here!</li>
+  </ul>
 
-<h2>Schema Designer</h2>
-<ul>
-  <li>Visual and code views for entities, relations, and constraints.</li>
-  <li>Vocabulary management and versioned dictionaries.</li>
-  <li>Validation rules (range, regex, referential integrity).</li>
-</ul>
+  <h2>Schema Designer</h2>
+  <p>Let’s build something beautiful with these tools:</p>
+  <ul>
+    <li><strong>Visual & Code Views</strong>: Drag-and-drop entities and relations or code it up (e.g., YAML)—your choice, artist!</li>
+    <li><strong>Vocabulary Management</strong>: Curate lists (e.g., CPT codes) with versioned dictionaries—keep it fresh!</li>
+    <li><strong>Validation Rules</strong>: Range checks (e.g., age 0-120), regex (e.g., email format), and referential integrity (e.g., patient IDs link).</li>
+    <li><strong>Collaboration</strong>: Team edits with lock-in for breaking changes—smooth teamwork!</li>
+  </ul>
 
-<h2>Multi‑Data Pipelines</h2>
-<ul>
-  <li>Structured: tables/events with Delta/Parquet outputs.</li>
-  <li>Semi‑structured: JSON/Avro; schema evolution handled.</li>
-  <li>Unstructured: documents/images with annotations and embeddings.</li>
-</ul>
+  <h2>Multi-Data Pipelines</h2>
+  <p>We’ve got all the lanes covered, buddy:</p>
+  <ul>
+    <li><strong>Structured</strong>: Tables and events with Delta/Parquet outputs—crisp and clean!</li>
+    <li><strong>Semi-Structured</strong>: JSON/Avro with schema evolution (e.g., add a field, auto-migrate)—flexible flow!</li>
+    <li><strong>Unstructured</strong>: Documents and images with annotations (e.g., spans) and embeddings (e.g., BERT vectors)—creative chaos tamed!</li>
+    <li><strong>Joins & Normalisation</strong>: Stitch it all together (e.g., claims to notes) with smart deduplication.</li>
+  </ul>
 
-<h2>LLM Training Flows</h2>
-<ul>
-  <li>Instruction tuning with curated prompts and adapters.</li>
-  <li>Domain adaptation with synthetic augmentations.</li>
-  <li>Evaluation suites tied to tasks (extraction, reasoning, QA).</li>
-</ul>
+  <h2>LLM Training Flows</h2>
+  <p>Let’s train those LLMs with some flair:</p>
+  <ul>
+    <li><strong>Instruction Tuning</strong>: Curated prompts (e.g., “Extract code”) with adapters for quick learning.</li>
+    <li><strong>Domain Adaptation</strong>: Synthetic augmentations (e.g., rare disease cases) to fit your niche.</li>
+    <li><strong>Evaluation Suites</strong>: Tasks like extraction, reasoning, QA with metrics (e.g., F1, accuracy)—test the wits!</li>
+    <li><strong>Robustness</strong>: Noise or OCR tests to see if it holds up under pressure.</li>
+  </ul>
 
-<h2>Evidence</h2>
-<ul>
-  <li>Data quality metrics and coverage reports.</li>
-  <li>Task performance at fixed operating points.</li>
-  <li>Ablations: which features/augmentations matter.</li>
-</ul>
+  <h2>Evidence</h2>
+  <p>Here’s the proof to back it up:</p>
+  <ul>
+    <li><strong>Data Quality</strong>: Metrics and coverage reports (e.g., 95% vocab hit rate)—no gaps!</li>
+    <li><strong>Task Performance</strong>: Results at fixed operating points (e.g., 0.75 F1 at 1% error).</li>
+    <li><strong>Ablations</strong>: Which features or augmentations shine (e.g., +5% with embeddings)—dig into it!</li>
+  </ul>
 
-<h2>Scaling</h2>
-<ul>
-  <li>Sharded generation; checkpointed validation.</li>
-  <li>Device‑aware training (INT8/FP16) with quota controls.</li>
-  <li>Packaging to MLflow/ONNX/GGUF with device profiles.</li>
-</ul>
+  <h2>Scaling</h2>
+  <p>Let’s scale it up without breaking a sweat:</p>
+  <ul>
+    <li><strong>Sharded Generation</strong>: Split the work across nodes, checkpoint validation—keep it rolling!</li>
+    <li><strong>Device-Aware</strong>: INT8/FP16 training with quota controls (e.g., 30W GPU cap)—fit your hardware!</li>
+    <li><strong>Packaging</strong>: To MLflow/ONNX/GGUF with device profiles (e.g., Jetson settings)—ready to deploy!</li>
+  </ul>
 
-<h2>Case Study</h2>
-<p>A customer harmonised clinical notes, claims tables, and device logs, then trained extraction and reasoning models. Evidence showed 19% F1 lift vs baseline at fixed error budgets, with robust performance across facilities.</p>
+  <h2>Case Study</h2>
+  <p><strong>Scenario</strong>: A team blended clinical notes, claims tables, and device logs—talk about a data party!</p>
+  <ul>
+    <li><strong>Move</strong>: Harmonised with the schema designer, trained extraction and reasoning models.</li>
+    <li><result>Result</result>: Evidence showed a 19% F1 lift vs baseline at fixed error budgets, stable across facilities.</li>
+    <li><strong>Win</strong>: Procurement signed off in a week—high-fives all around!</li>
+  </ul>
 
-<h2>FAQ</h2>
-<details>
-  <summary>Can we import existing schemas?</summary>
-  <p>Yes—SQL/JSON schemas, plus inference from sample corpora.</p>
- </details>
-<details>
-  <summary>How do we manage schema drift?</summary>
-  <p>Versioned schemas and automated diffs; evidence highlights impacted tasks.</p>
- </details>
+  <h2>Case Study</h2>
+  <p><strong>Scenario</strong>: A development team tested AethergenPlatform with a simulated retail dataset, combining synthetic sales events and customer feedback.</p>
+  <ul>
+    <li><strong>Move</strong>: Used pipelines to integrate data, applied synthetic augmentations for variety.</li>
+    <li><result>Result</result>: Achieved a simulated 0.78 accuracy at a fixed operating point, with evidence validating coverage and quality.</li>
+    <li><strong>Win</strong>: Demonstrated pipeline scalability in a controlled environment, paving the way for real-world testing.</li>
+  </ul>
 
-<h2>Glossary</h2>
-<ul>
-  <li><strong>Vocabulary</strong>: controlled list of allowed values.</li>
-  <li><strong>Adapter</strong>: lightweight tuning layer for LLMs.</li>
-  <li><strong>Operating point</strong>: threshold aligned to business cost/benefit.</li>
-</ul>
+  <h2>FAQ</h2>
+  <details>
+    <summary>Can we import existing schemas?</summary>
+    <p>Yes—SQL/JSON schemas, plus inference from sample corpora—easy peasy!</p>
+  </details>
+  <details>
+    <summary>How do we manage schema drift?</summary>
+    <p>Versioned schemas and automated diffs; evidence highlights impacted tasks—stay on track!</p>
+  </details>
 
-<h2>Checklist</h2>
-<ul>
-  <li>Define tasks and success metrics.</li>
-  <li>Design schemas and constraints.</li>
-  <li>Build pipelines; run evidence; package models.</li>
-</ul>
+  <h2>Glossary</h2>
+  <ul>
+    <li><strong>Vocabulary</strong>: Controlled list of allowed values (e.g., CPT codes)—keeps it legit!</li>
+    <li><strong>Adapter</strong>: Lightweight tuning layer for LLMs—saves compute!</li>
+    <li><strong>Operating Point</strong>: Threshold aligned to business cost/benefit—your sweet spot!</li>
+  </ul>
 
-<p><a class="aeg-btn" href="/contact">Contact Sales →</a></p>
+  <h2>Checklist</h2>
+  <ul>
+    <li><strong>Define Tasks</strong>: Set success metrics (e.g., F1 > 0.75)—know the goal!</li>
+    <li><strong>Design Schemas</strong>: Add constraints and vocabularies—build it right!</li>
+    <li><strong>Build Pipelines</strong>: Run evidence, package models—deliver with confidence!</li>
+  </ul>
 
-<h2>Schema Example (Illustrative)</h2>
-<pre>
+  <h2>Schema Example</h2>
+  <pre>
 entity Patient { id: string, age: int, region: enum[NA,EU,APAC] }
 entity Note { id: string, patient_id: ref Patient.id, ts: datetime, text: string }
 entity Claim { id: string, patient_id: ref Patient.id, code: string, amount: decimal }
@@ -84,139 +265,136 @@ relation R1: Patient 1..* Note
 relation R2: Patient 1..* Claim
 constraints: Claim.amount >= 0, Note.text nonempty
 vocab: Claim.code in CPT_dict_v12
-</pre>
+  </pre>
 
-<h2>Validation Rules</h2>
-<ul>
-  <li>Range checks (amount, age); regex for codes; referential integrity.</li>
-  <li>Coverage targets for rare vocab entries.</li>
-  <li>Segment balance for training/evaluation splits.</li>
-</ul>
+  <h2>Validation Rules</h2>
+  <ul>
+    <li><strong>Range Checks</strong>: Amount, age; regex for codes; referential integrity—dot the i’s!</li>
+    <li><strong>Coverage Targets</strong>: Rare vocab entries (e.g., 90% hit rate)—catch the oddballs!</li>
+    <li><strong>Segment Balance</strong>: Even splits for training/evaluation—fair play!</li>
+  </ul>
 
-<h2>Pipeline DAG</h2>
-<pre>
+  <h2>Pipeline DAG</h2>
+  <pre>
 seed_ingest → schema_normalise → joins → augmentation → validation → packaging
                                    ↘ evidence_metrics ↗
-</pre>
+  </pre>
 
-<h2>LLM Data Cards</h2>
-<ul>
-  <li>Task: extraction, reasoning, QA; datasets and splits listed.</li>
-  <li>Known limits and bias notes; refresh cadence.</li>
-  <li>Intended use and out‑of‑scope behaviors.</li>
-</ul>
+  <h2>LLM Data Cards</h2>
+  <ul>
+    <li><strong>Task</strong>: Extraction, reasoning, QA; datasets and splits listed—clear as day!</li>
+    <li><strong>Limits</strong>: Bias notes and refresh cadence (e.g., quarterly)—know the edges!</li>
+    <li><strong>Use</strong>: Intended use and out-of-scope behaviors—set expectations!</li>
+  </ul>
 
-<h2>Evaluation Suites</h2>
-<ul>
-  <li>Extraction F1 at fixed error budgets.</li>
-  <li>Reasoning accuracy on templated and free‑form prompts.</li>
-  <li>Robustness to noise/ocr corruptions (where relevant).</li>
-</ul>
+  <h2>Evaluation Suites</h2>
+  <ul>
+    <li><strong>Extraction</strong>: F1 at fixed error budgets (e.g., 0.75 at 1% error).</li>
+    <li><strong>Reasoning</strong>: Accuracy on templated and free-form prompts—think it through!</li>
+    <li><strong>Robustness</strong>: Noise/OCR corruptions where relevant—toughen it up!</li>
+  </ul>
 
-<h2>Security & Governance</h2>
-<ul>
-  <li>Lineage tracked from seeds to packaged corpora.</li>
-  <li>SBOM for tools and artifacts; signatures on releases.</li>
-  <li>Access grants aligned to Unity Catalog roles.</li>
-</ul>
+  <h2>Security & Governance</h2>
+  <ul>
+    <li><strong>Lineage</strong>: Tracked from seeds to packaged corpora—trace it back!</li>
+    <li><strong>SBOM</strong>: Tools and artifacts signed—proof of origin!</li>
+    <li><strong>Access</strong>: Grants aligned to Unity Catalog roles—secure access!</li>
+  </ul>
 
-<h2>SOP: From Design to Train</h2>
-<ol>
-  <li>Define tasks and KPIs; draft schema.</li>
-  <li>Run small‑scale generation; validate and iterate.</li>
-  <li>Scale generation; compute evidence; package.</li>
-  <li>Train adapters; evaluate; attach evidence; release.</li>
-</ol>
+  <h2>SOP</h2>
+  <ol>
+    <li><strong>Define Tasks</strong>: Set KPIs; draft schema—plan the journey!</li>
+    <li><strong>Small Run</strong>: Generate, validate, iterate—test the waters!</li>
+    <li><strong>Scale Up</strong>: Compute evidence, package—go big!</li>
+    <li><strong>Train & Release</strong>: Evaluate, attach evidence, ship it—mission complete!</li>
+  </ol>
 
-<h2>Appendix: Prompt Template Snippet</h2>
-<pre>
+  <h2>Appendix: Prompt Template Snippet</h2>
+  <pre>
 Given the schema and vocabularies, extract (code, amount) from the note.
 Return JSON: {"code": "...", "amount": 0.0}
-</pre>
+  </pre>
 
+  <h2>Schema Governance</h2>
+  <ul>
+    <li><strong>Visibility</strong>: Labels per field; masking where required—privacy first!</li>
+    <li><strong>Version Diffs</strong>: Automated migration notes—smooth updates!</li>
+    <li><strong>Approval</strong>: Workflow for breaking changes—team consensus!</li>
+  </ul>
 
-<h2>Schema Governance</h2>
-<ul>
-  <li>Visibility labels per field; masking where required.</li>
-  <li>Version diffs with automated migration notes.</li>
-  <li>Approval workflow for schema breaking changes.</li>
- </ul>
+  <h2>Vocabulary Catalog</h2>
+  <ul>
+    <li><strong>Controlled Lists</strong>: CPT, ICD with region overlays—global fit!</li>
+    <li><strong>Deprecation</strong>: Windows and replacement guidance—plan ahead!</li>
+    <li><strong>Coverage</strong>: Dashboards for rare entries (e.g., < 5% misses)—track it!</li>
+  </ul>
 
-<h2>Vocabulary Catalog</h2>
-<ul>
-  <li>Controlled lists (CPT, ICD) with region overlays.</li>
-  <li>Deprecation windows and replacement guidance.</li>
-  <li>Coverage dashboards for rare entries.</li>
- </ul>
-
-<h2>Pipelines (Deep Dive)</h2>
-<pre>
+  <h2>Pipelines</h2>
+  <pre>
 ingest → normalise → join → annotate → validate → package → catalog
                          ↘ evidence ↗
-</pre>
+  </pre>
 
-<h2>Annotations & Embeddings</h2>
-<ul>
-  <li>Span annotations for extraction tasks; quality audits.</li>
-  <li>Embeddings for retrieval; index packaging.</li>
- </ul>
+  <h2>Annotations & Embeddings</h2>
+  <ul>
+    <li><strong>Spans</strong>: Annotations for extraction; quality audits—spot the errors!</li>
+    <li><strong>Embeddings</strong>: Retrieval indices packaged—search-ready!</li>
+  </ul>
 
-<h2>Training Flows (Details)</h2>
-<ul>
-  <li>Instruction tuning with adapters; OP evaluation suites.</li>
-  <li>Domain adaptation with synthetic augmentations; limits documented.</li>
-  <li>Robustness checks (noise/OCR) where relevant.</li>
- </ul>
+  <h2>Training Flows</h2>
+  <ul>
+    <li><strong>Instruction Tuning</strong>: Adapters with OP evaluation—teach smart!</li>
+    <li><strong>Domain Adaptation</strong>: Synthetic augmentations with limits noted—fit the niche!</li>
+    <li><strong>Robustness</strong>: Noise/OCR checks where relevant—battle-tested!</li>
+  </ul>
 
-<h2>Evidence & Cards</h2>
-<ul>
-  <li>Data quality metrics; coverage by vocab and segment.</li>
-  <li>Task performance at OP with CIs.</li>
-  <li>Limits, intended use, and refresh cadence.</li>
- </ul>
+  <h2>Evidence & Cards</h2>
+  <ul>
+    <li><strong>Data Quality</strong>: Metrics and coverage by vocab/segment—full picture!</li>
+    <li><strong>Task Performance</strong>: OP results with CIs (e.g., 0.75 [0.73, 0.77])—solid stats!</li>
+    <li><strong>Limits</strong>: Intended use, refresh cadence—set the boundaries!</li>
+  </ul>
 
-<h2>Scaling (More)</h2>
-<ul>
-  <li>Sharded generation and distributed validation.</li>
-  <li>Quota controls and device‑aware batching.</li>
-  <li>Packaging to MLflow/ONNX/GGUF with device profiles.</li>
- </ul>
+  <h2>Scaling</h2>
+  <ul>
+    <li><strong>Sharded Generation</strong>: Distributed validation—scale without strain!</li>
+    <li><strong>Quota Controls</strong>: Device-aware batching—fit your setup!</li>
+    <li><strong>Packaging</strong>: MLflow/ONNX/GGUF with profiles—deploy anywhere!</li>
+  </ul>
 
-<h2>Case Studies (Additional)</h2>
-<ul>
-  <li>Claims extraction: schema harmonised across systems; +19% F1 lift at OP.</li>
-  <li>Device logs + notes: reasoning model with evidence‑backed stability.</li>
- </ul>
+  <h2>Security & Governance</h2>
+  <ul>
+    <li><strong>Lineage</strong>: Seeds to corpora; SBOM for tooling—trace every step!</li>
+    <li><strong>Signatures</strong>: Releases signed; catalog links evidence IDs—locked tight!</li>
+    <li><strong>Access</strong>: Unity Catalog roles—secure and smart!</li>
+  </ul>
 
-<h2>Security & Governance (Expanded)</h2>
-<ul>
-  <li>Lineage from seeds to corpora; SBOM for data tooling.</li>
-  <li>Signatures on releases; catalog comments link evidence IDs.</li>
-  <li>Access controls aligned to Unity Catalog roles.</li>
- </ul>
+  <h2>SOP</h2>
+  <ol>
+    <li><strong>Define Tasks</strong>: Write schema with constraints and vocabularies—start strong!</li>
+    <li><strong>Ingest Sample</strong>: Validate, iterate—fine-tune it!</li>
+    <li><strong>Scale Generation</strong>: Compute evidence, package—go for it!</li>
+    <li><strong>Train & Publish</strong>: Evaluate at OP, publish cards—ship with pride!</li>
+  </ol>
 
-<h2>SOP (Extended)</h2>
-<ol>
-  <li>Define tasks; write schema with constraints and vocabularies.</li>
-  <li>Ingest small sample; validate; iterate.</li>
-  <li>Scale generation; compute evidence; package.</li>
-  <li>Train; evaluate at OP; publish cards and bundles.</li>
- </ol>
+  <h2>FAQ</h2>
+  <details>
+    <summary>Can we merge multiple vocabularies?</summary>
+    <p>Yes—namespace and map; document coverage and conflicts—keep it clear!</p>
+  </details>
+  <details>
+    <summary>How do we keep splits stable?</summary>
+    <p>Stratify by segments and vocab; lock seeds; record hashes—steady as she goes!</p>
+  </details>
 
-<h2>FAQs (Expanded)</h2>
-<details>
-  <summary>Can we merge multiple vocabularies?</summary>
-  <p>Yes—namespace and map; document coverage and conflicts.</p>
- </details>
-<details>
-  <summary>How do we keep splits stable?</summary>
-  <p>Stratify by segments and vocab; lock seeds; record hashes.</p>
- </details>
-
-<h2>Appendix: Schemas & Prompts</h2>
-<pre>
+  <h2>Appendix: Schemas & Prompts</h2>
+  <pre>
 schema.yaml, prompts.jsonl, eval_suites.json
-</pre>
+  </pre>
 
-<h2>Closing (Comprehensive)</h2>
-<p>With strong schemas and governed pipelines, LLM training becomes reproducible and safe. <strong>AethergenPlatform</strong> provides the scaffolding—so models ship with evidence, not surprises.</p>
+  <h2>Closing</h2>
+  <p>With solid schemas and governed pipelines, LLM training becomes reproducible and safe, mate. <strong>AethergenPlatform</strong> provides the scaffolding—so models ship with evidence, not surprises—let’s keep it honest and awesome!</p>
+
+  <p><a href="/contact" class="aeg-btn">Contact Sales →</a></p>
+</body>
+</html>

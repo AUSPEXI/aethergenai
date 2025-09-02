@@ -830,20 +830,51 @@ const Blog = () => {
            }
   ];
 
-  // Filter out posts the user marked for deletion
-  const postsToShow = blogPosts.filter((p: any) => ![
-    'phoenix-rising-journey',
-    'weight-of-destiny-founders-reflection',
-    'innovators-website-challenge',
-    '4200-hour-course-abandoned-destiny',
-    'autistic-innovator-dilemma-building-tribe',
-    'agi-consciousness-test-grok-transcendence',
-    'buzz-lightyear-scale-3d-navigation',
-    'recursive-nightmare-navigator',
-    'bmw-pivot-strategy',
-    '90-percent-cost-savings',
-    'ai-human-partnership-friendship'
-  ].includes(p.slug));
+  // Show only posts that have corresponding HTML files and remove duplicates by slug
+  const validSlugs = [
+    'ablations-with-effect-sizes-proving-what-moves-the-needle',
+    'aethergenai-shipped-evidence-led-ai-training',
+    'ai-carbon-footprint-revolution-sustainable-computing',
+    'air-gapped-ai-packaging-sbom-qr-manifests',
+    'automotive-quality-edge-offline-vision-evidence',
+    'complexity-wall-natural-language-ai-engineering',
+    'databricks-marketplace-lab-to-revenue',
+    'dataset-and-model-cards-that-buyers-actually-use',
+    'democratising-ai-post-moores-law-revolution',
+    'drift-stress-stability-operating-ai-like-regulated',
+    'energy-efficient-ai-optimization-beats-scaling',
+    'evidence-bundles-and-testing',
+    'evidence-in-ci-failing-closed-passing-audits',
+    'evidence-led-ai-regulated-industries',
+    'evidence-led-ai-signed-metrics-enterprise-adoption',
+    'financial-crime-labs-synthetic-graphs-risk-evidence',
+    'from-first-pilot-to-policy',
+    'from-starlings-to-swarms-8d-safety',
+    'green-ai-carbon-neutral-machine-learning',
+    'insurance-fraud-playbooks-synthetic-scenarios',
+    'managed-delivery-on-databricks-slas-referencing-evidence',
+    'offline-readiness-designing-models-for-harsh-disconnected-environments',
+    'pricing-and-entitlements-explained',
+    'privacy-in-practice-probes-budgets-measurable-boundaries',
+    'public-sector-ai-secure-deployments-without-cloud-entanglements',
+    'scaling-synthetic-generation-safely-schemas-seeds-controls',
+    'schema-designer-multi-data-llm',
+    'segment-aware-evaluation-stability-that-survives-real-world-change',
+    'synthetic-data-healthcare-fraud-without-phi',
+    'synthetic-data-lifecycle',
+    'the-procurement-bundle-signatures-hashes-filing-made-simple',
+    'triumph-of-preparation-strategic-planning',
+    'unity-catalog-delivery-turning-models-into-procurement-ready-products'
+  ];
+
+  const seenSlugs = new Set<string>();
+  const postsToShow = blogPosts
+    .filter((p: any) => validSlugs.includes(p.slug))
+    .filter((p: any) => {
+      if (seenSlugs.has(p.slug)) return false;
+      seenSlugs.add(p.slug);
+      return true;
+    });
 
   // reserved: categories
 

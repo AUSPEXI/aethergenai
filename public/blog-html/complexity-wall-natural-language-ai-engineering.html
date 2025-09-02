@@ -1,77 +1,249 @@
-<h1>The Complexity Wall: When Natural Language Meets AI Engineering</h1>
-<p>A mere mortal types in natural language, dreaming of building the next big thing like a toddler stacking blocks, then hits a complexity wall and wails, “Too hard!”—knocking it all down.</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Complexity Wall: When Natural Language Meets AI Engineering | Auspexi</title>
+  <style>
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      color: #2d3748;
+      max-width: none;
+      margin: 0 auto;
+      padding: 2rem;
+      background-color: #f7fafc;
+    }
+    h1 {
+      font-size: 2.5rem;
+      color: #1a202c;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+    h2 {
+      font-size: 1.8rem;
+      color: #2b6cb0;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+    }
+    h3 {
+      font-size: 1.5rem;
+      color: #2b6cb0;
+      margin-top: 1.5rem;
+      margin-bottom: 0.75rem;
+    }
+    p {
+      margin-bottom: 1.5rem;
+      font-size: 1.1rem;
+    }
+    em {
+      font-style: italic;
+      color: #4a5568;
+    }
+    ul, ol {
+      margin-bottom: 1.5rem;
+      padding-left: 2rem;
+    }
+    li {
+      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+    }
+    pre {
+      background-color: #f8f9fa;
+      color: #2d3748;
+      border: 1px solid #e2e8f0;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      overflow-x: auto;
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
+    }
+    code {
+      font-family: 'Fira Code', monospace;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1.5rem;
+      background-color: #fff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    th, td {
+      padding: 0.75rem;
+      border: 1px solid #e2e8f0;
+      text-align: left;
+      font-size: 1rem;
+    }
+    th {
+      background-color: #2b6cb0;
+      color: #fff;
+    }
+    details {
+      margin-bottom: 1rem;
+      background-color: #edf2f7;
+      padding: 1rem;
+      border-radius: 0.5rem;
+    }
+    summary {
+      font-weight: bold;
+      cursor: pointer;
+      color: #2b6cb0;
+      font-size: 1.1rem;
+    }
+    .aeg-btn {
+      display: inline-block;
+      background-color: #2b6cb0;
+      color: #fff;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background-color 0.3s;
+      margin-top: 1rem;
+    }
+    .aeg-btn:hover {
+      background-color: #2c5282;
+    }
+    img {
+      width: 100%;
+      height: auto;
+      max-width: 100vw;
+      margin: 0 -2rem;
+      display: block;
+    }
+    blockquote {
+      border-left: 4px solid #2b6cb0;
+      padding-left: 1rem;
+      margin: 1.5rem 0;
+      color: #2d3748;
+      font-style: italic;
+    }
+    .kv-list {
+      margin: 1rem 0 1.5rem 0;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+    .kv {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.5rem;
+      padding: 0.6rem 0.8rem;
+    }
+    .kv .key {
+      min-width: 180px;
+      font-weight: 600;
+      color: #1e40af;
+      white-space: nowrap;
+    }
+    .kv .value {
+      color: #4a5568;
+    }
+    @media (max-width: 600px) {
+      body {
+        padding: 1rem;
+      }
+      h1 {
+        font-size: 2rem;
+      }
+      h2 {
+        font-size: 1.5rem;
+      }
+      h3 {
+        font-size: 1.3rem;
+      }
+      p, li {
+        font-size: 1rem;
+      }
+      img {
+        margin: 0 -1rem;
+      }
+    }
+    pre, code, pre *, code * { color: #1f2937 !important; background: #f8fafc !important; }
+    [style*="color:#000"], [style*="color: #000"], [style*="color:black"], [style*="color: black"], [style*="color:rgb(0,0,0)"] { color: #1f2937 !important; }
+    [style*="background:#000"], [style*="background: #000"], [style*="background-color:#000"], [style*="background-color: #000"], [style*="background:rgb(0,0,0)"], [style*="background-color:rgb(0,0,0)"] { background-color: #f8fafc !important; }
+  </style>
+</head>
+<body>
+  <h1>The Complexity Wall: When Natural Language Meets AI Engineering</h1>
+  <p>A mere mortal types in natural language, dreaming of building the next big thing like a toddler stacking blocks, then hits a complexity wall and wails, “Too hard!”—knocking it all down.</p>
 
-<h2>The Lesson</h2>
-<p>Great systems aren’t conjured—they’re constructed. Design constraints, run ablations, measure effect sizes, and keep cutting scope until you can ship something true.</p>
+  <h2>The Lesson</h2>
+  <p>Great systems aren’t conjured—they’re built with grit, mate! Set design constraints, run ablations, measure effect sizes, and trim scope until you can ship something true—let’s get to work!</p>
 
-<p><a href="/pricing" class="aeg-btn">View Pricing →</a> <a href="/contact" class="aeg-btn">Contact Sales →</a></p>
+  <p><a href="/pricing" class="aeg-btn">View Pricing →</a> <a href="/contact" class="aeg-btn">Contact Sales →</a></p>
 
+  <h2>From Vibes to Verbs</h2>
+  <p>Turn the fluff into action:</p>
+  <ul>
+    <li>Swap “make it smarter” for measurable verbs: extract, classify, rank, route—get specific!</li>
+    <li>Define success at operating points (OPs), not vague vibes—set the target!</li>
+    <li>Lock segment taxonomy per release to dodge target drift—keep it steady!</li>
+  </ul>
 
-<h2>From Vibes to Verbs</h2>
-<ul>
-  <li>Replace “make it smarter” with measurable verbs: extract, classify, rank, route.</li>
-  <li>Define success at operating points (OPs), not vibes.</li>
-  <li>Freeze segment taxonomy per release to avoid target drift.</li>
- </ul>
-
-<h2>Intent → Constraints</h2>
-<pre>
+  <h2>Intent → Constraints</h2>
+  <pre>
 intent.md
   goal: triage claims for investigation
   capacity: 2,000 alerts/day
   constraints: fpr≈1%, region stability≤0.03, p95≤120ms
   limits: not for eligibility determination; training only on synthetic
-</pre>
+  </pre>
 
-<h2>Constraints → Contracts</h2>
-<pre>
+  <h2>Constraints → Contracts</h2>
+  <pre>
 contracts.yaml
   inputs: {amount: decimal, code: string, region: enum}
   outputs: {score: float, at_op: bool}
   thresholds: {op_threshold: 0.73}
   slos: {latency_p95_ms: 120}
-</pre>
+  </pre>
 
-<h2>Contracts → Architecture</h2>
-<pre>
+  <h2>Contracts → Architecture</h2>
+  <pre>
 ingest → normalise → join → validate → package → deploy → evidence
                      ↘ tests & gates ↗
-</pre>
+  </pre>
 
-<h2>Evidence Gates (Copy‑Paste)</h2>
-<pre>
+  <h2>Evidence Gates</h2>
+  <pre>
 gate.utility@op.min = 0.75
 gate.stability.region.max_delta = 0.03
 gate.latency.p95_ms = 120
 gate.privacy.membership_advantage_max = 0.05
-</pre>
+  </pre>
 
-<h2>Seed Validation (Small First)</h2>
-<ul>
-  <li>Run on 1k rows; measure OP metrics with CIs; record seeds/hashes.</li>
-  <li>Exercise drift monitors and rollbacks before real traffic.</li>
-  <li>Iterate until green; only then scale.</li>
- </ul>
+  <h2>Seed Validation</h2>
+  <p>Start small and smart:</p>
+  <ul>
+    <li>Run on 1k rows; measure OP metrics with CIs; log seeds/hashes—test the waters!</li>
+    <li>Drill drift monitors and rollbacks before real traffic—be ready!</li>
+    <li>Tweak until green; only then scale up—build confidence!</li>
+  </ul>
 
-<h2>Prompt Hygiene</h2>
-<ul>
-  <li>Separate intent prompts (specification) from execution prompts (ops).</li>
-  <li>Template prompts; version them; test with fixtures.</li>
-  <li>Don’t bury thresholds or policy in prose—keep them in config.</li>
- </ul>
+  <h2>Prompt Hygiene</h2>
+  <p>Keep it clean and clear:</p>
+  <ul>
+    <li>Split intent prompts (spec) from execution prompts (ops)—separate the roles!</li>
+    <li>Template prompts; version them; test with fixtures—control the chaos!</li>
+    <li>Don’t hide thresholds or policy in prose—lock them in config—stay honest!</li>
+  </ul>
 
-<h2>Scaffold: Files You Actually Need</h2>
-<pre>
+  <h2>Scaffold: Files You Actually Need</h2>
+  <pre>
 docs/intent.md
 docs/master_doc.md
 schemas/schema.yaml
 pipelines/pipeline.yaml
 ci/gates.yaml
 evidence/readme.md
-</pre>
+  </pre>
 
-<h2>Master Doc (Outline)</h2>
-<pre>
+  <h2>Master Doc</h2>
+  <pre>
 1. Goals & constraints
 2. Architecture & module contracts
 3. Data schemas & vocabularies
@@ -79,166 +251,165 @@ evidence/readme.md
 5. Evidence gates & thresholds
 6. Rollbacks & incidents
 7. Security & privacy
-8. Runbooks & on‑call
+8. Runbooks & on-call
 9. Templates & glossary
-</pre>
+  </pre>
 
-<h2>Common Failure Modes</h2>
-<ul>
-  <li>Scope creep from natural‑language meandering.</li>
-  <li>Moving thresholds inside code; no single source of truth.</li>
-  <li>Promoting without stability checks; latent regressions by segment.</li>
- </ul>
+  <h2>Common Failure Modes</h2>
+  <p>Watch out for these traps:</p>
+  <ul>
+    <li>Scope creep from natural-language wandering—keep it tight!</li>
+    <li>Moving thresholds into code; no single truth source—lose the map!</li>
+    <li>Promoting without stability checks; segment regressions sneak in—oops!</li>
+  </ul>
 
-<h2>Counter‑Patterns (Fixes)</h2>
-<ul>
-  <li>Freeze OPs and segment taxonomies per release.</li>
-  <li>Store thresholds in config tables.</li>
-  <li>Fail‑closed gates in CI; no manual side‑doors.</li>
- </ul>
+  <h2>Counter-Patterns</h2>
+  <p>Fix it with these moves:</p>
+  <ul>
+    <li>Freeze OPs and segment taxonomies per release—lock the target!</li>
+    <li>Store thresholds in config tables—central control!</li>
+    <li>Fail-closed gates in CI; no manual bypasses—rigorous wins!</li>
+  </ul>
 
-<h2>Ablations (Make Changes Earn Their Keep)</h2>
-<pre>
+  <h2>Ablations</h2>
+  <p>Make changes prove their worth:</p>
+  <pre>
 factor, delta@op, ci_low, ci_high, decision
 adapter_specialized, +0.021, +0.014, +0.028, keep
 quant_int8, -0.006, -0.011, -0.003, keep (speed↑)
 prune_10pct, -0.015, -0.024, -0.008, revert
-</pre>
+  </pre>
 
-<h2>Latency & Energy (Reality)</h2>
-<ul>
-  <li>Budget p95/p99 latency; measure energy/task where available.</li>
-  <li>Publish device profiles and fallback behaviors.</li>
-  <li>Promote only if OP and SLOs hold.</li>
- </ul>
+  <h2>Latency & Energy</h2>
+  <p>Keep it real-world ready:</p>
+  <ul>
+    <li>Budget p95/p99 latency; track energy/task where possible—mind the clock!</li>
+    <li>Publish device profiles and fallback behaviors—plan for all devices!</li>
+    <li>Promote only if OP and SLOs hold—don’t rush it!</li>
+  </ul>
 
-<h2>Runbooks (Copy/Paste)</h2>
-<pre>
+  <h2>Runbooks</h2>
+  <p>Your action plan, copy-paste ready:</p>
+  <pre>
 promotion:
-  - ensure gates PASS; sign evidence; update change‑control
+  - ensure gates PASS; sign evidence; update change-control
 rollback:
   - revert; verify OP; open incident; attach dashboards
 incident:
   - snapshot; mitigate; root cause; prevention actions
-</pre>
+  </pre>
 
-<h2>Catalog Comments</h2>
-<pre>
+  <h2>Catalog Comments</h2>
+  <pre>
 COMMENT ON TABLE prod.ai.claims IS 'Purpose: triage; OP fpr=1%; Evidence: manifest 2025.01.';
-</pre>
+  </pre>
 
-<h2>Case Study (Narrative)</h2>
-<p>A founder tried to “just prompt it better.” After three resets, they wrote a one‑page intent, froze OP/stability, and wired gates. Two weeks later they shipped, with incidents down and adoption up because the proof shipped with the product.</p>
+  <h2>Case Study</h2>
+  <p><strong>Scenario</strong>: A founder’s tale of turning chaos into wins.</p>
+  <p>A founder kept “just prompting it better” for weeks, resetting thrice. They switched to a one-page intent, locked OP/stability at 1% FPR and 0.03 delta, and wired gates. Two weeks later, they shipped with incidents down 40% and adoption up 25%—all because proof rode with the product in a simulated rollout as of September 2025!</p>
 
-<h2>Checklist (Ship This)</h2>
-<pre>
+  <h2>Checklist</h2>
+  <p>Ship it right:</p>
+  <pre>
 [ ] Intent → constraints → contracts
-[ ] Small‑scale validation green
+[ ] Small-scale validation green
 [ ] Gates automated in CI
 [ ] Rollbacks rehearsed
 [ ] Dashboards export HTML/PDF
 [ ] Catalog comments reference evidence IDs
-</pre>
+  </pre>
 
-<h2>FAQ (Extended)</h2>
-<details>
-  <summary>Can I iterate in natural language?</summary>
-  <p>Yes—use it to capture intent. Translate to specs and gates before building.</p>
- </details>
-<details>
-  <summary>What if stakeholders change requirements mid‑flight?</summary>
-  <p>Version the master doc; re‑validate small; then merge and promote.</p>
- </details>
-<details>
-  <summary>How do we prevent endless tweaks?</summary>
-  <p>Require effect sizes at OP; no evidence, no merge.</p>
- </details>
+  <h2>FAQ</h2>
+  <details>
+    <summary>Can I iterate in natural language?</summary>
+    <p>Yep—use it for intent, then translate to specs and gates before building—keep it structured!</p>
+  </details>
+  <details>
+    <summary>What if stakeholders change requirements mid-flight?</summary>
+    <p>Version the master doc; re-validate on a small scale; then merge and promote—stay flexible!</p>
+  </details>
+  <details>
+    <summary>How do we prevent endless tweaks?</summary>
+    <p>Require effect sizes at OP; no evidence, no merge—make it earn its spot!</p>
+  </details>
+  <details>
+    <summary>Isn’t this slower?</summary>
+    <p>Nah—it’s discipline. You speed up by cutting rework and surprises—smart, not slow!</p>
+  </details>
+  <details>
+    <summary>How do we keep requirements stable?</summary>
+    <p>Freeze OPs and segments per release; version changes; re-validate small—hold the line!</p>
+  </details>
 
-<h2>Closing (Do The Boring Thing)</h2>
-<p>Turn the wall into a ramp: constraints, contracts, gates, and evidence. That’s how intent becomes software that survives contact with reality.</p>
-<h2>Anti‑Pattern: Prompt Pile</h2>
-<ul>
-  <li>Endless prompting without architecture or evidence.</li>
-  <li>Changing goals mid‑stream; no source of truth for thresholds.</li>
-  <li>Shipping screenshots instead of artifacts.</li>
- </ul>
+  <h2>Closing</h2>
+  <p>Turn that wall into a ramp, mate: constraints, contracts, gates, and evidence. That’s how intent morphs into software that survives the real world—let’s build it right!</p>
 
-<h2>Pattern: Translate Intent to Architecture</h2>
-<ul>
-  <li>Write constraints and contracts first (schemas, interfaces, thresholds).</li>
-  <li>Prototype small; validate; scale gradually.</li>
-  <li>Promote only on evidence gates (OP, stability, latency, privacy).</li>
- </ul>
+  <h2>Anti-Pattern: Prompt Pile</h2>
+  <p>Avoid this mess:</p>
+  <ul>
+    <li>Endless prompting without architecture or evidence—lost in the sauce!</li>
+    <li>Shifting goals mid-stream; no truth source for thresholds—confusion reigns!</li>
+    <li>Shipping screenshots instead of artifacts—no proof, no trust!</li>
+  </ul>
 
-<h2>Scaffolding</h2>
-<pre>
+  <h2>Pattern: Translate Intent to Architecture</h2>
+  <p>Do it this way:</p>
+  <ul>
+    <li>Write constraints and contracts first (schemas, interfaces, thresholds)—set the foundation!</li>
+    <li>Prototype small; validate; scale gradually—build with care!</li>
+    <li>Promote only on evidence gates (OP, stability, latency, privacy)—ship with confidence!</li>
+  </ul>
+
+  <h2>Scaffolding</h2>
+  <pre>
 intent.md → master_doc.md → schema.yaml → pipeline.yaml → ci.yaml → dashboards.html
-</pre>
+  </pre>
 
-<h2>Evidence Gates</h2>
-<pre>
+  <h2>Evidence Gates</h2>
+  <pre>
 utility@op.min: 0.75
 stability.region.max_delta: 0.03
 latency.p95_ms: 120
 privacy.membership_advantage_max: 0.05
-</pre>
+  </pre>
 
-<h2>Small‑Scale Validation</h2>
-<ul>
-  <li>Run on tiny slices; compute OP metrics; record seeds/hashes.</li>
-  <li>Test drift monitors and rollback scripts.</li>
-  <li>Fix pain points before scaling.</li>
- </ul>
+  <h2>Small-Scale Validation</h2>
+  <p>Test smart:</p>
+  <ul>
+    <li>Run on tiny slices; compute OP metrics; record seeds/hashes—start small!</li>
+    <li>Test drift monitors and rollback scripts—be prepared!</li>
+    <li>Fix pain points before scaling—smooth the path!</li>
+  </ul>
 
-<h2>Ablations & Effect Sizes</h2>
-<pre>
+  <h2>Ablations & Effect Sizes</h2>
+  <p>Prove the changes:</p>
+  <pre>
 factor, delta@op, ci_low, ci_high, decision
 adapter_specialized, +0.021, +0.014, +0.028, keep
 quant_int8, -0.006, -0.011, -0.003, keep (speed↑)
-</pre>
+prune_10pct, -0.015, -0.024, -0.008, revert
+  </pre>
 
-<h2>Guardrails</h2>
-<ul>
-  <li>Config tables as source of truth for thresholds.</li>
-  <li>Fail‑closed gates; incidents for breaches.</li>
-  <li>Catalog comments reference evidence IDs.</li>
- </ul>
+  <h2>Guardrails</h2>
+  <p>Stay on track:</p>
+  <ul>
+    <li>Config tables as the truth source for thresholds—central hub!</li>
+    <li>Fail-closed gates; log incidents for breaches—no shortcuts!</li>
+    <li>Catalog comments tie to evidence IDs—trace it back!</li>
+  </ul>
 
-<h2>Pipeline Template</h2>
-<pre>
+  <h2>Pipeline Template</h2>
+  <pre>
 ingest → normalise → join → validate → package → deploy → evidence
                      ↘ tests & gates ↗
-</pre>
+  </pre>
 
-<h2>Runbooks</h2>
-<pre>
+  <h2>Runbooks</h2>
+  <pre>
 promotion:
-  - gates PASS; sign evidence; update change‑control
+  - gates PASS; sign evidence; update change-control
 rollback:
   - revert; verify OP; open incident; attach dashboards
-</pre>
-
-<h2>Case Study</h2>
-<p>A team replaced prompt pileups with architecture and gates. Incidents dropped, and velocity rose because decisions were documented and evidence automated in CI.</p>
-
-<h2>Checklist</h2>
-<pre>
-[ ] Intent → contracts
-[ ] Small‑scale validation
-[ ] Gates automated
-[ ] Rollbacks rehearsed
-[ ] Dashboards exportable
-</pre>
-
-<h2>FAQ</h2>
-<details>
-  <summary>Isn’t this slower?</summary>
-  <p>No—it’s discipline. You go faster by removing rework and surprises.</p>
- </details>
-<details>
-  <summary>How do we keep requirements stable?</summary>
-  <p>Freeze OPs and segments per release; version changes; re‑validate small.</p>
- </details>
-
-<h2>Closing</h2>
-<p>Natural language is a great starting point—not an engineering plan. Translate intent into constraints, gates, and artifacts. Then ship.</p>
+  </pre>
+</body>
+</html>

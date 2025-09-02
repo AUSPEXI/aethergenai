@@ -67,7 +67,7 @@ jobs:
             ```
 
       - name: Upload acceptance & manifest to Databricks UC Volume (optional)
-        if: ${{ env.DATABRICKS_HOST && env.DATABRICKS_TOKEN && steps.gates.outputs.summary == 'PASS' }}
+        if: ${{ env.DATABRICKS_HOST != '' && env.DATABRICKS_TOKEN != '' && env.SITE_URL != '' && steps.gates.outputs.summary == 'PASS' }}
         run: |
           set -e
           ACC=$(base64 -w0 artifacts/acceptance.txt || base64 artifacts/acceptance.txt)
@@ -77,7 +77,7 @@ jobs:
             -d "{\"catalog\":\"aethergen\",\"schema\":\"evidence\",\"volume\":\"bundles\",\"subdir\":\"${{ steps.gen.outputs.manifest_hash }}\",\"files\":[{\"name\":\"acceptance.txt\",\"base64\":\"$ACC\"},{\"name\":\"manifest-hash.txt\",\"base64\":\"$MAN\"}]}"
 
       - name: Set UC table comment with evidence (optional)
-        if: ${{ env.DATABRICKS_HOST && env.DATABRICKS_TOKEN && env.UC_TABLE && steps.gates.outputs.summary == 'PASS' }}
+        if: ${{ env.DATABRICKS_HOST != '' && env.DATABRICKS_TOKEN != '' && env.SITE_URL != '' && env.UC_TABLE != '' && steps.gates.outputs.summary == 'PASS' }}
         run: |
           TIER="${{ env.UC_TIER || 'DEV' }}"
           curl -sS -X POST "${{ env.SITE_URL }}/.netlify/functions/databricks-uc?action=setTableComment" \

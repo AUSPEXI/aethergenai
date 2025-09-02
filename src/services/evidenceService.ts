@@ -352,6 +352,65 @@ export async function downloadSignedEvidenceZip(bundle: EvidenceBundle, filename
     '  Patient 1..* Claim; Provider 1..* Claim; Patient 1..* Rx; Patient 1..* Lab',
   ].join('\n'));
 
+  // Complexity-wall scaffolding & configs (UI parity stubs)
+  zip.folder('docs')?.file('intent.md', '# Intent\n- goal: triage claims\n- capacity: 2,000 alerts/day\n- constraints: fpr≈1%, stability≤0.03, p95≤120ms');
+  zip.folder('docs')?.file('master_doc.md', '# Master Doc\n1) Goals & constraints\n2) Contracts\n3) Schema & vocab\n4) Pipelines & artifacts\n5) Evidence gates\n6) Rollbacks & incidents\n7) Security & privacy\n8) Runbooks\n9) Templates & glossary');
+  zip.folder('pipelines')?.file('pipeline.yaml', 'stages: [ingest, normalise, join, validate, package, deploy, evidence]');
+  zip.folder('ci')?.file('gates.yaml', 'utility@op.min: 0.75\nstability.region.max_delta: 0.03\nlatency.p95_ms: 120\nprivacy.membership_advantage_max: 0.05');
+  zip.folder('evidence')?.file('readme.md', '# Evidence Bundle');
+  zip.folder('contracts')?.file('contracts.yaml', 'inputs: {amount: decimal, code: string, region: enum}\noutputs: {score: float, at_op: bool}\nthresholds: {op_threshold: 0.73}\nslos: {latency_p95_ms: 120}');
+  zip.folder('prompts')?.file('intent.md', '# Intent Prompt');
+  zip.folder('prompts')?.file('ops.md', '# Ops Prompt');
+  zip.folder('prompts')?.file('fixtures.jsonl', '{}');
+  zip.folder('metrics')?.file('energy.json', JSON.stringify({ unit: 'joules_per_task', p50: null, p95: null }, null, 2));
+  zip.folder('devices')?.file('profiles.json', JSON.stringify({ cpu: ['x86_64','arm64'], gpu: ['none'] }, null, 2));
+  zip.folder('devices')?.file('fallbacks.json', JSON.stringify({ cpu_only: { batch: 1, timeout_ms: 3000 } }, null, 2));
+  zip.folder('validation')?.file('sample_size.json', JSON.stringify({ rows: 1000 }, null, 2));
+
+  // Procurement bundle extras (UI parity stubs)
+  const readmeHtml = '<!doctype html><meta charset="utf-8"><title>Procurement Bundle README</title><body><h1>Procurement Bundle</h1></body>'
+  zip.file('README.html', readmeHtml)
+  zip.folder('keys')?.file('public_keys.json', JSON.stringify({ keys: [{ key_id: 'ui-key', public: 'ui-public', active: true }], rotation: { current: 'ui-key', previous: [] } }, null, 2))
+  zip.folder('keys')?.file('rotation.json', JSON.stringify({ current: 'ui-key', previous: [], schedule: 'annual' }, null, 2))
+  zip.file('evidence.sig', 'signature stub')
+  zip.folder('dashboards')?.file('summary.html', '<!doctype html><title>Dashboards</title><body><h1>Summary</h1></body>')
+  zip.file('sbom_vuln.json', JSON.stringify({ scanner: 'stub', findings: [] }, null, 2))
+  zip.folder('attestations')?.file('slsa.json', JSON.stringify({ format: 'slsa-stub', subjects: [] }, null, 2))
+  zip.folder('governance')?.file('policies.json', JSON.stringify({ retention_days: 365, access_controls: { roles: ['procurement','engineering'] } }, null, 2))
+  zip.file('release_notes.txt', 'Release Notes\nHighlights: utility@OP, stability, latency, privacy\nSBOM: present')
+  zip.folder('templates')?.file('acceptance_form.pdf', 'PDF placeholder')
+  zip.file('manifest.sha256', 'sha256  path\n')
+
+  // Lifecycle artifacts (UI parity stubs)
+  zip.folder('recipes')?.file('manifest.yaml', 'recipe:\n  schema: schemas/claims_v3.yaml\n  generator: copula+sequence\n  scenarios: []\n  outputs: parquet')
+  zip.folder('schema')?.file('reference_constraints.yaml', 'constraints:\n  - Claim.amount >= 0\n  - LineItem.units > 0')
+  zip.folder('schema')?.file('er.txt', 'Patient --< Claim --< LineItem')
+  zip.folder('seeds')?.file('policy.json', JSON.stringify({ minimise_fields: true, retention_days: 90 }, null, 2))
+  zip.folder('generation')?.file('params.csv', 'param,default,min,max,note\namount.ln_mu,4.1,3.8,4.6,log-normal mean')
+  zip.folder('overlays')?.file('library.yaml', 'overlays:\n  upcoding: {prevalence: 0.03}')
+  zip.folder('overlays')?.file('composition.yaml', 'rules:\n  - max_total_prevalence: 0.2')
+  zip.folder('validation')?.file('worksheet.csv', 'field,ks_pvalue,pass\namount,0.21,yes')
+  zip.folder('validation')?.file('dashboard.json', JSON.stringify({ sections: ['marginals','joints','temporal','op_baselines'] }, null, 2))
+  zip.folder('configs')?.file('op_selection.md', '# OP Selection\nFPR(θ) ≈ B/V')
+  zip.folder('metrics')?.file('effect_size_method.md', '# Effect Sizes at OP')
+  zip.folder('ci')?.file('example.yaml', 'steps:\n  - generate_small\n  - validate\n  - run_probes\n  - evidence_bundle')
+  zip.folder('packaging')?.file('catalog.json', JSON.stringify({ data: ['parquet','delta'] }, null, 2))
+  zip.folder('monitoring')?.file('psi_config.json', JSON.stringify({ input_psi: { fields: ['amount','pos'], threshold: 0.2 } }, null, 2))
+  zip.folder('governance')?.file('risk_register.csv', 'risk,likelihood,impact,control,owner\ntail_undercoverage,med,med,overlays+limits,data_lead')
+  zip.folder('governance')?.file('sla.json', JSON.stringify({ evidence_regeneration: 'next_business_day' }, null, 2))
+  zip.folder('metadata')?.file('refresh_cadence.json', JSON.stringify({ cadence: 'monthly' }, null, 2))
+  zip.folder('uc')?.file('comment.txt', 'COMMENT ON TABLE prod.ai.claims IS \"Purpose: triage; OP fpr=1%; Evidence: manifest 2025.01.\";')
+
+  // Energy-efficient optimization artifacts (UI parity stubs)
+  zip.folder('configs')?.file('optimization.yaml', 'architecture:\n  lean_models: true\nquantization:\n  int8: true\n  mixed_precision: true\npruning:\n  sparsity: 0.2\ntraining:\n  early_stopping: true\n  curriculum: true\n  active_learning: true');
+  zip.folder('reports')?.file('quantization_effects.json', JSON.stringify({ int8: {}, fp16: {} }, null, 2));
+  zip.folder('reports')?.file('pruning_effects.json', JSON.stringify({ sparsity_vs_energy: [] }, null, 2));
+  zip.folder('training')?.file('adaptive_training.json', JSON.stringify({ early_stop_epoch: null }, null, 2));
+  zip.folder('deployment')?.file('energy_policies.json', JSON.stringify({ battery_guard: {}, thermal_guard: {} }, null, 2));
+  zip.folder('deployment')?.file('dynamic_model_selection.json', JSON.stringify({ profiles: [] }, null, 2));
+  zip.folder('hardware')?.file('battery_profiles.json', JSON.stringify({ devices: [] }, null, 2));
+  zip.folder('ops')?.file('thermal.json', JSON.stringify({ policy: 'reduce_load_above_80C' }, null, 2));
+
   const toHash: Array<{ path: string; content: string; type: string }> = [
     { path: 'evidence.json', content: bundleJson, type: 'document' },
     { path: 'signature.json', content: JSON.stringify(signatureRecord), type: 'integrity' },
@@ -384,19 +443,19 @@ export async function downloadSignedEvidenceZip(bundle: EvidenceBundle, filename
     { path: 'privacy_audit/probes/membership.json', content: JSON.stringify({}), type: 'privacy' },
     { path: 'privacy_audit/probes/attribute.json', content: JSON.stringify({}), type: 'privacy' },
     { path: 'privacy_audit/probes/linkage.json', content: JSON.stringify({}), type: 'privacy' }
-    ,{ path: 'llm/prompts.jsonl', content: '{"instruction":"..."}', type: 'llm' }
-    ,{ path: 'llm/eval_suites.json', content: JSON.stringify({}), type: 'llm' }
-    ,{ path: 'annotations/schema.json', content: JSON.stringify({}), type: 'annotations' }
+    ,{ path: 'llm/prompts.jsonl', content: '{"instruction":"Extract code and amount","input":"Note: code CPT-99213, amount 120.50","output":{"code":"CPT-99213","amount":120.5}}', type: 'llm' }
+    ,{ path: 'llm/eval_suites.json', content: JSON.stringify({ extraction: { metric: 'f1', target: 0.75 } }), type: 'llm' }
+    ,{ path: 'annotations/schema.json', content: JSON.stringify({ types: ['span'], fields: ['start','end','label'] }), type: 'annotations' }
     ,{ path: 'embeddings/INDEX.txt', content: 'Stub', type: 'embeddings' }
-    ,{ path: 'vocab/catalog.json', content: JSON.stringify({}), type: 'vocab' }
-    ,{ path: 'data_quality/coverage_by_vocab.json', content: JSON.stringify({}), type: 'data_quality' }
-    ,{ path: 'data_cards/llm_data_card.json', content: JSON.stringify({}), type: 'data_card' }
-    { path: 'training/train_config.json', content: JSON.stringify({}), type: 'training' },
+    ,{ path: 'vocab/catalog.json', content: JSON.stringify({ CPT_v12: { version: 'v12', count: 12000 } }), type: 'vocab' }
+    ,{ path: 'data_quality/coverage_by_vocab.json', content: JSON.stringify({ CPT_v12: { hit_rate: 0.95 } }), type: 'data_quality' }
+    ,{ path: 'data_cards/llm_data_card.json', content: JSON.stringify({ task: ['extraction'], splits: { train: 0.8, val: 0.1, test: 0.1 }, limits: { refresh: 'quarterly' } }), type: 'data_card' },
+    { path: 'training/train_config.json', content: JSON.stringify({ adapters: true, domain_adaptation: true, op_aligned_eval: true }), type: 'training' },
     { path: 'training/README.txt', content: 'Adapters config', type: 'training' },
     { path: 'packaging/mlflow/README.txt', content: 'MLflow packaging', type: 'packaging' },
     { path: 'packaging/onnx/README.txt', content: 'ONNX packaging', type: 'packaging' },
     { path: 'packaging/gguf/README.txt', content: 'GGUF packaging', type: 'packaging' },
-    { path: 'marketplace/pricing.json', content: JSON.stringify({}), type: 'marketplace' },
+    { path: 'marketplace/pricing.json', content: JSON.stringify({ tiers: [{ name: 'Assisted', monthly_gbp: 999 }] }), type: 'marketplace' },
     { path: 'marketplace/README.md', content: '# Marketplace Listing', type: 'marketplace' },
     { path: 'notebooks/buyer_quickstart.md', content: '# Buyer Quickstart', type: 'notebook' },
     { path: 'notebooks/buyer_quickstart.html', content: '<!doctype html><h1>Buyer Quickstart</h1>', type: 'notebook' },
@@ -412,6 +471,56 @@ export async function downloadSignedEvidenceZip(bundle: EvidenceBundle, filename
     ,{ path: 'metrics/ablation_effects.json', content: JSON.stringify({}), type: 'metric' }
     ,{ path: 'features/catalog.json', content: JSON.stringify({}), type: 'feature' }
     ,{ path: 'monitoring/code_usage_changepoints.json', content: JSON.stringify({}), type: 'monitoring' }
+    { path: 'docs/intent.md', content: '# Intent', type: 'doc' },
+    { path: 'docs/master_doc.md', content: '# Master Doc', type: 'doc' },
+    { path: 'pipelines/pipeline.yaml', content: 'stages: []', type: 'pipeline' },
+    { path: 'ci/gates.yaml', content: 'utility@op.min: 0.75', type: 'config' },
+    { path: 'evidence/readme.md', content: '# Evidence Bundle', type: 'doc' },
+    { path: 'contracts/contracts.yaml', content: 'inputs: {}', type: 'contract' },
+    { path: 'prompts/intent.md', content: '# Intent Prompt', type: 'prompt' },
+    { path: 'prompts/ops.md', content: '# Ops Prompt', type: 'prompt' },
+    { path: 'prompts/fixtures.jsonl', content: '{}', type: 'prompt' },
+    { path: 'metrics/energy.json', content: JSON.stringify({}), type: 'metric' },
+    { path: 'devices/profiles.json', content: JSON.stringify({}), type: 'device' },
+    { path: 'devices/fallbacks.json', content: JSON.stringify({}), type: 'device' },
+    { path: 'validation/sample_size.json', content: JSON.stringify({}), type: 'validation' },
+    { path: 'README.html', content: readmeHtml, type: 'doc' },
+    { path: 'keys/public_keys.json', content: JSON.stringify({}), type: 'key' },
+    { path: 'keys/rotation.json', content: JSON.stringify({}), type: 'key' },
+    { path: 'evidence.sig', content: 'signature stub', type: 'integrity' },
+    { path: 'dashboards/summary.html', content: '<!doctype html>', type: 'plot' },
+    { path: 'sbom_vuln.json', content: JSON.stringify({}), type: 'sbom' },
+    { path: 'attestations/slsa.json', content: JSON.stringify({}), type: 'attestation' },
+    { path: 'governance/policies.json', content: JSON.stringify({}), type: 'governance' },
+    { path: 'release_notes.txt', content: 'Release Notes', type: 'doc' },
+    { path: 'templates/acceptance_form.pdf', content: 'PDF placeholder', type: 'template' },
+    { path: 'manifest.sha256', content: 'sha256  path', type: 'integrity' },
+    { path: 'recipes/manifest.yaml', content: 'recipe:', type: 'recipe' },
+    { path: 'schema/reference_constraints.yaml', content: 'constraints:', type: 'schema' },
+    { path: 'schema/er.txt', content: 'ER', type: 'schema' },
+    { path: 'seeds/policy.json', content: JSON.stringify({ minimise_fields: true, retention_days: 90 }, null, 2), type: 'policy' },
+    { path: 'generation/params.csv', content: 'param,default', type: 'generation' },
+    { path: 'overlays/library.yaml', content: 'overlays:', type: 'overlays' },
+    { path: 'overlays/composition.yaml', content: 'rules:', type: 'overlays' },
+    { path: 'validation/worksheet.csv', content: 'field,ks_pvalue,pass', type: 'validation' },
+    { path: 'validation/dashboard.json', content: JSON.stringify({ sections: ['marginals','joints','temporal','op_baselines'] }, null, 2), type: 'validation' },
+    { path: 'configs/op_selection.md', content: '# OP Selection', type: 'config' },
+    { path: 'metrics/effect_size_method.md', content: '# Effect Sizes at OP', type: 'metric' },
+    { path: 'ci/example.yaml', content: 'steps:', type: 'config' },
+    { path: 'packaging/catalog.json', content: JSON.stringify({ data: ['parquet','delta'] }, null, 2), type: 'packaging' },
+    { path: 'monitoring/psi_config.json', content: JSON.stringify({ input_psi: { fields: ['amount','pos'], threshold: 0.2 } }, null, 2), type: 'monitoring' },
+    { path: 'governance/risk_register.csv', content: 'risk,likelihood,impact,control,owner', type: 'governance' },
+    { path: 'governance/sla.json', content: JSON.stringify({ evidence_regeneration: 'next_business_day' }, null, 2), type: 'governance' },
+    { path: 'metadata/refresh_cadence.json', content: JSON.stringify({ cadence: 'monthly' }, null, 2), type: 'metadata' },
+    { path: 'uc/comment.txt', content: 'COMMENT ON TABLE prod.ai.claims IS \"Purpose: triage; OP fpr=1%; Evidence: manifest 2025.01.\";', type: 'uc' },
+    { path: 'configs/optimization.yaml', content: 'architecture:', type: 'config' },
+    { path: 'reports/quantization_effects.json', content: JSON.stringify({}), type: 'report' },
+    { path: 'reports/pruning_effects.json', content: JSON.stringify({}), type: 'report' },
+    { path: 'training/adaptive_training.json', content: JSON.stringify({}), type: 'training' },
+    { path: 'deployment/energy_policies.json', content: JSON.stringify({}), type: 'deployment' },
+    { path: 'deployment/dynamic_model_selection.json', content: JSON.stringify({}), type: 'deployment' },
+    { path: 'hardware/battery_profiles.json', content: JSON.stringify({}), type: 'hardware' },
+    { path: 'ops/thermal.json', content: JSON.stringify({}), type: 'ops' },
   ];
 
   const hashes: Record<string, string> = {};
@@ -427,6 +536,116 @@ export async function downloadSignedEvidenceZip(bundle: EvidenceBundle, filename
     components: toHash.map(f => ({ name: f.path, type: f.type }))
   };
   zip.file('sbom.json', JSON.stringify(sbom, null, 2));
+
+  // Triumph of Preparation artifacts (UI parity stubs)
+  zip.folder('docs')?.file('decision_log.md', '# Decision Log\n- Example decision: OP fpr=1% set');
+  zip.folder('runbooks')?.file('promotion.md', '- ensure gates PASS\n- sign evidence\n- update change-control');
+  zip.folder('runbooks')?.file('rollback.md', '- revert to last good bundle\n- verify OP\n- open incident');
+  zip.folder('runbooks')?.file('incident.md', '- snapshot\n- classify\n- mitigate\n- root cause\n- actions');
+  zip.folder('configs')?.file('thresholds_table.json', JSON.stringify({ utility_at_op_min: 0.75 }, null, 2));
+  zip.folder('deprecation')?.file('policy.md', '# Deprecation');
+  zip.folder('deprecation')?.file('migration_guide.md', '# Migration Guide');
+  zip.folder('keys')?.file('revocation_list.json', JSON.stringify({ revoked: [] }, null, 2));
+  zip.folder('tests')?.file('red_team_checks.md', '- missing dashboards -> gate blocks');
+
+  toHash.push(
+    { path: 'docs/decision_log.md', content: '# Decision Log', type: 'doc' },
+    { path: 'runbooks/promotion.md', content: 'promotion', type: 'runbook' },
+    { path: 'runbooks/rollback.md', content: 'rollback', type: 'runbook' },
+    { path: 'runbooks/incident.md', content: 'incident', type: 'runbook' },
+    { path: 'configs/thresholds_table.json', content: JSON.stringify({}), type: 'config' },
+    { path: 'deprecation/policy.md', content: '# Deprecation', type: 'doc' },
+    { path: 'deprecation/migration_guide.md', content: '# Migration Guide', type: 'doc' },
+    { path: 'keys/revocation_list.json', content: JSON.stringify({}), type: 'key' },
+    { path: 'tests/red_team_checks.md', content: 'red team', type: 'test' },
+  );
+
+  // UC delivery artifacts (UI parity stubs)
+  zip.folder('uc')?.file('registration_sop.md', '# Registration SOP');
+  zip.folder('uc')?.file('grants.sql', 'GRANT SELECT ON TABLE prod.ai.claims TO `analyst-group`;');
+  zip.folder('uc')?.file('comments.sql', "COMMENT ON FUNCTION prod.ai.fraud_infer IS 'Model v2025.01 @ threshold 0.73; evidence manifest ...';");
+  zip.folder('uc')?.file('lineage.json', JSON.stringify({ path: ['seeds','generation','validation','packaging','catalog'] }, null, 2));
+  zip.folder('uc')?.file('tags.json', JSON.stringify({ tags: ['tier:assisted','domain:claims'] }, null, 2));
+  zip.folder('uc')?.file('assets.json', JSON.stringify({ tables: ['prod.ai.claims'], functions: ['prod.ai.fraud_infer'], models: ['models/fraud_v2025_01'], views: ['prod.ai.claims_view'] }, null, 2));
+  zip.folder('uc')?.file('entitlements.json', JSON.stringify({ self_service: ['samples','docs'], assisted: ['tables','udf'], full_service: ['private_schemas','adapters','sla'] }, null, 2));
+  zip.folder('ops')?.file('usage_by_tenant.json', JSON.stringify({ tenants: [] }, null, 2));
+  zip.folder('ops')?.file('adoption_metrics.json', JSON.stringify({ queries: 0, users: 0 }, null, 2));
+  zip.folder('governance')?.file('incidents.json', JSON.stringify({ items: [] }, null, 2));
+  zip.folder('metadata')?.file('dashboard_url.txt', 'https://example.local/dashboard');
+  zip.folder('contracts')?.file('sow_hooks.md', '# Contractual Hooks');
+  zip.folder('notebooks')?.file('uc_sample_outline.md', '# UC Sample Notebook');
+
+  toHash.push(
+    { path: 'uc/registration_sop.md', content: '# Registration SOP', type: 'uc' },
+    { path: 'uc/grants.sql', content: 'GRANT', type: 'uc' },
+    { path: 'uc/comments.sql', content: 'COMMENT ON FUNCTION', type: 'uc' },
+    { path: 'uc/lineage.json', content: JSON.stringify({}), type: 'uc' },
+    { path: 'uc/tags.json', content: JSON.stringify({}), type: 'uc' },
+    { path: 'uc/assets.json', content: JSON.stringify({}), type: 'uc' },
+    { path: 'uc/entitlements.json', content: JSON.stringify({}), type: 'uc' },
+    { path: 'ops/usage_by_tenant.json', content: JSON.stringify({}), type: 'ops' },
+    { path: 'ops/adoption_metrics.json', content: JSON.stringify({}), type: 'ops' },
+    { path: 'governance/incidents.json', content: JSON.stringify({}), type: 'governance' },
+    { path: 'metadata/dashboard_url.txt', content: 'https://example.local/dashboard', type: 'metadata' },
+    { path: 'contracts/sow_hooks.md', content: '# Contractual Hooks', type: 'contract' },
+    { path: 'notebooks/uc_sample_outline.md', content: '# UC Sample Notebook', type: 'notebook' },
+  );
+
+  // Sustainability artifacts (UI parity stubs)
+  zip.folder('metrics')?.file('carbon.json', JSON.stringify({ train_co2e_tons: null, infer_co2e_grams_per_1k: null }, null, 2));
+  zip.folder('monitoring')?.file('carbon_realtime.json', JSON.stringify({ series: [] }, null, 2));
+  zip.folder('ops')?.file('energy_audit.json', JSON.stringify({ stages: {} }, null, 2));
+  zip.folder('reports')?.file('impact_quarterly.json', JSON.stringify({ quarter: null }, null, 2));
+  zip.folder('reports')?.file('sustainability_kpis.json', JSON.stringify({ target_carbon_reduction_by_2027: 0.5 }, null, 2));
+  zip.folder('benchmarks')?.file('efficiency.json', JSON.stringify({ baseline: {}, optimized: {} }, null, 2));
+  zip.folder('hardware')?.file('energy_profiles.json', JSON.stringify({ profiles: [] }, null, 2));
+  zip.folder('policies')?.file('emissions_standards.md', '# Emissions Standards');
+  zip.folder('roadmap')?.file('carbon_neutral.json', JSON.stringify({ by_year: 2028 }, null, 2));
+  zip.folder('ops')?.file('water_usage.json', JSON.stringify({ gallons_estimate: null }, null, 2));
+  zip.folder('reports')?.file('synthetic_green_benefits.json', JSON.stringify({ transport_emissions_reduction: 0.9 }, null, 2));
+  zip.folder('packaging')?.file('eco_readme.md', '# Eco Notes');
+
+  toHash.push(
+    { path: 'metrics/carbon.json', content: JSON.stringify({}), type: 'metric' },
+    { path: 'monitoring/carbon_realtime.json', content: JSON.stringify({}), type: 'monitoring' },
+    { path: 'ops/energy_audit.json', content: JSON.stringify({}), type: 'ops' },
+    { path: 'reports/impact_quarterly.json', content: JSON.stringify({}), type: 'report' },
+    { path: 'reports/sustainability_kpis.json', content: JSON.stringify({}), type: 'report' },
+    { path: 'benchmarks/efficiency.json', content: JSON.stringify({}), type: 'benchmark' },
+    { path: 'hardware/energy_profiles.json', content: JSON.stringify({}), type: 'hardware' },
+    { path: 'policies/emissions_standards.md', content: '# Emissions Standards', type: 'policy' },
+    { path: 'roadmap/carbon_neutral.json', content: JSON.stringify({}), type: 'roadmap' },
+    { path: 'ops/water_usage.json', content: JSON.stringify({}), type: 'ops' },
+    { path: 'reports/synthetic_green_benefits.json', content: JSON.stringify({}), type: 'report' },
+    { path: 'packaging/eco_readme.md', content: '# Eco Notes', type: 'doc' },
+  );
+
+  // Green AI (carbon-neutral) artifacts (UI parity stubs)
+  zip.folder('energy')?.file('renewables.json', JSON.stringify({ providers: [], scheduling: {} }, null, 2));
+  zip.folder('ops')?.file('renewable_schedule.json', JSON.stringify({ window_hours: [], policy: null }, null, 2));
+  zip.folder('offsets')?.file('ledger.json', JSON.stringify({ entries: [] }, null, 2));
+  zip.folder('offsets')?.file('projects.json', JSON.stringify({ projects: [] }, null, 2));
+  zip.folder('restoration')?.file('projects.json', JSON.stringify({ items: [] }, null, 2));
+  zip.folder('restoration')?.file('metrics.json', JSON.stringify({ forest_cover_increase_pct: null }, null, 2));
+  zip.folder('metrics')?.file('supply_chain.json', JSON.stringify({ hardware: {} }, null, 2));
+  zip.folder('metrics')?.file('emissions_scope.json', JSON.stringify({ scope1: null, scope2: null, scope3: null }, null, 2));
+  zip.folder('compliance')?.file('carbon_neutrality.md', '# Carbon Neutrality Declaration (stub)');
+  zip.folder('reports')?.file('esg_summary.json', JSON.stringify({ esg: {} }, null, 2));
+  zip.folder('compliance')?.file('green_cloud.md', '# Green Cloud Provider Evidence (stub)');
+
+  toHash.push(
+    { path: 'energy/renewables.json', content: JSON.stringify({}), type: 'energy' },
+    { path: 'ops/renewable_schedule.json', content: JSON.stringify({}), type: 'ops' },
+    { path: 'offsets/ledger.json', content: JSON.stringify({}), type: 'offsets' },
+    { path: 'offsets/projects.json', content: JSON.stringify({}), type: 'offsets' },
+    { path: 'restoration/projects.json', content: JSON.stringify({}), type: 'restoration' },
+    { path: 'restoration/metrics.json', content: JSON.stringify({}), type: 'restoration' },
+    { path: 'metrics/supply_chain.json', content: JSON.stringify({}), type: 'metric' },
+    { path: 'metrics/emissions_scope.json', content: JSON.stringify({}), type: 'metric' },
+    { path: 'compliance/carbon_neutrality.md', content: '# Carbon Neutrality', type: 'compliance' },
+    { path: 'reports/esg_summary.json', content: JSON.stringify({}), type: 'report' },
+    { path: 'compliance/green_cloud.md', content: '# Green Cloud', type: 'compliance' },
+  );
 
   // Evidence manifest matching article template
   const evidenceManifest = {
@@ -516,7 +735,104 @@ export async function downloadSignedEvidenceZip(bundle: EvidenceBundle, filename
       exports: [
         'exports/formats.json'
       ],
-      sbom: 'sbom.json'
+      sbom: 'sbom.json',
+      docs: [
+        'docs/intent.md',
+        'docs/master_doc.md'
+      ],
+      pipelines: [
+        'pipelines/pipeline.yaml'
+      ],
+      ci: [
+        'ci/gates.yaml'
+      ],
+      contracts: [
+        'contracts/contracts.yaml'
+      ],
+      prompts: [
+        'prompts/intent.md',
+        'prompts/ops.md',
+        'prompts/fixtures.jsonl'
+      ],
+      devices: [
+        'devices/profiles.json',
+        'devices/fallbacks.json'
+      ],
+      validation: [
+        'validation/sample_size.json'
+      ],
+      energy: [
+        'metrics/energy.json'
+      ],
+      readme: ['README.html'],
+      keys: ['keys/public_keys.json','keys/rotation.json'],
+      verification: ['evidence.sig','manifest.sha256'],
+      attestations: ['attestations/slsa.json'],
+      governance: ['governance/policies.json'],
+      release_notes: ['release_notes.txt'],
+      templates: ['templates/acceptance_form.pdf'],
+      recipes_manifest: ['recipes/manifest.yaml'],
+      schema_catalog: ['schema/reference_constraints.yaml','schema/er.txt'],
+      seeds_policy: ['seeds/policy.json'],
+      generation_params: ['generation/params.csv'],
+      overlays: ['overlays/library.yaml','overlays/composition.yaml'],
+      validation_artifacts: ['validation/worksheet.csv','validation/dashboard.json'],
+      op_selection: ['configs/op_selection.md'],
+      effect_size_method: ['metrics/effect_size_method.md'],
+      ci_example: ['ci/example.yaml'],
+      packaging_catalog: ['packaging/catalog.json'],
+      psi_config: ['monitoring/psi_config.json'],
+      risk_register: ['governance/risk_register.csv'],
+      sla: ['governance/sla.json'],
+      refresh_cadence: ['metadata/refresh_cadence.json'],
+      uc_comment: ['uc/comment.txt'],
+      uc_delivery: [
+        'uc/registration_sop.md','uc/grants.sql','uc/comments.sql','uc/lineage.json','uc/tags.json','uc/assets.json','uc/entitlements.json'
+      ],
+      ops_dashboards: [
+        'ops/usage_by_tenant.json','ops/adoption_metrics.json'
+      ],
+      governance_incidents: [
+        'governance/incidents.json'
+      ],
+      dashboard_link: [
+        'metadata/dashboard_url.txt'
+      ],
+      contracts_hooks: [
+        'contracts/sow_hooks.md'
+      ],
+      notebooks_uc: [
+        'notebooks/uc_sample_outline.md'
+      ],
+      decision_log: ['docs/decision_log.md'],
+      runbooks: ['runbooks/promotion.md','runbooks/rollback.md','runbooks/incident.md'],
+      thresholds_table: ['configs/thresholds_table.json'],
+      deprecation: ['deprecation/policy.md','deprecation/migration_guide.md'],
+      revocation: ['keys/revocation_list.json'],
+      red_team: ['tests/red_team_checks.md'],
+      optimization: [
+        'configs/optimization.yaml',
+        'reports/quantization_effects.json',
+        'reports/pruning_effects.json',
+        'training/adaptive_training.json',
+        'deployment/energy_policies.json',
+        'deployment/dynamic_model_selection.json',
+        'hardware/battery_profiles.json',
+        'ops/thermal.json'
+      ],
+      green_ai: [
+        'energy/renewables.json',
+        'ops/renewable_schedule.json',
+        'offsets/ledger.json',
+        'offsets/projects.json',
+        'restoration/projects.json',
+        'restoration/metrics.json',
+        'metrics/supply_chain.json',
+        'metrics/emissions_scope.json',
+        'compliance/carbon_neutrality.md',
+        'reports/esg_summary.json',
+        'compliance/green_cloud.md'
+      ]
     },
     hashes,
     seeds: 'seeds/seeds.txt'

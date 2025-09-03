@@ -11,6 +11,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "sanitize:blogs": "node scripts/sanitize-blogs.cjs",
     "lint": "eslint .",
     "preview": "vite preview",
     "prepare": "husky",

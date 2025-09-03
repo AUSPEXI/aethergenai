@@ -133,7 +133,11 @@ const BlogPost = () => {
       try {
         const rh = await fetch(`/blog-html/${encodeURIComponent(slug || '')}.html?ts=${Date.now()}`).catch(()=>null as any)
         if (!cancelled && rh && rh.ok) {
-          const htmlRaw = await rh.text()
+          let htmlRaw = await rh.text()
+          // Strip boilerplate date phrases like ", live as of September 1, 2025." across all blogs
+          const re1 = /\s*[,–—-]?\s*(?:all\s+)?[Ll]ive as of\s+[A-Za-z]+\s+\d{1,2},\s+\d{4}\.?/g;
+          const re2 = /\s*are\s+[Ll]ive as of\s+[A-Za-z]+\s+\d{1,2},\s+\d{4}\.?/gi;
+          htmlRaw = htmlRaw.replace(re1, '').replace(re2, '');
           const h1 = htmlRaw.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i)
           const title = h1 ? h1[1].replace(/<[^>]*>/g,'').trim() : String(slug || '').replace(/-/g,' ')
           const p1m = htmlRaw.match(/<p[^>]*>([\s\S]*?)<\/p>/i)

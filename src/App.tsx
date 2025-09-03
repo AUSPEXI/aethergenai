@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Navigation from './components/Navigation';
 import Home from './pages/Home';
@@ -18,7 +18,7 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfUse from './pages/TermsOfUse';
 import DPA from './pages/DPA';
 import Subprocessors from './pages/Subprocessors';
-import ManifoldPrototype from './pages/ManifoldPrototype';
+const ManifoldPrototypeLazy = React.lazy(() => import('./pages/ManifoldPrototype'));
 import ManifoldExplainer from './pages/ManifoldExplainer';
 import ResourcesLLMIndexing from './pages/ResourcesLLMIndexing';
 import ResourcesLLMBenchmarks from './pages/ResourcesLLMBenchmarks';
@@ -80,7 +80,7 @@ function RoutedApp() {
           <Route path="/terms" element={<TermsOfUse />} />
           <Route path="/dpa" element={<DPA />} />
           <Route path="/subprocessors" element={<Subprocessors />} />
-          <Route path="/manifold-prototype" element={<ManifoldPrototype />} />
+          <Route path="/manifold-prototype" element={<Suspense fallback={<div className="p-8 text-center">Loading…</div>}><ManifoldPrototypeLazy /></Suspense>} />
           <Route path="/manifold-explainer" element={<ManifoldExplainer />} />
           <Route path="/ai" element={<AI />} />
           <Route path="/resources/llm-indexing" element={<ResourcesLLMIndexing />} />

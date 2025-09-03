@@ -158,6 +158,17 @@ const Blog = () => {
       slug: 'synthetic-data-healthcare-fraud-without-phi'
     },
     {
+      title: 'Navigating the Illusion of “Conscious” AI — A Call for Dignity in a Changing World',
+      excerpt: 'A humane guide to SCAI: why AI can feel alive, how to protect vulnerable users, and practical safeguards for individuals and teams.',
+      author: 'Gwylym Owen',
+      date: 'September 3, 2025',
+      readTime: '11 min read',
+      category: 'Ethics',
+      icon: Brain,
+      published: true,
+      slug: 'navigating-the-illusion-of-conscious-ai'
+    },
+    {
       title: '📈 Evidence‑Led AI: How Signed Metrics Accelerate Enterprise Adoption',
       excerpt: 'Turn evaluations into evidence. Signed metrics at operating points get procurement to yes, fast.',
       author: 'Gwylym Owen',
@@ -864,7 +875,8 @@ const Blog = () => {
     'synthetic-data-lifecycle',
     'the-procurement-bundle-signatures-hashes-filing-made-simple',
     'triumph-of-preparation-strategic-planning',
-    'unity-catalog-delivery-turning-models-into-procurement-ready-products'
+    'unity-catalog-delivery-turning-models-into-procurement-ready-products',
+    'navigating-the-illusion-of-conscious-ai'
   ];
 
   const seenSlugs = new Set<string>();

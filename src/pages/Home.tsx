@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Shield, Activity, Target, Flame, Siren, RotateCcw, FileText, Lock, Database, Zap, Globe, CheckCircle, TrendingUp, Users, Brain, ExternalLink, Code, BarChart3, Award, Star, Eye, Sparkles, Cpu, Rocket, Package, Car } from 'lucide-react';
-import AethergenHero from '../components/UI/AethergenHero';
+import ReactLazy, { Suspense } from 'react';
+const AethergenHero = React.lazy(() => import('../components/UI/AethergenHero'));
 
 const Home = () => {
   const currentSuites = {
@@ -62,7 +63,9 @@ const Home = () => {
   return (
     <div className="min-h-screen">
       {/* Hero Section with Neural Network Animation */}
-      <AethergenHero />
+      <Suspense fallback={<div className="w-full h-[70vh] md:h-[78vh] min-h-[400px] md:min-h-[520px] bg-[#0b1120] flex items-center justify-center text-white">Loading…</div>}>
+        <AethergenHero />
+      </Suspense>
       {/* IP-Safe Summary */}
       <section className="py-4 bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -76,10 +79,10 @@ const Home = () => {
       <section className="py-16 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h1 className="text-5xl font-bold text-gray-900 mb-6">
+            <h1 className="text-5xl font-bold text-white mb-6">
               Revolutionise Your AI Operations
             </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
+            <p className="text-xl text-blue-100 max-w-3xl mx-auto mb-8">
               The only platform built for regulated AI operations with fail-closed gates, automated rollback, and evidence-backed stability
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -135,7 +138,7 @@ const Home = () => {
 
           {/* Operational Features Grid */}
           <div className="bg-white rounded-xl p-8 shadow-md mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">
+            <h2 className="text-3xl font-bold text-slate-900 mb-8 text-center">
               Operational AI Features
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

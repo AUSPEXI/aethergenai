@@ -140,7 +140,8 @@ const BlogPost = () => {
           const excerpt = p1m ? p1m[1].replace(/<[^>]*>/g,'').trim().slice(0, 280) : ''
           const wordCount = String(htmlRaw).replace(/<[^>]+>/g,' ').trim().split(/\s+/).filter(Boolean).length
           const readTime = `${Math.max(2, Math.round(wordCount/200))} min read`
-          setPost({ slug, title, excerpt, content_html: htmlRaw, author: 'Gwylym Owen', category: 'Blog', readTime, published_at: new Date().toISOString() })
+          const contentSanitised = htmlRaw.replace(/<h1[^>]*>[\s\S]*?<\/h1>/i, '').trim()
+          setPost({ slug, title, excerpt, content_html: contentSanitised, author: 'Gwylym Owen', category: 'Blog', readTime, published_at: new Date().toISOString() })
           setIsLoading(false)
           return
         }

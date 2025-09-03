@@ -471,7 +471,7 @@ export async function downloadSignedEvidenceZip(bundle: EvidenceBundle, filename
     ,{ path: 'metrics/ablation_effects.json', content: JSON.stringify({}), type: 'metric' }
     ,{ path: 'features/catalog.json', content: JSON.stringify({}), type: 'feature' }
     ,{ path: 'monitoring/code_usage_changepoints.json', content: JSON.stringify({}), type: 'monitoring' }
-    { path: 'docs/intent.md', content: '# Intent', type: 'doc' },
+    ,{ path: 'docs/intent.md', content: '# Intent', type: 'doc' },
     { path: 'docs/master_doc.md', content: '# Master Doc', type: 'doc' },
     { path: 'pipelines/pipeline.yaml', content: 'stages: []', type: 'pipeline' },
     { path: 'ci/gates.yaml', content: 'utility@op.min: 0.75', type: 'config' },

@@ -356,7 +356,7 @@ export const Resources: React.FC = () => {
               </Link>
               <Link to="/blog/energy-efficient-ai-optimization-beats-scaling" className="block bg-white rounded-lg p-4 border hover:shadow-md transition">
                 <div className="font-semibold text-gray-900 mb-1">Energy‑Efficient AI</div>
-                <div className="text-sm text-gray-600">Optimization > scaling; adapters, pruning, quantization</div>
+                <div className="text-sm text-gray-600">Optimization &gt; scaling; adapters, pruning, quantization</div>
               </Link>
               <Link to="/blog/green-ai-carbon-neutral-machine-learning" className="block bg-white rounded-lg p-4 border hover:shadow-md transition">
                 <div className="font-semibold text-gray-900 mb-1">Green AI: Carbon‑Neutral Systems</div>

@@ -125,11 +125,14 @@ const blogPostsData = {
 const BlogPost = () => {
   const { slug } = useParams();
   const [post, setPost] = React.useState<any | null>((blogPostsData as any)[slug as keyof typeof blogPostsData] || null);
+  const [isLoading, setIsLoading] = React.useState<boolean>(true);
   React.useEffect(() => {
+    let cancelled = false;
+    setIsLoading(true);
     (async () => {
       try {
         const rh = await fetch(`/blog-html/${encodeURIComponent(slug || '')}.html?ts=${Date.now()}`).catch(()=>null as any)
-        if (rh && rh.ok) {
+        if (!cancelled && rh && rh.ok) {
           const htmlRaw = await rh.text()
           const h1 = htmlRaw.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i)
           const title = h1 ? h1[1].replace(/<[^>]*>/g,'').trim() : String(slug || '').replace(/-/g,' ')
@@ -138,13 +141,30 @@ const BlogPost = () => {
           const wordCount = String(htmlRaw).replace(/<[^>]+>/g,' ').trim().split(/\s+/).filter(Boolean).length
           const readTime = `${Math.max(2, Math.round(wordCount/200))} min read`
           setPost({ slug, title, excerpt, content_html: htmlRaw, author: 'Gwylym Owen', category: 'Blog', readTime, published_at: new Date().toISOString() })
+          setIsLoading(false)
           return
         }
       } catch {}
-      // fallback to curated map
-      setPost((blogPostsData as any)[slug as keyof typeof blogPostsData] || null)
+      if (!cancelled) {
+        // fallback to curated map
+        setPost((blogPostsData as any)[slug as keyof typeof blogPostsData] || null)
+        setIsLoading(false)
+      }
     })();
+    return () => { cancelled = true };
   }, [slug]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="animate-pulse text-center">
+          <div className="h-7 bg-slate-200 rounded w-64 mx-auto mb-4" />
+          <div className="h-4 bg-slate-200 rounded w-80 mx-auto mb-2" />
+          <div className="h-4 bg-slate-200 rounded w-72 mx-auto" />
+        </div>
+      </div>
+    );
+  }
 
   if (!post) {
     return (

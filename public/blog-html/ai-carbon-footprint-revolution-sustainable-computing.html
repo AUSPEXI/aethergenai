@@ -143,7 +143,7 @@
             "Efficiency is the new scalability. The future of AI hinges on doing more with less, driven by evidence, not assumptions." – AethergenAI Insight
         </blockquote>
 
-        <p>Our platform’s metrics demonstrate this shift:</p>
+        <p>Illustrative metrics demonstrate potential improvements; production results will be published with signed evidence bundles.</p>
 
         <table>
             <tr>
@@ -172,31 +172,41 @@
                 <td>70% (30% faster)</td>
             </tr>
         </table>
+        <p><em>Note: Figures above are illustrative for discussion. Actual impact depends on workload, hardware/cluster SKU, region, and scheduling. Measured results will be included in signed evidence bundles.</em></p>
 
         <h2>The Environmental Impact of Synthetic Data</h2>
 
         <p>Synthetic data generation emerges as a green alternative to traditional data collection. Our analysis shows:</p>
 
         <div class="highlight">
-            <strong>🌍 Evidence-Based Benefits:</strong>
+            <strong>🌍 Potential Benefits (context-dependent):</strong>
             <ul>
-                <li>Eliminates physical data collection energy costs</li>
-                <li>Reduces transportation emissions by 90%</li>
-                <li>Lowers data center energy by 60% per dataset</li>
-                <li>Cuts water usage by 80% compared to raw data pipelines</li>
+                <li>May eliminate physical data collection energy in some pipelines</li>
+                <li>Can reduce transportation-related emissions for data collection/labeling</li>
+                <li>Can lower data center energy per dataset by reducing raw-data passes</li>
+                <li>May reduce water usage versus certain raw-data pipelines</li>
             </ul>
         </div>
 
         <h2>Carbon Tracking and Accountability</h2>
 
-        <p>Transparency drives our approach. AethergenPlatform’s platform integrates:</p>
+        <p>Transparency drives our approach. AethergenPlatform’s platform focuses on:</p>
 
         <ul>
-            <li><strong>Real-time carbon tracking:</strong> Measures CO2e per training cycle</li>
-            <li><strong>Energy audits:</strong> Logs kWh usage per model</li>
-            <li><strong>Impact reports:</strong> Quarterly emissions summaries</li>
-            <li><strong>Sustainability KPIs:</strong> Targets 50% carbon reduction by 2027</li>
+            <li><strong>Job-level energy proxies:</strong> Duration, instance-hours, SKU and workload metadata per run</li>
+            <li><strong>Per-run reports:</strong> Normalized KPIs (e.g., kWh/1k records or epoch) where available</li>
+            <li><strong>Impact summaries:</strong> Periodic emissions summaries (planned)</li>
+            <li><strong>Sustainability KPIs:</strong> Targets set per project after baselining; public figures published with evidence</li>
         </ul>
+
+        <h2>Methodology and Limitations</h2>
+        <div class="highlight">
+            <ul>
+                <li>Energy is approximated from provider/job telemetry (instance-hours × SKU power envelope) and normalized per task.</li>
+                <li>Results vary by workload, dataset, region, and scheduling. Comparisons are only meaningful under controlled A/B.</li>
+                <li>We will publish signed evidence bundles containing configs, seeds, metrics, and per-run hashes. See <a href="/docs/ci-evidence">CI & Evidence</a>.</li>
+            </ul>
+        </div>
 
         <h2>Use Case Example: Efficiency Leap</h2>
 
@@ -218,7 +228,7 @@
         <p>The AI carbon crisis is a call to action, not a dead end. AethergenAI’s evidence-led approach proves sustainable computing is achievable. If you’re ready to build AI that respects planetary limits, let’s connect.</p>
 
         <div class="highlight">
-            <strong>🌱 The Bottom Line:</strong> The AI carbon footprint revolution is here. Efficiency beyond Moore's Law is not just possible—it’s essential for AI’s survival. The data supports it, and the time is now.
+            <strong>🌱 The Bottom Line:</strong> The AI carbon footprint challenge demands efficiency beyond Moore's Law. We will substantiate impact with measured, signed evidence; until then, treat figures as illustrative.
         </div>
 
         <p><em>This is part of our series on sustainable AI development. Next: "Energy-Efficient AI: How Optimization Beats Scaling"</em></p>

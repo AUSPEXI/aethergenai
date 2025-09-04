@@ -3,20 +3,17 @@
     {
       "id": "billion-row-demo",
       "description": "Generated 1 billion synthetic rows (demo environment)",
-      "schemaHash": "sha256:demo-placeholder",
-      "generatorVersion": "v1",
       "reference": "https://auspexi.com/whitepaper",
-      "lastUpdated": "2025-08-25"
+      "schemaHash": "sha256:775a153cb7d1df39a64d80b23aca212c2f4746f8099091d78269124c2d8d365c",
+      "lastUpdated": "2025-09-04"
     },
     {
       "id": "compliance",
       "description": "Designed to support GDPR/CCPA; ISO 27001 alignment in progress",
       "reference": "https://auspexi.com/ai",
-      "lastUpdated": "2025-08-25"
+      "schemaHash": "sha256:8dbc3290d15f86bab1307d6639d9dd942033ecc19a8bed1648462f9762df8fbd",
+      "lastUpdated": "2025-09-04"
     }
   ],
   "version": "1.0"
 }
-
-
-

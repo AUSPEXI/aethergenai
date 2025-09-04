@@ -1,3 +1,19 @@
+# SOPS configuration (placeholder)
+# This file enables SOPS usage for encrypting files under the secure/ path.
+# No keys are committed here; configure your AGE/PGP/KMS keys locally or in CI.
+
+creation_rules:
+  - path_regex: 'secure/.*\.(json|ya?ml|env)$'
+    unencrypted_suffix: _unencrypted
+    encrypted_regex: '^(data|stringData|value)$'
+    key_groups:
+      # Provide key material via environment or CI; keep empty in repo
+      - age: []
+        pgp: []
+        kms: []
+        gcp_kms: []
+        azure_kv: []
+
 creation_rules:
   - path_regex: ^test\.md$
     age: age1q9hda0gsvhc6z8kxlxhhf6u4l9rmazyfgpylz6gnhtsltg7sef9s6ecvc6

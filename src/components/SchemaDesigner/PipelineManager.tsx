@@ -177,15 +177,15 @@ const PipelineManager: React.FC = () => {
 
   const onExportGGUF = async () => {
     const b = await exportGGUF({ modelName: 'aethergen-demo', profileName: 'auto' });
-    saveBlob(b, 'model.gguf.stub.txt');
+    saveBlob(b, 'model.gguf.txt');
   };
   const onExportONNX = async () => {
     const b = await exportONNX({ modelName: 'aethergen-demo', profileName: 'auto' });
-    saveBlob(b, 'model.onnx.stub.txt');
+    saveBlob(b, 'model.onnx.txt');
   };
   const onExportLoRA = async () => {
     const b = await exportLoRAAdapter({ modelName: 'aethergen-demo', profileName: 'auto' });
-    saveBlob(b, 'adapter.lora.stub.json');
+    saveBlob(b, 'adapter.lora.json');
   };
 
   const downloadJson = (obj: unknown, filename: string) => {
@@ -270,9 +270,9 @@ const PipelineManager: React.FC = () => {
           )}
         </div>
         <div className="flex gap-3 mt-3">
-          <button onClick={onExportGGUF} className="px-3 py-2 bg-slate-100 text-slate-800 rounded hover:bg-slate-200">Export GGUF (stub)</button>
-          <button onClick={onExportONNX} className="px-3 py-2 bg-slate-100 text-slate-800 rounded hover:bg-slate-200">Export ONNX (stub)</button>
-          <button onClick={onExportLoRA} className="px-3 py-2 bg-slate-100 text-slate-800 rounded hover:bg-slate-200">Export LoRA (stub)</button>
+          <button onClick={onExportGGUF} className="px-3 py-2 bg-slate-100 text-slate-800 rounded hover:bg-slate-200">Export GGUF</button>
+          <button onClick={onExportONNX} className="px-3 py-2 bg-slate-100 text-slate-800 rounded hover:bg-slate-200">Export ONNX</button>
+          <button onClick={onExportLoRA} className="px-3 py-2 bg-slate-100 text-slate-800 rounded hover:bg-slate-200">Export LoRA</button>
         </div>
       </div>
 

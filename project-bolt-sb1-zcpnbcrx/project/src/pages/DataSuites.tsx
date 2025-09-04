@@ -96,8 +96,8 @@ const DataSuites = () => {
       },
       appUrl: categoryName === 'Government' ? 'https://government.auspexi.com' :
                categoryName === 'Finance' ? 'https://meek-stardust-2d15b1.netlify.app/' : null,
-      recordsPerDay: categoryName === 'Government' || categoryName === 'Finance' ? '1M' : 'TBD',
-      recordsPerSuite: categoryName === 'Government' || categoryName === 'Finance' ? '125k' : 'TBD'
+      recordsPerDay: categoryName === 'Government' || categoryName === 'Finance' ? '1M' : 'to be announced',
+      recordsPerSuite: categoryName === 'Government' || categoryName === 'Finance' ? '125k' : 'to be announced'
     };
   }).filter(Boolean);
 

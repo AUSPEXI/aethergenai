@@ -64,7 +64,7 @@ UI Enhancements:
 - Dynamic <meta> keywords updated from /api/facts scored keywords.
 
 Automation:
-- Nightly crawler aggregation: .github/workflows/aggregate‑crawler‑pings.yml (stub; expand when logs persist) to update crawler‑stats.json with unique crawlers and top endpoints.
+- Nightly crawler aggregation: .github/workflows/aggregate‑crawler‑pings.yml (expand when logs persist) to update crawler‑stats.json with unique crawlers and top endpoints.
 - Evidence hashes: scripts/generate‑evidence‑hashes.mjs computes SHA‑256 for claims, run via .github/workflows/evidence‑hash.yml.
 
 

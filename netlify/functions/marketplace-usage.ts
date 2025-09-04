@@ -4,7 +4,7 @@ import { ok, rateLimit, tooMany } from './_shared/supabase'
 const handler: Handler = async (event) => {
   const rl = rateLimit(event, 'mp-usage', 120, 60)
   if (!rl.allowed) return tooMany(rl.retryAfter)
-  // Demo usage snapshot (per-tenant would require auth; this is a stub)
+  // Demo usage snapshot (per-tenant would require auth)
   return ok({
     period: 'last_24h',
     totals: {

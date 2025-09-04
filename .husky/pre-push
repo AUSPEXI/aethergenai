@@ -3,3 +3,8 @@
 
 npm run ip:check
 
+# If running on Windows with PowerShell available, also run the PS safeguard
+if command -v powershell.exe >/dev/null 2>&1; then
+  powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/prepush-ip-check.ps1 -StagedOnly
+fi
+

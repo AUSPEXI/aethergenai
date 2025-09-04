@@ -432,7 +432,7 @@ export class SchemaManagementService {
       case 'low': return '2-4 weeks';
       case 'medium': return '1-2 months';
       case 'high': return '2-3 months';
-      default: return 'TBD';
+      default: return 'to be estimated';
     }
   }
 

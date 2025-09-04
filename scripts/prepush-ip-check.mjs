@@ -26,13 +26,30 @@ for (const f of staged) {
 
 // 3) Basic secret scan in staged content (customize patterns)
 const secretRegexes = [
-  /(?i)API_KEY|SECRET|PRIVATE_KEY|SERVICE_ROLE|SUPABASE_SERVICE_ROLE_KEY|AWS_ACCESS_KEY_ID|AWS_SECRET_ACCESS_KEY/,
+  /(API_KEY|SECRET|PRIVATE_KEY|SERVICE_ROLE|SUPABASE_SERVICE_ROLE_KEY|AWS_ACCESS_KEY_ID|AWS_SECRET_ACCESS_KEY)/i,
 ];
+
+// ignore list for content scanning (avoid false positives from this script and safe files)
+const ignoreContentScan = [
+  /^scripts\/prepush-ip-check\.mjs$/i,
+  /^\.husky\//i,
+  /^public\/circuits\/verification_key\.json$/i
+];
+
 for (const f of staged) {
+  if (ignoreContentScan.some((re) => re.test(f))) continue;
   try {
     const content = readFileSync(join(repo, f), 'utf8');
     if (secretRegexes.some((re) => re.test(content))) fail(`IP check: secret-like token found in ${f}`);
   } catch {}
+}
+
+// 2b) Block committing new public circuit artifacts to the repo (protect IP/build integrity)
+const blockedPublicCircuitPatterns = [/(^|\/)public\/circuits\/.*\.(zkey|wasm)$/i];
+for (const f of staged) {
+  if (blockedPublicCircuitPatterns.some((re) => re.test(f))) {
+    fail(`IP check: refusing to push circuit artifact in repo: ${f}. Serve at runtime (CDN/secure storage) or gate by env.`);
+  }
 }
 
 // 4) Check SOPS config exists

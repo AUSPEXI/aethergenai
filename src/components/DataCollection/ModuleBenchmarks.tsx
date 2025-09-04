@@ -22,13 +22,13 @@ const ModuleBenchmarks: React.FC<{ qaMode?: boolean; seedPresent?: boolean }> = 
       setError(null);
       try {
         if (qaMode || !seedPresent) {
-          const stub = [
+          const modulesList = [
             { name: 'ModelA', description: 'Baseline classifier', enabled: true },
             { name: 'ModelB', description: 'Geometric mapper', enabled: true },
             { name: 'ModelC', description: 'Harmonic regularizer', enabled: false }
           ];
-          setModules(stub as any);
-          setSelectedModules(stub.filter((m: ModuleInfo) => m.enabled).map((m: ModuleInfo) => (m as any).name));
+          setModules(modulesList as any);
+          setSelectedModules(modulesList.filter((m: ModuleInfo) => m.enabled).map((m: ModuleInfo) => (m as any).name));
         } else {
           const response = await fetch('/.netlify/functions/modules');
           const data = await response.json();

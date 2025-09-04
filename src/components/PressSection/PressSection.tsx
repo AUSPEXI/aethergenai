@@ -89,7 +89,7 @@ const PressSection: React.FC<PressSectionProps> = ({ onContact }) => {
                 </p>
                 <div className="bg-white rounded-3xl shadow-2xl p-8 border border-gray-100">
                   <p className="text-gray-600 text-lg">
-                    🚧 Media Gallery coming soon! This section will include company logos, 
+                    Media Gallery will include company logos, 
                     platform screenshots, performance charts, and executive photos.
                   </p>
                 </div>

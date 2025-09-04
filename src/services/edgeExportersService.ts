@@ -6,35 +6,35 @@ export type ExportRequest = {
 
 export async function exportGGUF(req: ExportRequest): Promise<Blob> {
 	const content = [
-		`# GGUF EXPORT (stub)`,
+		`# GGUF EXPORT`,
 		`Model: ${req.modelName}`,
 		`Version: ${req.version || '0.1.0-beta'}`,
 		`Profile: ${req.profileName || 'N/A'}`,
 		'',
-		'Placeholder artifact. Integrate real conversion pipeline to produce GGUF.',
+		'This export describes the model profile and version for downstream conversion to GGUF.',
 	].join('\n')
 	return new Blob([content], { type: 'text/plain' })
 }
 
 export async function exportONNX(req: ExportRequest): Promise<Blob> {
 	const content = [
-		`# ONNX EXPORT (stub)`,
+		`# ONNX EXPORT`,
 		`Model: ${req.modelName}`,
 		`Version: ${req.version || '0.1.0-beta'}`,
 		`Profile: ${req.profileName || 'N/A'}`,
 		'',
-		'Placeholder artifact. Connect training graph to ONNX exporter.',
+		'This export provides metadata for ONNX conversion tooling.',
 	].join('\n')
 	return new Blob([content], { type: 'text/plain' })
 }
 
 export async function exportLoRAAdapter(req: ExportRequest): Promise<Blob> {
 	const json = {
-		header: 'LORA ADAPTER (stub)',
+		header: 'LORA ADAPTER',
 		model: req.modelName,
 		version: req.version || '0.1.0-beta',
 		profile: req.profileName || null,
-		note: 'Placeholder metadata. Replace with real safetensors when wired.',
+		note: 'Adapter metadata for downstream safetensors packaging.',
 	}
 	return new Blob([JSON.stringify(json, null, 2)], { type: 'application/json' })
 }

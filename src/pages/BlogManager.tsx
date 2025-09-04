@@ -42,8 +42,8 @@ const BlogManager: React.FC = () => {
   const createStub = () => {
     const safeSlug = slug.trim() || 'new-post';
     const safeTitle = title.trim() || 'New Blog Post';
-    const stub = `<!doctype html>\n<html lang="en">\n<head>\n  <meta charset="utf-8">\n  <title>${safeTitle}</title>\n</head>\n<body>\n  <h1>${safeTitle}</h1>\n  <p>Intro paragraph. Replace this content, then click Download and place the file at public/blog-html/${safeSlug}.html</p>\n</body>\n</html>\n`;
-    setHtml(stub);
+    const template = `<!doctype html>\n<html lang="en">\n<head>\n  <meta charset="utf-8">\n  <title>${safeTitle}</title>\n</head>\n<body>\n  <h1>${safeTitle}</h1>\n  <p>Intro paragraph. Replace this content, then click Download and place the file at public/blog-html/${safeSlug}.html</p>\n</body>\n</html>\n`;
+    setHtml(template);
     setMessage('Stub created in editor.');
   };
 

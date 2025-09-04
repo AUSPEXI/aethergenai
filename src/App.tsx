@@ -40,6 +40,11 @@ import { DocsCIEvidence } from './pages/DocsCIEvidence'
 import { DocsDemos } from './pages/DocsDemos'
 import SwarmSafetyDemo from './pages/SwarmSafetyDemo'
 import InsuranceFraudDemo from './pages/InsuranceFraudDemo'
+import SafetyNotice from './pages/SafetyNotice'
+import MetricsDemo from './pages/MetricsDemo'
+import ContextStudio from './pages/ContextStudio'
+import ABExperiment from './pages/ABExperiment'
+import ContextDashboard from './pages/ContextDashboard'
 
 import Footer from './components/Footer';
 
@@ -103,6 +108,11 @@ function RoutedApp() {
                         <Route path="/docs/demos" element={<DocsDemos />} />
                         <Route path="/swarm-safety-demo" element={<SwarmSafetyDemo />} />
                         <Route path="/insurance-fraud-demo" element={<InsuranceFraudDemo />} />
+                        <Route path="/safety" element={<SafetyNotice />} />
+                        <Route path="/metrics-demo" element={<MetricsDemo />} />
+                        <Route path="/context-studio" element={<ContextStudio />} />
+                        <Route path="/ab-experiment" element={<ABExperiment />} />
+                        <Route path="/context-dashboard" element={<ContextDashboard />} />
         </Routes>
       </div>
       {!hideChrome && <Footer />}

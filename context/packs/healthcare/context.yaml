@@ -1,0 +1,22 @@
+version: 1
+domain: healthcare
+ontologies:
+  roles: [patient, provider, facility]
+  intents: [admission, discharge, referral, prescription]
+norms:
+  shift_hours:
+    - name: day
+      start: '08:00'
+      end: '18:00'
+    - name: night
+      start: '18:00'
+      end: '08:00'
+policies:
+  - name: icu_latency_override
+    when: "location == 'ICU' and shift == 'night'"
+    effect: { latency_ceiling_ms: 150 }
+retrieval:
+  k_recent: 50
+  k_semantic: 25
+  k_graph: 2
+

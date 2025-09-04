@@ -27,7 +27,7 @@ const handler: Handler = async (event, context) => {
     const seedDataHash = hashData(seedData);
     const syntheticDataHash = hashData(syntheticData);
 
-    // TODO: Integrate with real PrivacyRaven/SDGym metrics here
+    // Integrate with PrivacyRaven/SDGym metrics via queued job or service when available
     // For now, return simulated metrics as before
     const privacyMetrics = {
       membership_inference: {

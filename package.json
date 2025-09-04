@@ -16,6 +16,7 @@
     "preview": "vite preview",
     "prepare": "husky",
     "ip:check": "node scripts/prepush-ip-check.mjs",
+    "ip:check:ps": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/prepush-ip-check.ps1 -StagedOnly",
     "evidence:hash": "node scripts/generate-evidence-hashes.mjs",
     "test:pricing": "node ./scripts/test-pricing.cjs",
     "test:automotive:quick": "tsx src/test/runQuickTest.ts",
@@ -29,7 +30,8 @@
     "blog:publish-html": "node scripts/publish-html-posts.mjs",
     "blog:index": "node scripts/build-blog-index.mjs",
     "blog:new": "node scripts/blog-new.mjs",
-    "blog:delete": "node scripts/blog-delete.mjs"
+    "blog:delete": "node scripts/blog-delete.mjs",
+    "scan:placeholders": "node scripts/scan-placeholders.cjs"
   },
   "dependencies": {
     "@aws-sdk/client-dataexchange": "^3.525.0",

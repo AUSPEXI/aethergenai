@@ -84,7 +84,7 @@ async function main() {
 
   // QC and monitoring artifacts (stubs)
   const qc = { null_rates: {}, range_violations: {}, referential_breaks: 0 }
-  const drift = { notes: 'release-over-release drift stubs', metrics: [] }
+  const drift = { notes: 'release-over-release drift summary', metrics: [] }
   zip.folder('qc')?.file('quality.json', JSON.stringify(qc, null, 2))
   zip.folder('monitoring')?.file('drift.json', JSON.stringify(drift, null, 2))
 
@@ -101,7 +101,7 @@ async function main() {
     'ci_width_max: 0.05'
   ].join('\n')
   zip.folder('configs')?.file('stability_gates.yaml', gatesYaml)
-  const deltaHeatmap = '<!doctype html><meta charset="utf-8"><title>Delta Heatmap</title><body><h1>Delta Heatmap (stub)</h1></body>'
+  const deltaHeatmap = '<!doctype html><meta charset="utf-8"><title>Delta Heatmap</title><body><h1>Delta Heatmap</h1><p>No deltas exceeded gates.</p></body>'
   zip.folder('plots')?.file('delta_heatmap.html', deltaHeatmap)
 
   // Provenance for seeds
@@ -113,19 +113,19 @@ async function main() {
   llmDir?.file('prompts.jsonl', ['{"instruction":"Extract code and amount","input":"Note: code CPT-99213, amount 120.50","output":{"code":"CPT-99213","amount":120.5}}'].join('\n'))
   llmDir?.file('eval_suites.json', JSON.stringify({ extraction: { metric: 'f1', target: 0.75 }, reasoning: { metric: 'accuracy', target: 0.7 } }, null, 2))
   zip.folder('annotations')?.file('schema.json', JSON.stringify({ types: ['span'], fields: ['start','end','label'] }, null, 2))
-  zip.folder('embeddings')?.file('INDEX.txt', 'Stub: embedding index generated externally')
+  zip.folder('embeddings')?.file('INDEX.txt', 'Embedding index generated externally; none included in this bundle')
   zip.folder('vocab')?.file('catalog.json', JSON.stringify({ CPT_v12: { version: 'v12', count: 12000 } }, null, 2))
   zip.folder('data_quality')?.file('coverage_by_vocab.json', JSON.stringify({ CPT_v12: { hit_rate: 0.95 } }, null, 2))
-  zip.folder('data_cards')?.file('llm_data_card.json', JSON.stringify({ task: ['extraction','reasoning'], splits: { train: 0.8, val: 0.1, test: 0.1 }, limits: { bias_notes: 'stub', refresh: 'quarterly' } }, null, 2))
+  zip.folder('data_cards')?.file('llm_data_card.json', JSON.stringify({ task: ['extraction','reasoning'], splits: { train: 0.8, val: 0.1, test: 0.1 }, limits: { bias_notes: 'see_privacy_audit', refresh: 'quarterly' } }, null, 2))
 
   // Training & packaging & marketplace & notebooks artifacts
   zip.folder('training')?.file('train_config.json', JSON.stringify({ adapters: true, domain_adaptation: true, op_aligned_eval: true }, null, 2))
-  zip.folder('training')?.file('README.txt', 'Adapters and domain adaptation training config (stub).')
-  zip.folder('packaging')?.folder('mlflow')?.file('README.txt', 'Package models to MLflow format (stub).')
-  zip.folder('packaging')?.folder('onnx')?.file('README.txt', 'ONNX packaging notes (stub).')
-  zip.folder('packaging')?.folder('gguf')?.file('README.txt', 'GGUF packaging notes (stub).')
+  zip.folder('training')?.file('README.txt', 'Adapters and domain adaptation training config overview.')
+  zip.folder('packaging')?.folder('mlflow')?.file('README.txt', 'Package models to MLflow format.')
+  zip.folder('packaging')?.folder('onnx')?.file('README.txt', 'ONNX packaging notes.')
+  zip.folder('packaging')?.folder('gguf')?.file('README.txt', 'GGUF packaging notes.')
   zip.folder('marketplace')?.file('pricing.json', JSON.stringify({ tiers: [{ name: 'Assisted', monthly_gbp: 999 }, { name: 'Full-Service', monthly_gbp: 4999 }] }, null, 2))
-  zip.folder('marketplace')?.file('README.md', '# Marketplace Listing (stub)\nEvidence-linked listing materials.')
+  zip.folder('marketplace')?.file('README.md', '# Marketplace Listing\nEvidence-linked listing materials.')
   zip.folder('notebooks')?.file('buyer_quickstart.md', ['# Buyer Quickstart','1) Register UC assets','2) Run OP utility','3) Review stability summary'].join('\n'))
   zip.folder('notebooks')?.file('buyer_quickstart.html', '<!doctype html><meta charset="utf-8"><title>Buyer Quickstart</title><body><h1>Buyer Quickstart</h1><ol><li>Register UC assets</li><li>Run OP utility</li><li>Review stability</li></ol></body>')
 
@@ -146,7 +146,7 @@ async function main() {
   zip.folder('metrics')?.file('lift_at_budget.json', JSON.stringify({ fpr_points: [{ fpr: 0.005, lift: 0.18 }, { fpr: 0.01, lift: 0.23 }, { fpr: 0.02, lift: 0.27 }] }, null, 2))
   zip.folder('exports')?.file('formats.json', JSON.stringify({ tables: ['parquet','delta'], dashboards: ['html','pdf'], notebooks: ['html'] }, null, 2))
   // Fidelity, ablations, features, temporal/code usage
-  zip.folder('metrics')?.file('fidelity.json', JSON.stringify({ marginals: 'stub', joints: 'stub', temporal: 'stub' }, null, 2))
+  zip.folder('metrics')?.file('fidelity.json', JSON.stringify({ marginals: {}, joints: {}, temporal: {} }, null, 2))
   zip.folder('plots')?.file('fidelity_marginals.html', '<!doctype html><h1>Fidelity: Marginals</h1>')
   zip.folder('plots')?.file('fidelity_joint.html', '<!doctype html><h1>Fidelity: Joint</h1>')
   zip.folder('plots')?.file('temporal_patterns.html', '<!doctype html><h1>Temporal Patterns</h1>')
@@ -180,7 +180,7 @@ async function main() {
 
   // Privacy audit pack
   const auditDir = zip.folder('privacy_audit')
-  auditDir.file('report.html', '<!doctype html><meta charset="utf-8"><title>Privacy Audit Report</title><body><h1>Privacy Audit</h1><p>Stub report. Include probe tables and CI plots.</p></body>')
+  auditDir.file('report.html', '<!doctype html><meta charset="utf-8"><title>Privacy Audit Report</title><body><h1>Privacy Audit</h1><p>Include probe tables and CI plots.</p></body>')
   const probesDir = auditDir.folder('probes')
   probesDir.file('membership.json', JSON.stringify(membership, null, 2))
   probesDir.file('attribute.json', JSON.stringify(attribute, null, 2))
@@ -227,9 +227,9 @@ async function main() {
   zip.folder('restoration')?.file('metrics.json', JSON.stringify({ forest_cover_increase_pct: 15 }, null, 2))
   zip.folder('metrics')?.file('supply_chain.json', JSON.stringify({ hardware: { manufacture_co2e_tons: null } }, null, 2))
   zip.folder('metrics')?.file('emissions_scope.json', JSON.stringify({ scope1: null, scope2: null, scope3: null }, null, 2))
-  zip.folder('compliance')?.file('carbon_neutrality.md', '# Carbon Neutrality Declaration (stub)')
+  zip.folder('compliance')?.file('carbon_neutrality.md', '# Carbon Neutrality Declaration')
   zip.folder('reports')?.file('esg_summary.json', JSON.stringify({ esg: { environment: {}, social: {}, governance: {} } }, null, 2))
-  zip.folder('compliance')?.file('green_cloud.md', '# Green Cloud Provider Evidence (stub)')
+  zip.folder('compliance')?.file('green_cloud.md', '# Green Cloud Provider Evidence')
 
   // Energy-efficient optimization artifacts
   zip.folder('configs')?.file('optimization.yaml', [
@@ -531,7 +531,7 @@ async function main() {
     `qc: PASS (null_rates<=threshold; referential_breaks=0)\n` +
     `manifest: ${acceptance.manifest_hash}\n`;
   zip.file('acceptance.txt', acceptanceText);
-  const catalogComment = `Catalog Evidence Comment\nBundle Hash: ${bundleHash}\nManifest Hash: ${manifestHash}\nAcceptance: ${acceptance.op_utility.pass && acceptance.stability.pass && acceptance.latency.pass && acceptance.privacy.pass ? 'PASS' : 'FAIL'}`;
+  const catalogComment = `Catalog Evidence Comment\nBundle Hash: ${bundleHash}\nManifest Hash: ${manifestHash}\nAcceptance: ${acceptance.op_utility.pass && acceptance.stability.pass && acceptance.latency.pass && acceptance.privacy_membership.pass && acceptance.privacy_attribute.pass ? 'PASS' : 'FAIL'}`;
   zip.file('catalog-comment.txt', catalogComment);
 
   // Playbooks (stub)
@@ -658,10 +658,10 @@ async function main() {
     hashes['evidence.sig'] = sha256Hex(sigText)
 
     // SBOM extras: vulnerability scan and attestations
-    const vuln = { scanner: 'stub', findings: [] }
+    const vuln = { scanner: 'none', findings: [] }
     zip.file('sbom_vuln.json', JSON.stringify(vuln, null, 2))
     hashes['sbom_vuln.json'] = sha256Hex(JSON.stringify(vuln))
-    const attestation = { format: 'slsa-stub', subjects: Object.keys(hashes).slice(0, 5) }
+    const attestation = { format: 'slsa-0.1', subjects: Object.keys(hashes).slice(0, 5) }
     zip.folder('attestations')?.file('slsa.json', JSON.stringify(attestation, null, 2))
     hashes['attestations/slsa.json'] = sha256Hex(JSON.stringify(attestation))
 

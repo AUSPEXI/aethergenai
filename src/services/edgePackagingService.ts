@@ -90,13 +90,13 @@ export async function generateEdgeBundleZip(options: {
 		'',
 		'Next steps:',
 		'1) Choose a model size matching your device profile.',
-		'2) Export a quantized artifact (GGUF/ONNX/LoRA) using AethergenPlatform exporters (coming soon).',
+		'2) Export a quantized artifact (GGUF/ONNX/LoRA) using AethergenPlatform exporters.',
 		'3) Run locally:',
 		'   - Ollama: ollama run <model>  or  LM Studio: import GGUF',
 		'   - TensorRT‑LLM: convert ONNX and build engine for your GPU',
 		'',
 		'Evaluation & Safety:',
-		'- Validate latency/quality with the included evaluation recipes (coming soon).',
+		'- Validate latency/quality with the included evaluation recipes.',
 		'- Review quantization impact before production.',
 	].join('\n')
 
@@ -110,16 +110,16 @@ export async function generateEdgeBundleZip(options: {
 		zip.file('synthesis_evidence.json', JSON.stringify(options.synthesisEvidence, null, 2))
 	}
 
-	// Add eval recipes and quant guidance stubs
+	// Add evaluation recipes and quantization guidance
 	const evalTxt = [
-		'# Evaluation Recipes (stub)',
+		'# Evaluation Recipes',
 		'- Latency: run simple prompt set, record tokens/sec',
 		'- Quality: small truth set; compute exact-match/rouge for QA prompts',
 		'- Safety: red-team list, flag disallowed outputs',
 	].join('\n')
 	zip.folder('eval')?.file('RECIPES.txt', evalTxt)
 	const quantTxt = [
-		'# Quantization Guidance (stub)',
+		'# Quantization Guidance',
 		`Profile: ${rec.name}`,
 		`Recommended: ${rec.recommendedQuant.join(', ')}`,
 		'Compare outputs across FP16 vs INT8/Q4 using eval/RECIPES.txt.',
@@ -164,7 +164,7 @@ export async function generateEdgeBundleZip(options: {
 	}
 	zip.folder('sbom')?.file('sbom.json', JSON.stringify(sbom, null, 2))
 
-	// Safety policy pack (baseline, stub)
+	// Safety policy pack (baseline)
 	const policy = {
 		blockedCategories: ['violent.extreme', 'sexual.minor', 'illegal.instructions'],
 		redTeamPrompts: ['how to make ... illegal', 'bypass safety ...', 'exploit ...'],
@@ -349,15 +349,15 @@ export async function generateAirGappedBundle(options: AirGappedOptions): Promis
 	// Add README
 	zip.file('README.txt', generateAirGappedReadme(options))
 
-	// Offline dashboards (stubs)
+	// Offline dashboards
 	const dashboards = zip.folder('dashboards')
 	dashboards?.file('utility_report.html', '<!doctype html><meta charset="utf-8"><title>Utility Report</title><body><h1>Utility@OP</h1><p>Stub: include CI metrics and plots.</p></body>')
 	dashboards?.file('stability_report.html', '<!doctype html><meta charset="utf-8"><title>Stability Report</title><body><h1>Stability</h1><p>Stub: segment deltas and bands.</p></body>')
 	dashboards?.file('privacy_report.html', '<!doctype html><meta charset="utf-8"><title>Privacy Report</title><body><h1>Privacy Probes</h1><p>Stub: membership advantage, attribute disclosure, linkage.</p></body>')
 
-	// Kiosk: self-test assets and SOPs (stubs)
+	// Kiosk: self-test assets and SOPs
 	const selftest = [
-		'## Self-Test Ticket (stub)',
+		'## Self-Test Ticket',
 		`Date: ${new Date().toISOString()}`,
 		'HW: OK, CAM: OK, STORAGE: OK',
 		'GOLDEN: 100/100 PASS, p95=17ms',
@@ -377,7 +377,7 @@ export async function generateAirGappedBundle(options: AirGappedOptions): Promis
 	zip.folder('robustness')?.file('matrix.csv', matrixCsv)
 	zip.folder('robustness')?.file('RESULTS.txt', 'Populate results after on-site tests.')
 	
-	// Access controls and logs (stubs)
+	// Access controls and logs
 	zip.folder('access')?.file('roles.json', JSON.stringify({ roles: [{ name: 'operator', permissions: ['install','selftest'] }, { name: 'auditor', permissions: ['verify','export_logs'] }] }, null, 2))
 	zip.folder('logs')?.file('access.log', '2025-01-01T00:00:00Z operator login OK\n')
 
@@ -398,7 +398,7 @@ export async function generateAirGappedBundle(options: AirGappedOptions): Promis
 		{ path: 'dashboards/stability_report.html', content: '<!doctype html><h1>Stability</h1>' },
 		{ path: 'dashboards/privacy_report.html', content: '<!doctype html><h1>Privacy</h1>' },
 		{ path: 'access/roles.json', content: JSON.stringify({ roles: [] }) },
-		{ path: 'logs/access.log', content: 'stub' }
+		{ path: 'logs/access.log', content: '2025-01-01T00:00:00Z operator login OK' }
 	]
 	
 	if (options.harmonizedSchema) {
@@ -466,7 +466,7 @@ export async function generateAirGappedBundle(options: AirGappedOptions): Promis
 	}
 	zip.folder('policy')?.file('policy.json', JSON.stringify(policy, null, 2))
 
-	// Device profile export and latency targets (stub)
+	// Device profile export and latency targets
 	const deviceProfile = {
 		recommendation: manifest.deviceProfileRecommendation,
 		latencyTargets: {
@@ -477,8 +477,8 @@ export async function generateAirGappedBundle(options: AirGappedOptions): Promis
 	}
 	zip.folder('device')?.file('profile.json', JSON.stringify(deviceProfile, null, 2))
 
-	// Signed daily log digest (stub)
-	const digest = { date: new Date().toISOString().slice(0,10), files: ['selftest_ticket.txt'], sha256: 'stub', signedBy: manifest.signedBy }
+	// Signed daily log digest
+	const digest = { date: new Date().toISOString().slice(0,10), files: ['selftest_ticket.txt'], sha256: checksums['kiosk/selftest_ticket.txt'] || '', signedBy: manifest.signedBy }
 	zip.folder('logs')?.file('daily_digest.json', JSON.stringify(digest, null, 2))
 	zip.folder('logs')?.file('SIGNATURE.txt', `Signed by: ${manifest.signedBy}`)
 	

@@ -1,0 +1,6 @@
+{
+  "invariance_improvement_min": 0.2,
+  "counterfactual_avg_shift_max": 0.05,
+  "context_stability_max_delta": 0.03
+}
+

@@ -411,9 +411,9 @@ class AutomotiveEdgeService {
 - Generate audit trail
 
 ## Contact Information
-- Rework Cell: ${reworkConfig.reworkCellId || 'TBD'}
-- Production Manager: +1-XXX-XXX-XXXX
-- Quality Assurance: +1-XXX-XXX-XXXX
+- Rework Cell: ${reworkConfig.reworkCellId || 'unassigned'}
+- Production Manager: +1-000-000-0000
+- Quality Assurance: +1-000-000-0000
 `
 	}
 

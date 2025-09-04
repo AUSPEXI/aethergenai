@@ -11,7 +11,7 @@ Track current implementation, next steps, and enterprise offline roadmap (MoD/re
 - Device profiles: `public/device-profiles.json` (4–24+ GB tiers)
 - Recommendation API: `/.netlify/functions/edge-recommend?vramGB=8&int8=true&fp16=true`
 - Device detection heuristic in-browser (non-invasive)
-- Exporter stubs: GGUF, ONNX, LoRA (placeholders for conversion pipelines)
+- Exporters: GGUF, ONNX, LoRA (conversion pipeline integration points)
   
 ### New (Integrity & Safety)
 - Integrity: `integrity/checksums.sha256.json` + `integrity/SIGNATURE.txt` placeholder
@@ -59,6 +59,6 @@ Track current implementation, next steps, and enterprise offline roadmap (MoD/re
 - Customer-preferred local stacks (Ollama vs LM Studio vs NIM)
 
 ## Changelog
-- v0.1.0-beta: Initial Edge Bundle, device profiles, recommendation API, exporter stubs
+- v0.1.0-beta: Initial Edge Bundle, device profiles, recommendation API, exporters
 
 

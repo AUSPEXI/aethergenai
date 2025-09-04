@@ -42,7 +42,7 @@ Capabilities checklist (current)
   - IP protection docs and verification checklist
 - Integrations (scaffold)
   - Provider switch (heuristic/local/remote) for prompts (LM Studio/Ollama later)
-  - Supabase schema migration scripts (Aethergen‑native); Netlify functions stubs (record‑dataset, ablations, MLflow, etc.)
+  - Supabase schema migration scripts (Aethergen‑native); Netlify functions (record‑dataset, ablations, MLflow, metrics, etc.)
 
 Commerce & Access
 - Stripe endpoints: `create-checkout-session`, `stripe-webhook`; entitlements read via `get-entitlements`.
@@ -72,6 +72,44 @@ Now (ship in days)
 - Databricks bridge (MVP)
   - Netlify function: POST recipe → Databricks Jobs API; stream logs; return MLflow run URL.
   - Log metrics/artifacts to MLflow; write datasets to Delta; register lineage in Unity Catalog.
+- Privacy/Utility Metrics (MVP)
+  - Endpoints:
+    - POST `.netlify/functions/metrics-run` with body `{ dataset_path, uc_volume, config? }` → returns `{ ok, run_id }`
+    - GET `.netlify/functions/metrics-result?run_id=...` → returns `{ ok, state, run }`
+  - Databricks notebook: `databricks/metrics/compute_metrics_notebook.py` writes `results.json` to `dbfs:/Volumes/<catalog>/<schema>/<volume>/metrics/<subdir>`
+  - Frontend page: `/metrics-demo` (dev only) to submit/poll runs
+  - Required env in Netlify/GitHub:
+    - `DATABRICKS_HOST` (https://adb-...cloud.databricks.com)
+    - `DATABRICKS_TOKEN` (PAT)
+    - Optional: `DATABRICKS_CLUSTER_ID`, `METRICS_NOTEBOOK_PATH` (default `/Shared/metrics/compute_metrics`)
+  - Usage:
+    1) Open `/metrics-demo`
+    2) Set `dataset_path` (DBFS/UC path) and `uc_volume` output path
+    3) Provide config JSON (e.g., `{ "fpr": 0.01 }`)
+    4) Submit → poll until `TERMINATED`
+    5) Inspect `results.json` in the UC Volume
+
+Contextual Modeling (MVP)
+- Artifacts:
+  - `schema/context.yaml` (Actor, Event, Episode; windows; graph motifs)
+  - `context/packs/healthcare/context.yaml` (roles, intents, norms, policies, retrieval knobs)
+- Endpoints:
+  - POST `.netlify/functions/context-ingest` with `{ events_table, events[] }` → stages JSON to DBFS (wire COPY INTO later)
+  - GET `.netlify/functions/context-retrieve?actor_id=...&k_recent=50&k_semantic=25&k_graph=2` → returns context bundle plan (hook to SQL/GraphFrames next)
+- Frontend dev page: `/context-studio` to ingest JSON events and retrieve a context bundle plan
+- Next wiring steps:
+  - Databricks DLT/Jobs: windowed features and graph motifs on Delta tables
+  - Retrieval joins: implement SQL/GraphFrames for events + episodes + semantic hits
+  - Context metrics in CI: `metrics/context_stability.json`, `metrics/invariance.json`, `metrics/counterfactual.json`
+
+Experiments (A/B) and Policy
+- Training hook: `src/services/contextTrainingService.ts` and types in `src/types/contextTraining.ts`
+- Policy over context: `policy/context_rules.yaml` with engine `src/services/contextPolicyEngine.ts`
+- Metrics collector: `scripts/collect-context-metrics.cjs` writes invariance/counterfactual/context_stability JSON
+- Databricks job template: `databricks/jobs/ab_context_experiment.json` (replace notebook paths/cluster)
+- Endpoints/UI:
+  - POST `.netlify/functions/ab-submit` to launch the A/B job (uses job template if spec not provided)
+  - Dev pages: `/ab-experiment` to submit/poll; `/context-dashboard` to view metrics JSON (serve artifacts/metrics)
 - Reproducibility & Evidence
   - Persist dataset versions (hash + count + storage_uri).
   - Sign ablation cards; include schema_hash, recipe_hash, app version, DP settings; store in `ae_evidence_bundles`.

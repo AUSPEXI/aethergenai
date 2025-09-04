@@ -195,13 +195,13 @@ const AdvancedBenchmarking: React.FC<AdvancedBenchmarkingProps> = ({
   const fetchBasicModules = async () => {
     try {
       if (!seedData?.length && !generatedData?.length) {
-        const stub = [
+        const modulesList = [
           { name: 'ModelA', description: 'Baseline classifier', enabled: true },
           { name: 'ModelB', description: 'Geometric mapper', enabled: true },
           { name: 'ModelC', description: 'Harmonic regularizer', enabled: false }
         ];
-        setModules(stub as any);
-        setSelectedModules(stub.filter((m: ModuleInfo) => m.enabled).map((m: ModuleInfo) => (m as any).name));
+        setModules(modulesList as any);
+        setSelectedModules(modulesList.filter((m: ModuleInfo) => m.enabled).map((m: ModuleInfo) => (m as any).name));
         return;
       }
       const response = await fetch('/.netlify/functions/modules');
@@ -215,7 +215,7 @@ const AdvancedBenchmarking: React.FC<AdvancedBenchmarkingProps> = ({
 
   const fetchBasicBenchmarks = async () => {
     if (!seedData?.length || !generatedData?.length) {
-      // Provide a stubbed benchmark in absence of data to avoid fetch errors
+      // Provide a minimal benchmark in absence of data to avoid fetch errors
       setBasicBenchmarkSummary({
         accuracy: 0.91,
         cost_reduction: 0.76,

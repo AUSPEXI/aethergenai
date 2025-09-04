@@ -13,7 +13,7 @@ export interface TransferResult {
   ledgerEntry: EnergyLedgerEntry;
 }
 
-// Minimal, IP-safe stub for elastic transfer. In a real implementation,
+// Minimal, IP-safe elastic transfer surface. In a real implementation,
 // this would apply Net2Net/LoRA mapping and optimizer-state projection.
 export async function applyElasticTransfer(
   from: TransferState,

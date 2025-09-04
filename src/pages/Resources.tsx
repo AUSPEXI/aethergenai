@@ -18,6 +18,38 @@ export const Resources: React.FC = () => {
       type: 'Interactive Demo'
     },
     {
+      icon: Brain,
+      title: 'Contextual Modeling (Dev)',
+      description: 'Ingest, retrieve, and compose context bundles; episodic/graph features and policies',
+      category: 'Technical Documentation',
+      link: '/context-studio',
+      type: 'Interactive Demo'
+    },
+    {
+      icon: Gauge,
+      title: 'Metrics & A/B (Dev)',
+      description: 'Submit Databricks metrics jobs, run A/B experiments, compare runs, publish acceptance',
+      category: 'Technical Documentation',
+      link: '/ab-experiment',
+      type: 'Interactive Demo'
+    },
+    {
+      icon: Activity,
+      title: 'Context Dashboard (Dev)',
+      description: 'Fetch results, evaluate gates (invariance, counterfactual, stability), and export acceptance',
+      category: 'Technical Documentation',
+      link: '/context-dashboard',
+      type: 'Interactive Demo'
+    },
+    {
+      icon: Lock,
+      title: 'Kill Switch & Policy Guard',
+      description: 'Tenant/geo revocation, policy fingerprints, and UC comment linking for governance',
+      category: 'Technical Documentation',
+      link: '/safety',
+      type: 'Guide'
+    },
+    {
       icon: Package,
       title: 'Air-Gapped Packaging Guide',
       description: 'How to generate secure edge bundles with manifests, QR codes, and field verification',

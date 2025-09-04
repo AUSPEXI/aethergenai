@@ -108,6 +108,12 @@ const handler: Handler = async (event) => {
       return { statusCode: 200, body: 'Use action=runAutomotive or action=getRun&run_id=...' }
     }
 
+    if (action === 'clusters') {
+      // List clusters visible to this workspace/token
+      const res = await api('/api/2.0/clusters/list', 'GET') as any
+      return { statusCode: 200, body: JSON.stringify(res) }
+    }
+
     if (action === 'runAutomotive') {
       const base = (event.queryStringParameters?.base || '').trim() || '/Shared/aethergen'
       // Bootstrap notebooks if requested or likely needed

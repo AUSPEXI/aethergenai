@@ -17,6 +17,19 @@ async function dbx(path: string, method: string, body?: any) {
   try { return JSON.parse(txt) } catch { return {} }
 }
 
+function isLikelyValidClusterId(candidate: unknown): candidate is string {
+  if (typeof candidate !== 'string') return false
+  const trimmed = candidate.trim()
+  if (!trimmed) return false
+  // Filter out placeholders or unresolved env messages injected by tooling
+  const badFragments = ['No value set', 'undefined', 'null', '${', 'context for environment variable']
+  if (badFragments.some(f => trimmed.includes(f))) return false
+  // Typical Azure Databricks cluster IDs look like MMDD-HHMMSS-xxxxxx
+  // e.g., 0904-221229-zymgfkwu
+  const pattern = /^\d{4}-\d{6}-[A-Za-z0-9_-]+$/
+  return pattern.test(trimmed)
+}
+
 const handler: Handler = async (event) => {
   try {
     if (event.httpMethod !== 'POST') return { statusCode: 405, body: 'method not allowed' }
@@ -24,23 +37,41 @@ const handler: Handler = async (event) => {
     const { dataset_path, uc_volume, config } = body
     if (!dataset_path || !uc_volume) return { statusCode: 400, body: 'dataset_path and uc_volume required' }
 
+    // Prefer explicit cluster_id from request; fallback to env; validate before use
+    const preferredClusterId = isLikelyValidClusterId(body.cluster_id) ? String(body.cluster_id).trim() : ''
+    const envClusterId = isLikelyValidClusterId(process.env.DATABRICKS_CLUSTER_ID) ? String(process.env.DATABRICKS_CLUSTER_ID).trim() : ''
+    const clusterId = preferredClusterId || envClusterId || ''
+
     // Define a one-off job to run a notebook/script that computes metrics and writes results.json to uc_volume
+    const taskBase: any = {
+      task_key: 'compute_metrics',
+      notebook_task: {
+        notebook_path: process.env.METRICS_NOTEBOOK_PATH || '/Shared/metrics/compute_metrics',
+        base_parameters: {
+          dataset_path,
+          uc_volume,
+          config: JSON.stringify(config || {})
+        }
+      }
+    }
+
+    const task = clusterId
+      ? { ...taskBase, existing_cluster_id: clusterId }
+      : {
+          ...taskBase,
+          new_cluster: {
+            // Use a modern, widely available runtime with Photon
+            spark_version: '16.4.x-photon-scala2.12',
+            node_type_id: 'Standard_D4ds_v5',
+            num_workers: 0, // single node
+            autotermination_minutes: 20,
+            data_security_mode: 'SINGLE_USER'
+          }
+        }
+
     const runs = await dbx('/api/2.1/jobs/runs/submit', 'POST', {
       run_name: `metrics-${Date.now()}`,
-      tasks: [
-        {
-          task_key: 'compute_metrics',
-          notebook_task: {
-            notebook_path: process.env.METRICS_NOTEBOOK_PATH || '/Shared/metrics/compute_metrics',
-            base_parameters: {
-              dataset_path,
-              uc_volume,
-              config: JSON.stringify(config || {})
-            }
-          },
-          existing_cluster_id: process.env.DATABRICKS_CLUSTER_ID || undefined,
-        }
-      ]
+      tasks: [task]
     })
 
     return { statusCode: 200, body: JSON.stringify({ ok: true, run_id: runs?.run_id }) }

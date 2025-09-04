@@ -20,4 +20,6 @@ jobs:
 
       - name: Run editorial linter
         run: npm run lint:editorial
+      - name: Entitlements guard
+        run: npm run guard:entitlements
 

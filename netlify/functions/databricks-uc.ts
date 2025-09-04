@@ -51,6 +51,17 @@ async function setObjectComment(objectType: 'tables' | 'models' | 'functions' | 
   return await api(`/unity-catalog/${objectType}/${encodeURIComponent(fullName)}`, 'PATCH', { comment })
 }
 
+async function grantVolumePermissions(catalog: string, schema: string, volume: string, principal: string, privileges: string[] = ['READ_VOLUME', 'WRITE_VOLUME']) {
+  const fullName = `${catalog}.${schema}.${volume}`
+  // Unity Catalog permissions endpoint for securables (volumes included)
+  // PATCH body uses changes with add/remove privileges
+  return await api(`/unity-catalog/permissions/volumes/${encodeURIComponent(fullName)}`, 'PATCH', {
+    changes: [
+      { principal, add: privileges }
+    ]
+  })
+}
+
 const handler: Handler = async (event) => {
   try {
     const action = event.queryStringParameters?.action || 'help'
@@ -101,6 +112,16 @@ const handler: Handler = async (event) => {
       if (!fullName || !comment) return { statusCode: 400, body: 'object_type, full_name and comment required' }
       const res = await setObjectComment(type, fullName, comment)
       return { statusCode: 200, body: JSON.stringify({ ok: true, object: res }) }
+    }
+
+    if (action === 'grantVolume') {
+      const catalog = (event.queryStringParameters?.catalog || 'aethergen').trim()
+      const schema = (event.queryStringParameters?.schema || 'evidence').trim()
+      const volume = (event.queryStringParameters?.volume || 'bundles').trim()
+      const principal = (event.queryStringParameters?.principal || 'users').trim()
+      const privs = (event.queryStringParameters?.privileges || 'READ_VOLUME,WRITE_VOLUME').split(',').map(p => p.trim()).filter(Boolean)
+      const res = await grantVolumePermissions(catalog, schema, volume, principal, privs)
+      return { statusCode: 200, body: JSON.stringify({ ok: true, granted: { catalog, schema, volume, principal, privileges: privs }, response: res }) }
     }
 
     return { statusCode: 400, body: 'unknown action' }

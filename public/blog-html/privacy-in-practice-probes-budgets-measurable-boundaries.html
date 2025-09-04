@@ -163,14 +163,14 @@
   <p><em>By Gwylym Owen — 30–45 min read</em></p>
 
   <h2>Executive Summary</h2>
-  <p>Privacy isn’t just a buzzword, brother—it’s a <strong>measurement</strong> we can shake hands on! AethergenPlatform can ship privacy <strong>probes</strong> to test the waters, optional <strong>differential privacy</strong> budgets to keep things tight, and <strong>evidence</strong> to prove it’s all legit. No empty promises here—just boundaries you and your regulators can trust as of September 2025!</p>
+  <p>Privacy is a <strong>measurement</strong>. AethergenPlatform provides privacy <strong>probes</strong>, optional <strong>differential privacy</strong> budgets, and <strong>evidence</strong> for verification. No hype—just boundaries you and your regulators can trust as of September 2025.</p>
 
-  <h2>Threats & Goals: The Bad Guys vs. Us</h2>
-  <p>Let’s talk about the sneaky threats we’re dodging, with a chuckle:</p>
+  <h2>Threats & Goals</h2>
+  <p>Threats to address:</p>
   <ul>
-    <li><strong>Membership Inference</strong>: Can some cheeky hacker figure out if Grandma’s medical record trained our model? We’ll catch ‘em!</li>
-    <li><strong>Attribute Disclosure</strong>: Can they guess her secret cookie recipe from the data? Not on our watch!</li>
-    <li><strong>Linkage</strong>: Can synthetic data be tied back to real identities like a bad detective novel? We’ve got the plot twist covered!</li>
+    <li><strong>Membership Inference</strong>: Detect whether a record influenced training.</li>
+    <li><strong>Attribute Disclosure</strong>: Predict sensitive attributes above baseline leakage.</li>
+    <li><strong>Linkage</strong>: Re-identify synthetic records via matching.</li>
   </ul>
   <p>Our goal? Keep privacy rock-solid while letting your models shine.</p>
 
@@ -182,16 +182,16 @@
     <li><strong>Report CIs & Thresholds</strong>: Give you confidence intervals (e.g., [0.01, 0.05]) and pass/fail gates (e.g., ≤ 0.05) per your policy.</li>
   </ul>
 
-  <h2>Differential Privacy (Optional): The Secret Sauce</h2>
-  <p>Want to add some extra spice? Here’s the DP dish:</p>
+  <h2>Differential Privacy (Optional)</h2>
+  <p>Program elements:</p>
   <ul>
     <li><strong>Per-Release Budgets</strong>: Set ε (e.g., 2.0) and δ (e.g., 1e-6) to limit a record’s impact, tracked across releases.</li>
     <li><strong>Utility Impact</strong>: Show how it affects operating points (e.g., -1% accuracy at 1% FPR) so you know the trade-off.</li>
     <li><strong>Evidence Bundle</strong>: Pack in DP parameters, summaries, and a little “trust me” note for the auditors!</li>
   </ul>
 
-  <h2>Process Controls: Keeping It Tight</h2>
-  <p>We’re not leaving anything to chance—here’s the playbook:</p>
+  <h2>Process Controls</h2>
+  <p>Controls:</p>
   <ul>
     <li><strong>Seed Minimisation</strong>: Keep random seeds locked down to avoid peeking.</li>
     <li><strong>Isolation from Artifacts</strong>: Evaluation data stays separate—no sneaky cross-contamination!</li>
@@ -199,30 +199,30 @@
     <li><strong>Review and Sign-Off</strong>: Tie it to evidence for that final thumbs-up.</li>
   </ul>
 
-  <h2>Reporting Template: The Proof in the Pudding</h2>
+  <h2>Reporting Template</h2>
   <pre>
 membership_advantage: 0.03 (ci [0.01,0.05]) threshold <= 0.05 PASS
 attribute_disclosure: 0.02 above baseline? NO PASS
 dp_budget: epsilon=2.0, delta=1e-6
   </pre>
 
-  <h2>Case Study: Healthcare Hustle</h2>
-  <p><strong>Scenario</strong>: A healthcare crew shipped a patient corpus with our magic touch.</p>
+  <h2>Use Case Example: Healthcare</h2>
+  <p><strong>Scenario</strong>: A healthcare team shipped a patient corpus with documented privacy controls.</p>
   <ul>
     <li><strong>Setup</strong>: Probes ran, DP was optional, and evidence was stacked.</li>
     <li><strong>Result</strong>: Membership advantage clocked in at 0.02 (below 0.05), utility held strong at OP, and auditors nodded.</li>
-    <li><strong>Win</strong>: Procurement signed off with a 6-month refresh policy—boom!</li>
+    <li><strong>Win</strong>: Procurement signed off with a 6‑month refresh policy.</li>
   </ul>
 
-  <h2>Case Study: Finance Fortress</h2>
+  <h2>Use Case Example: Finance</h2>
   <p><strong>Scenario</strong>: A bank fortified its fraud models offline.</p>
   <ul>
     <li><strong>Setup</strong>: Probes tested linkage, DP set at ε=1.5, evidence bundled.</li>
     <li><strong>Result</strong>: Attribute disclosure stayed at 0.01 (below 0.03), with a -0.5% utility hit deemed acceptable.</li>
-    <li><strong>Win</strong>: Audit passed remotely, saving a site visit—cheers to that!</li>
+    <li><strong>Win</strong>: Audit passed remotely, avoiding a site visit.</li>
   </ul>
 
-  <h2>FAQ: Let’s Clear the Air</h2>
+  <h2>FAQ</h2>
   <details>
     <summary>Do we always need DP?</summary>
     <p>Nah—only if the regulators are breathing down your neck! Probes and process controls can handle it otherwise—your call!</p>
@@ -232,14 +232,14 @@ dp_budget: epsilon=2.0, delta=1e-6
     <p>Ha, nice try! We use multiple tricks and CIs to keep it honest—methodology’s in the evidence, so no cheating allowed!</p>
   </details>
 
-  <h2>Glossary: The Privacy Dictionary</h2>
+  <h2>Glossary</h2>
   <ul>
     <li><strong>Membership Inference</strong>: That sneaky attempt to spot a record in the training crowd.</li>
-    <li><strong>DP</strong>: Differential privacy—keeps one record’s influence hush-hush with math magic.</li>
+    <li><strong>DP</strong>: Differential privacy—limits the influence of a single record.</li>
     <li><strong>Baseline Leakage</strong>: How much info leaks without the juicy stuff—our starting line!</li>
   </ul>
 
-  <h2>Checklist: Your Privacy To-Do List</h2>
+  <h2>Checklist</h2>
   <ul>
     <li><strong>Probes Run</strong>: Check those CIs and thresholds—did we pass?</li>
     <li><strong>DP Parameters</strong>: Documented if used—ε and δ locked in?</li>
@@ -284,21 +284,21 @@ budget_misuse, low, medium, policy+approval, governance
     <li><strong>Linkage Checks</strong>: Locality-sensitive hashing on embeddings—thresholded to catch sneaky links.</li>
   </ul>
 
-  <h2>Attack/Defense Cookbook: The Privacy Recipe</h2>
+  <h2>Attack/Defense Cookbook</h2>
   <ul>
     <li><strong>Attack</strong>: Train a baddie on real vs. synthetic labels, test on hold-out data—let’s see ‘em try!</li>
     <li><strong>Defense</strong>: Cut memorisation, sprinkle noise if DP’s on, and isolate processes like a vault.</li>
     <li><strong>Measure</strong>: Drop the advantage with CI, compare to your policy—pass or fail, we’ll know!</li>
   </ul>
 
-  <h2>Red-Team Playbook: Test the Fort</h2>
+  <h2>Red-Team Playbook</h2>
   <ol>
     <li><strong>Scenarios</strong>: Membership, attribute, linkage—set the success bar high.</li>
     <li><strong>Run Attacks</strong>: Record evidence, laugh at the attempts, suggest fixes.</li>
     <li><strong>Re-Run Probes</strong>: Verify thresholds—back to the drawing board if needed!</li>
   </ol>
 
-  <h2>Audit Pack Structure: The Evidence Chest</h2>
+  <h2>Audit Pack Structure</h2>
   <pre>
 privacy_audit/
 ├─ report.html
@@ -311,34 +311,34 @@ privacy_audit/
 └─ manifest.json
   </pre>
 
-  <h2>Evidence Correlation: Connecting the Dots</h2>
+  <h2>Evidence Correlation</h2>
   <ul>
     <li><strong>Link Results</strong>: Tie privacy to utility@OP and stability—show the full picture.</li>
     <li><strong>Trade-Offs</strong>: Spill the beans on any OP tweaks—transparency is king!</li>
   </ul>
 
-  <h2>DP Overview: Plain Language for the Win</h2>
+  <h2>DP Overview</h2>
   <ul>
     <li><strong>Budget ε</strong>: How much one record can stir the pot—lower means tighter privacy!</li>
     <li><strong>Utility Loss</strong>: We measure the hit (e.g., -1% at OP) so you’re not guessing.</li>
     <li><strong>δ</strong>: That tiny chance of a slip-up—kept super small, like 1 in a million!</li>
   </ul>
 
-  <h2>DP Application Notes: Practical Magic</h2>
+  <h2>DP Application Notes</h2>
   <ul>
     <li><strong>When to Use</strong>: Only if policy demands it—probes can handle the rest.</li>
     <li><strong>Document It</strong>: Log mechanisms, budgets, and composition—show your work!</li>
     <li><strong>Impact Examples</strong>: Expect -0.5% to -2% utility with CIs—your call if it’s worth it!</li>
   </ul>
 
-  <h2>Operational SOP: The Privacy Dance</h2>
+  <h2>Operational SOP</h2>
   <ol>
-    <li><strong>Before Release</strong>: Run probes, compile evidence, get that sign-off—party time!</li>
+    <li><strong>Before Release</strong>: Run probes, compile evidence, obtain sign‑off.</li>
     <li><strong>During Release</strong>: Attach the audit pack, log manifest IDs in change-control—lock it down!</li>
     <li><strong>After Release</strong>: Watch for hiccups, schedule refreshes, or rotate if needed—keep it smooth!</li>
   </ol>
 
-  <h2>Procurement Q&A: Answering the Tough Ones</h2>
+  <h2>Procurement Q&A</h2>
   <ul>
     <li><strong>Thresholds?</strong> Set by policy (e.g., 0.05 advantage)—we’ll explain why!</li>
     <li><strong>Membership Advantage?</strong> Measured with AUC—full details in evidence!</li>
@@ -361,20 +361,20 @@ policy:
     logs_retention_days: 365
   </pre>
 
-  <h2>Monitoring: Keeping the Eye On</h2>
+  <h2>Monitoring</h2>
   <ul>
     <li><strong>Track Metrics</strong>: Watch probe trends—alert if they wobble!</li>
     <li><strong>Log Evidence</strong>: Keep hashes immutable—no funny business!</li>
     <li><strong>Quarterly Review</strong>: Check thresholds and policies—stay sharp!</li>
   </ul>
 
-  <h2>Case Notes: Public Sector Shenanigans</h2>
+  <h2>Case Notes: Public Sector</h2>
   <p>For a government gig, we ran probes in an air-gapped bunker, stored audit packs locally, and only leaked summary metrics to the outside world. DP was optional, and membership advantage stayed below the line—mission accomplished!</p>
 
   <h2>Extended FAQ: More Laughs, More Answers</h2>
   <details>
     <summary>Are probes run on every refresh?</summary>
-    <p>You bet—every release gets a probe party, bundled with evidence!</p>
+    <p>Yes—every release includes probes bundled with evidence.</p>
   </details>
   <details>
     <summary>Can third parties validate probes?</summary>
@@ -395,7 +395,7 @@ probe_results.json
 }
   </pre>
 
-  <h2>Incident Runbook: When Things Go Boom</h2>
+  <h2>Incident Runbook</h2>
   <ol>
     <li><strong>Spot the Oops</strong>: Catch a probe regression—uh-oh!</li>
     <li><strong>Freeze & Triage</strong>: Halt releases, call the crew—time to fix!</li>
@@ -403,7 +403,7 @@ probe_results.json
     <li><strong>Re-Run & Resume</strong>: Probes back on, report attached—back in business!</li>
   </ol>
 
-  <h2>Governance Hooks: The Rule Enforcers</h2>
+  <h2>Governance Hooks</h2>
   <ul>
     <li><strong>Policy IDs</strong>: In evidence manifests—trace it back!</li>
     <li><strong>Approvals</strong>: Logged with names—accountability rocks!</li>
@@ -411,7 +411,7 @@ probe_results.json
   </ul>
 
   <h2>Closing Notes</h2>
-  <p>Privacy by measurement is how we earn your trust, brother! <strong>AethergenPlatform</strong> turns probes, budgets, and controls into a repeatable jam that ships boundaries you and your auditors can high-five over. Let’s keep the privacy party going!</p>
+  <p>Privacy by measurement is how trust is earned. <strong>AethergenPlatform</strong> turns probes, budgets, and controls into a repeatable program with boundaries that teams and auditors can verify.</p>
 
   <p><a href="/contact" class="aeg-btn">Contact Sales →</a></p>
 </body>

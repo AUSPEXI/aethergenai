@@ -172,17 +172,17 @@
   <p><em>By Gwylym Owen — 20–28 min read</em></p>
 
   <h2>Executive Summary</h2>
-  <p>Hey, healthcare fraud programs hit a wall when privacy rules block sharing, testing, and verification—frustrating, right? AethergenPlatform rolls out a synthetic-first pipeline that nails <strong>behavior</strong> without spilling <strong>identity</strong>, mate! Teams can prototype, evaluate, and prove fraud detectors with corpora that mirror real claims—PHI/PII-free. This piece walks you through the data model, generation tricks, typology library, eval gates, and evidence packaging to go from pilot to production in regulated zones, as of September 2025!</p>
+  <p>Healthcare fraud programs often stall when privacy rules block sharing, testing, and verification. AethergenPlatform supports a synthetic‑first pipeline that captures <strong>behavior</strong> without exposing <strong>identity</strong>. Teams can prototype, evaluate, and provide evidence with corpora that mirror real claims—PHI/PII‑free. This piece walks through the data model, generation process, typology library, evaluation gates, and evidence packaging to move from pilot to production in regulated zones as of September 2025.</p>
 
   <h2>Problem Context</h2>
-  <p>Fraud typologies outpace change-control, and it’s a mess! Rules stale out, models drift, and analysts drown. Real data can’t leave secure zones, so collaboration stalls, tools stay untested, and vendor claims are tough to trust. Synthetic corpora bring <strong>safe iteration</strong>, <strong>repeatable evaluation</strong>, and <strong>solid procurement evidence</strong>—let’s fix that!</p>
+  <p>Fraud typologies evolve faster than change‑control cycles. Rules become stale, models drift, and analyst workload increases. Real data cannot leave secure zones, so collaboration slows, tools remain untested, and vendor claims are difficult to verify. Synthetic corpora enable <strong>safe iteration</strong>, <strong>repeatable evaluation</strong>, and <strong>procurement‑grade evidence</strong>.</p>
 
   <h2>Clinical-Claims Data Model</h2>
   <p>Here’s the blueprint, simplified:</p>
   <ul>
-    <li><strong>Entities</strong>: Patient (de-identified), provider, facility, payer plan, claim, line item, prescription, lab event—keep it real!</li>
-    <li><strong>Core Attributes</strong>: Dates, CPT/HCPCS/ICD codes, NPI/specialty (synthetic), amounts (billed/allowed/paid), place of service, modifiers, units, referrals, prior auth flags—cover the bases!</li>
-    <li><strong>Relations</strong>: Provider↔facility affiliation, patient↔provider panels, claim↔line items, episodes of care, referral chains, pharmacy fill sequences—tie it together!</li>
+    <li><strong>Entities</strong>: Patient (de‑identified), provider, facility, payer plan, claim, line item, prescription, lab event.</li>
+    <li><strong>Core Attributes</strong>: Dates, CPT/HCPCS/ICD codes, NPI/specialty (synthetic), amounts (billed/allowed/paid), place of service, modifiers, units, referrals, prior‑auth flags.</li>
+    <li><strong>Relations</strong>: Provider↔facility affiliation, patient↔provider panels, claim↔line items, episodes of care, referral chains, pharmacy fill sequences.</li>
   </ul>
 
   <h2>Dataset Schema Example</h2>
@@ -221,7 +221,7 @@ labs(
   </ul>
 
   <h2>Acceptance Checklist</h2>
-  <p>Your go-to list:</p>
+  <p>Checklist:</p>
   <ul>
     <li><strong>Target KPI</strong>: Defined and tied to analyst staffing—set the goal!</li>
     <li><strong>Operating Points</strong>: Fixed with CI bands reported—clear metrics!</li>
@@ -230,18 +230,18 @@ labs(
     <li><strong>Evidence Bundle</strong>: Signed and archived—proof ready!</li>
   </ul>
 
-  <h2>Case Study</h2>
+  <h2>Use Case Example</h2>
   <p><strong>Scenario</strong>: A simulated regional upcoding sweep for a payer.</p>
-  <p>A four-week pilot on orthopedic claims locked operating points at 1% FPR. The synthetic-trained baseline boosted reviewed-case yield by 23% versus legacy rules and cut false escalations by 11%. Stability held across three regions; privacy probes showed no risk spikes. Procurement accepted with gates and rollback defined—mission accomplished!</p>
+  <p>A four‑week pilot on orthopedic claims could lock operating points at 1% FPR. A synthetic‑trained baseline might boost reviewed‑case yield versus legacy rules while reducing false escalations. Stability could hold across regions; privacy probes would be monitored. Procurement proceeds only if gates pass and rollback is defined.</p>
 
   <h2>FAQ</h2>
   <details>
     <summary>Does synthetic data replace real investigations?</summary>
-    <p>Nope—synthetic data swaps unsafe sharing and vendor demos for safe, repeatable eval. Real investigations stay the gold standard for adjudication; synthetic preps the system to shine before live data!</p>
+    <p>No. Synthetic data is for testing and development; real investigations confirm outcomes.</p>
   </details>
   <details>
     <summary>Can we tune prevalence to stress analysts?</summary>
-    <p>You bet! Typologies are adjustable—simulate surges or rare outliers to test workload and triage policy, mate!</p>
+    <p>Yes. Typologies are adjustable to simulate workload and policy trade‑offs.</p>
   </details>
   <details>
     <summary>How do you prevent overfitting to synthetic quirks?</summary>
@@ -264,7 +264,7 @@ labs(
   </ul>
 
   <h2>Contact</h2>
-  <p>Ready to tackle fraud detection safely and smartly? <a href="/contact">Chat with us</a> about a focused pilot, mate!</p>
+  <p>Ready to tackle fraud detection safely and effectively? <a href="/contact">Contact us</a> about a focused pilot.</p>
 
   <h2>Generation Pipeline</h2>
   <p>Let’s build it step by step:</p>
@@ -357,7 +357,7 @@ labs(
   </ul>
 
   <blockquote>
-    <p><strong>AethergenPlatform</strong> proves claims with <em>evidence</em>. You get realism sans identifiers, clear utility at your alert budget, and reproducible packages that satisfy audit—nice work, mate!</p>
+    <p><strong>AethergenPlatform</strong> prioritizes evidence. You get realism without identifiers, utility at your alert budget, and reproducible packages suitable for audit.</p>
   </blockquote>
 
   <p><a href="/contact" class="aeg-btn">Contact Sales →</a></p>

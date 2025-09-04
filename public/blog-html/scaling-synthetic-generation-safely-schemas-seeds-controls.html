@@ -163,18 +163,18 @@
   <p><em>By Gwylym Owen — 28–40 min read</em></p>
 
   <h2>Executive Summary</h2>
-  <p>Hey, scaling synthetic data isn’t just about hitting the “more” button, mate—it’s about <strong>control</strong> with a human touch! AethergenPlatform can help you wrangle schemas, keep seeds in check, layer on scenario magic, and set privacy/utility gates you can trust. Whether it’s millions or billions of records, we’ve got your back with confidence as of September 2025!</p>
+  <p>Scaling synthetic data is not just about volume—it’s about <strong>control</strong>. AethergenPlatform helps manage schemas, seed discipline, scenario overlays, and privacy/utility gates you can trust. Whether it’s millions or billions of records, the process remains governed as of September 2025.</p>
 
-  <h2>Control Surfaces: The Toolbox</h2>
-  <p>These are the dials we twist to make it work, with a bit of fun:</p>
+  <h2>Control Surfaces</h2>
+  <p>Primary controls:</p>
   <ul>
-    <li><strong>Schemas</strong>: Typed fields, constraints, vocabularies, and relations—think of it as the blueprint for your data house!</li>
-    <li><strong>Seeds</strong>: Minimal or redacted anchors for realism, kept under lock and key like a secret recipe.</li>
-    <li><strong>Recipes</strong>: Generation tricks with knobs and limits—let’s cook some data!</li>
-    <li><strong>Scenarios</strong>: Overlays to spice up tails and stress-test the heck out of it.</li>
-    <li><strong>Validation</strong>: Fidelity and utility metrics with confidence intervals—proof it’s not rubbish!</li>
-    <li><strong>Privacy</strong>: Probes to catch leaks and optional DP budgets for extra peace of mind.</li>
-    <li><strong>Evidence</strong>: Signed bundles to show the suits we’ve done it right.</li>
+    <li><strong>Schemas</strong>: Typed fields, constraints, vocabularies, and relations.</li>
+    <li><strong>Seeds</strong>: Minimal or redacted anchors for realism, held under strict access control.</li>
+    <li><strong>Recipes</strong>: Generation methods with bounded parameters.</li>
+    <li><strong>Scenarios</strong>: Overlays to preserve tails and support stress tests.</li>
+    <li><strong>Validation</strong>: Fidelity and utility metrics with confidence intervals.</li>
+    <li><strong>Privacy</strong>: Probes to measure leakage and optional DP budgets.</li>
+    <li><strong>Evidence</strong>: Signed bundles suitable for audit and procurement.</li>
   </ul>
 
   <h2>Schema Discipline: Building the Foundation</h2>
@@ -194,8 +194,8 @@
     <li><strong>Provenance</strong>: Document where they came from and how long they stick around—paper trail time!</li>
   </ul>
 
-  <h2>Generation Recipes: Cooking Up Data</h2>
-  <p>These are the chef’s specials, with a grin:</p>
+  <h2>Generation Recipes</h2>
+  <p>Approaches:</p>
   <ul>
     <li><strong>Copulas</strong>: For joint distributions—think correlated claims and amounts!</li>
     <li><strong>Sequence Models</strong>: Timelines with flair, like patient visit patterns.</li>
@@ -203,35 +203,35 @@
     <li><strong>Parameter Ranges</strong>: Safe defaults (e.g., amount μ=4.2) with hard caps (e.g., max 10,000) to avoid chaos.</li>
   </ul>
 
-  <h2>Scenario Overlays: Adding the Drama</h2>
-  <p>Let’s spice it up with some scenarios:</p>
+  <h2>Scenario Overlays</h2>
+  <p>Examples:</p>
   <ul>
     <li><strong>Rare Events</strong>: Fraud typologies or adverse cases with adjustable knobs (e.g., 1% prevalence).</li>
     <li><strong>Stress Ranges</strong>: Push robustness (e.g., 10x load) to see if it bends or breaks.</li>
     <li><strong>Versioned Overlays</strong>: Reproducible seeds (e.g., seed=1234) for v1.2 overlays—consistency is king!</li>
   </ul>
 
-  <h2>Validation & Utility: Checking the Taste</h2>
-  <p>Time to taste-test the data:</p>
+  <h2>Validation & Utility</h2>
+  <p>Validation plan:</p>
   <ul>
     <li><strong>Comparisons</strong>: Marginals, joints, and temporal stats with tolerances (e.g., ±2% drift).</li>
     <li><strong>Baseline Detectors</strong>: Test at operating points (e.g., 0.75 at 1% FPR) with CI bands (e.g., [0.73, 0.77]).</li>
     <li><strong>Analyst Yield</strong>: Cost curves (e.g., $10 per flagged case) to show real-world value.</li>
   </ul>
 
-  <h2>Privacy Controls: Keeping It Secret</h2>
-  <p>Privacy’s no joke—let’s lock it down:</p>
+  <h2>Privacy Controls</h2>
+  <p>Controls:</p>
   <ul>
     <li><strong>Membership Inference</strong>: Keep advantage below thresholds (e.g., 0.05) with probe reports.</li>
     <li><strong>Attribute Disclosure</strong>: Stay under baselines (e.g., 0.03 above random) for sensitive fields.</li>
     <li><strong>Optional DP</strong>: Declare budgets (e.g., ε=2.0, δ=1e-6) and show utility impact (e.g., -1% at OP).</li>
   </ul>
 
-  <h2>Evidence & Governance: The Paperwork Party</h2>
-  <p>Let’s wrap it up with some proof:</p>
+  <h2>Evidence & Governance</h2>
+  <p>Artifacts:</p>
   <ul>
     <li><strong>Signed Manifests</strong>: SBOM, environment fingerprints—signed with a digital wink!</li>
-    <li><strong>Logs</strong>: Seeds, configs, parameters logged for a regen party if needed.</li>
+    <li><strong>Logs</strong>: Seeds, configs, and parameters logged for reproducible regeneration.</li>
     <li><strong>Change-Control</strong>: Ready for procurement filing with `.aethergen/change-log.json`.</li>
   </ul>
 
@@ -241,7 +241,7 @@ schema → seeds → generation → overlays → validation → privacy → pack
                         ↘ ablations ↗
   </pre>
 
-  <h2>Case Study: AML Adventure</h2>
+  <h2>Use Case Example: AML Scaling</h2>
   <p><strong>Scenario</strong>: An AML squad scaled from 10M to 1B edges—talk about a growth spurt!</p>
   <ul>
     <li><strong>Move</strong>: Tightened schemas, switched to graph generators with parameterized fraud scenarios.</li>
@@ -249,7 +249,7 @@ schema → seeds → generation → overlays → validation → privacy → pack
     <li><strong>Win</strong>: Procurement gave the nod with quarterly refreshes—smooth sailing!</li>
   </ul>
 
-  <h2>Case Study: Healthcare Hustle</h2>
+  <h2>Use Case Example: Healthcare Trials</h2>
   <p><strong>Scenario</strong>: A health team needed 500M patient records for trials.</p>
   <ul>
     <li><strong>Move</strong>: Used copulas with overlay for rare diseases, minimized seeds to 2,000 rows.</li>
@@ -257,29 +257,29 @@ schema → seeds → generation → overlays → validation → privacy → pack
     <li><strong>Win</strong>: Evidence bundle sealed the deal in 2 weeks—high-fives all around!</li>
   </ul>
 
-  <h2>FAQ: Clearing the Air</h2>
+  <h2>FAQ</h2>
   <details>
     <summary>Can we skip overlays?</summary>
-    <p>Not if you want the good stuff! Overlays keep tails alive—skip ‘em, and your detectors might miss the rare gems!</p>
+    <p>Overlays help preserve tails; omitting them may reduce coverage of rare events.</p>
   </details>
   <details>
     <summary>How much seed data is enough?</summary>
-    <p>Start lean—enough to shape it (e.g., 1,000 rows)—add more only if fidelity gates flop!</p>
+    <p>Start lean (e.g., 1,000 rows) and add more only if fidelity gates fail.</p>
   </details>
 
-  <h2>Glossary: The Jargon Decoder</h2>
+  <h2>Glossary</h2>
   <ul>
-    <li><strong>Overlay</strong>: A scenario tweak to crank up prevalence or severity—add some drama!</li>
-    <li><strong>DP</strong>: Differential privacy—keeps one record’s secrets safe with math magic.</li>
-    <li><strong>Utility@OP</strong>: How well it performs at your chosen operating point—our gold standard!</li>
+    <li><strong>Overlay</strong>: A scenario tweak to adjust prevalence or severity.</li>
+    <li><strong>DP</strong>: Differential privacy—limits the influence of a single record.</li>
+    <li><strong>Utility@OP</strong>: Performance at a chosen operating point.</li>
   </ul>
 
-  <h2>Checklist: Your Safety Net</h2>
+  <h2>Checklist</h2>
   <ul>
     <li><strong>Schemas</strong>: Versioned, dictionaries pinned—blueprint’s solid!</li>
     <li><strong>Seeds</strong>: Minimized, probes pass—secrets are safe!</li>
     <li><strong>Recipes</strong>: Bounded, overlays documented—cooking’s on point!</li>
-    <li><strong>Validation & Evidence</strong>: Green lights all around—party time!</li>
+    <li><strong>Validation & Evidence</strong>: All gates PASS; evidence bundled.</li>
   </ul>
 
   <h2>Recipe Catalog: The Chef’s Menu</h2>
@@ -305,48 +305,48 @@ constraint Claim.amount >= 0
 vocab Claim.code in CPT_v12
   </pre>
 
-  <h2>QC Checks: Quality Control Fun</h2>
+  <h2>QC Checks</h2>
   <ul>
     <li><strong>Null Rates</strong>: Keep them below thresholds (e.g., < 1%) per field—no gaps!</li>
     <li><strong>Integrity</strong>: Range, regex, and referential checks—dot the i’s!</li>
     <li><strong>Coverage</strong>: Rare codes hit via overlays—catch those outliers!</li>
   </ul>
 
-  <h2>Seed Governance: The Vault Rules</h2>
+  <h2>Seed Governance</h2>
   <ul>
     <li><strong>Vault</strong>: Separate storage, least privilege—only the VIPs get in!</li>
     <li><strong>Rotation</strong>: Policies for refresh and retention (e.g., 90 days)—keep it fresh!</li>
     <li><strong>Probes</strong>: Attach reports to evidence—leakage caught red-handed!</li>
   </ul>
 
-  <h2>Privacy Budgets (Optional): The Privacy Shield</h2>
+  <h2>Privacy Budgets (Optional)</h2>
   <ul>
     <li><strong>Declare</strong>: ε (e.g., 2.0) and δ (e.g., 1e-6) per release with composition notes.</li>
     <li><strong>Impact</strong>: Publish utility hit (e.g., -1% at OP) so you know what you’re trading.</li>
   </ul>
 
-  <h2>Runbook: The Step-by-Step Dance</h2>
+  <h2>Runbook</h2>
   <ol>
     <li><strong>Small Run</strong>: Test it out, tweak the params—get the feel!</li>
     <li><strong>Scale Run</strong>: Crank it up, run probes, cook up evidence—full steam ahead!</li>
     <li><strong>Gate & Package</strong>: Check the gates, bundle it, file for procurement—done deal!</li>
   </ol>
 
-  <h2>Monitoring: Keeping the Pulse</h2>
+  <h2>Monitoring</h2>
   <ul>
     <li><strong>Success/Failure</strong>: Track generation wins and flops—resource usage too!</li>
     <li><strong>Drift</strong>: Watch marginals/joints across releases—catch the drift!</li>
     <li><strong>Utility Stability</strong>: Keep OP performance steady across refreshes—rock solid!</li>
   </ul>
 
-  <h2>Dashboards: The Visual Feast</h2>
+  <h2>Dashboards</h2>
   <ul>
     <li><strong>Fidelity Panels</strong>: Tolerances shown—see how close it sticks!</li>
     <li><strong>Utility@OP</strong>: CIs by segment (e.g., 0.76 [0.74, 0.78])—clear as day!</li>
     <li><strong>Privacy Probes</strong>: Summaries of advantage (e.g., 0.03)—privacy check!</li>
   </ul>
 
-  <h2>Procurement Mapping: The Contract Tie-In</h2>
+  <h2>Procurement Mapping</h2>
   <ul>
     <li><strong>Evidence Bundle</strong>: Straight to the contract exhibit—proof on paper!</li>
     <li><strong>Versions</strong>: Recipe and schema versions in the appendix—trace it back!</li>
@@ -393,7 +393,7 @@ params:
     <li><strong>Targets</strong>: Stability goals per region (e.g., < 1% delta in Europe).</li>
   </ul>
 
-  <h2>Appendix: CLI: The Command Magic</h2>
+  <h2>Appendix: CLI</h2>
   <pre>
 aeg generate --recipe claims_v3 --out data/claims
 AEG_OP=fpr=0.01 aeg evidence --bundle out/evidence
@@ -416,14 +416,14 @@ probes.json: {"membership_advantage": 0.03}
 
   <h2>CI/CD Hooks: The Automation Dance</h2>
   <ul>
-    <li><strong>Automate</strong>: Generation, validation, probes, and evidence packaging—hands-free fun!</li>
+    <li><strong>Automate</strong>: Generation, validation, probes, and evidence packaging.</li>
     <li><strong>Fail Safe</strong>: Pipeline flops if gates fail—logs for triage to save the day!</li>
   </ul>
 
   <h2>Team Roles: The Crew</h2>
   <ul>
     <li><strong>Data Custodian</strong>: Seeds and policy boss—guards the vault!</li>
-    <li><strong>Generator Engineer</strong>: Recipes and overlays wizard—cooks the data!</li>
+    <li><strong>Generator Engineer</strong>: Responsible for recipes and overlays.</li>
     <li><strong>QA Lead</strong>: Gates and evidence sign-off—quality control champ!</li>
   </ul>
 
@@ -443,7 +443,7 @@ bundle, 4, CPU
   </ul>
 
   <h2>Closing</h2>
-  <p>Scaling safely is all about <strong>discipline</strong>, mate—schemas, seeds, recipes, overlays, and gates that prove utility and privacy. <strong>AethergenPlatform</strong> turns that into a human-friendly, auditable jam at any scale—let’s keep the good vibes going!</p>
+  <p>Scaling safely is about <strong>discipline</strong>—schemas, seeds, recipes, overlays, and gates that demonstrate utility and privacy. <strong>AethergenPlatform</strong> makes that process auditable and repeatable at any scale.</p>
 
   <p><a href="/contact" class="aeg-btn">Contact Sales →</a></p>
 </body>

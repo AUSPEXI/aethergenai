@@ -114,6 +114,13 @@ const handler: Handler = async (event) => {
       return { statusCode: 200, body: JSON.stringify(res) }
     }
 
+    if (action === 'getCluster') {
+      const clusterId = (event.queryStringParameters?.cluster_id || '').trim()
+      if (!clusterId) return { statusCode: 400, body: 'cluster_id required' }
+      const res = await api(`/api/2.0/clusters/get?cluster_id=${encodeURIComponent(clusterId)}`, 'GET') as any
+      return { statusCode: 200, body: JSON.stringify(res) }
+    }
+
     if (action === 'runAutomotive') {
       const base = (event.queryStringParameters?.base || '').trim() || '/Shared/aethergen'
       // Bootstrap notebooks if requested or likely needed

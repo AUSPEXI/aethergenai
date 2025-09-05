@@ -35,7 +35,13 @@ const handler: Handler = async (event) => {
     if (event.httpMethod !== 'POST') return { statusCode: 405, body: 'method not allowed' }
     const body = event.body ? JSON.parse(event.body) as Json : {}
     const { dataset_path, uc_volume, config } = body
-    if (!dataset_path || !uc_volume) return { statusCode: 400, body: 'dataset_path and uc_volume required' }
+    // Support both legacy params (dataset_path/uc_volume) and direct params for the notebook
+    const providedBaseline = typeof body.baseline_path === 'string' ? body.baseline_path as string : ''
+    const providedContext  = typeof body.context_path === 'string' ? body.context_path as string : ''
+    const providedOut      = typeof body.out_path === 'string' ? body.out_path as string : ''
+    if ((!dataset_path || !uc_volume) && (!providedBaseline || !providedContext || !providedOut)) {
+      return { statusCode: 400, body: 'dataset_path and uc_volume required, or provide baseline_path, context_path, out_path' }
+    }
 
     // Prefer explicit cluster_id from request; fallback to env; validate before use
     const preferredClusterId = isLikelyValidClusterId(body.cluster_id) ? String(body.cluster_id).trim() : ''
@@ -43,13 +49,22 @@ const handler: Handler = async (event) => {
     const clusterId = preferredClusterId || envClusterId || ''
 
     // Define a one-off job to run a notebook/script that computes metrics and writes results.json to uc_volume
+    // Map inputs to the notebook expected parameters
+    const sanitize = (p: string) => String(p || '').trim().replace(/\/+$/,'')
+    const outPath = providedOut || sanitize(String(uc_volume))
+    const baselinePath = providedBaseline || `${sanitize(String(dataset_path))}/baseline`
+    const contextPath  = providedContext  || `${sanitize(String(dataset_path))}/context`
+
     const taskBase: any = {
       task_key: 'compute_metrics',
       notebook_task: {
         notebook_path: process.env.METRICS_NOTEBOOK_PATH || '/Shared/metrics/compute_metrics',
         base_parameters: {
-          dataset_path,
-          uc_volume,
+          // Notebook expects baseline_path, context_path, out_path
+          baseline_path: baselinePath,
+          context_path: contextPath,
+          out_path: outPath,
+          // Keep config available for future use (ignored by current notebook)
           config: JSON.stringify(config || {})
         }
       }
@@ -74,7 +89,7 @@ const handler: Handler = async (event) => {
       tasks: [task]
     })
 
-    return { statusCode: 200, body: JSON.stringify({ ok: true, run_id: runs?.run_id }) }
+    return { statusCode: 200, body: JSON.stringify({ ok: true, run_id: runs?.run_id, results_path: `${outPath.replace(/\/+$/,'')}/results.json` }) }
   } catch (e: any) {
     return { statusCode: 500, body: e?.message || 'error' }
   }

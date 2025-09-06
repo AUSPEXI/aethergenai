@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { uploadAnchorBundle, type AnchorBundle } from '../../services/anchorsService';
 import DataCleaner from '../DataCleaner/DataCleaner';
 import { cleanSeedData, CleaningReport } from '../../services/dataCleaningService';
 import { DataSchema, SchemaField, ValidationResult } from '../../types/schema';
@@ -26,6 +27,9 @@ const SeedDataUploader: React.FC<SeedDataUploaderProps> = ({
   const [proofVerified, setProofVerified] = useState<boolean | null>(null);
   const [proofFile, setProofFile] = useState<File | null>(null);
   const [addingToPipeline, setAddingToPipeline] = useState(false);
+  const [anchorHash, setAnchorHash] = useState<string | null>(null);
+  const [anchorBusy, setAnchorBusy] = useState(false);
+  const [anchorError, setAnchorError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const proofFileInputRef = useRef<HTMLInputElement>(null);
 
@@ -590,6 +594,45 @@ const SeedDataUploader: React.FC<SeedDataUploaderProps> = ({
 
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-6">
+      {/* Anchor Bundle Upload */}
+      <div className="bg-white rounded-lg shadow-lg p-6">
+        <h2 className="text-2xl font-bold text-gray-800 mb-2">📦 Anchor Bundle (no raw data)</h2>
+        <p className="text-sm text-gray-600 mb-4">Upload DP/federated aggregates (counts, quantiles, correlations) to calibrate generation without sharing rows.</p>
+        <div className="flex items-center gap-3">
+          <button
+            disabled={anchorBusy}
+            onClick={async ()=>{
+              try {
+                setAnchorBusy(true); setAnchorError(null)
+                const demo: AnchorBundle = {
+                  metadata: { schema_id: schema.id, dp: { epsilon: Number(schema.privacySettings.epsilon)||undefined, delta: 1e-6 } },
+                  globals: { fields: {} },
+                }
+                // Build trivial globals from detected schema if available
+                for (const f of detectedSchema) {
+                  demo.globals.fields[f.name] = { type: f.type, count: Math.max(1, uploadedData.length || 100) }
+                }
+                const res = await uploadAnchorBundle(demo)
+                if (!res.ok || !res.anchor_hash) throw new Error((res.errors||[]).join('; ')||'validation failed')
+                setAnchorHash(res.anchor_hash)
+              } catch (e: any) {
+                setAnchorError(String(e?.message||e))
+              } finally {
+                setAnchorBusy(false)
+              }
+            }}
+            className={`px-4 py-2 rounded-md text-sm ${anchorBusy? 'bg-gray-300 text-gray-600':'bg-emerald-600 text-white hover:bg-emerald-700'}`}
+          >
+            {anchorBusy? 'Uploading…':'Upload Anchor Bundle (demo)'}
+          </button>
+          {anchorHash && (
+            <div className="text-sm text-gray-700">anchor_hash: <span className="font-mono">{anchorHash.slice(0,12)}…</span></div>
+          )}
+          {anchorError && (
+            <div className="text-sm text-red-600">{anchorError}</div>
+          )}
+        </div>
+      </div>
       {/* File Upload Area */}
       <div className="bg-white rounded-lg shadow-lg p-6">
         <h2 className="text-2xl font-bold text-gray-800 mb-4">📁 Seed Data Upload</h2>

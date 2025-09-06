@@ -8,6 +8,7 @@ export type EvidenceBundle = {
   schema_hash?: string;
   recipe_hash?: string;
   dataset_hash?: string;
+  anchor_hash?: string;
   privacy?: { epsilon?: number; synthetic_ratio?: number };
   cleaning_report?: any;
   ablation_summary?: any;
@@ -49,6 +50,7 @@ export function buildEvidenceBundle(params: Partial<EvidenceBundle>): EvidenceBu
   return {
     bundle_version: '1.0',
     generated_at: new Date().toISOString(),
+    anchor_hash: ((): string | undefined => { try { return params.anchor_hash ?? (typeof localStorage!=='undefined' ? localStorage.getItem('aeg_anchor_hash') || undefined : undefined) } catch { return params.anchor_hash } })(),
     // Safe Business Proof Defaults
     business_validation: {
       scale_achievement: "Enterprise-scale synthetic data generation capability proven",
@@ -299,6 +301,9 @@ export async function downloadSignedEvidenceZip(bundle: EvidenceBundle, filename
   zip.folder('qc')?.file('quality.json', JSON.stringify({ null_rates: {}, range_violations: {}, referential_breaks: 0 }, null, 2));
   zip.folder('monitoring')?.file('drift.json', JSON.stringify({ notes: 'release-over-release drift summary', metrics: [] }, null, 2));
   zip.folder('provenance')?.file('seeds.json', JSON.stringify({ source: 'aggregates|minimal_sample', retention_days: 90, created_at: new Date().toISOString() }, null, 2));
+  if (bundle.anchor_hash) {
+    zip.folder('provenance')?.file('anchors.json', JSON.stringify({ anchor_hash: bundle.anchor_hash, linked_at: new Date().toISOString() }, null, 2));
+  }
 
   // LLM artifacts
   zip.folder('llm')?.file('prompts.jsonl', ['{"instruction":"Extract code and amount","input":"Note: code CPT-99213, amount 120.50","output":{"code":"CPT-99213","amount":120.5}}'].join('\n'));

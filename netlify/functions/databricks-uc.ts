@@ -62,11 +62,39 @@ async function grantVolumePermissions(catalog: string, schema: string, volume: s
   })
 }
 
+async function ensureStorageCredentialAzureMI(name: string, accessConnectorId: string) {
+  try { return await api(`/unity-catalog/storage-credentials/${encodeURIComponent(name)}`, 'GET') } catch {}
+  // Azure Managed Identity via Access Connector
+  return await api(`/unity-catalog/storage-credentials`, 'POST', {
+    name,
+    comment: 'Managed by AethergenPlatform (Access Connector)',
+    azure_managed_identity: {
+      access_connector_id: accessConnectorId,
+    },
+  })
+}
+
+async function ensureExternalLocation(name: string, urlStr: string, credentialName: string) {
+  try { return await api(`/unity-catalog/external-locations/${encodeURIComponent(name)}`, 'GET') } catch {}
+  return await api(`/unity-catalog/external-locations`, 'POST', {
+    name,
+    url: urlStr,
+    credential_name: credentialName,
+    comment: 'UC external location (Managed by AethergenPlatform)'
+  })
+}
+
+async function ensureCatalogWithManagedLocation(name: string, managedUrl: string) {
+  try { return await api(`/unity-catalog/catalogs/${encodeURIComponent(name)}`, 'GET') } catch {}
+  // storage_root corresponds to MANAGED LOCATION in SQL
+  return await api(`/unity-catalog/catalogs`, 'POST', { name, comment: 'Managed by AethergenPlatform', storage_root: managedUrl })
+}
+
 const handler: Handler = async (event) => {
   try {
     const action = event.queryStringParameters?.action || 'help'
     if (action === 'help') {
-      return { statusCode: 200, body: 'Actions: ensureObjects, uploadEvidence, setTableComment' }
+      return { statusCode: 200, body: 'Actions: ensureObjects, uploadEvidence, setTableComment, setObjectComment, grantVolume, bootstrapManaged' }
     }
 
     if (action === 'ensureObjects') {
@@ -122,6 +150,31 @@ const handler: Handler = async (event) => {
       const privs = (event.queryStringParameters?.privileges || 'READ_VOLUME,WRITE_VOLUME').split(',').map(p => p.trim()).filter(Boolean)
       const res = await grantVolumePermissions(catalog, schema, volume, principal, privs)
       return { statusCode: 200, body: JSON.stringify({ ok: true, granted: { catalog, schema, volume, principal, privileges: privs }, response: res }) }
+    }
+
+    if (action === 'bootstrapManaged') {
+      // Required: abfss base url (container root) and access connector id
+      // Example abfss: 'abfss://ucroot@aethergenucsa.dfs.core.windows.net/'
+      const abfss = String(event.queryStringParameters?.abfss || '').trim()
+      const accessConnectorId = String(event.queryStringParameters?.access_connector_id || '').trim()
+      if (!abfss || !accessConnectorId) return { statusCode: 400, body: 'abfss and access_connector_id are required' }
+
+      const credName = (event.queryStringParameters?.credential_name || 'uc_cred').trim()
+      const locName = (event.queryStringParameters?.external_location_name || 'ucroot_loc').trim()
+      const catalog = (event.queryStringParameters?.catalog || 'aethergen').trim()
+      const schema = (event.queryStringParameters?.schema || 'evidence').trim()
+      const volume = (event.queryStringParameters?.volume || 'bundles').trim()
+
+      const managedSubdir = (event.queryStringParameters?.managed_subdir || 'uc-managed').trim()
+      const managedUrl = abfss.endsWith('/') ? `${abfss}${managedSubdir}` : `${abfss}/${managedSubdir}`
+
+      const cred = await ensureStorageCredentialAzureMI(credName, accessConnectorId)
+      const ext = await ensureExternalLocation(locName, abfss, credName)
+      const cat = await ensureCatalogWithManagedLocation(catalog, managedUrl)
+      const sch = await ensureSchema(catalog, schema)
+      const vol = await ensureVolume(catalog, schema, volume)
+
+      return { statusCode: 200, body: JSON.stringify({ ok: true, credential: cred, external_location: ext, catalog: cat, schema: sch, volume: vol, managed_location: managedUrl }) }
     }
 
     return { statusCode: 400, body: 'unknown action' }

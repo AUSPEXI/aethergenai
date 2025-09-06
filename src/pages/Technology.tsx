@@ -224,6 +224,9 @@ const Technology = () => {
           <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 text-blue-800 text-sm">
             High‑level capabilities only. No proprietary algorithms, formulas, or implementation details are disclosed here. Verified results are available via evidence bundles in Resources.
           </div>
+          <div className="mt-3 text-sm text-slate-600">
+            New to calibration and seeds? <Link to="/faq" className="text-blue-600 hover:underline">See the FAQ</Link> for anchors vs ZKP seeds and delivery.
+          </div>
         </div>
       </section>
 

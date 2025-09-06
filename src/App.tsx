@@ -4,6 +4,7 @@ import Navigation from './components/Navigation';
 import Home from './pages/Home';
 import About from './pages/About';
 import Pricing from './pages/Pricing';
+import FAQ from './pages/FAQ';
 import Technology from './pages/Technology';
 import Roadmap from './pages/Roadmap';
 import Blog from './pages/Blog';
@@ -75,6 +76,7 @@ function RoutedApp() {
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:slug" element={<BlogPost />} />
           <Route path="/pricing" element={<Pricing />} />
+          <Route path="/faq" element={<FAQ />} />
           <Route path="/funding" element={<Funding />} />
           <Route path="/resources" element={<Resources />} />
           <Route path="/hero-art" element={<HeroArt />} />

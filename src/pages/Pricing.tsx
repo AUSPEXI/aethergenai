@@ -610,6 +610,9 @@ const Pricing = () => {
             <p className="text-xl text-blue-100 mb-8 max-w-4xl mx-auto">
               Evidence‑led synthetic data platform for developers and enterprises. From individual access to team‑scale generation with clear entitlements.
             </p>
+            <div className="text-sm text-blue-200">
+              Have questions about anchors, ZKP seeds, or UC delivery? <a href="/faq" className="underline hover:text-white">Read the FAQ</a>.
+            </div>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20">
                 <div className="text-3xl font-bold text-blue-400 mb-2">High‑scale</div>

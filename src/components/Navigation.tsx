@@ -30,6 +30,7 @@ const Navigation = () => {
     { name: 'Technology', href: '/technology', current: location.pathname === '/technology' },
     { name: 'Roadmap', href: '/roadmap', current: location.pathname === '/roadmap' },
     { name: 'Pricing', href: '/pricing', current: location.pathname === '/pricing' },
+    { name: 'FAQ', href: '/faq', current: location.pathname === '/faq' },
     { name: 'Funding', href: '/funding', current: location.pathname === '/funding' },
     { name: 'Blog', href: '/blog', current: location.pathname === '/blog' },
     { name: 'Docs', href: '/docs', current: location.pathname === '/docs' || location.pathname.startsWith('/docs/') },

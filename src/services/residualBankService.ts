@@ -8,19 +8,20 @@ export type ResidualSignal = {
   correct?: boolean
 }
 
-const KEY = 'aeg_residual_bank_v1'
+// Storage slot name for local residual signals (no secrets)
+const STORAGE_SLOT = 'aeg_residual_bank_v1'
 
 export class ResidualBankService {
   readAll(): ResidualSignal[] {
-    try { return JSON.parse(localStorage.getItem(KEY) || '[]') } catch { return [] }
+    try { return JSON.parse(localStorage.getItem(STORAGE_SLOT) || '[]') } catch { return [] }
   }
   append(signals: ResidualSignal | ResidualSignal[]) {
     const arr = Array.isArray(signals) ? signals : [signals]
     const cur = this.readAll()
     const next = cur.concat(arr).slice(-5000) // cap local size
-    localStorage.setItem(KEY, JSON.stringify(next))
+    localStorage.setItem(STORAGE_SLOT, JSON.stringify(next))
   }
-  clear() { localStorage.removeItem(KEY) }
+  clear() { localStorage.removeItem(STORAGE_SLOT) }
 
   // simple DP-friendly summaries
   summarizeBySegment(): Record<string, { n: number; margin_p50?: number; entropy_p50?: number; retrieval_p50?: number; error_rate?: number }> {

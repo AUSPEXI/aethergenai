@@ -626,7 +626,12 @@ const SeedDataUploader: React.FC<SeedDataUploaderProps> = ({
             {anchorBusy? 'Uploading…':'Upload Anchor Bundle (demo)'}
           </button>
           {anchorHash && (
-            <div className="text-sm text-gray-700">anchor_hash: <span className="font-mono">{anchorHash.slice(0,12)}…</span></div>
+            <div className="text-sm text-gray-800 flex items-center gap-2">
+              <span>anchor_hash:</span>
+              <span className="font-mono px-2 py-0.5 rounded bg-gray-100 text-gray-900 border border-gray-200 select-all break-all">
+                {anchorHash}
+              </span>
+            </div>
           )}
           {anchorError && (
             <div className="text-sm text-red-600">{anchorError}</div>

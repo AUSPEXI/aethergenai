@@ -33,6 +33,7 @@ const Navigation = () => {
     { name: 'FAQ', href: '/faq', current: location.pathname === '/faq' },
     { name: 'Funding', href: '/funding', current: location.pathname === '/funding' },
     { name: 'Blog', href: '/blog', current: location.pathname === '/blog' },
+    { name: 'Hallucination Controls', href: '/blog/hallucination-controls-runtime-gating-evidence', current: location.pathname.includes('hallucination-controls-runtime-gating-evidence') },
     { name: 'Docs', href: '/docs', current: location.pathname === '/docs' || location.pathname.startsWith('/docs/') },
     { name: 'Resources', href: '/resources', current: location.pathname === '/resources' },
     { name: 'Hero Art', href: '/hero-art', current: location.pathname === '/hero-art' },

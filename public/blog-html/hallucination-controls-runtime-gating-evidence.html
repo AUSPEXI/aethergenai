@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hallucination Controls: Runtime Gating, Abstention, and Evidence</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.65; color: #0f172a; margin: 0; background: #f5f7fb; }
+    .article { max-width: 920px; margin: 0 auto; background: #fff; padding: 48px 36px; box-shadow: 0 10px 30px rgba(0,0,0,0.06); border-radius: 12px; }
+    h1 { font-size: 36px; margin: 0 0 8px; color: #0b1220; }
+    .meta { color: #475569; font-size: 14px; margin-bottom: 28px; }
+    h2 { color: #0b1220; margin-top: 36px; font-size: 24px; }
+    p, li { color: #1f2937; }
+    .callout { background: #eff6ff; border-left: 4px solid #3b82f6; padding: 16px; border-radius: 8px; }
+    .figure { text-align: center; margin: 24px 0; }
+    .figure img { display: block; max-width: 100%; height: auto; border: 1px solid #e5e7eb; border-radius: 8px; }
+    .kbd { background: #111827; color: #fff; padding: 2px 6px; border-radius: 4px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
+    ul { padding-left: 20px; }
+  </style>
+</head>
+<body>
+  <div class="article">
+    <h1>Hallucination Controls: Runtime Gating, Abstention, and Evidence</h1>
+    <div class="meta"><strong>Auspexi</strong> • Updated: <script>document.write(new Date().toISOString().slice(0,10))</script></div>
+
+    <p>High‑reliability AI is less about “eliminating” hallucinations and more about <strong>controlling their impact at decision time</strong>. Our platform implements practical guardrails that prefer a correct abstention over a confident error, with auditable evidence for every change.</p>
+
+    <div class="callout"><strong>TL;DR</strong>: Optimize a 3‑state objective (correct, abstain, wrong), gate responses on information sufficiency, verify outputs, and ship decisions with signed evidence and SLOs.</div>
+
+    <h2>The 3‑State Objective</h2>
+    <ul>
+      <li><strong>Objective</strong>: maximize expected utility over {correct, abstain, wrong}; abstain carries smaller cost than wrong.</li>
+      <li><strong>Operating points</strong>: choose coverage–precision tradeoffs by <em>risk class</em> and <em>latency budget</em>.</li>
+    </ul>
+
+    <div class="figure">
+      <!-- Inline SVG to avoid any path issues during routing/build -->
+      <svg width="900" height="500" viewBox="0 0 900 500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Coverage vs Precision with Abstention">
+        <rect x="0" y="0" width="900" height="500" fill="#ffffff"/>
+        <g transform="translate(100,60)">
+          <text x="360" y="-20" text-anchor="middle" font-family="Inter, Arial" font-size="18" fill="#0f172a">Coverage–Precision Tradeoff with Abstention</text>
+          <line x1="0" y1="360" x2="700" y2="360" stroke="#94a3b8" stroke-width="1"/>
+          <line x1="0" y1="0" x2="0" y2="360" stroke="#94a3b8" stroke-width="1"/>
+          <text x="-15" y="12" text-anchor="end" font-size="13" fill="#334155">Precision</text>
+          <text x="690" y="380" text-anchor="end" font-size="13" fill="#334155">Coverage</text>
+          <path d="M0,40 C240,70 460,160 700,280" fill="none" stroke="#ef4444" stroke-width="3"/>
+          <text x="420" y="300" font-size="12" fill="#ef4444">No abstention: more coverage → more wrong answers</text>
+          <path d="M0,40 C240,80 460,130 700,210" fill="none" stroke="#10b981" stroke-width="3"/>
+          <text x="420" y="190" font-size="12" fill="#065f46">With abstention &amp; gating: tuned operating point</text>
+          <circle cx="480" cy="220" r="5" fill="#0ea5e9"/>
+          <text x="490" y="215" font-size="12" fill="#0ea5e9">Chosen OP</text>
+          <rect x="0" y="320" width="300" height="90" fill="#f8fafc" stroke="#cbd5e1"/>
+          <line x1="12" y1="342" x2="42" y2="342" stroke="#ef4444" stroke-width="3"/>
+          <text x="52" y="346" font-size="12" fill="#334155">No abstention</text>
+          <line x1="12" y1="367" x2="42" y2="367" stroke="#10b981" stroke-width="3"/>
+          <text x="52" y="371" font-size="12" fill="#334155">Abstention + gating</text>
+          <circle cx="27" cy="392" r="5" fill="#0ea5e9"/>
+          <text x="52" y="396" font-size="12" fill="#334155">Operating point</text>
+        </g>
+      </svg>
+      <div style="color:#475569;font-size:13px;margin-top:8px;">Figure: Abstention + gating yields a tunable operating point with higher precision at the same coverage.</div>
+    </div>
+
+    <h2>Information‑Sufficiency Gating</h2>
+    <ul>
+      <li><strong>Support checks</strong>: lightweight measures estimate evidence sufficiency before answering.</li>
+      <li><strong>Fallbacks</strong>: if support is thin, route to retrieval/tools, ask for clarification, or abstain.</li>
+      <li><strong>Verification</strong>: schema/units/range, citation consistency, and simple cross‑checks; fail‑closed on unverifiable outputs.</li>
+    </ul>
+
+    <h2>Shadow Evaluation and SLOs</h2>
+    <ul>
+      <li>Every change runs shadow tests under explicit SLOs (utility, stability, privacy, latency).</li>
+      <li>Breaches trigger rollback; all outcomes are logged in <strong>signed evidence bundles</strong>.</li>
+    </ul>
+
+    <h2>Grounded Inputs Without Raw Data</h2>
+    <p>Synthetic outputs are calibrated against <strong>anchor bundles</strong> (aggregates) or <strong>ZKP‑protected seeds</strong>. No raw row transfer; provenance includes <span class="kbd">anchor_hash</span>.</p>
+
+    <h2>Falsifiable Test (Production‑Practical)</h2>
+    <ol>
+      <li>Fix latency.</li>
+      <li>Clamp coverage with rejection sampling.</li>
+      <li>Measure wrong‑answer and re‑ask rates on a fresh‑news holdout, pre/post gating.</li>
+    </ol>
+
+    <h2>FAQ</h2>
+    <ul>
+      <li><strong>Will controls over‑abstain?</strong> Tuned per domain; abstain rates monitored via shadow evals and adjusted for useful coverage.</li>
+      <li><strong>What about domain shift?</strong> Stability/drift monitors surface shift; OPs and retrieval sources adapt under change control.</li>
+      <li><strong>Is this auditable?</strong> Yes—decisions, thresholds, and results ship in signed evidence bundles.</li>
+    </ul>
+
+    <p>For deeper details, see our <a href="/whitepaper#hallucination-controls">Whitepaper: Hallucination Controls</a> and <a href="/faq#hallucinations">FAQ</a>.</p>
+  </div>
+</body>
+</html>
+
+

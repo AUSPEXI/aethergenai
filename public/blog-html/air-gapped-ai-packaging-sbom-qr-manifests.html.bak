@@ -1,0 +1,442 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Air-Gapped AI: Packaging, SBOMs, and QR-Verified Manifests for the Field | Auspexi</title>
+  <style>
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      color: #2d3748;
+      max-width: none;
+      margin: 0 auto;
+      padding: 2rem;
+      background-color: #f7fafc;
+    }
+    h1 {
+      font-size: 2.5rem;
+      color: #1a202c;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+    h2 {
+      font-size: 1.8rem;
+      color: #2b6cb0;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+    }
+    p {
+      margin-bottom: 1.5rem;
+      font-size: 1.1rem;
+    }
+    em {
+      font-style: italic;
+      color: #4a5568;
+    }
+    ul, ol {
+      margin-bottom: 1.5rem;
+      padding-left: 2rem;
+    }
+    li {
+      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+    }
+    pre {
+      background-color: #f8f9fa;
+      color: #2d3748;
+      border: 1px solid #e2e8f0;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      overflow-x: auto;
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
+    }
+    code {
+      font-family: 'Fira Code', monospace;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1.5rem;
+      background-color: #fff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    th, td {
+      padding: 0.75rem;
+      border: 1px solid #e2e8f0;
+      text-align: left;
+      font-size: 1rem;
+    }
+    th {
+      background-color: #2b6cb0;
+      color: #fff;
+    }
+    details {
+      margin-bottom: 1rem;
+      background-color: #edf2f7;
+      padding: 1rem;
+      border-radius: 0.5rem;
+    }
+    summary {
+      font-weight: bold;
+      cursor: pointer;
+      color: #2b6cb0;
+      font-size: 1.1rem;
+    }
+    .aeg-btn {
+      display: inline-block;
+      background-color: #2b6cb0;
+      color: #fff;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background-color 0.3s;
+      margin-top: 1rem;
+    }
+    .aeg-btn:hover {
+      background-color: #2c5282;
+    }
+    img {
+      width: 100%;
+      height: auto;
+      max-width: 100vw;
+      margin: 0 -2rem;
+      display: block;
+    }
+    blockquote {
+      border-left: 4px solid #2b6cb0;
+      padding-left: 1rem;
+      margin: 1.5rem 0;
+      color: #2d3748;
+      font-style: italic;
+    }
+    @media (max-width: 600px) {
+      body {
+        padding: 1rem;
+      }
+      h1 {
+        font-size: 2rem;
+      }
+      h2 {
+        font-size: 1.5rem;
+      }
+      p, li {
+        font-size: 1rem;
+      }
+      img {
+        margin: 0 -1rem;
+      }
+    }
+    
+    .requirement-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+    
+    .requirement-item {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      transition: all 0.2s ease;
+    }
+    
+    .requirement-item:hover {
+      border-color: #3b82f6;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+    }
+    
+    .requirement-item strong {
+      display: block;
+      color: #1e40af;
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+    
+    .requirement-item span {
+      color: #4a5568;
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+    
+    .highlight-box {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 2rem;
+      border-radius: 1rem;
+      margin: 2rem 0;
+    }
+    
+    .highlight-box h3 {
+      color: white;
+      margin-bottom: 1rem;
+      font-size: 1.4rem;
+    }
+    
+    .highlight-box ul {
+      list-style: none;
+      padding: 0;
+    }
+    
+    .highlight-box li {
+      padding: 0.5rem 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .highlight-box li:last-child {
+      border-bottom: none;
+    }
+    
+    .key-point {
+      background: #f0f9ff;
+      border-left: 4px solid #0ea5e9;
+      padding: 1rem;
+      margin: 1.5rem 0;
+      border-radius: 0 0.5rem 0.5rem 0;
+    }
+    
+    .key-point strong {
+      color: #0369a1;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    /* Contrast guardrails to override inline or theme dark styles */
+    pre, code, pre *, code * { color: #1f2937 !important; background: #f8fafc !important; opacity: 1 !important; text-shadow: none !important; mix-blend-mode: normal !important; }
+    /* Common code container classes in themes */
+    .highlight, .hljs, .shiki, .code, .code-block, [class*="code"], [class*="Code"], [class*="pre"], .not-prose pre {
+      background: #f8fafc !important; color: #1f2937 !important; border: 1px solid #e2e8f0 !important; border-radius: 0.5rem !important;
+    }
+    [style*="color:#000"], [style*="color: #000"], [style*="color:black"], [style*="color: black"], [style*="color:rgb(0,0,0)"] { color: #1f2937 !important; }
+    [style*="background:#000"], [style*="background: #000"], [style*="background-color:#000"], [style*="background-color: #000"], [style*="background:#0f172a"], [style*="background:#111827"], [style*="background:#1f2937"], [style*="background-color:#0f172a"], [style*="background-color:#111827"], [style*="background-color:#1f2937"], [style*="background:rgb(0,0,0)"], [style*="background-color:rgb(0,0,0)"] { background-color: #f8fafc !important; }
+  </style>
+</head>
+<body>
+  <h1>Air-Gapped AI: Packaging, SBOMs, and QR-Verified Manifests for the Field</h1>
+  <p><em>By Gwylym Owen — 12–16 min read</em></p>
+
+  <p>Imagine you’re a field engineer, boots on the ground in a remote factory, no Wi-Fi in sight, tasked with deploying an AI model to spot defects on a production line. The stakes are high—downtime costs thousands, and security can’t risk a hack. That’s where <strong>air-gapped AI</strong> comes in, and at Auspexi, we’ve cracked the code with our Aethergen Platform. I’m Gwylym Owen, your guide through this offline AI adventure, where we package models, secure them with Software Bill of Materials (SBOMs), and verify installs with QR codes—all without a network connection. Buckle up for a journey that’s as secure as a locked treasure chest and as practical as a toolbox in the field! <strong>Thanks to recent enhancements, AethergenPlatform now fully supports every feature described here—delivered in real-time collaboration with our team!</strong></p>
+
+  <h2>Threat Model and Requirements</h2>
+  <p>Let’s start with the battlefield. Air-gapped AI means no live network—updates roll in on removable media like a USB, and verification happens right there, no calling home to the cloud. Field engineers need <strong>provenance</strong>—proof of what’s installed, stamped and sealed, so they can trust it without a phone line. And <strong>change-control</strong>? Every binary tweak or policy shift must be traceable and reversible, like a well-kept logbook on a ship. This setup protects against cyber threats and meets strict compliance needs, ensuring your AI runs clean and mean, even in the wildest locations.</p>
+  <ul>
+    <li><strong>No live network</strong>: Updates arrive via removable media; verification must be local.</li>
+    <li><strong>Provenance</strong>: Field engineers need to prove what’s installed without calling home.</li>
+    <li><strong>Change-control</strong>: Every binary and policy change must be traceable and reversible.</li>
+  </ul>
+
+  <h2>Package Anatomy</h2>
+  <p>So, what’s inside this air-gapped package? Think of it as a survival kit for your AI. First, we include an <strong>SBOM</strong> (Software Bill of Materials)—a detailed inventory of binaries and models, formatted to work with vendor tools like CycloneDX or SPDX, so you know every component’s origin. Next, a <strong>signed manifest</strong> lists files, SHA-256 checksums, versions, and build metadata, like a manifest on a cargo ship ensuring nothing’s missing. Then, <strong>policy packs</strong>—thresholds, geofences, logging modes—come with versioned diffs to track changes. Finally, <strong>device profiles</strong> (VRAM, thermal limits, power constraints) prevent overload, tailoring the AI to your hardware. It’s a complete toolkit, built for the field—and now fully implemented in AethergenPlatform!</strong></p>
+  <ul>
+    <li><strong>SBOM</strong> for binaries and models (format compatible with vendor tools).</li>
+    <li><strong>Signed manifest</strong> listing files, SHA-256 checksums, versions, and build metadata.</li>
+    <li><strong>Policy packs</strong> (thresholds, geofences, logging modes) with versioned diffs.</li>
+    <li><strong>Device profiles</strong> (VRAM, thermal envelope, power constraints) to avoid overload.</li>
+  </ul>
+
+  <h2>QR-Verified Manifests</h2>
+  <p>Here’s where it gets cool. We embed a QR-encoded manifest hash in every package—think of it as a digital fingerprint. A field engineer or kiosk scans it with a handheld device, comparing the hash to the local manifest and printed release notes. If they match, the install’s verified, no internet needed. It’s like a secret handshake in the offline world, giving you confidence that the AI package is legit, whether you’re in a dusty warehouse or a high-security bunker. <strong>AethergenPlatform now generates these QR codes seamlessly, a feature rolled out just this week!</strong></p>
+
+  <h2>Key Management (Offline)</h2>
+  <p>Security’s the backbone, and we keep it offline-tough. We use an <strong>offline root key</strong> with rotating signing keys, plus short-lived field keys for emergency hotfixes—think of it as a vault with timed access codes. <strong>Revocation lists</strong> ship with each release, cached by kiosks to block compromised keys. And <strong>dual-control</strong>? Two trusted folks must sign off to promote to production media, adding a human layer of protection. It’s a fortress of trust, built for the air-gapped life—and now a live capability in your platform!</strong></p>
+  <ul>
+    <li><strong>Offline root</strong> and rotating signing keys; short-lived field keys for emergency hotfixes.</li>
+    <li><strong>Revocation lists</strong> distributed with each release; kiosks cache recent lists.</li>
+    <li><strong>Dual-control</strong> for promotion to production media.</li>
+  </ul>
+
+  <h2>Installation and Audit Procedure</h2>
+  <p>Let’s walk through the install like a field mission. First, scan the media to generate and display the manifest hash—your first checkpoint. Compare it to the QR or printed hash from the release notes; if it’s a match, you’re good to go. Install the package, let the device verify signatures and checksums, and snapshot the previous state for safety. Finally, run <strong>post-install self-tests</strong>, logging results with signatures—proof you’re running a healthy system. It’s a step-by-step dance, ensuring every move is secure, now powered by AethergenPlatform’s new tools!</strong></p>
+  <ol>
+    <li>Scan media to generate and display the manifest hash.</li>
+    <li>Compare against printed/QR hash from release notes.</li>
+    <li>Install; device verifies signatures and checksums; snapshot previous state.</li>
+    <li>Run post-install self-tests; log results with signatures.</li>
+  </ol>
+
+  <h2>Evidence Bundle</h2>
+  <p>Every package carries a <strong>signed evidence bundle</strong>—lineage (where it came from), metrics (how it performs), ablations (what works), and privacy probes (if applicable). Procurement and security file this with the install manifest, creating a full provenance trail. With AethergenPlatform, asking “What’s running out there?” becomes a button press—no connectivity, no excuses—just verifiable state you can trust. <strong>This feature is now live, thanks to our recent implementation push!</strong></p>
+  <blockquote>
+    <p><strong>AethergenPlatform</strong> turns “What’s running out there?” into a button press. No connectivity, no excuses—just verifiable state.</p>
+  </blockquote>
+
+  <h2>Packaging Formats</h2>
+  <p>We’ve got options to suit your field needs. The core is a <strong>signed tarball</strong> with the manifest and SBOM, a neat all-in-one package. For flexibility, we offer <strong>split packages</strong>—separate bundles for models, policies, and tools. And for kiosks, <strong>USB images</strong> come pre-loaded with pre-flight checks, ready to roll. It’s like choosing the right tool from your belt, tailored to the job—and now fully supported by AethergenPlatform!</strong></p>
+  <ul>
+    <li><strong>Signed tarball</strong> with manifest and SBOM.</li>
+    <li><strong>Optional split packages</strong> for models, policies, and tools.</li>
+    <li><strong>Kiosk USB images</strong> with pre-flight checks.</li>
+  </ul>
+
+  <h2>Field SOP</h2>
+  <p>Here’s the field playbook, straight from the trenches:</p>
+  <ol>
+    <li>Verify media integrity with a hash scan—your first line of defense.</li>
+    <li>Snapshot current system and store a rollback image—safety net engaged.</li>
+    <li>Install and run self-tests, printing a pass/fail ticket to close the loop.</li>
+  </ol>
+
+  <h2>Tamper Evidence</h2>
+  <p>We leave no room for foul play. <strong>Checksums</strong> at file and package levels catch any tampering. The <strong>QR hash</strong> on release notes, double-checked by the kiosk, seals the deal. And a <strong>local audit log</strong> with signed digests tracks every move—proof you can audit offline. <strong>All these are now live features in AethergenPlatform!</strong></p>
+  <ul>
+    <li><strong>Checksums</strong> at file and package levels.</li>
+    <li><strong>QR hash</strong> on release notes; kiosk display comparison.</li>
+    <li><strong>Local audit log</strong> with signed digests.</li>
+  </ul>
+
+  <h2>Supply Chain</h2>
+  <p>Transparency is key. The <strong>SBOM</strong> includes license metadata and a vulnerability scan report, laying it all out. <strong>Third-party attestations</strong> join the evidence bundle, and <strong>periodic key rotation</strong> with revocation lists keeps security tight. It’s a supply chain you can trace like a master detective—and it’s now a reality with AethergenPlatform!</strong></p>
+  <ul>
+    <li><strong>SBOM</strong> with license metadata; vulnerability scan report.</li>
+    <li><strong>Third-party attestations</strong> stored with bundle.</li>
+    <li><strong>Periodic key rotation</strong> and revocation lists.</li>
+  </ul>
+
+  <h2>Troubleshooting</h2>
+  <p>Stuff happens—here’s how to roll with it. A <strong>hash mismatch</strong>? Stop the install and fetch the right media. <strong>Self-test failure</strong>? Revert to the snapshot and attach logs for the team. <strong>Thermal throttle</strong>? Switch to a Q4 model profile to cool things down. It’s problem-solving with a safety net, now backed by AethergenPlatform’s robust tools!</strong></p>
+  <ul>
+    <li><strong>Hash mismatch</strong> → stop install; fetch correct media.</li>
+    <li><strong>Self-test failure</strong> → revert to snapshot; attach logs.</li>
+    <li><strong>Thermal throttle</strong> → switch to Q4 model profile.</li>
+  </ul>
+
+  <h2>FAQ</h2>
+  <details>
+    <summary>What if we lose signing keys?</summary>
+    <p>No sweat—our offline root key triggers a recovery ceremony, and field keys can be revoked via lists in the next release. We’ve got your back! <strong>This is now implemented in AethergenPlatform!</strong></p>
+  </details>
+  <details>
+    <summary>Can sites customize policies?</summary>
+    <p>You bet—policy packs support site overlays, versioned and signed locally for full control. <strong>Live and kicking in AethergenPlatform!</strong></p>
+  </details>
+
+  <h2>Glossary</h2>
+  <ul>
+    <li><strong>SBOM</strong>: Software bill of materials—your AI’s ingredient list.</li>
+    <li><strong>QR hash</strong>: Compact code of manifest hash for offline check.</li>
+    <li><strong>Kiosk</strong>: Local station running verification UI.</li>
+  </ul>
+
+  <h2>Release Notes Template (Offline)</h2>
+  <p>Here’s what you’ll see:</p>
+  <div class="aeg-codebox" style="background:#f8fafc !important;color:#1f2937 !important;border:1px solid #e2e8f0 !important;border-radius:8px !important;padding:16px !important;white-space:pre-wrap !important;font-family:'Fira Code',monospace !important;line-height:1.5 !important;mix-blend-mode:normal !important;text-shadow:none !important;opacity:1 !important;"><code style="background:transparent !important;color:inherit !important;white-space:inherit !important;display:block !important;">
+Release: Aethergen Edge Pack vX.Y.Z
+Manifest Hash (QR): abc123...
+Signed By: key-id 0xDEADBEEF
+Includes:
+  - Models: vision/lineA INT8, policy-pack plant-1
+  - SBOM: sbom.json (hash ...)
+  - Tools: kiosk v1.4
+Change Summary:
+  - Thresholds: class A +0.02; class B unchanged
+  - Logging: sample rate +10% for shift night
+Rollback:
+  - Last good: vX.Y.(Z-1) hash ...
+  </code></div>
+
+  <h2>Manifest Snippet</h2>
+  <p>A peek inside:</p>
+  <div class="aeg-codebox" style="background:#f8fafc !important;color:#1f2937 !important;border:1px solid #e2e8f0 !important;border-radius:8px !important;padding:16px !important;white-space:pre-wrap !important;font-family:'Fira Code',monospace !important;line-height:1.5 !important;mix-blend-mode:normal !important;text-shadow:none !important;opacity:1 !important;"><code style="background:transparent !important;color:inherit !important;white-space:inherit !important;display:block !important;">
+{
+  "files": [
+    {"path": "models/lineA.int8.gguf", "sha256": "..."},
+    {"path": "policy/plant-1.yaml", "sha256": "..."},
+    {"path": "sbom.json", "sha256": "..."}
+  ],
+  "version": "X.Y.Z",
+  "build": {
+    "time": "2025-01-20T12:00:00Z",
+    "env": "offline-builder-3"
+  }
+}
+  </code></div>
+
+  <h2>QR Encoding</h2>
+  <p>We make QR codes rugged:</p>
+  <ul>
+    <li>Encode manifest SHA-256 as base32 with a version prefix.</li>
+    <li>Use QR error-correction (M or Q) to handle glare and dust.</li>
+    <li>Add a tamper stripe sticker for enclosure panels.</li>
+  </ul>
+
+  <h2>Roles & Responsibilities</h2>
+  <p>Teamwork makes it work:</p>
+  <ul>
+    <li>Build owner: Signs artifacts and assembles the package.</li>
+    <li>QA lead: Verifies golden self-tests and evidence.</li>
+    <li>Field engineer: Performs install and kiosk checks.</li>
+    <li>Security: Manages keys, revocation lists, audits.</li>
+  </ul>
+
+  <h2>Security Audit Checklist</h2>
+  <p>Before you deploy:</p>
+  <ul>
+    <li>SBOM present; third-party scans attached.</li>
+    <li>Manifests and binaries signed; keys in valid period.</li>
+    <li>QR hash matches manifest; kiosk verification passed.</li>
+    <li>Local audit log enabled and rotating.</li>
+  </ul>
+
+  <h2>Disaster Recovery (Air-Gapped)</h2>
+  <p>If things go sideways:</p>
+  <ol>
+    <li>Power loss during install → boot to recovery media.</li>
+    <li>Restore snapshot; re-run self-tests.</li>
+    <li>File incident with logs and kiosk screenshots.</li>
+  </ol>
+
+  <h2>Device Profiles (Examples)</h2>
+  <p>Tailored to hardware:</p>
+  <ul>
+    <li>Jetson Orin 16GB: INT8 models; thermal cap 30W; fan curve profile B.</li>
+    <li>Industrial PC 32GB: FP16 or Q4; dual-camera ingest; SSD wear limits.</li>
+  </ul>
+
+  <h2>Policy Overlays (Site-Specific)</h2>
+  <p>Custom rules in action:</p>
+  <div class="aeg-codebox" style="background:#f8fafc !important;color:#1f2937 !important;border:1px solid #e2e8f0 !important;border-radius:8px !important;padding:16px !important;white-space:pre-wrap !important;font-family:'Fira Code',monospace !important;line-height:1.5 !important;mix-blend-mode:normal !important;text-shadow:none !important;opacity:1 !important;"><code style="background:transparent !important;color:inherit !important;white-space:inherit !important;display:block !important;">
+policy:
+  thresholds:
+    surface.scratch: 0.62
+    gap.alignment: 0.55
+  logging:
+    sample_rate: 0.15
+  rework:
+    severity: {critical: stop, major: route, minor: tally}
+  </code></div>
+
+  <h2>Change-Control Form</h2>
+  <p>Every change documented:</p>
+  <ul>
+    <li>Requester, approver, date/time.</li>
+    <li>Artifact hashes and versions.</li>
+    <li>Risk assessment; rollback plan.</li>
+    <li>Post-install verification evidence ID.</li>
+  </ul>
+
+  <h2>Legal & Compliance Notes</h2>
+  <p>Covering the bases:</p>
+  <ul>
+    <li>License obligations listed in SBOM.</li>
+    <li>Site policies for removable media handling.</li>
+    <li>Retention policy for evidence logs.</li>
+  </ul>
+
+  <h2>Field Tips</h2>
+  <p>Pro tricks from the field:</p>
+  <ul>
+    <li>Carry spare QR labels and anti-glare protectors.</li>
+    <li>Photograph kiosk pass screen for incident links.</li>
+    <li>Label USBs with release and hash fragment.</li>
+  </ul>
+
+  <h2>Contact</h2>
+  <p>Need an offline deployment that procurement and security can sign with confidence? <a class="aeg-btn" href="https://auspexi.com/contact">Talk to us</a>.</p>
+  <p><a class="aeg-btn" href="https://auspexi.com/contact">Contact Sales →</a></p>
+</body>
+</html>

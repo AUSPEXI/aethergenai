@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Evidence-Led AI in Regulated Industries: A Practical Guide | Auspexi</title>
+  <style>
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      color: #2d3748;
+      max-width: none;
+      margin: 0 auto;
+      padding: 2rem;
+      background-color: #f7fafc;
+    }
+    h1 {
+      font-size: 2.5rem;
+      color: #1a202c;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+    h2 {
+      font-size: 1.8rem;
+      color: #2b6cb0;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+    }
+    p {
+      margin-bottom: 1.5rem;
+      font-size: 1.1rem;
+    }
+    em {
+      font-style: italic;
+      color: #4a5568;
+    }
+    ul, ol {
+      margin-bottom: 1.5rem;
+      padding-left: 2rem;
+    }
+    li {
+      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+    }
+    pre {
+      background-color: #f8f9fa;
+      color: #2d3748;
+      border: 1px solid #e2e8f0;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      overflow-x: auto;
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
+    }
+    code {
+      font-family: 'Fira Code', monospace;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1.5rem;
+      background-color: #fff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    th, td {
+      padding: 0.75rem;
+      border: 1px solid #e2e8f0;
+      text-align: left;
+      font-size: 1rem;
+    }
+    th {
+      background-color: #2b6cb0;
+      color: #fff;
+    }
+    details {
+      margin-bottom: 1rem;
+      background-color: #edf2f7;
+      padding: 1rem;
+      border-radius: 0.5rem;
+    }
+    summary {
+      font-weight: bold;
+      cursor: pointer;
+      color: #2b6cb0;
+      font-size: 1.1rem;
+    }
+    .aeg-btn {
+      display: inline-block;
+      background-color: #2b6cb0;
+      color: #fff;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background-color 0.3s;
+      margin-top: 1rem;
+    }
+    .aeg-btn:hover {
+      background-color: #2c5282;
+    }
+    img {
+      width: 100%;
+      height: auto;
+      max-width: 100vw;
+      margin: 0 -2rem;
+      display: block;
+    }
+    blockquote {
+      border-left: 4px solid #2b6cb0;
+      padding-left: 1rem;
+      margin: 1.5rem 0;
+      color: #2d3748;
+      font-style: italic;
+    }
+    .kv-list {
+      margin: 1rem 0 1.5rem 0;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+    .kv {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.5rem;
+      padding: 0.6rem 0.8rem;
+    }
+    .kv .key {
+      min-width: 180px;
+      font-weight: 600;
+      color: #1e40af;
+      white-space: nowrap;
+    }
+    .kv .value {
+      color: #4a5568;
+    }
+    @media (max-width: 600px) {
+      body {
+        padding: 1rem;
+      }
+      h1 {
+        font-size: 2rem;
+      }
+      h2 {
+        font-size: 1.5rem;
+      }
+      p, li {
+        font-size: 1rem;
+      }
+      img {
+        margin: 0 -1rem;
+      }
+    }
+    pre, code, pre *, code * { color: #1f2937 !important; background: #f8fafc !important; }
+    [style*="color:#000"], [style*="color: #000"], [style*="color:black"], [style*="color: black"], [style*="color:rgb(0,0,0)"] { color: #1f2937 !important; }
+    [style*="background:#000"], [style*="background: #000"], [style*="background-color:#000"], [style*="background-color: #000"], [style*="background:rgb(0,0,0)"], [style*="background-color:rgb(0,0,0)"] { background-color: #f8fafc !important; }
+  </style>
+</head>
+<body>
+  <h1>Evidence-Led AI in Regulated Industries: A Practical Guide</h1>
+  <p><em>By Gwylym Owen — January 16, 2025 • 15–18 min read</em></p>
+
+  <h2>Why Evidence, Not Promises</h2>
+  <p>In regulated sectors like finance, healthcare, public sector, and critical infrastructure, trust hinges on what auditors, risk teams, and operators can verify—not just what’s promised in slide decks. AethergenPlatform addresses this by making <strong>evidence a first-class artifact</strong>. Automatically generated, cryptographically signed, and fully reproducible, our evidence bundles turn claims into actionable facts, streamlining adoption while meeting stringent compliance needs as of January 2025.</p>
+
+  <h2>What “Evidence-Led” Means (Concrete)</h2>
+  <p>Evidence-led AI means delivering a transparent, verifiable foundation for every model and dataset. Here’s what AethergenPlatform can provide:</p>
+  <ul>
+    <li><strong>Lineage</strong>: Schema versions, recipe hashes, environment fingerprints, artifact checksums, and change notes trace every release’s origin.</li>
+    <li><strong>Utility</strong>: Metrics like AUC, PR-AUC, KS, or F1 with baselines, effect sizes, confidence intervals, and stability bands across use cases.</li>
+    <li><strong>Privacy</strong>: Membership-inference and attribute-disclosure probes, optional differential privacy (ε, δ) with calibration, and red-team prompts to test boundaries.</li>
+    <li><strong>Ablation</strong>: A ranked list of impactful features or modules, showing quantified deltas (e.g., +3% accuracy, -10% latency) and trade-offs.</li>
+    <li><strong>Operational Limits</strong>: Clear intended use, known failure modes, and guardrails like thresholds, drift bounds, and rollback triggers.</li>
+    <li><strong>Signatures</strong>: Cryptographic signatures and checksums for bundles and artifacts, enabling secure filing by procurement and third-party verification.</li>
+    <li><strong>Optional zk-Attestations</strong>: Zero-knowledge proofs for privacy bounds or aggregation integrity, protecting sensitive internals.</li>
+  </ul>
+
+  <h2>Privacy in Plain Language</h2>
+  <p>Privacy is a cornerstone of regulated AI. We default to <strong>synthetic-first</strong> data generation, learning patterns from minimal or redacted seeds to create new, identifier-free records that mimic real data. Where regulations demand, we can apply <strong>differential privacy</strong>, publishing budgets (e.g., ε=2.0, δ=1e-6) and <strong>disclosure probes</strong> to measure privacy impact. Reviewers can see the full picture—budgets, probe results, and utility trade-offs—ensuring transparency without assumptions.</p>
+
+  <h2>Worked Example: Credit Risk Under Basel</h2>
+  <p><strong>Objective</strong>: Evaluate a credit risk model using a synthetic transaction graph while safeguarding customer data.</p>
+  <ol>
+    <li><strong>Schema</strong>: Accounts, customers, instruments, payments/transfers, events (delinquency, restructuring), with governance labels and role-based visibility to control access.</li>
+    <li><strong>Generation</strong>: Synthetic graph with calibrated distributions (e.g., degree, dwell time, inter-arrival rates) and typologies (late payments, curtailment), with optional ε-DP overlays for added protection.</li>
+    <li><strong>Training/Eval</strong>: Baselines for PD, EAD, LGD; challenger models with hyper-parameters fixed by recipe hashes; stress tests for macro shifts and product segments.</li>
+    <li><strong>Probes</strong>: Membership-inference attacks (MIA) and attribute-disclosure tests on synthetic data; re-identification attempts against seeds (where policy allows), with results documented against thresholds.</li>
+    <li><strong>Evidence</strong>: Signed bundle with PD lift vs. baselines, error trade-offs (Type I/II rates), privacy scores, drift sensitivity, feature ablations, and intended use statements.</li>
+  </ol>
+  <p>Outcome: Risk and model validation teams can reproduce evaluations, assess trade-offs, and file a signed bundle with procurement/change-control, meeting Basel compliance needs.</p>
+
+  <h2>Healthcare Example: Claims Fraud Without PHI/PII</h2>
+  <p><strong>Objective</strong>: Detect claims fraud without exposing PHI/PII.</p>
+  <ul>
+    <li><strong>Data</strong>: Synthetic claims, procedures, and providers with fidelity to real distributions, including typologies like upcoding, unbundling, and phantom providers.</li>
+    <li><strong>Utility</strong>: Case detection rates at fixed false-positive targets (e.g., 1% FPR), with cost curves for investigation throughput to guide resource allocation.</li>
+    <li><strong>Privacy</strong>: Probes across entities and time windows; optional ε-DP at dataset or feature level to meet regulatory standards.</li>
+    <li><strong>Evidence</strong>: Signed bundle for audit, including operational limits (e.g., not for eligibility decisions) to ensure proper use.</li>
+  </ul>
+
+  <h2>Public Sector Example: Secure Analytics</h2>
+  <p><strong>Objective</strong>: Deliver air-gapped analytics for secure environments.</p>
+  <ul>
+    <li><strong>Data</strong>: Synthetic records for policy analysis, with controlled distributions and typologies (e.g., fraud patterns).</li>
+    <li><strong>Utility</strong>: Operating point metrics (e.g., detection rates) with stability across regions and time bands.</li>
+    <li><strong>Privacy</strong>: Disclosure probes and optional DP budgets, ensuring no sensitive data leakage.</li>
+    <li><strong>Delivery</strong>: Air-gapped tarballs with signed manifests and offline dashboards for verification.</li>
+  </ul>
+
+  <h2>KPIs That Move Decisions</h2>
+  <ul>
+    <li><strong>Utility</strong>: Lift vs. baseline at operating points; stability across segments, time, and stress scenarios.</li>
+    <li><strong>Privacy</strong>: MIA/attribute-disclosure scores against policy thresholds; ε-DP budgets with calibration notes.</li>
+    <li><strong>Risk</strong>: Drift detection power, fail-closed rules, rollback time, and change-window compliance.</li>
+    <li><strong>Operational</strong>: Cost to hit KPIs, runtime envelopes, evidence production latency, and reproducibility rate.</li>
+  </ul>
+
+  <h2>How AethergenPlatform Produces Evidence by Default</h2>
+  <ol>
+    <li><strong>Schema Designer</strong>: Define fields, constraints, privacy levels, and visibility; assign version stamps for traceability.</li>
+    <li><strong>Generator</strong>: Synthesize data at scale; log seeds and recipes; apply optional ε-DP for compliance.</li>
+    <li><strong>Benchmarks & Ablation</strong>: Evaluate across tasks and stress tests; calculate effect sizes, CIs, and drift monitors.</li>
+    <li><strong>Reporting</strong>: Export a <strong>signed evidence bundle</strong> (via CI), dataset/model cards, and manifest with checksums; include optional zk-attestations.</li>
+    <li><strong>Delivery</strong>: Package for Unity Catalog or Marketplace with evidence attached; provide changelog and signatures for procurement.</li>
+  </ol>
+
+  <h2>Governance, Change-Control, and SLAs</h2>
+  <p>Releases fail closed if gates aren’t met, ensuring safety. Change windows, named approvals, rollback conditions, and evidence retention are clearly defined. For managed delivery, SLAs can tie to evidence thresholds (e.g., stability bands), making pass/fail decisions objective and auditable.</p>
+
+  <h2>Common Pitfalls We Avoid</h2>
+  <ul>
+    <li><strong>Slideware Measurements</strong>: We deliver JSON and signatures, not static screenshots.</li>
+    <li><strong>Cherry-Picking</strong>: Pre-declared scenario sets and segments ensure all results are logged.</li>
+    <li><strong>Privacy Hand-Waving</strong>: Published probes and budgets include thresholds and context.</li>
+    <li><strong>Irreproducible Wins</strong>: Bundles include seeds, hashes, and environment fingerprints.</li>
+  </ul>
+
+  <h2>FAQ</h2>
+  <details>
+    <summary>Does synthetic data “hide” bias?</summary>
+    <p>No—evidence reports segment performance and drift; we document limits and intended use. Synthetic data accelerates safe evaluation, not bias obfuscation.</p>
+  </details>
+  <details>
+    <summary>Can auditors re-run?</summary>
+    <p>Yes. Bundles include configs, seeds, and hashes; minimal re-run kits can be provided where feasible and policy permits.</p>
+  </details>
+  <details>
+    <summary>What about production?</summary>
+    <p>Managed delivery links SLAs to evidence thresholds and change control; self-service exposes the same gates for transparency.</p>
+  </details>
+
+  <h2>Start With One Use Case</h2>
+  <p>Select one decision, dataset, and target KPI. We can synthesize data, evaluate performance, probe privacy, and deliver a signed bundle for filing. If it meets your gates, scale from there.</p>
+
+  <p><a href="/contact" class="aeg-btn">Contact Sales →</a></p>
+
+  <h2>Executive Playbook</h2>
+  <ul>
+    <li>Define the decision and KPI (e.g., 1% FPR detection rate) with operations.</li>
+    <li>Identify segments (e.g., region, product, lifecycle) reflecting risk and reality.</li>
+    <li>Generate or prepare corpora (synthetic-first where possible).</li>
+    <li>Evaluate baselines and challengers; compute CIs and effect sizes.</li>
+    <li>Run privacy probes and, if required, apply DP budgets.</li>
+    <li>Package evidence; attach to change-control; rehearse rollback.</li>
+  </ul>
+
+  <h2>Operating Point Cookbook</h2>
+  <pre>
+capacity:
+  analysts_per_day: 20
+  cases_per_analyst: 100
+budget:
+  alerts_per_day: 2000
+tradeoff:
+  target_fpr: 0.01
+  threshold_sweep: [0.70, 0.76]
+  </pre>
+
+  <h2>Segment Taxonomy Examples</h2>
+  <ul>
+    <li>Healthcare: Region, specialty, facility type, payer plan.</li>
+    <li>Finance: Product, channel, merchant band, region.</li>
+    <li>Public Sector: Site, policy regime, time band, device class.</li>
+  </ul>
+
+  <h2>Stability Analysis Template</h2>
+  <pre>
+segments:
+  region: [NA, EU, APAC]
+  product: [A, B]
+metrics:
+  utility@op: {ci: 0.95}
+gates:
+  region_max_delta: 0.03
+  product_max_delta: 0.02
+  </pre>
+
+  <h2>Privacy Probe Methods</h2>
+  <ul>
+    <li><strong>Membership Inference</strong>: Shadow vs. attack classifier; report AUC advantage with CIs.</li>
+    <li><strong>Attribute Disclosure</strong>: Predict sensitive fields; compare leakage to baseline.</li>
+    <li><strong>Linkage</strong>: LSH on embeddings with strict thresholds (where policy allows).</li>
+  </ul>
+
+  <h2>Differential Privacy Notes</h2>
+  <pre>
+policy:
+  dp:
+    enabled: true
+    epsilon: 2.0
+    delta: 1e-6
+    composition: advanced
+impact:
+  utility_delta_expected: -0.01 ± 0.005
+  </pre>
+
+  <h2>Evidence Bundle Index</h2>
+  <pre>
+index.json
+├─ metrics/
+│  ├─ utility@op.json
+│  ├─ stability_by_segment.json
+│  ├─ drift_early_warning.json
+│  └─ latency.json
+├─ plots/
+│  ├─ op_tradeoffs.html
+│  ├─ stability_bars.html
+│  └─ roc_pr.html
+├─ configs/
+│  ├─ evaluation.yaml
+│  └─ thresholds.yaml
+├─ privacy/
+│  ├─ probes.json
+│  └─ dp.json
+├─ sbom.json
+├─ manifest.json
+└─ seeds/seeds.txt
+  </pre>
+</body>
+</html>

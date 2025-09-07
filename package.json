@@ -30,6 +30,7 @@
     "test:stress:optimized": "tsx src/test/optimizedStressTest.ts",
     "test:billion:scale": "tsx scripts/test-billion-scale.ts",
     "blog:publish-html": "node scripts/publish-html-posts.mjs",
+    "blog:normalize": "node scripts/normalize-blogs.mjs",
     "blog:index": "node scripts/build-blog-index.mjs",
     "blog:new": "node scripts/blog-new.mjs",
     "blog:delete": "node scripts/blog-delete.mjs",

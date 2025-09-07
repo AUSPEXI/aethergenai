@@ -4,6 +4,21 @@
 
 /* Global accessibility tweak: avoid light gray text on light backgrounds */
 @layer base {
+  /* Enforce readable text on light backgrounds across app */
+  :root, body, body * {
+    color: inherit;
+  }
+  [style*="color:#999"], [style*="color: #999"],
+  [style*="color:#777"], [style*="color: #777"],
+  [style*="color:#666"], [style*="color: #666"],
+  [style*="color:#555"], [style*="color: #555"] {
+    color: #334155 !important; /* slate-700 */
+  }
+  /* Medium greys mapped to readable tones on light surfaces */
+  .text-gray-400, .text-slate-400, .text-neutral-400 { color: #475569 !important; }
+  .text-gray-500, .text-slate-500, .text-neutral-500 { color: #374151 !important; }
+  .text-gray-600, .text-slate-600, .text-neutral-600 { color: #1f2937 !important; }
+  /* Tailwind utility greys overridden to readable defaults */
   .text-gray-300, .text-gray-200, .text-gray-100,
   .text-slate-300, .text-slate-200, .text-slate-100,
   .text-neutral-300, .text-neutral-200, .text-neutral-100 {
@@ -13,6 +28,14 @@
   .prose, .prose * {
     color: #0f172a !important; /* slate-900 */
     opacity: 1 !important;
+  }
+  /* Keycap style used in blogs for anchor_hash etc. */
+  .prose .kbd, .kbd {
+    background: #111827 !important;
+    color: #ffffff !important;
+    padding: 2px 6px !important;
+    border-radius: 4px !important;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace !important;
   }
   .prose a { color: #1d4ed8 !important; } /* blue-700 links */
   .prose strong { color: #0b1220 !important; }

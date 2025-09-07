@@ -6,6 +6,9 @@ import {
   Database, Brain, FileText, Package, Users, Lock
 } from 'lucide-react'
 import { sloManagementService, SLOConfig, SLOStatus, SLOBreach, ShadowEvaluation, DriftMetrics } from '../services/sloManagementService'
+import { calibrateThreshold, evaluateSelective, synthScores, calibratePerGroup, parseSignalsCSV, buildPointsFromSignals } from '../services/conformalService'
+import { residualBank, ResidualSignal } from '../services/residualBankService'
+import { buildEvidenceBundle, downloadSignedEvidenceZip } from '../services/evidenceService'
 import BackButton from '../components/BackButton'
 
 export const StabilityDemo: React.FC = () => {
@@ -17,6 +20,11 @@ export const StabilityDemo: React.FC = () => {
   const [isMonitoring, setIsMonitoring] = useState(false)
   const [selectedTimeWindow, setSelectedTimeWindow] = useState<'7d' | '14d' | '28d'>('7d')
   const [showSLOConfig, setShowSLOConfig] = useState(false)
+  const [coverageTarget, setCoverageTarget] = useState(0.7)
+  const [conformalThresholds, setConformalThresholds] = useState<Record<string, number>>({})
+  const [selectiveEval, setSelectiveEval] = useState<{ coverage: number; abstain: number; errorRate: number; correctRate: number } | null>(null)
+  const [segmentThresholds, setSegmentThresholds] = useState<Record<string, number>>({})
+  const [signalsCSV, setSignalsCSV] = useState<string>('margin,entropy,retrieval,correct\n0.8,0.2,0.7,1\n0.4,0.7,0.2,0\n0.6,0.5,0.6,1')
   const [sloConfig, setSloConfig] = useState<SLOConfig>({
     utility: {
       operating_point: 'fpr=1%',
@@ -49,6 +57,17 @@ export const StabilityDemo: React.FC = () => {
 
   useEffect(() => {
     loadDemoData()
+    // Load stored conformal settings per model
+    try {
+      const raw = localStorage.getItem(`aeg_conformal_${selectedModel}`)
+      if (raw) {
+        const obj = JSON.parse(raw)
+        if (typeof obj.target === 'number') setCoverageTarget(obj.target)
+        if (typeof obj.threshold === 'number') {
+          setConformalThresholds(prev => ({ ...prev, [selectedModel]: obj.threshold }))
+        }
+      }
+    } catch {}
   }, [selectedModel])
 
   const loadDemoData = async () => {
@@ -103,6 +122,18 @@ export const StabilityDemo: React.FC = () => {
       // Update breaches
       const modelBreaches = await sloManagementService.getBreaches(selectedModel)
       setBreaches(modelBreaches)
+
+      // Capture residual-style signals (simulated) to residual bank
+      const signal: ResidualSignal = {
+        modelId: selectedModel,
+        segment: ['region_na','region_eu','region_apac'][Math.floor(Math.random()*3)],
+        timestamp: Date.now(),
+        margin: Math.random(),
+        entropy: Math.random(),
+        retrieval: Math.random(),
+        correct: Math.random() > 0.2
+      }
+      try { residualBank.append(signal) } catch {}
     }, 5000)
     
     return () => clearInterval(interval)
@@ -532,6 +563,165 @@ export const StabilityDemo: React.FC = () => {
               </div>
             </div>
           )}
+        </div>
+
+        {/* Conformal/Selective Prediction (Pilot) */}
+        <div className="bg-white rounded-xl p-6 mb-8 shadow-md">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">Selective Prediction (Pilot)</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+            <div className="md:col-span-2">
+              <p className="text-gray-700 mb-4">Calibrate a threshold to hit a target coverage, then apply to simulated scores to see abstain/error trade‑offs.</p>
+              <div className="flex items-center gap-4 mb-4">
+                <label className="text-sm text-gray-700">Target coverage: <span className="font-mono">{coverageTarget.toFixed(2)}</span></label>
+                <input type="range" min={0.5} max={0.95} step={0.01} value={coverageTarget} onChange={(e)=>setCoverageTarget(parseFloat(e.target.value))} className="w-64"/>
+                <button
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                  onClick={() => {
+                    const cal = synthScores(600)
+                    const model = calibrateThreshold(cal, coverageTarget)
+                    const evalRes = evaluateSelective(synthScores(400), model)
+                    setSelectiveEval(evalRes)
+                    setConformalThresholds(prev => ({ ...prev, [selectedModel]: model.threshold }))
+                    try { localStorage.setItem(`aeg_conformal_${selectedModel}`, JSON.stringify({ threshold: model.threshold, target: coverageTarget })) } catch {}
+                  }}
+                >
+                  Calibrate
+                </button>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="border rounded-lg p-3 text-sm">
+                  <div className="text-gray-500">Threshold</div>
+                  <div className="font-mono">{(conformalThresholds[selectedModel] ?? 0).toFixed(3)}</div>
+                </div>
+                <div className="border rounded-lg p-3 text-sm">
+                  <div className="text-gray-500">Coverage (obs)</div>
+                  <div className="font-mono">{selectiveEval ? selectiveEval.coverage.toFixed(2) : '-'}</div>
+                </div>
+                <div className="border rounded-lg p-3 text-sm">
+                  <div className="text-gray-500">Abstain</div>
+                  <div className="font-mono">{selectiveEval ? selectiveEval.abstain.toFixed(2) : '-'}</div>
+                </div>
+                <div className="border rounded-lg p-3 text-sm">
+                  <div className="text-gray-500">Error (accepted)</div>
+                  <div className="font-mono">{selectiveEval ? selectiveEval.errorRate.toFixed(2) : '-'}</div>
+                </div>
+              </div>
+              <div className="mt-4">
+                <div className="text-sm text-gray-700 font-semibold mb-2">Per‑segment thresholds (simulated)</div>
+                <button
+                  className="px-3 py-1 bg-gray-100 text-gray-800 rounded hover:bg-gray-200 text-sm"
+                  onClick={() => {
+                    const groups = {
+                      region_na: synthScores(200),
+                      region_eu: synthScores(200),
+                      region_apac: synthScores(200)
+                    }
+                    const { thresholds, evals } = calibratePerGroup(groups, coverageTarget)
+                    setSegmentThresholds(thresholds)
+                    console.log('Segment evals', evals)
+                  }}
+                >
+                  Simulate Segment Thresholds
+                </button>
+                {Object.keys(segmentThresholds).length > 0 && (
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-3 text-sm">
+                    {Object.entries(segmentThresholds).map(([k, v]) => (
+                      <div key={k} className="border rounded p-2">
+                        <div className="text-gray-500">{k}</div>
+                        <div className="font-mono">{v.toFixed(3)}</div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <div className="mt-4">
+                <div className="flex items-center justify-between">
+                  <div className="text-sm text-gray-700 font-semibold">Residual bank (local)</div>
+                  <button
+                    className="text-xs text-blue-600 hover:underline"
+                    onClick={() => { try { residualBank.clear(); setSegmentThresholds({}); } catch {} }}
+                  >
+                    Clear
+                  </button>
+                </div>
+                <pre className="bg-gray-50 border rounded p-2 text-xs overflow-auto max-h-40">{JSON.stringify(residualBank.summarizeBySegment(), null, 2)}</pre>
+                <div className="mt-2">
+                  <button
+                    className="px-3 py-1 bg-emerald-600 text-white rounded text-sm hover:bg-emerald-700"
+                    onClick={() => {
+                      const groups: any = {}
+                      const all = residualBank.readAll()
+                      for (const r of all) {
+                        const k = r.segment || 'global'
+                        if (!groups[k]) groups[k] = []
+                        groups[k].push({ score: 0.5*(r.margin??0) + 0.3*(1-(r.entropy??1)) + 0.2*(r.retrieval??0), correct: r.correct??true })
+                      }
+                      const { thresholds } = calibratePerGroup(groups, coverageTarget)
+                      setSegmentThresholds(thresholds)
+                    }}
+                  >
+                    Generate Anchors & Thresholds
+                  </button>
+                  <button
+                    className="ml-2 px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700"
+                    onClick={async () => {
+                      try {
+                        const res = await fetch('/.netlify/functions/noise-recycler', {
+                          method: 'POST', headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ residuals: residualBank.readAll(), targetCoverage: coverageTarget })
+                        })
+                        const js = await res.json()
+                        if (js?.thresholds) setSegmentThresholds(js.thresholds)
+                      } catch {}
+                    }}
+                  >
+                    Send to Noise Recycler (Function)
+                  </button>
+                  <button
+                    className="ml-2 px-3 py-1 bg-slate-700 text-white rounded text-sm hover:bg-slate-800"
+                    onClick={async () => {
+                      const summary = residualBank.summarizeBySegment()
+                      const bundle = buildEvidenceBundle({
+                        notes: ['Noise Recycler evidence: residual summaries and calibrated thresholds'],
+                        ablation_summary: { thresholds: segmentThresholds, coverage_target: coverageTarget, summary },
+                      })
+                      await downloadSignedEvidenceZip(bundle, 'noise_recycler_evidence.zip')
+                    }}
+                  >
+                    Download Evidence (Noise)
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div className="text-sm text-gray-700">
+              <div>Steps:</div>
+              <ol className="list-decimal list-inside space-y-1">
+                <li>Sample scores (margin/entropy mix)</li>
+                <li>Pick coverage target (e.g., 70%)</li>
+                <li>Set threshold at quantile</li>
+                <li>Report coverage/abstain/error</li>
+              </ol>
+              <div className="mt-4">
+                <div className="font-semibold mb-1">Optional: Calibrate from uploaded signals</div>
+                <textarea value={signalsCSV} onChange={(e)=>setSignalsCSV(e.target.value)} className="w-full h-28 border rounded p-2 text-xs font-mono" />
+                <div className="flex gap-2 mt-2">
+                  <button
+                    className="px-3 py-1 bg-gray-100 text-gray-800 rounded hover:bg-gray-200 text-sm"
+                    onClick={() => {
+                      const signals = parseSignalsCSV(signalsCSV)
+                      const points = buildPointsFromSignals(signals, { margin: 0.5, entropy: 0.3, retrieval: 0.2 })
+                      const model = calibrateThreshold(points, coverageTarget)
+                      const evalRes = evaluateSelective(points, model)
+                      setSelectiveEval(evalRes)
+                      setConformalThresholds(prev => ({ ...prev, [selectedModel]: model.threshold }))
+                    }}
+                  >
+                    Calibrate from CSV
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Features Overview */}

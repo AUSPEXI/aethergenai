@@ -164,22 +164,22 @@ export const VerificationKiosk: React.FC<VerificationKioskProps> = ({ className 
 				</div>
 
 				{/* QR Input */}
-				<div className="border-2 border-dashed border-slate-300 rounded-lg p-4 text-center hover:border-blue-400 transition-colors">
+				<div className="border-2 border-dashed border-slate-300 rounded-lg p-4 text-center hover:border-blue-400 transition-colors overflow-hidden">
 					<QrCode className="w-8 h-8 text-slate-400 mx-auto mb-2" />
 					<h3 className="font-semibold text-slate-900 mb-2">QR Code Hash</h3>
 					<p className="text-sm text-slate-600 mb-3">Enter QR code hash manually</p>
-					<div className="flex gap-2">
+					<div className="flex items-center gap-2 w-full">
 						<input
 							type="text"
 							value={qrInput}
 							onChange={(e) => setQrInput(e.target.value)}
 							placeholder="AEG-1.0.0-abc123..."
-							className="flex-1 px-3 py-2 border border-slate-300 rounded-lg text-sm"
+							className="flex-1 min-w-0 px-3 h-10 border border-slate-300 rounded-lg text-sm"
 						/>
 						<button
 							onClick={handleQRInput}
 							disabled={!qrInput.trim() || isVerifying}
-							className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50"
+							className="shrink-0 bg-green-600 text-white px-4 h-10 rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 text-sm"
 						>
 							Verify
 						</button>

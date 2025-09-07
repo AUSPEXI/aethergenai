@@ -34,7 +34,8 @@
     "blog:index": "node scripts/build-blog-index.mjs",
     "blog:new": "node scripts/blog-new.mjs",
     "blog:delete": "node scripts/blog-delete.mjs",
-    "scan:placeholders": "node scripts/scan-placeholders.cjs"
+    "scan:placeholders": "node scripts/scan-placeholders.cjs",
+    "guard:ip": "node scripts/ip-safety-guard.mjs"
   },
   "dependencies": {
     "@aws-sdk/client-dataexchange": "^3.525.0",

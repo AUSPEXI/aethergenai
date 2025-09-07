@@ -98,6 +98,9 @@ class SLOManagementService {
   private breaches: Map<string, SLOBreach> = new Map()
   private shadowEvaluations: Map<string, ShadowEvaluation> = new Map()
   private driftMetrics: Map<string, DriftMetrics> = new Map()
+  // Hysteresis/smoothing to reduce status flapping
+  private samples: Map<string, number[]> = new Map()
+  private breachStreaks: Map<string, number> = new Map()
 
   async configureSLO(modelId: string, config: SLOConfig): Promise<void> {
     this.sloConfigs.set(modelId, config)
@@ -113,48 +116,56 @@ class SLOManagementService {
     const statuses: SLOStatus[] = []
 
     // Utility SLO
+    const utilKey = `${modelId}:utility`
+    const smUtility = this.smooth(utilKey, currentMetrics.utility || 0)
     const utilityStatus: SLOStatus = {
       slo_type: 'utility',
-      current_value: currentMetrics.utility || 0,
+      current_value: smUtility,
       threshold: config.utility.min_threshold,
-      status: this.calculateStatus(currentMetrics.utility, config.utility.min_threshold, config.utility.tolerance_band),
-      breach_severity: this.calculateSeverity(currentMetrics.utility, config.utility.min_threshold),
+      status: this.applyHysteresis(utilKey, this.calculateStatus(smUtility, config.utility.min_threshold, config.utility.tolerance_band)),
+      breach_severity: this.calculateSeverity(smUtility, config.utility.min_threshold),
       last_updated: new Date().toISOString(),
       evidence_snapshot: `evidence-${modelId}-${Date.now()}`
     }
     statuses.push(utilityStatus)
 
     // Stability SLO
+    const stabKey = `${modelId}:stability`
+    const smStability = this.smooth(stabKey, currentMetrics.stability_delta || 0)
     const stabilityStatus: SLOStatus = {
       slo_type: 'stability',
-      current_value: currentMetrics.stability_delta || 0,
+      current_value: smStability,
       threshold: config.stability.max_delta_across_segments,
-      status: this.calculateStatus(currentMetrics.stability_delta, config.stability.max_delta_across_segments, 0.01, true),
-      breach_severity: this.calculateSeverity(currentMetrics.stability_delta, config.stability.max_delta_across_segments),
+      status: this.applyHysteresis(stabKey, this.calculateStatus(smStability, config.stability.max_delta_across_segments, 0.01, true)),
+      breach_severity: this.calculateSeverity(smStability, config.stability.max_delta_across_segments),
       last_updated: new Date().toISOString(),
       evidence_snapshot: `evidence-${modelId}-${Date.now()}`
     }
     statuses.push(stabilityStatus)
 
     // Latency SLO
+    const latKey = `${modelId}:latency`
+    const smLatency = this.smooth(latKey, currentMetrics.p95_latency || 0)
     const latencyStatus: SLOStatus = {
       slo_type: 'latency',
-      current_value: currentMetrics.p95_latency || 0,
+      current_value: smLatency,
       threshold: config.latency.p95_ms,
-      status: this.calculateStatus(currentMetrics.p95_latency, config.latency.p95_ms, 0, true),
-      breach_severity: this.calculateSeverity(currentMetrics.p95_latency, config.latency.p95_ms),
+      status: this.applyHysteresis(latKey, this.calculateStatus(smLatency, config.latency.p95_ms, 0, true)),
+      breach_severity: this.calculateSeverity(smLatency, config.latency.p95_ms),
       last_updated: new Date().toISOString(),
       evidence_snapshot: `evidence-${modelId}-${Date.now()}`
     }
     statuses.push(latencyStatus)
 
     // Privacy SLO
+    const prvKey = `${modelId}:privacy`
+    const smPrivacy = this.smooth(prvKey, currentMetrics.membership_advantage || 0)
     const privacyStatus: SLOStatus = {
       slo_type: 'privacy',
-      current_value: currentMetrics.membership_advantage || 0,
+      current_value: smPrivacy,
       threshold: config.privacy.probe_thresholds.membership_advantage,
-      status: this.calculateStatus(currentMetrics.membership_advantage, config.privacy.probe_thresholds.membership_advantage, 0, true),
-      breach_severity: this.calculateSeverity(currentMetrics.membership_advantage, config.privacy.probe_thresholds.membership_advantage),
+      status: this.applyHysteresis(prvKey, this.calculateStatus(smPrivacy, config.privacy.probe_thresholds.membership_advantage, 0, true)),
+      breach_severity: this.calculateSeverity(smPrivacy, config.privacy.probe_thresholds.membership_advantage),
       last_updated: new Date().toISOString(),
       evidence_snapshot: `evidence-${modelId}-${Date.now()}`
     }
@@ -170,6 +181,27 @@ class SLOManagementService {
     })
 
     return statuses
+  }
+
+  // Simple moving average over last 3 samples
+  private smooth(key: string, value: number): number {
+    const arr = this.samples.get(key) || []
+    arr.push(value)
+    if (arr.length > 3) arr.shift()
+    this.samples.set(key, arr)
+    const sum = arr.reduce((a,b)=>a+b,0)
+    return sum / arr.length
+  }
+
+  // Require 2 consecutive breaches to emit breach; otherwise downgrade to warning
+  private applyHysteresis(key: string, status: 'pass'|'warning'|'breach'): 'pass'|'warning'|'breach' {
+    if (status !== 'breach') {
+      this.breachStreaks.set(key, 0)
+      return status
+    }
+    const streak = (this.breachStreaks.get(key) || 0) + 1
+    this.breachStreaks.set(key, streak)
+    return streak >= 2 ? 'breach' : 'warning'
   }
 
   private calculateStatus(value: number, threshold: number, tolerance: number, lowerIsBetter: boolean = false): 'pass' | 'warning' | 'breach' {

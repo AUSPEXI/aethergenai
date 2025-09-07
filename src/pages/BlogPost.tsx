@@ -190,11 +190,11 @@ const BlogPost = () => {
     <div className="min-h-screen bg-slate-50">
       {/* Header */}
       <header className="bg-white border-b border-slate-200">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <Link to="/blog" className="inline-flex items-center text-blue-600 hover:text-blue-700 font-semibold mb-4">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pt-20">
+          <button onClick={() => window.history.length > 1 ? window.history.back() : (window.location.href = '/blog')} className="inline-flex items-center text-blue-600 hover:text-blue-700 font-semibold mb-4">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Blog
-          </Link>
+          </button>
           
           <div className="flex items-center text-sm text-slate-500 mb-4">
             {post.category ? (
@@ -274,6 +274,15 @@ const BlogPost = () => {
             /* Ensure CTA buttons are readable everywhere */
             .aeg-btn { color: #ffffff !important; }
             .prose a.aeg-btn { color: #ffffff !important; }
+            /* Ensure inline keycaps/tokens remain readable */
+            .prose .kbd {
+              background: #111827 !important;
+              color: #ffffff !important;
+              border-radius: 4px !important;
+              padding: 2px 6px !important;
+              font-family: ui-monospace, SFMono-Regular, Menlo, monospace !important;
+              font-size: 0.8em !important;
+            }
           `}</style>
           <div 
             dangerouslySetInnerHTML={{ __html: (post as any).content_html || (post as any).content || '' }} 

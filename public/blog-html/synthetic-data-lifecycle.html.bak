@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Synthetic Data Lifecycle: From Seeds to Evidence | Auspexi</title>
+  <style>
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      color: #2d3748;
+      max-width: none;
+      margin: 0 auto;
+      padding: 2rem;
+      background-color: #f7fafc;
+    }
+    h1 {
+      font-size: 2.5rem;
+      color: #1a202c;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+    h2 {
+      font-size: 1.8rem;
+      color: #2b6cb0;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+    }
+    h3 {
+      font-size: 1.5rem;
+      color: #2b6cb0;
+      margin-top: 1.5rem;
+      margin-bottom: 0.75rem;
+    }
+    p {
+      margin-bottom: 1.5rem;
+      font-size: 1.1rem;
+    }
+    em {
+      font-style: italic;
+      color: #4a5568;
+    }
+    ul, ol {
+      margin-bottom: 1.5rem;
+      padding-left: 2rem;
+    }
+    li {
+      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+    }
+    pre {
+      background-color: #f8f9fa;
+      color: #2d3748;
+      border: 1px solid #e2e8f0;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      overflow-x: auto;
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
+    }
+    code {
+      font-family: 'Fira Code', monospace;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1.5rem;
+      background-color: #fff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    th, td {
+      padding: 0.75rem;
+      border: 1px solid #e2e8f0;
+      text-align: left;
+      font-size: 1rem;
+    }
+    th {
+      background-color: #2b6cb0;
+      color: #fff;
+    }
+    details {
+      margin-bottom: 1rem;
+      background-color: #edf2f7;
+      padding: 1rem;
+      border-radius: 0.5rem;
+    }
+    summary {
+      font-weight: bold;
+      cursor: pointer;
+      color: #2b6cb0;
+      font-size: 1.1rem;
+    }
+    .aeg-btn {
+      display: inline-block;
+      background-color: #2b6cb0;
+      color: #fff;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background-color 0.3s;
+      margin-top: 1rem;
+    }
+    .aeg-btn:hover {
+      background-color: #2c5282;
+    }
+    img {
+      width: 100%;
+      height: auto;
+      max-width: 100vw;
+      margin: 0 -2rem;
+      display: block;
+    }
+    blockquote {
+      border-left: 4px solid #2b6cb0;
+      padding-left: 1rem;
+      margin: 1.5rem 0;
+      color: #2d3748;
+      font-style: italic;
+    }
+    .kv-list {
+      margin: 1rem 0 1.5rem 0;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+    .kv {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.5rem;
+      padding: 0.6rem 0.8rem;
+    }
+    .kv .key {
+      min-width: 180px;
+      font-weight: 600;
+      color: #1e40af;
+      white-space: nowrap;
+    }
+    .kv .value {
+      color: #4a5568;
+    }
+    @media (max-width: 600px) {
+      body {
+        padding: 1rem;
+      }
+      h1 {
+        font-size: 2rem;
+      }
+      h2 {
+        font-size: 1.5rem;
+      }
+      h3 {
+        font-size: 1.3rem;
+      }
+      p, li {
+        font-size: 1rem;
+      }
+      img {
+        margin: 0 -1rem;
+      }
+    }
+    pre, code, pre *, code * { color: #1f2937 !important; background: #f8fafc !important; }
+    [style*="color:#000"], [style*="color: #000"], [style*="color:black"], [style*="color: black"], [style*="color:rgb(0,0,0)"] { color: #1f2937 !important; }
+    [style*="background:#000"], [style*="background: #000"], [style*="background-color:#000"], [style*="background-color: #000"], [style*="background:rgb(0,0,0)"], [style*="background-color:rgb(0,0,0)"] { background-color: #f8fafc !important; }
+  </style>
+</head>
+<body>
+  <h1>The Synthetic Data Lifecycle: From Seeds to Evidence</h1>
+  <p><em>By Gwylym Owen — 18–24 min read</em></p>
+
+  <h2>Executive Summary</h2>
+  <p>AethergenPlatform supports schema design, generation, validation, and evidence packaging—enabling delivery without PHI/PII, with artifacts buyers can evaluate and adopt as of September 2025.</p>
+
+  <h2>Lifecycle Stages</h2>
+  <p>The process:</p>
+  <ol>
+    <li><strong>Schema</strong>: Define entities, relations, vocabularies, and constraints—set the stage!</li>
+    <li><strong>Seeds</strong>: Minimal/redacted aggregates to learn structure—plant the seeds!</li>
+    <li><strong>Generation</strong>: Craft realistic corpora with parameterised scenarios—create the illusion!</li>
+    <li><strong>Validation</strong>: Fidelity/utility metrics with CIs—validate results.</li>
+    <li><strong>Privacy</strong>: Probes and optional DP budgets—keep it secret, keep it safe!</li>
+    <li><strong>Packaging</strong>: Parquet/Delta, notebooks, and samples—wrap it up!</li>
+    <li><strong>Evidence</strong>: Signed bundle with metrics/configs/seeds/hashes—seal the deal!</li>
+  </ol>
+
+  <h2>Design Patterns</h2>
+  <p>Practical patterns:</p>
+  <ul>
+    <li>Copulas/conditional generators for joint structure—connect the dots!</li>
+    <li>Sequence models for episodes and temporal effects—tell the tale!</li>
+    <li>Scenario overlays for rare events and stress tests—add some flair!</li>
+  </ul>
+
+  <h2>KPIs</h2>
+  <p>Metrics to monitor:</p>
+  <ul>
+    <li>Fidelity to marginals and joints—keep it real!</li>
+    <li>Utility against baseline detectors—prove the power!</li>
+    <li>Privacy probe advantage vs random—lock it tight!</li>
+    <li>Analyst yield at operating budgets—maximize the yield!</li>
+  </ul>
+
+  <h2>Evidence Integration</h2>
+  <p>Operational integration:</p>
+  <ul>
+    <li>CI builds evidence; hashes recorded; dashboards exported—automated process.</li>
+    <li>Bundle attached to change-control and procurement files—tie it up!</li>
+    <li>Refresh cadence declared (e.g., monthly)—keep it fresh!</li>
+  </ul>
+
+  <h2>Case Study</h2>
+  <p><strong>Scenario</strong>: An insurer’s staged rollout.</p>
+  <p>An insurer could use the lifecycle to ship a claims corpus plus detectors. Evidence might show stability across regions and include a rollback SOP. Procurement could sign off within a simulated two‑week cycle as of September 2025.</p>
+
+  <h2>FAQ</h2>
+  <details>
+    <summary>Can we skip seeds?</summary>
+    <p>Seeds (or aggregates) anchor realism. If starting with public priors, we can tighten later as policy allows.</p>
+  </details>
+  <details>
+    <summary>What about rare classes?</summary>
+    <p>Scenario overlays and targeted augmentations help preserve tails; limits are disclosed in evidence.</p>
+  </details>
+  <details>
+    <summary>Can we export dashboards?</summary>
+    <p>Yes—HTML/PDF artifacts are bundled for offline review.</p>
+  </details>
+  <details>
+    <summary>How do we handle regulator audits?</summary>
+    <p>We deliver reproducible artifacts and documented limits; sensitive data stays on your infrastructure.</p>
+  </details>
+  <details>
+    <summary>Can we attach private annexes for regulators?</summary>
+    <p>Yes—annexes can ship with independent manifests; public bundles link without exposing sensitive content.</p>
+  </details>
+
+  <h2>Glossary</h2>
+  <ul>
+    <li><strong>Evidence Bundle</strong>: Signed metrics/configs/hashes for reproducibility.</li>
+    <li><strong>Operating Point</strong>: Threshold aligned to business costs.</li>
+    <li><strong>DP</strong>: Differential privacy—your privacy shield!</li>
+    <li><strong>PSI</strong>: Population Stability Index for drift—your drift detector!</li>
+    <li><strong>CI</strong>: Confidence interval around estimates.</li>
+  </ul>
+
+  <h2>Checklist</h2>
+  <p>Cast it right:</p>
+  <ul>
+    <li>Schema and vocabularies versioned—lock the blueprint!</li>
+    <li>Generation recipes and parameters logged—track provenance.</li>
+    <li>Validation and privacy probes pass thresholds—test the charm!</li>
+    <li>Packaging and evidence verified—finalize artifacts.</li>
+  </ul>
+
+  <p><a href="/contact" class="aeg-btn">Contact Sales →</a></p>
+
+  <h2>Recipe Manifest</h2>
+  <pre>
+recipe:
+  schema: schemas/claims_v3.yaml
+  generator: copula+sequence
+  scenarios:
+    - upcoding: {prevalence: 0.03, factor: 1.2}
+    - duplicate_billing: {delay_days: 7}
+  outputs: parquet
+  </pre>
+
+  <h2>Validation Dashboard Contents</h2>
+  <p>Peek inside the crystal ball:</p>
+  <ul>
+    <li>Marginals and joint comparisons (key fields)—see the fit!</li>
+    <li>Temporal effects (seasonality, inter-arrival)—feel the rhythm!</li>
+    <li>Utility baselines at candidate thresholds—measure performance.</li>
+  </ul>
+
+  <h2>Privacy Probes</h2>
+  <p>Guard the secrets:</p>
+  <ul>
+    <li>Membership inference advantage vs random—test the cloak!</li>
+    <li>Attribute disclosure on sensitive fields—check the shield!</li>
+    <li>Optional DP budget and composition notes—add the lock!</li>
+  </ul>
+
+  <h2>CI Example</h2>
+  <pre>
+steps:
+  - generate_small
+  - validate
+  - run_probes
+  - evidence_bundle
+artifacts: [parquet, metrics.json, plots.html, manifest.json]
+  </pre>
+
+  <h2>Evidence Manifest</h2>
+  <pre>
+{
+  "version": "2025.01",
+  "artifacts": ["metrics.json", "plots.html", "sbom.json"],
+  "hashes": {"metrics.json": "..."}
+}
+  </pre>
+
+  <h2>Runbook</h2>
+  <p>Checklist:</p>
+  <ol>
+    <li>Change detected → regenerate evidence—cast anew!</li>
+    <li>Compare against gates; if fail, fix or revert.</li>
+    <li>Attach bundle to change-control; notify stakeholders.</li>
+  </ol>
+
+  <h2>Risks & Mitigations</h2>
+  <p>Defend the realm:</p>
+  <ul>
+    <li>Tail under-coverage → targeted augmentations; disclose limits—fill the gaps!</li>
+    <li>Overfitting to synthetic quirks → ablation checks; sanity tests—keep it real!</li>
+    <li>Schema drift → versioning and automated diffs—stay on track!</li>
+  </ul>
+
+  <h2>Procurement Checklist</h2>
+  <p>Seal the deal:</p>
+  <ul>
+    <li>Evidence meets thresholds with CIs—prove the power!</li>
+    <li>Privacy probes under limits—guard the secrets!</li>
+    <li>SBOM and hashes verified—check the ingredients!</li>
+    <li>Refresh cadence and rollback defined—keep it flowing!</li>
+  </ul>
+
+  <h2>Schema Designer</h2>
+  <p>Craft the foundation:</p>
+  <ul>
+    <li>Entity definitions with visibility labels and constraints—build the structure!</li>
+    <li>Vocabulary management with versions and diffs—evolve the lexicon!</li>
+    <li>Referential integrity checks and range constraints—keep it solid!</li>
+  </ul>
+
+  <h2>Seeds Policy</h2>
+  <p>Guard the roots:</p>
+  <ul>
+    <li>Minimal seeds; access controls; retention timelines—protect the source!</li>
+    <li>Provenance logs and review cadence—track the origin!</li>
+  </ul>
+
+  <h2>Generation Deep Dive</h2>
+  <p>Unleash the creativity:</p>
+  <ul>
+    <li>Copulas for joint distributions; sequence models for timelines—weave the fabric!</li>
+    <li>Graph generators for networks (AML/fraud)—connect the web!</li>
+    <li>Scenario overlays with prevalence/severity controls—add the twists!</li>
+  </ul>
+
+  <h2>Validation Details</h2>
+  <p>Test the potion:</p>
+  <ul>
+    <li>Marginals, joints, temporal checks with tolerances—check the fit!</li>
+    <li>Baseline detectors at OP; effect sizes with CIs—measure the boost!</li>
+    <li>Drift early-warning indicators—spot the shifts!</li>
+  </ul>
+
+  <h2>Privacy Details</h2>
+  <p>Security:</p>
+  <ul>
+    <li>Membership and attribute probes with thresholds and CIs—test the defense!</li>
+    <li>Optional DP budgets with expected impact notes—balance the power!</li>
+  </ul>
+
+  <h2>Packaging Details</h2>
+  <p>Packaging:</p>
+  <ul>
+    <li>Parquet/Delta outputs; notebooks and sample slices—handy tools!</li>
+    <li>Unity Catalog registration; comments linking evidence IDs—easy access!</li>
+  </ul>
+
+  <h2>Evidence Details</h2>
+  <p>Seal the scroll:</p>
+  <ul>
+    <li>Signed metrics, configs, seeds, and hashes—locked tight!</li>
+    <li>HTML/PDF dashboards; SBOM; manifest—full disclosure!</li>
+    <li>Change-control references and deprecation notes—keep it current!</li>
+  </ul>
+
+  <h2>Case Studies</h2>
+  <p>More examples:</p>
+  <ul>
+    <li><strong>Payments AML</strong>: Graph overlay with mule rings; OP gains +15% with stability bands ≤0.02—simulated win!</li>
+    <li><strong>Industrial Vision</strong>: Lighting profiles; fallback models; golden sets approved in a week—simulated success!</li>
+  </ul>
+
+  <h2>Templates</h2>
+  <pre>
+acceptance:
+  bundle_id: string
+  op: string
+  stability: string
+  privacy: string
+  latency: string
+  decision: APPROVE|REJECT
+  </pre>
+
+  <h2>Detailed Schema Catalog</h2>
+  <pre>
+entities:
+  Patient: {id: string, age: int, region: enum[NA,EU,APAC]}
+  Provider: {id: string, specialty: enum, region: enum}
+  Facility: {id: string, type: enum, region: enum}
+  Claim: {id: string, patient_id: ref Patient.id, provider_id: ref Provider.id,
+          facility_id: ref Facility.id, date: date, pos: enum, amount: decimal}
+  LineItem: {id: string, claim_id: ref Claim.id, cpt: string, icd10: string, units: int}
+relations:
+  Patient 1..* Claim
+  Claim 1..* LineItem
+constraints:
+  Claim.amount >= 0
+  LineItem.units > 0
+vocabularies:
+  CPT_v12: {...}
+  ICD10_subset: {...}
+  </pre>
+
+  <h2>Reference Constraints</h2>
+  <p>Keep it grounded:</p>
+  <ul>
+    <li>Foreign keys enforced in packaging QA (referential integrity)—no loose ends!</li>
+    <li>Domain ranges (age ∈ [0, 120], units ∈ [1, 99])—set the boundaries!</li>
+    <li>Semantic checks (CPT family compatibility with specialty)—make sense!</li>
+  </ul>
+
+  <h2>Entity–Relationship Examples</h2>
+  <pre>
+Patient(id) ──&lt; Claim(id) ──&lt; LineItem(id)
+   │                 │                \
+   └── region       └── provider_id ──&gt; Provider(id)
+                                 \
+                                  └─ facility_id ──&gt; Facility(id)
+  </pre>
+
+  <h2>Seeds Governance Checklist</h2>
+  <p>Protect the source:</p>
+  <ul>
+    <li>Minimise fields; aggregate whenever feasible—keep it lean!</li>
+    <li>Access logged and reviewed; time-bound permissions—secure it!</li>
+    <li>Retention policy documented; periodic purge windows—clean slate!</li>
+  </ul>
+
+  <h2>Generation Parameter Tables</h2>
+  <pre>
+param, default, min, max, note
+amount.ln_mu, 4.1, 3.8, 4.6, log-normal mean
+amount.ln_sigma, 0.7, 0.5, 0.9, tail width
+interarrival.lambda1, 0.3, 0.1, 0.6, short gap component
+interarrival.lambda2, 0.8, 0.4, 1.2, long gap component
+mix.weight, 0.4, 0.2, 0.6, mixture proportion
+  </pre>
+
+  <h2>Overlay Library</h2>
+  <pre>
+overlays:
+  upcoding: {prevalence: 0.03, factor: 1.2}
+  unbundling: {prevalence: 0.01}
+  phantom_provider: {distance_km: >150, time_collision: true}
+  duplicate_billing: {delay_days: 7}
+  doctor_shopping: {window_days: 14, device_reuse: 0.25}
+  </pre>
+
+  <h2>Overlay Composition Rules</h2>
+  <p>Blend with care:</p>
+  <ul>
+    <li>Prevent impossible co-occurrences (e.g., mutually exclusive scenarios)—no clashes!</li>
+    <li>Cap total prevalence to preserve realism—keep it believable!</li>
+    <li>Log overlay seeds and parameters in manifest—track provenance.</li>
+  </ul>
+
+  <h2>Validation Worksheets</h2>
+  <pre>
+field, ks_pvalue, pass
+amount, 0.21, yes
+units, 0.34, yes
+pos, 0.08, borderline (flag)
+  </pre>
+
+  <h2>Operating Point Selection</h2>
+  <pre>
+Given budget alerts/day = B and volume/day = V, choose threshold θ s.t.
+FPR(θ) ≈ B / V. Validate precision/recall at θ with CIs.
+  </pre>
+
+  <h2>Effect Size Computation</h2>
+  <pre>
+base = evaluate(cfg_base)
+for factor in factors:
+  cfg = tweak(cfg_base, factor)
+  result = evaluate(cfg)
+  delta = result.kpi_op - base.kpi_op
+  ci = bootstrap_ci(result - base)
+  record(factor, delta, ci)
+  </pre>
+
+  <h2>Drift Monitors</h2>
+  <pre>
+monitors:
+  input_psi:
+    fields: [amount, pos]
+    threshold: 0.2
+  outcome_delta:
+    by_segment: [region, product]
+    threshold: 0.05
+  </pre>
+
+  <h2>Privacy Methodology</h2>
+  <p>Guard the vault:</p>
+  <ul>
+    <li>Training an attacker classifier to distinguish real vs synthetic; report AUC−0.5—test the disguise!</li>
+    <li>Attribute disclosure via predictive models compared to baselines—check the leaks!</li>
+    <li>Optional DP with composition accounting; disclose ε, δ and expected utility change.</li>
+  </ul>
+
+  <h2>Packaging Artifacts Catalog</h2>
+  <p>Deliver the goods:</p>
+  <ul>
+    <li>Data (Parquet/Delta) with Unity Catalog registration—ready to use!</li>
+    <li>Notebooks (trial, OP evaluation)—hands-on tools!</li>
+    <li>Docs (README, schema, limits)—clear guides!</li>
+    <li>Evidence bundle (metrics, plots, configs, sbom, manifest)—full proof!</li>
+  </ul>
+
+  <h2>Evidence Manifests</h2>
+  <pre>
+{
+  "version": "2025.01",
+  "artifacts": ["metrics/utility@op.json", "plots/stability_bars.html"],
+  "hashes": {"metrics/utility@op.json": "sha256:..."},
+  "env": {"python": "3.11", "numpy": "1.26.4"}
+}
+  </pre>
+
+  <h2>Unity Catalog Comments</h2>
+  <pre>
+COMMENT ON TABLE prod.ai.claims IS 'Purpose: fraud triage; OP: fpr=1%; Evidence: manifest 2025.01.';
+  </pre>
+
+  <h2>Buyer Notebook</h2>
+  <pre>
+# 1) Load sample table
+# 2) Run UDF at OP threshold
+# 3) Compute OP metrics with CIs
+# 4) Review stability summary
+  </pre>
+
+  <h2>Audit File Tree</h2>
+  <pre>
+release_2025_01/
+├─ metrics/
+├─ plots/
+├─ configs/
+├─ privacy/
+├─ sbom.json
+├─ manifest.json
+└─ README.html
+  </pre>
+
+  <h2>Risk Register</h2>
+  <pre>
+risk, likelihood, impact, control, owner
+tail_undercoverage, med, med, overlays+limits, data_lead
+probe_regression, low, high, gates+waiver_policy, privacy_lead
+  </pre>
+
+  <h2>SLA Mapping</h2>
+  <p>Operational expectations:</p>
+  <ul>
+    <li>Evidence regeneration: next business day; bundle ID increments—quick fixes!</li>
+    <li>Incident triage: same day for production promotions—fast response!</li>
+    <li>Dashboard export fixes: 24h—smooth updates!</li>
+  </ul>
+
+  <h2>Closing</h2>
+  <p>Schema, seeds, generation, overlays, validation, privacy, packaging, evidence—each stage forms a repeatable process. <strong>AethergenPlatform</strong> ensures the trail is auditable, so you can progress from pilot to production with confidence.</p>
+</body>
+</html>

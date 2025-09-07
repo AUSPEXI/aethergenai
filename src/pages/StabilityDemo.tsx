@@ -6,6 +6,7 @@ import {
   Database, Brain, FileText, Package, Users, Lock
 } from 'lucide-react'
 import { sloManagementService, SLOConfig, SLOStatus, SLOBreach, ShadowEvaluation, DriftMetrics } from '../services/sloManagementService'
+import BackButton from '../components/BackButton'
 
 export const StabilityDemo: React.FC = () => {
   const [selectedModel, setSelectedModel] = useState('healthcare-fraud-detector')
@@ -75,13 +76,25 @@ export const StabilityDemo: React.FC = () => {
     setIsMonitoring(true)
     console.log('🚀 Starting SLO monitoring for', selectedModel)
     
+    // Seed initial healthy metrics to avoid alarming first impression
+    const seedMetrics = {
+      utility: 0.82 + Math.random() * 0.02,
+      stability_delta: 0.01 + Math.random() * 0.005,
+      p95_latency: 95 + Math.random() * 15,
+      membership_advantage: 0.025 + Math.random() * 0.01
+    }
+    const seededStatus = await sloManagementService.evaluateSLO(selectedModel, seedMetrics)
+    setSloStatus(seededStatus)
+    const seededBreaches = await sloManagementService.getBreaches(selectedModel)
+    setBreaches(seededBreaches)
+
     // Simulate continuous monitoring
     const interval = setInterval(async () => {
       const currentMetrics = {
-        utility: 0.73 + Math.random() * 0.1,
-        stability_delta: 0.02 + Math.random() * 0.06,
-        p95_latency: 100 + Math.random() * 50,
-        membership_advantage: 0.03 + Math.random() * 0.04
+        utility: 0.78 + Math.random() * 0.06,
+        stability_delta: 0.01 + Math.random() * 0.01,
+        p95_latency: 90 + Math.random() * 25,
+        membership_advantage: 0.025 + Math.random() * 0.02
       }
       
       const status = await sloManagementService.evaluateSLO(selectedModel, currentMetrics)
@@ -161,8 +174,10 @@ export const StabilityDemo: React.FC = () => {
           </p>
         </div>
 
+        <div className="mb-4"><BackButton to="/features" label="Back to Demos" /></div>
+
         {/* Model Selection & Controls */}
-        <div className="bg-white rounded-xl p-6 mb-8 shadow-md">
+        <div className="bg-white rounded-xl p-6 mb-8 shadow-md text-gray-800">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-2xl font-bold text-gray-900 flex items-center">
               <Brain className="w-6 h-6 mr-2 text-blue-500" />
@@ -172,7 +187,7 @@ export const StabilityDemo: React.FC = () => {
               <select
                 value={selectedModel}
                 onChange={(e) => setSelectedModel(e.target.value)}
-                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 placeholder-gray-700"
               >
                 <option value="healthcare-fraud-detector">Healthcare Fraud Detector</option>
                 <option value="financial-risk-model">Financial Risk Model</option>
@@ -196,14 +211,14 @@ export const StabilityDemo: React.FC = () => {
             <div className="p-4 bg-green-50 rounded-lg">
               <div className="flex items-center">
                 <Activity className="w-5 h-5 text-green-500 mr-2" />
-                <span className="text-green-700">Real-time SLO monitoring active</span>
+                <span className="text-green-700 font-medium">Real-time SLO monitoring active</span>
               </div>
             </div>
           )}
         </div>
 
         {/* SLO Configuration */}
-        <div className="bg-white rounded-xl p-6 mb-8 shadow-md">
+        <div className="bg-white rounded-xl p-6 mb-8 shadow-md text-gray-800">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-2xl font-bold text-gray-900 flex items-center">
               <Settings className="w-6 h-6 mr-2 text-blue-500" />
@@ -300,7 +315,7 @@ export const StabilityDemo: React.FC = () => {
                   </span>
                 </div>
                 
-                <div className="space-y-1 text-sm">
+                <div className="space-y-1 text-sm text-gray-800">
                   <div className="flex justify-between">
                     <span>Current:</span>
                     <span className="font-mono">{status.current_value.toFixed(3)}</span>
@@ -319,7 +334,7 @@ export const StabilityDemo: React.FC = () => {
                   )}
                 </div>
                 
-                <div className="mt-3 text-xs text-gray-500">
+                <div className="mt-3 text-xs text-gray-700">
                   Updated: {new Date(status.last_updated).toLocaleTimeString()}
                 </div>
               </div>
@@ -345,7 +360,7 @@ export const StabilityDemo: React.FC = () => {
                     </span>
                   </div>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-800">
                     <div>
                       <p><strong>Impact:</strong> {breach.impact_assessment}</p>
                       <p><strong>Current Value:</strong> {breach.current_value.toFixed(3)}</p>
@@ -403,7 +418,7 @@ export const StabilityDemo: React.FC = () => {
                     </span>
                   </div>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm text-gray-800">
                     <div>
                       <p><strong>Utility Delta:</strong> {evaluation.metrics.utility_delta.toFixed(3)}</p>
                       <p><strong>Stability Delta:</strong> {evaluation.metrics.stability_delta.toFixed(3)}</p>
@@ -440,7 +455,7 @@ export const StabilityDemo: React.FC = () => {
               <select
                 value={selectedTimeWindow}
                 onChange={(e) => setSelectedTimeWindow(e.target.value as any)}
-                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white text-gray-900"
               >
                 <option value="7d">7 Days</option>
                 <option value="14d">14 Days</option>
@@ -460,7 +475,7 @@ export const StabilityDemo: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <h3 className="font-semibold text-gray-900 mb-3">Drift Metrics</h3>
-                <div className="space-y-2">
+                <div className="space-y-2 text-gray-800">
                   <div className="flex justify-between">
                     <span>PSI Score:</span>
                     <span className="font-mono">{driftMetrics.psi_score.toFixed(3)}</span>
@@ -480,7 +495,7 @@ export const StabilityDemo: React.FC = () => {
               
               <div>
                 <h3 className="font-semibold text-gray-900 mb-3">Time Windows</h3>
-                <div className="space-y-2">
+                <div className="space-y-2 text-gray-800">
                   <div className="flex justify-between">
                     <span>7 Days:</span>
                     <span className="font-mono">{driftMetrics.time_windows['7d'].toFixed(3)}</span>

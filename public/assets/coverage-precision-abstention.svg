@@ -1,0 +1,33 @@
+<svg width="900" height="500" viewBox="0 0 900 500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Coverage vs Precision with Abstention">
+  <rect x="0" y="0" width="800" height="450" fill="#ffffff"/>
+  <g transform="translate(100,60)">
+    <text x="360" y="-20" text-anchor="middle" font-family="Inter, Arial" font-size="18" fill="#0f172a">Coverage–Precision Tradeoff with Abstention</text>
+    <line x1="0" y1="360" x2="700" y2="360" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="0" y1="0" x2="0" y2="360" stroke="#94a3b8" stroke-width="1"/>
+    <text x="-15" y="12" text-anchor="end" font-size="13" fill="#334155">Precision</text>
+    <text x="690" y="380" text-anchor="end" font-size="13" fill="#334155">Coverage</text>
+
+    <!-- Precision curve without abstention -->
+    <path d="M0,40 C240,70 460,160 700,280" fill="none" stroke="#ef4444" stroke-width="3"/>
+    <text x="420" y="300" font-size="12" fill="#ef4444">No abstention: more coverage → more wrong answers</text>
+
+    <!-- Precision curve with abstention & gating -->
+    <path d="M0,40 C240,80 460,130 700,210" fill="none" stroke="#10b981" stroke-width="3"/>
+    <text x="420" y="190" font-size="12" fill="#065f46">With abstention & gating: tuned operating point</text>
+
+    <!-- Operating point marker -->
+    <circle cx="480" cy="220" r="5" fill="#0ea5e9"/>
+    <text x="490" y="215" font-size="12" fill="#0ea5e9">Chosen OP</text>
+
+    <!-- Legend -->
+    <rect x="0" y="320" width="300" height="90" fill="#f8fafc" stroke="#cbd5e1"/>
+    <line x1="12" y1="342" x2="42" y2="342" stroke="#ef4444" stroke-width="3"/>
+    <text x="52" y="346" font-size="12" fill="#334155">No abstention</text>
+    <line x1="12" y1="367" x2="42" y2="367" stroke="#10b981" stroke-width="3"/>
+    <text x="52" y="371" font-size="12" fill="#334155">Abstention + gating</text>
+    <circle cx="27" cy="392" r="5" fill="#0ea5e9"/>
+    <text x="52" y="396" font-size="12" fill="#334155">Operating point</text>
+  </g>
+</svg>
+
+

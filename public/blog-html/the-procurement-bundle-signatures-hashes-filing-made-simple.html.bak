@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Procurement Bundle: Signatures, Hashes, and Filing Made Simple | Auspexi</title>
+  <style>
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      color: #2d3748;
+      max-width: none;
+      margin: 0 auto;
+      padding: 2rem;
+      background-color: #f7fafc;
+    }
+    h1 {
+      font-size: 2.5rem;
+      color: #1a202c;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+    h2 {
+      font-size: 1.8rem;
+      color: #2b6cb0;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+    }
+    h3 {
+      font-size: 1.5rem;
+      color: #2b6cb0;
+      margin-top: 1.5rem;
+      margin-bottom: 0.75rem;
+    }
+    p {
+      margin-bottom: 1.5rem;
+      font-size: 1.1rem;
+    }
+    em {
+      font-style: italic;
+      color: #4a5568;
+    }
+    ul, ol {
+      margin-bottom: 1.5rem;
+      padding-left: 2rem;
+    }
+    li {
+      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+    }
+    pre {
+      background-color: #f8f9fa;
+      color: #2d3748;
+      border: 1px solid #e2e8f0;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      overflow-x: auto;
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
+    }
+    code {
+      font-family: 'Fira Code', monospace;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1.5rem;
+      background-color: #fff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    th, td {
+      padding: 0.75rem;
+      border: 1px solid #e2e8f0;
+      text-align: left;
+      font-size: 1rem;
+    }
+    th {
+      background-color: #2b6cb0;
+      color: #fff;
+    }
+    details {
+      margin-bottom: 1rem;
+      background-color: #edf2f7;
+      padding: 1rem;
+      border-radius: 0.5rem;
+    }
+    summary {
+      font-weight: bold;
+      cursor: pointer;
+      color: #2b6cb0;
+      font-size: 1.1rem;
+    }
+    .aeg-btn {
+      display: inline-block;
+      background-color: #2b6cb0;
+      color: #fff;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background-color 0.3s;
+      margin-top: 1rem;
+    }
+    .aeg-btn:hover {
+      background-color: #2c5282;
+    }
+    img {
+      width: 100%;
+      height: auto;
+      max-width: 100vw;
+      margin: 0 -2rem;
+      display: block;
+    }
+    blockquote {
+      border-left: 4px solid #2b6cb0;
+      padding-left: 1rem;
+      margin: 1.5rem 0;
+      color: #2d3748;
+      font-style: italic;
+    }
+    .kv-list {
+      margin: 1rem 0 1.5rem 0;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+    .kv {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.5rem;
+      padding: 0.6rem 0.8rem;
+    }
+    .kv .key {
+      min-width: 180px;
+      font-weight: 600;
+      color: #1e40af;
+      white-space: nowrap;
+    }
+    .kv .value {
+      color: #4a5568;
+    }
+    @media (max-width: 600px) {
+      body {
+        padding: 1rem;
+      }
+      h1 {
+        font-size: 2rem;
+      }
+      h2 {
+        font-size: 1.5rem;
+      }
+      h3 {
+        font-size: 1.3rem;
+      }
+      p, li {
+        font-size: 1rem;
+      }
+      img {
+        margin: 0 -1rem;
+      }
+    }
+    pre, code, pre *, code * { color: #1f2937 !important; background: #f8fafc !important; }
+    [style*="color:#000"], [style*="color: #000"], [style*="color:black"], [style*="color: black"], [style*="color:rgb(0,0,0)"] { color: #1f2937 !important; }
+    [style*="background:#000"], [style*="background: #000"], [style*="background-color:#000"], [style*="background-color: #000"], [style*="background:rgb(0,0,0)"], [style*="background-color:rgb(0,0,0)"] { background-color: #f8fafc !important; }
+  </style>
+</head>
+<body>
+  <h1>The Procurement Bundle: Signatures, Hashes, and Filing Made Simple</h1>
+  <p><em>By Gwylym Owen — 45–60 min read</em></p>
+
+  <h2>Executive Summary</h2>
+  <p>Procurement teams need <strong>files they can keep</strong>: metrics, manifests, hashes, SBOMs, and readable dashboards. AethergenPlatform delivers a <strong>procurement bundle</strong> with every release, so buyers can file and audit efficiently as of September 2025.</p>
+
+  <h2>What’s in the Bundle</h2>
+  <p>Here’s the good stuff:</p>
+  <ul>
+    <li><strong>Evidence</strong>: Utility@OP, stability, robustness, latency, privacy—proof you can trust!</li>
+    <li><strong>Configs</strong>: Evaluation and threshold settings—clear rules!</li>
+    <li><strong>Dashboards</strong>: HTML/PDF exports; no external links needed—self-contained wins!</li>
+    <li><strong>Manifests</strong>: File hashes; environment fingerprints—trace it all!</li>
+    <li><strong>SBOM</strong>: Third-party components and licenses—full disclosure!</li>
+    <li><strong>Release Notes</strong>: Human-readable summary with manifest IDs—keep it simple!</li>
+  </ul>
+
+  <h2>Manifest Example</h2>
+  <pre>
+{
+  "version": "2025.01",
+  "artifacts": ["metrics/utility@op.json", "plots/roc_pr.html", "sbom.json"],
+  "hashes": {"metrics/utility@op.json": "sha256:..."},
+  "seeds": "seeds/seeds.txt",
+  "env": {"python": "3.11", "libs": {"numpy": "1.26"}}
+}
+  </pre>
+
+  <h2>Signatures</h2>
+  <p>Lock it down:</p>
+  <ul>
+    <li>Artifacts signed; signature files bundled—secure as can be!</li>
+    <li>Public keys and rotation policy included—stay current!</li>
+    <li>Verification instructions in README—easy to check!</li>
+  </ul>
+
+  <h2>SBOM</h2>
+  <p>Transparency at its best:</p>
+  <ul>
+    <li>Component list with versions and licenses—know what’s inside!</li>
+    <li>Vulnerability scan report—spot the risks!</li>
+    <li>Attestations attached for offline review—audit-ready!</li>
+  </ul>
+
+  <h2>Dashboards</h2>
+  <p>Clear and usable:</p>
+  <ul>
+    <li>OP utility, stability by segment, latency distributions—key insights!</li>
+    <li>No internet access required; inline assets only—work anywhere!</li>
+    <li>Anchored to manifest IDs for audit trails—trace it back!</li>
+  </ul>
+
+  <h2>Release Notes Template</h2>
+  <pre>
+Release: model-x 2025.01
+Highlights: utility@OP, stability bands, latency, privacy
+Manifest: 8e7...
+SBOM: present
+Support: contact, SLA
+  </pre>
+
+  <h2>Filing Workflow</h2>
+  <p>Step-by-step guide:</p>
+  <ol>
+    <li>Verify signatures and hashes—check the integrity!</li>
+    <li>Review dashboards and metrics against thresholds—validate it!</li>
+    <li>File SBOM and manifests; archive in evidence store—keep it safe!</li>
+    <li>Record acceptance with bundle ID—seal the deal!</li>
+  </ol>
+
+  <h2>Governance</h2>
+  <p>Keep it tight:</p>
+  <ul>
+    <li>Bundle IDs referenced in contracts and SOWs—tie it to the deal!</li>
+    <li>Deprecation policy and migration notes included—plan ahead!</li>
+    <li>Retention timelines and access controls specified—stay compliant!</li>
+  </ul>
+
+  <h2>Case Study</h2>
+  <p><strong>Scenario</strong>: An insurer’s smooth offline review.</p>
+  <p>An insurer ran an offline review: they verified hashes with `sha256sum`, opened HTML dashboards showing OP utility at 0.78 [0.75,0.81] and stability ≤0.03, and filed SBOMs. With no external dependencies, procurement wrapped up in three days—not weeks—simulated as of September 2025!</p>
+
+  <h2>FAQ</h2>
+  <details>
+    <summary>Can we split bundles by audience?</summary>
+    <p>Yep—engineering annex can split off; procurement bundle stays solid—flexible fit!</p>
+  </details>
+  <details>
+    <summary>What if a dashboard references a missing asset?</summary>
+    <p>We embed assets or bundle them locally; CI catches issues—verification’s airtight!</p>
+  </details>
+  <details>
+    <summary>Do we need internet to verify?</summary>
+    <p>Nope—everything’s bundled; offline verification works like a charm—total control!</p>
+  </details>
+  <details>
+    <summary>How do we handle sensitive assets?</summary>
+    <p>Use private annexes with their own manifests; main bundle links them—keep it secure!</p>
+  </details>
+  <details>
+    <summary>Can we split dashboards by audience?</summary>
+    <p>Absolutely—procurement summary and engineering annex keep everyone happy—tailored views!</p>
+  </details>
+
+  <h2>Glossary</h2>
+  <ul>
+    <li><strong>SBOM</strong>: Software bill of materials—your component list!</li>
+    <li><strong>Manifest</strong>: File list with hashes and environment—your blueprint!</li>
+    <li><strong>Bundle ID</strong>: Stable identifier for filing and contracts—your anchor!</li>
+  </ul>
+
+  <h2>Checklist</h2>
+  <p>Make it stick:</p>
+  <ul>
+    <li>Hashes verified; signatures valid—check the locks!</li>
+    <li>Dashboards open offline—test it out!</li>
+    <li>Evidence meets gates; notes recorded—prove it!</li>
+    <li>Contracts reference bundle IDs—tie it up!</li>
+  </ul>
+
+  <h2>Appendix: Verification Commands</h2>
+  <pre>
+sha256sum -c manifest.sha256 | cat
+gpg --verify evidence.sig evidence.tar
+  </pre>
+
+  <h2>Appendix: README</h2>
+  <pre>
+How to verify: 1) hashes; 2) signatures; 3) open dashboards; 4) file SBOM.
+  </pre>
+
+  <h2>Closing</h2>
+  <p>Procurement progresses faster when they can <strong>file and verify</strong> without friction. <strong>AethergenPlatform</strong> ships stand‑alone bundles—signatures, hashes, dashboards, and SBOMs—so approvals are straightforward.</p>
+
+  <h2>Bundle Directory Layout</h2>
+  <pre>
+release_2025_01/
+├─ metrics/
+├─ plots/
+├─ configs/
+├─ sbom.json
+├─ manifest.json
+├─ evidence.sig
+└─ README.html
+  </pre>
+
+  <h2>Verification Steps</h2>
+  <p>Detailed walkthrough:</p>
+  <ol>
+    <li>Compute and compare hashes—ensure integrity!</li>
+    <li>Verify signatures with provided public keys—lock it down!</li>
+    <li>Open HTML dashboards; confirm OP at 0.75+ and stability ≤0.03—check the numbers!</li>
+    <li>Review SBOM licenses and vulnerability report—cover the bases!</li>
+    <li>Record bundle ID and decision—finalize it!</li>
+  </ol>
+
+  <h2>Public Keys & Rotation</h2>
+  <p>Stay secure:</p>
+  <ul>
+    <li>Include current and previous keys; mark active—keep it fresh!</li>
+    <li>Rotation schedule documented; revocation list shipped—plan for change!</li>
+  </ul>
+
+  <h2>Manifests for People</h2>
+  <p>Make it readable:</p>
+  <ul>
+    <li>Short section naming key files and purpose—quick grasp!</li>
+    <li>Link to dashboard quick-start—jump right in!</li>
+  </ul>
+
+  <h2>Reader-Friendly Dashboards</h2>
+  <p>User-friendly design:</p>
+  <ul>
+    <li>Executive summary at the top—get the big picture!</li>
+    <li>Tooltips with definitions (OP, CI, stability band)—learn as you go!</li>
+    <li>Printable PDF mode—easy to archive!</li>
+  </ul>
+
+  <h2>Contract Mapping</h2>
+  <p>Tie it to the deal:</p>
+  <ul>
+    <li>Bundle ID → contract exhibit—key reference!</li>
+    <li>SBOM → supply chain clause—trace the parts!</li>
+    <li>Refresh cadence → maintenance clause—keep it current!</li>
+  </ul>
+
+  <h2>Case Files</h2>
+  <p>Real-world wins:</p>
+  <ul>
+    <li><strong>Healthcare</strong>: Buyer accepted with bundle ID embedded in PO—seamless as of September 2025!</li>
+    <li><strong>Automotive</strong>: Plant used offline dashboards for QA sign-off in two days—simulated efficiency!</li>
+  </ul>
+
+  <h2>Templates</h2>
+  <pre>
+acceptance_form.pdf
+fields: bundle_id, date, reviewer, decision, notes
+  </pre>
+
+  <h2>Appendix: Example SBOM Entry</h2>
+  <pre>
+{
+  "component": "numpy",
+  "version": "1.26.4",
+  "license": "BSD-3-Clause"
+}
+  </pre>
+
+  <h2>Appendix: Manifest Hashes</h2>
+  <pre>
+metrics/utility@op.json sha256:...
+plots/roc_pr.html sha256:...
+  </pre>
+
+  <h2>Appendix: README Excerpt</h2>
+  <pre>
+Open README.html first for a guided review flow: verify → read → decide.
+  </pre>
+
+  <h2>Closing Notes</h2>
+  <p>Stand‑alone bundles help decisions move quickly. <strong>AethergenPlatform</strong> ensures every buyer gets signatures, hashes, dashboards, and SBOM—no surprises.</p>
+</body>
+</html>

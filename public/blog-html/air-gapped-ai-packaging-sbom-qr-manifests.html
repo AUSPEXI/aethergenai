@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,218 +5,103 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Air-Gapped AI: Packaging, SBOMs, and QR-Verified Manifests for the Field | Auspexi</title>
   <style>
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      line-height: 1.6;
-      color: #2d3748;
-      max-width: none;
-      margin: 0 auto;
-      padding: 2rem;
-      background-color: #f7fafc;
-    }
-    h1 {
-      font-size: 2.5rem;
-      color: #1a202c;
-      margin-bottom: 1rem;
-      line-height: 1.2;
-    }
-    h2 {
-      font-size: 1.8rem;
-      color: #2b6cb0;
-      margin-top: 2rem;
-      margin-bottom: 1rem;
-    }
-    p {
-      margin-bottom: 1.5rem;
-      font-size: 1.1rem;
-    }
-    em {
-      font-style: italic;
-      color: #4a5568;
-    }
-    ul, ol {
-      margin-bottom: 1.5rem;
-      padding-left: 2rem;
-    }
-    li {
-      margin-bottom: 0.5rem;
-      font-size: 1.1rem;
-    }
-    pre {
-      background-color: #f8f9fa;
-      color: #2d3748;
-      border: 1px solid #e2e8f0;
-      padding: 1rem;
-      border-radius: 0.5rem;
-      overflow-x: auto;
-      font-size: 0.95rem;
-      margin-bottom: 1.5rem;
-    }
-    code {
-      font-family: 'Fira Code', monospace;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 1.5rem;
-      background-color: #fff;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-    th, td {
-      padding: 0.75rem;
-      border: 1px solid #e2e8f0;
-      text-align: left;
-      font-size: 1rem;
-    }
-    th {
-      background-color: #2b6cb0;
-      color: #fff;
-    }
-    details {
-      margin-bottom: 1rem;
-      background-color: #edf2f7;
-      padding: 1rem;
-      border-radius: 0.5rem;
-    }
-    summary {
-      font-weight: bold;
-      cursor: pointer;
-      color: #2b6cb0;
-      font-size: 1.1rem;
-    }
-    .aeg-btn {
-      display: inline-block;
-      background-color: #2b6cb0;
-      color: #fff;
-      padding: 0.75rem 1.5rem;
-      border-radius: 0.5rem;
-      text-decoration: none;
-      font-weight: bold;
-      transition: background-color 0.3s;
-      margin-top: 1rem;
-    }
-    .aeg-btn:hover {
-      background-color: #2c5282;
-    }
-    img {
-      width: 100%;
-      height: auto;
-      max-width: 100vw;
-      margin: 0 -2rem;
-      display: block;
-    }
-    blockquote {
-      border-left: 4px solid #2b6cb0;
-      padding-left: 1rem;
-      margin: 1.5rem 0;
-      color: #2d3748;
-      font-style: italic;
-    }
-    @media (max-width: 600px) {
-      body {
-        padding: 1rem;
-      }
-      h1 {
-        font-size: 2rem;
-      }
-      h2 {
-        font-size: 1.5rem;
-      }
-      p, li {
-        font-size: 1rem;
-      }
-      img {
-        margin: 0 -1rem;
-      }
-    }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: none;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .article {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        h2 {
+            color: #34495e;
+            font-size: 1.8em;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+        p {
+            margin-bottom: 20px;
+            font-size: 1.1em;
+        }
+        .meta {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        .highlight {
+            background-color: #e8f5e8;
+            padding: 15px;
+            border-left: 4px solid #27ae60;
+            margin: 20px 0;
+        }
+        blockquote {
+            border-left: 4px solid #3498db;
+            padding-left: 20px;
+            margin: 20px 0;
+            font-style: italic;
+            color: #555;
+        }
+        .framework {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #27ae60;
+        }
+        .framework h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        .framework ol {
+            padding-left: 20px;
+        }
+        .framework li {
+            margin-bottom: 10px;
+        }
+        .carbon-tracker {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 25px 0;
+        }
+        .carbon-tracker h3 {
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+        .carbon-tracker ul {
+            list-style: none;
+            padding: 0;
+        }
+        .carbon-tracker li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+        .carbon-tracker li:last-child {
+            border-bottom: none;
+        }
     
-    .requirement-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 1.5rem;
-      margin: 2rem 0;
-    }
-    
-    .requirement-item {
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 0.75rem;
-      padding: 1.5rem;
-      transition: all 0.2s ease;
-    }
-    
-    .requirement-item:hover {
-      border-color: #3b82f6;
-      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
-    }
-    
-    .requirement-item strong {
-      display: block;
-      color: #1e40af;
-      font-size: 1.1rem;
-      margin-bottom: 0.5rem;
-      font-weight: 600;
-    }
-    
-    .requirement-item span {
-      color: #4a5568;
-      font-size: 1rem;
-      line-height: 1.5;
-    }
-    
-    .highlight-box {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      padding: 2rem;
-      border-radius: 1rem;
-      margin: 2rem 0;
-    }
-    
-    .highlight-box h3 {
-      color: white;
-      margin-bottom: 1rem;
-      font-size: 1.4rem;
-    }
-    
-    .highlight-box ul {
-      list-style: none;
-      padding: 0;
-    }
-    
-    .highlight-box li {
-      padding: 0.5rem 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    }
-    
-    .highlight-box li:last-child {
-      border-bottom: none;
-    }
-    
-    .key-point {
-      background: #f0f9ff;
-      border-left: 4px solid #0ea5e9;
-      padding: 1rem;
-      margin: 1.5rem 0;
-      border-radius: 0 0.5rem 0.5rem 0;
-    }
-    
-    .key-point strong {
-      color: #0369a1;
-      display: block;
-      margin-bottom: 0.5rem;
-    }
-    /* Contrast guardrails to override inline or theme dark styles */
-    pre, code, pre *, code * { color: #1f2937 !important; background: #f8fafc !important; opacity: 1 !important; text-shadow: none !important; mix-blend-mode: normal !important; }
-    /* Common code container classes in themes */
-    .highlight, .hljs, .shiki, .code, .code-block, [class*="code"], [class*="Code"], [class*="pre"], .not-prose pre {
-      background: #f8fafc !important; color: #1f2937 !important; border: 1px solid #e2e8f0 !important; border-radius: 0.5rem !important;
-    }
-    [style*="color:#000"], [style*="color: #000"], [style*="color:black"], [style*="color: black"], [style*="color:rgb(0,0,0)"] { color: #1f2937 !important; }
-    [style*="background:#000"], [style*="background: #000"], [style*="background-color:#000"], [style*="background-color: #000"], [style*="background:#0f172a"], [style*="background:#111827"], [style*="background:#1f2937"], [style*="background-color:#0f172a"], [style*="background-color:#111827"], [style*="background-color:#1f2937"], [style*="background:rgb(0,0,0)"], [style*="background-color:rgb(0,0,0)"] { background-color: #f8fafc !important; }
   </style>
-</head>
+  </head>
 <body>
-  <h1>Air-Gapped AI: Packaging, SBOMs, and QR-Verified Manifests for the Field</h1>
+  <div class="article">
+<h1>Air-Gapped AI: Packaging, SBOMs, and QR-Verified Manifests for the Field</h1>
   <p><em>By Gwylym Owen — 12–16 min read</em></p>
 
   <p>Imagine you’re a field engineer, boots on the ground in a remote factory, no Wi-Fi in sight, tasked with deploying an AI model to spot defects on a production line. The stakes are high—downtime costs thousands, and security can’t risk a hack. That’s where <strong>air-gapped AI</strong> comes in, and at Auspexi, we’ve cracked the code with our Aethergen Platform. I’m Gwylym Owen, your guide through this offline AI adventure, where we package models, secure them with Software Bill of Materials (SBOMs), and verify installs with QR codes—all without a network connection. Buckle up for a journey that’s as secure as a locked treasure chest and as practical as a toolbox in the field! <strong>Thanks to recent enhancements, AethergenPlatform now fully supports every feature described here—delivered in real-time collaboration with our team!</strong></p>
@@ -438,5 +322,6 @@ policy:
   <h2>Contact</h2>
   <p>Need an offline deployment that procurement and security can sign with confidence? <a class="aeg-btn" href="https://auspexi.com/contact">Talk to us</a>.</p>
   <p><a class="aeg-btn" href="https://auspexi.com/contact">Contact Sales →</a></p>
+  </div>
 </body>
 </html>

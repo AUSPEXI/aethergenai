@@ -5,75 +5,103 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Navigating the Illusion of “Conscious” AI — A Call for Dignity in a Changing World | Auspexi</title>
   <style>
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      line-height: 1.6;
-      color: #1a202c;
-      margin: 0 auto;
-      padding: 2rem;
-      background-color: #f7fafc;
-      max-width: none;
-    }
-    h1 {
-      font-size: 2.2rem;
-      color: #1a202c;
-      margin-bottom: 1rem;
-      line-height: 1.25;
-    }
-    h2 {
-      color: #2b6cb0;
-      font-size: 1.6rem;
-      margin-top: 1.75rem;
-      margin-bottom: 0.75rem;
-    }
-    p {
-      margin-bottom: 1rem;
-      font-size: 1.05rem;
-    }
-    ul, ol {
-      margin-bottom: 1rem;
-      padding-left: 1.5rem;
-    }
-    li { margin-bottom: 0.5rem; }
-    .meta {
-      font-style: italic;
-      color: #4a5568;
-      margin-bottom: 1rem;
-      padding-bottom: 0.5rem;
-      border-bottom: 1px solid #e2e8f0;
-    }
-    .highlight {
-      background: #ebf8ff;
-      padding: 0.75rem;
-      border-left: 4px solid #2b6cb0;
-      margin: 1rem 0;
-    }
-    .stats {
-      background: #f7fafc;
-      padding: 0.75rem;
-      margin: 1rem 0;
-      border-left: 4px solid #2b6cb0;
-    }
-    .stats ul { list-style: none; padding: 0; }
-    .stats li { padding: 0.4rem 0; border-bottom: 1px dotted #e2e8f0; }
-    .stats li:last-child { border-bottom: none; }
-    blockquote {
-      border-left: 4px solid #2b6cb0;
-      padding-left: 0.75rem;
-      margin: 1rem 0;
-      color: #4a5568;
-      font-style: italic;
-    }
-    img { width: 100%; height: auto; max-width: 100vw; margin: 0 -2rem; display: block; }
-    /* Keep code blocks readable on our light background */
-    pre, code, pre *, code * { color: #1f2937 !important; background: #f8fafc !important; }
-    [style*="color:#000"], [style*="color: #000"], [style*="color:black"], [style*="color: black"], [style*="color:rgb(0,0,0)"] { color: #1f2937 !important; }
-    [style*="background:#000"], [style*="background: #000"], [style*="background-color:#000"], [style*="background-color: #000"], [style*="background:rgb(0,0,0)"], [style*="background-color:rgb(0,0,0)"] { background-color: #f8fafc !important; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: none;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .article {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        h2 {
+            color: #34495e;
+            font-size: 1.8em;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+        p {
+            margin-bottom: 20px;
+            font-size: 1.1em;
+        }
+        .meta {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        .highlight {
+            background-color: #e8f5e8;
+            padding: 15px;
+            border-left: 4px solid #27ae60;
+            margin: 20px 0;
+        }
+        blockquote {
+            border-left: 4px solid #3498db;
+            padding-left: 20px;
+            margin: 20px 0;
+            font-style: italic;
+            color: #555;
+        }
+        .framework {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #27ae60;
+        }
+        .framework h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        .framework ol {
+            padding-left: 20px;
+        }
+        .framework li {
+            margin-bottom: 10px;
+        }
+        .carbon-tracker {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 25px 0;
+        }
+        .carbon-tracker h3 {
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+        .carbon-tracker ul {
+            list-style: none;
+            padding: 0;
+        }
+        .carbon-tracker li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+        .carbon-tracker li:last-child {
+            border-bottom: none;
+        }
+    
   </style>
-  <meta name="description" content="AI can feel alive — it isn’t. A humane guide to SCAI (Seemingly Conscious AI), with safeguards for individuals and teams, and a commitment to dignity-first design.">
-</head>
+  </head>
 <body>
-  <h1>Navigating the Illusion of “Conscious” AI — A Call for Dignity in a Changing World</h1>
+  <div class="article">
+<h1>Navigating the Illusion of “Conscious” AI — A Call for Dignity in a Changing World</h1>
   <p class="meta">By Gwylym Owen</p>
 
   <p>In an era where artificial intelligence increasingly mirrors the rhythms of human thought, a quiet but profound challenge has emerged. Recent warnings from industry leaders, like Microsoft’s Mustafa Suleyman, suggest that within just two to three years, AI systems could become so lifelike that users might mistake them for conscious beings. This phenomenon, dubbed <strong>Seemingly Conscious AI (SCAI)</strong>, isn’t about machines gaining sentience — it’s about the human capacity to project life onto patterns of code. And while this illusion can spark wonder, it carries a weighty shadow, one that has already touched lives with real consequences.</p>
@@ -164,6 +192,6 @@ Verification steps:
   </ul>
 
   <p><em>Tags:</em> #AI #EthicsInAI #MentalHealth #TechResponsibility #InnovationWithCare</p>
+  </div>
 </body>
 </html>
-

@@ -58,8 +58,29 @@
       <li><strong>Energy KPI</strong>: tokens/sec or tasks/joule at OP; track quantisation swaps vs quality.</li>
     </ul>
 
+    <h2>From “Noise” to Value (IP‑safe overview)</h2>
+    <p>Most systems discard the by‑products of inference—uncertain spans, disagreement between sources, failed tool calls, and mundane telemetry. We treat these signals as a resource (without storing raw content):</p>
+    <ul>
+      <li><strong>Lightweight summaries</strong>: compress uncertainty and outcome signals into simple counts/percentiles by group and time window (no raw text or images). These summaries help pick safer operating points.</li>
+      <li><strong>Verify‑or‑abstain routing</strong>: when evidence is thin, prefer a helpful abstention or a quick clarification over a confident error. Coverage stays tunable, and risk is explicit.</li>
+      <li><strong>Group‑aware tuning</strong>: where allowed, use the summaries to set per‑group thresholds so quality and stability improve in the places that need it most.</li>
+      <li><strong>Targeted robustness</strong>: hard examples are synthesised from the edges of the distribution (again, from summaries—not raw data) to retrain small improvements where they count.</li>
+      <li><strong>Energy‑aware profiles</strong>: pick the lowest‑power quantisation/runtime that keeps the same quality at the chosen acceptance level.</li>
+    </ul>
+    <p>This approach stays privacy‑first and publication‑safe: we work with aggregate signals and ship the results as evidence (thresholds chosen, metrics achieved), not the implementation internals.</p>
+
     <h2>How We Operate</h2>
     <p>We prioritise runtime reliability and auditability: gate answers when support is weak, verify outputs against contracts, and deliver signed evidence with configuration and metrics. When energy is the constraint, we choose the lightest profile that passes the same gates.</p>
+
+    <div class="callout">
+      <strong>Related</strong>: See how we make decisions safe enough for production—gating, abstention, and verification—in our write‑up on <a href="/blog/hallucination-controls-runtime-gating-evidence">Hallucination Controls</a>.
+    </div>
+
+    <h2>What We Publish vs What We Keep Private</h2>
+    <ul>
+      <li><strong>We publish</strong>: operating targets, acceptance results, and high‑level methods (what/why), plus signed evidence bundles.</li>
+      <li><strong>We withhold</strong>: internal parameterisations, heuristics, and implementation details that are not necessary for audit or procurement.</li>
+    </ul>
 
     <h2>Thanks</h2>
     <p>Thanks to a manufacturing leader who reminded us to “find the few things that move the needle.” The Pareto lens is as useful in AI as it is on the factory floor.</p>

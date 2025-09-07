@@ -147,6 +147,17 @@ const Blog = () => {
 
   const blogPosts = [
     {
+      title: 'Pareto Thinking: 80/20 Gains at the Operating Point',
+      excerpt: 'A few levers move most of the value: operating point, selective prediction, data contracts, and energy‑aware profiles.',
+      author: 'Gwylym Owen',
+      date: 'September 7, 2025',
+      readTime: '6 min read',
+      category: 'Technology',
+      icon: TrendingUp,
+      published: true,
+      slug: 'pareto-operating-point-efficiency-in-ai'
+    },
+    {
       title: '🩺 Synthetic Data 101 for Healthcare: Fraud Detection Without PHI/PII',
       excerpt: 'Build PHI/PII‑free claims corpora, tune typologies, and ship signed evidence for procurement.',
       author: 'Gwylym Owen',
@@ -843,6 +854,7 @@ const Blog = () => {
 
   // Show only posts that have corresponding HTML files and remove duplicates by slug
   const validSlugs = [
+    'pareto-operating-point-efficiency-in-ai',
     'ablations-with-effect-sizes-proving-what-moves-the-needle',
     'aethergenai-shipped-evidence-led-ai-training',
     'ai-carbon-footprint-revolution-sustainable-computing',

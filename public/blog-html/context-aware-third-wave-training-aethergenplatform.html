@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Third Wave Is Contextual: Practical Context‑Aware Training on AethergenPlatform</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.7; color: #0f172a; margin: 0; background: #f5f7fb; }
+    .article { max-width: 920px; margin: 0 auto; background: #fff; padding: 48px 36px; box-shadow: 0 10px 30px rgba(0,0,0,0.06); border-radius: 12px; }
+    h1 { font-size: 38px; margin: 0 0 10px; color: #0b1220; }
+    h2 { font-size: 26px; margin-top: 36px; color: #0b1220; }
+    p, li { color: #1f2937; }
+    .meta { color: #475569; font-size: 14px; margin-bottom: 28px; }
+    .callout { background: #eff6ff; border-left: 4px solid #3b82f6; padding: 16px; border-radius: 8px; }
+    .kbd { background: #111827; color: #fff; padding: 2px 6px; border-radius: 4px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
+    .grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+    @media (min-width: 860px) { .grid { grid-template-columns: 1fr 1fr; } }
+    .card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px; }
+    .figure { text-align: center; margin: 24px 0; }
+    .figure svg { max-width: 100%; height: auto; }
+  </style>
+</head>
+<body>
+  <div class="article">
+    <h1>The Third Wave Is Contextual: Practical Context‑Aware Training on AethergenPlatform</h1>
+    <div class="meta">Auspexi • Updated: <script>document.write(new Date().toISOString().slice(0,10))</script></div>
+
+    <div class="callout"><strong>Thesis</strong>: Wave 1 was knowledge‑based (rules/ontologies). Wave 2 is statistical learning (deep nets at scale). The third wave is <strong>context‑aware</strong>—who, where, when, intent, and constraints—so decisions align with real‑world situations and governance.</div>
+
+    <h2>Why Context Beats Scale Alone</h2>
+    <p>Large models compress patterns. Context tells the model <em>which</em> patterns matter <em>now</em>. The result is fewer spurious correlations, better generalisation under shift, and safer behaviour under constraints. In regulated domains, context is the difference between a clever demo and a dependable system.</p>
+
+    <h2>AethergenPlatform: Built for Context</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>Context Studio & Packs</h3>
+        <p>Ingest events, entities, relations, and policies into governed packs. Retrieve <em>episodic slices</em> by time, segment, or task and feed them into training/inference pipelines.</p>
+      </div>
+      <div class="card">
+        <h3>Context‑Conditioned Training</h3>
+        <p>Attach context vectors (segment, intent, environment) to samples and objectives. Train for <em>anti‑spurious</em> behaviour by penalising reliance on unstable features.</p>
+      </div>
+      <div class="card">
+        <h3>Policy Guard + Kill Switch</h3>
+        <p>Legal/geo/entitlement constraints enforced at runtime. Violations fail‑closed; high‑risk signals can trigger the kill switch with evidence.</p>
+      </div>
+      <div class="card">
+        <h3>Evidence‑Led Operations</h3>
+        <p>Acceptance gates (utility, stability, privacy, latency), signed evidence bundles, and Unity Catalog comments for auditability across environments.</p>
+      </div>
+      <div class="card">
+        <h3>Databricks‑Native</h3>
+        <p>Jobs, notebooks, and Volumes for end‑to‑end, reproducible evaluation. Marketplace packaging for distribution with evidence.
+        </p>
+      </div>
+    </div>
+
+    <h2>Context Vectors: A Practical Template</h2>
+    <p>We represent context as a compact vector <span class="kbd">c</span> that conditions both data and objective. Minimal example:</p>
+    <ul>
+      <li><strong>Static</strong>: domain, geography, device class, governance tier.</li>
+      <li><strong>Dynamic</strong>: recent interactions, seasonality window, workload state.</li>
+      <li><strong>Policy</strong>: entitlements, allowed tools, risk budget.</li>
+    </ul>
+    <p>Training minimises <span class="kbd">L(x, y; c)</span> with penalties that suppress spurious features under shifts of <span class="kbd">c</span>. At inference, the same <span class="kbd">c</span> selects retrieval, tools, and thresholds.</p>
+
+    <h2>Anti‑Spurious Learning (ASL)</h2>
+    <ul>
+      <li><strong>Segment swaps</strong>: perturb context (e.g., region/product) during training; penalise feature attributions that swing with the swap.</li>
+      <li><strong>Counterfactual masks</strong>: mask high‑leakage tokens/columns per policy and require stable predictions.</li>
+      <li><strong>Risk‑aware objectives</strong>: choose the operating point (coverage–precision) by risk class and latency budget; abstain when evidence is thin.</li>
+    </ul>
+
+    <h2>Runtime: Context‑Aware Gating</h2>
+    <p>At decision time, we combine <em>information‑sufficiency</em> (retrieval coverage, margin/entropy, tool success) with policy checks. If context says the risk is high and evidence is weak, we abstain or route to a safer path. All decisions and thresholds are captured in signed evidence.</p>
+
+    <div class="figure">
+      <svg width="900" height="360" viewBox="0 0 900 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Context vectors conditioning training and runtime gates">
+        <rect width="900" height="360" fill="#ffffff"/>
+        <g transform="translate(30,20)" font-family="Inter,Arial" fill="#0f172a">
+          <text x="420" y="10" text-anchor="middle" font-size="16">Context‑conditioned training and runtime gates</text>
+          <rect x="20" y="40" width="240" height="120" fill="#eef2ff" stroke="#c7d2fe"/>
+          <text x="140" y="70" text-anchor="middle" font-size="13">Context Studio</text>
+          <text x="140" y="95" text-anchor="middle" font-size="12">events • entities • relations</text>
+          <text x="140" y="115" text-anchor="middle" font-size="12">policy • segments • time</text>
+          <rect x="320" y="40" width="240" height="120" fill="#ecfeff" stroke="#a5f3fc"/>
+          <text x="440" y="70" text-anchor="middle" font-size="13">Context Vectors c</text>
+          <text x="440" y="95" text-anchor="middle" font-size="12">static • dynamic • policy</text>
+          <rect x="620" y="40" width="240" height="120" fill="#f0fdf4" stroke="#bbf7d0"/>
+          <text x="740" y="70" text-anchor="middle" font-size="13">Training / Inference</text>
+          <text x="740" y="95" text-anchor="middle" font-size="12">L(x,y;c) • gates • abstention</text>
+          <line x1="260" y1="100" x2="320" y2="100" stroke="#64748b" stroke-width="2"/>
+          <line x1="560" y1="100" x2="620" y2="100" stroke="#64748b" stroke-width="2"/>
+        </g>
+      </svg>
+    </div>
+
+    <h2>Governed Tooling: Policy Guard + Kill Switch</h2>
+    <p>Context is also <em>constraints</em>. Policy Guard enforces geo/legal/entitlement rules at call sites. If a boundary is crossed—or evidence shows unacceptable drift—the kill switch can revoke access and quarantine assets. Every action is logged with evidence.</p>
+
+    <h2>How Mature Is Our Third‑Wave Stack?</h2>
+    <ul>
+      <li><strong>Ready now</strong>: Context packs, retrieval, context vectors in training, runtime gates with abstention, <em>span‑level uncertainty</em> with calibrated abstention, <em>policy‑aware retrieval routing</em> (geo/legal filters), <em>context‑pack versioning</em> with UC tags and evidence links, episodic memory TTL/decay and staleness scoring, evidence bundles, UC delivery.</li>
+      <li><strong>In progress</strong>: richer span‑level uncertainty, better multi‑hop retrieval signals, automated OP tuning per segment.</li>
+      <li><strong>Exploratory</strong>: 8D manifold context embeddings, elastic‑energy policy surfaces, AethergenCradle harness.</li>
+    </ul>
+
+    <h2>What Good Looks Like (KPIs)</h2>
+    <ul>
+      <li><strong>Coverage‑clamp test</strong>: lower wrong‑answer rate and re‑ask rate at fixed coverage/latency (pre vs post gates).</li>
+      <li><strong>Selective risk</strong>: conformal <em>valid coverage</em> within ±2% of target on held‑out segments.</li>
+      <li><strong>Segment stability</strong>: reduced variance across segments/time windows; fewer spurious attributions under swaps.</li>
+      <li><strong>Policy fitness</strong>: 0 critical violations under Policy Guard; correct abstention under disallowed contexts.</li>
+      <li>Auditability: evidence bundles with OP, gates, and policy outcomes.</li>
+    </ul>
+
+    <h2>Get Involved</h2>
+    <p>If you’re piloting context‑aware AI in regulated settings, let’s talk. We can help design context packs, instrument gates, and deliver verified assets to Unity Catalog.</p>
+    <p>Learn more at <a href="https://auspexi.com" target="_blank" rel="noreferrer">auspexi.com</a>.</p>
+  </div>
+</body>
+</html>
+
+

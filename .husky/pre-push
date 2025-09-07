@@ -1,3 +1,15 @@
+# husky pre-push hook
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "Running IP Safety Guard..."
+npm run --silent guard:ip || {
+  echo "IP Safety Guard failed. Please redact sensitive terms before pushing.";
+  exit 1;
+}
+
+exit 0
+
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 

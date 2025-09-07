@@ -1,5 +1,6 @@
 import fs from 'fs/promises'
 import path from 'path'
+import { spawnSync } from 'child_process'
 
 const slugs = [
   'model-rental-marketplace-strategy',
@@ -19,6 +20,9 @@ const slugs = [
   'dataset-cards-model-cards-evidence'
 ]
 
+// add newly created IP-safe post
+slugs.push('pareto-operating-point-efficiency-in-ai')
+
 const titleFromHtml = (html) => {
   const m = html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i)
   return m ? m[1].replace(/<[^>]*>/g,'').trim() : ''
@@ -30,6 +34,12 @@ const excerptFromHtml = (html) => {
 }
 
 async function main() {
+  // IP safety guard pre-check
+  const guard = spawnSync(process.execPath, ['scripts/ip-safety-guard.mjs'], { stdio: 'inherit' })
+  if (guard.status !== 0) {
+    console.error('IP Safety Guard failed; aborting publish.')
+    process.exit(1)
+  }
   const base = process.env.FN_BASE || process.env.URL || 'http://localhost:8888'
   for (const slug of slugs) {
     const p = path.join(process.cwd(), 'public', 'blog-html', `${slug}.html`)

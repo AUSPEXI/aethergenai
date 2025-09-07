@@ -9,23 +9,18 @@ export const AirGappedDemo: React.FC = () => {
   const [bundleInfo, setBundleInfo] = useState<any>(null)
 
   const demoOptions: AirGappedOptions = {
-    modelId: 'demo-model-v1.0',
-    modelPath: '/models/demo-model.bin',
-    configPath: '/config/demo-config.json',
-    includeSBOM: true,
-    includeManifest: true,
-    includeQRCode: true,
-    includeKeys: true,
-    includeSOPs: true,
-    dualControl: true
+    projectName: 'demo-model-v1.0',
+    version: '1.0.0',
+    deviceInfo: { vramGB: 8, int8: true, fp16: true },
+    evidenceBundle: { lineage: 'Demo generation' }
   }
 
   const handleGenerateBundle = async () => {
     setGenerationStatus('Generating air-gapped bundle...')
     
     try {
-      const bundle = await generateAirGappedBundle(demoOptions)
-      setBundleInfo(bundle)
+      const blob = await generateAirGappedBundle(demoOptions)
+      setBundleInfo({ blob, size: blob.size, hasManifest: true, hasQRCode: true })
       setGenerationStatus('Bundle generated successfully!')
     } catch (error) {
       setGenerationStatus(`Error: ${error}`)
@@ -69,11 +64,10 @@ export const AirGappedDemo: React.FC = () => {
               <div className="bg-gray-50 p-4 rounded-lg">
                 <h3 className="font-medium text-gray-700 mb-2">Demo Configuration:</h3>
                 <ul className="text-sm text-gray-600 space-y-1">
-                  <li>• Model ID: {demoOptions.modelId}</li>
-                  <li>• Include SBOM: {demoOptions.includeSBOM ? 'Yes' : 'No'}</li>
-                  <li>• Include Manifest: {demoOptions.includeManifest ? 'Yes' : 'No'}</li>
-                  <li>• Include QR Code: {demoOptions.includeQRCode ? 'Yes' : 'No'}</li>
-                  <li>• Dual Control: {demoOptions.dualControl ? 'Yes' : 'No'}</li>
+                  <li>• Project: {demoOptions.projectName}</li>
+                  <li>• Version: {demoOptions.version}</li>
+                  <li>• Device VRAM: {demoOptions.deviceInfo.vramGB}GB</li>
+                  <li>• INT8: {demoOptions.deviceInfo.int8 ? 'Yes' : 'No'} | FP16: {demoOptions.deviceInfo.fp16 ? 'Yes' : 'No'}</li>
                 </ul>
               </div>
 
@@ -97,7 +91,9 @@ export const AirGappedDemo: React.FC = () => {
                     <h4 className="font-medium text-green-800 mb-2">Bundle Generated:</h4>
                     <ul className="text-sm text-green-700 space-y-1">
                       <li>• Size: {bundleInfo.size} bytes</li>
-                      <li>• Files: {bundleInfo.fileCount}</li>
+                      {bundleInfo.fileCount !== undefined && (
+                        <li>• Files: {bundleInfo.fileCount}</li>
+                      )}
                       <li>• Manifest: {bundleInfo.hasManifest ? 'Included' : 'Not included'}</li>
                       <li>• QR Code: {bundleInfo.hasQRCode ? 'Included' : 'Not included'}</li>
                     </ul>

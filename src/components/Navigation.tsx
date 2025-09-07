@@ -100,11 +100,11 @@ const Navigation = () => {
             <div
               onMouseEnter={openMenu}
               onMouseLeave={scheduleClose}
-              className={`absolute right-0 mt-0 w-48 bg-white rounded-md shadow-lg border border-slate-200 transition-all duration-200 ${
+              className={`absolute right-0 mt-0 w-56 bg-white rounded-md shadow-lg border border-slate-200 transition-all duration-200 ${
               isOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
             }`}
             >
-              <div className="py-1">
+              <div className="py-1 max-h-[70vh] overflow-y-auto overscroll-contain pr-1">
                 {navigationItems.map((item) => (
                   <Link
                     key={item.name}
@@ -126,9 +126,11 @@ const Navigation = () => {
                 >
                   Demos ▸
                   <div
-                    className={`absolute top-0 right-full mr-1 w-80 bg-white rounded-md shadow-lg border border-slate-200 transition-all duration-200 ${
+                    className={`absolute top-0 right-full mr-1 w-96 bg-white rounded-md shadow-lg border border-slate-200 transition-all duration-200 z-10 ${
                       isDemosOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
-                    }`}
+                    } max-h-[70vh] overflow-y-auto overscroll-contain`}
+                    onMouseEnter={() => setIsDemosOpen(true)}
+                    onMouseLeave={() => setIsDemosOpen(false)}
                   >
                     <div className="py-2">
                       {demoItems.map((d) => (

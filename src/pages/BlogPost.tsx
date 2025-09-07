@@ -191,7 +191,7 @@ const BlogPost = () => {
       {/* Header */}
       <header className="bg-white border-b border-slate-200">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pt-20">
-          <button onClick={() => window.history.length > 1 ? window.history.back() : (window.location.href = '/blog')} className="inline-flex items-center text-blue-600 hover:text-blue-700 font-semibold mb-4">
+          <button onClick={() => { try { (window as any).history?.back(); } catch {} setTimeout(() => { if (!document.referrer || !/\/[bB]log/.test(document.referrer)) { window.location.href = '/blog'; } }, 50); }} className="inline-flex items-center text-blue-600 hover:text-blue-700 font-semibold mb-4">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Blog
           </button>

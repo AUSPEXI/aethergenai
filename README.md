@@ -58,6 +58,11 @@ npm run build
 npm run preview
 ```
 
+### CPU Runner (optional)
+
+For CPU‑first selective prediction and re‑ranking, see `docs/cpu-runner.md`.
+Set `VITE_CPU_RUNNER_URL` and `CPU_RUNNER_BASE` to a local CPU runner if available.
+
 ## 📄 **License**
 
 This project is proprietary technology of Auspexi. All rights reserved.

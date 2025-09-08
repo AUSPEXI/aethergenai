@@ -7,6 +7,7 @@ import {
 } from 'lucide-react'
 import { sloManagementService, SLOConfig, SLOStatus, SLOBreach, ShadowEvaluation, DriftMetrics } from '../services/sloManagementService'
 import { calibrateThreshold, evaluateSelective, synthScores, calibratePerGroup, parseSignalsCSV, buildPointsFromSignals } from '../services/conformalService'
+import { cpuRunner } from '../services/cpuRunnerService'
 import { residualBank, ResidualSignal } from '../services/residualBankService'
 import { buildEvidenceBundle, downloadSignedEvidenceZip } from '../services/evidenceService'
 import BackButton from '../components/BackButton'
@@ -25,6 +26,7 @@ export const StabilityDemo: React.FC = () => {
   const [selectiveEval, setSelectiveEval] = useState<{ coverage: number; abstain: number; errorRate: number; correctRate: number } | null>(null)
   const [segmentThresholds, setSegmentThresholds] = useState<Record<string, number>>({})
   const [signalsCSV, setSignalsCSV] = useState<string>('margin,entropy,retrieval,correct\n0.8,0.2,0.7,1\n0.4,0.7,0.2,0\n0.6,0.5,0.6,1')
+  const [useCpuBackend, setUseCpuBackend] = useState<boolean>(false)
   const [sloConfig, setSloConfig] = useState<SLOConfig>({
     utility: {
       operating_point: 'fpr=1%',
@@ -576,7 +578,22 @@ export const StabilityDemo: React.FC = () => {
                 <input type="range" min={0.5} max={0.95} step={0.01} value={coverageTarget} onChange={(e)=>setCoverageTarget(parseFloat(e.target.value))} className="w-64"/>
                 <button
                   className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                  onClick={() => {
+                  onClick={async () => {
+                    if (useCpuBackend) {
+                      try {
+                        // Ask CPU runner to produce scores, calibrate in-browser for now
+                        const sims = synthScores(600)
+                        const features = sims.map(p => ({ margin: p.score, entropy: 1 - p.score, retrieval: 0 }))
+                        const scores = await cpuRunner.score(features)
+                        const points = scores.map((s, i) => ({ score: s, correct: sims[i].correct }))
+                        const model = calibrateThreshold(points, coverageTarget)
+                        const evalRes = evaluateSelective(points, model)
+                        setSelectiveEval(evalRes)
+                        setConformalThresholds(prev => ({ ...prev, [selectedModel]: model.threshold }))
+                        try { localStorage.setItem(`aeg_conformal_${selectedModel}`, JSON.stringify({ threshold: model.threshold, target: coverageTarget })) } catch {}
+                        return
+                      } catch {}
+                    }
                     const cal = synthScores(600)
                     const model = calibrateThreshold(cal, coverageTarget)
                     const evalRes = evaluateSelective(synthScores(400), model)
@@ -587,6 +604,10 @@ export const StabilityDemo: React.FC = () => {
                 >
                   Calibrate
                 </button>
+                <label className="flex items-center gap-2 text-sm text-gray-700">
+                  <input type="checkbox" checked={useCpuBackend} onChange={(e)=>setUseCpuBackend(e.target.checked)} />
+                  Use CPU backend
+                </label>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="border rounded-lg p-3 text-sm">

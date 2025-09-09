@@ -10,6 +10,7 @@ import { calibrateThreshold, evaluateSelective, synthScores, calibratePerGroup, 
 import { cpuRunner } from '../services/cpuRunnerService'
 import { residualBank, ResidualSignal } from '../services/residualBankService'
 import { buildEvidenceBundle, downloadSignedEvidenceZip } from '../services/evidenceService'
+import { hallucinationRisk, RiskThreshold } from '../services/hallucinationRiskService'
 import BackButton from '../components/BackButton'
 
 export const StabilityDemo: React.FC = () => {
@@ -27,6 +28,9 @@ export const StabilityDemo: React.FC = () => {
   const [segmentThresholds, setSegmentThresholds] = useState<Record<string, number>>({})
   const [signalsCSV, setSignalsCSV] = useState<string>('margin,entropy,retrieval,correct\n0.8,0.2,0.7,1\n0.4,0.7,0.2,0\n0.6,0.5,0.6,1')
   const [useCpuBackend, setUseCpuBackend] = useState<boolean>(false)
+  const [riskTarget, setRiskTarget] = useState<number>(0.05)
+  const [riskThreshold, setRiskThreshold] = useState<RiskThreshold | null>(null)
+  const [lastRisk, setLastRisk] = useState<number | null>(null)
   const [sloConfig, setSloConfig] = useState<SLOConfig>({
     utility: {
       operating_point: 'fpr=1%',
@@ -143,6 +147,15 @@ export const StabilityDemo: React.FC = () => {
         correct: Math.random() > 0.2
       }
       try { residualBank.append(signal) } catch {}
+
+      // Compute a simple risk score from simulated signals
+      const risk = hallucinationRisk.computeRisk({
+        margin: signal.margin,
+        entropy: signal.entropy,
+        retrieval: signal.retrieval,
+        selfConsistency: Math.random() // placeholder
+      })
+      setLastRisk(risk)
     }, 5000)
     
     return () => clearInterval(interval)
@@ -336,6 +349,57 @@ export const StabilityDemo: React.FC = () => {
               </div>
             </div>
           )}
+        </div>
+
+        {/* Risk Guard (Pre‑generation) */}
+        <div className="bg-white rounded-xl p-6 mb-8 shadow-md text-gray-800">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-2xl font-bold text-gray-900 flex items-center">
+              <AlertCircle className="w-6 h-6 mr-2 text-red-500" />
+              Hallucination Risk Guard
+            </h2>
+            <div className="flex items-center gap-3 text-sm">
+              <span className="text-gray-700">Target hallucination rate:</span>
+              <span className="font-mono">{riskTarget.toFixed(2)}</span>
+              <input type="range" min={0.01} max={0.20} step={0.01} value={riskTarget} onChange={(e)=>setRiskTarget(parseFloat(e.target.value))} />
+              <button
+                className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
+                onClick={() => {
+                  // Simulate calibration with local residuals (correct ~ not hallucinated)
+                  const all = residualBank.readAll()
+                  const samples = all.slice(-400).map(r => ({
+                    features: { margin: r.margin ?? 0, entropy: r.entropy ?? 1, retrieval: r.retrieval ?? 0 },
+                    hallucinated: r.correct === false
+                  }))
+                  if (samples.length >= 20) {
+                    const thr = hallucinationRisk.calibrateRiskThreshold(samples, riskTarget)
+                    setRiskThreshold(thr)
+                  }
+                }}
+              >
+                Calibrate
+              </button>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+            <div className="border rounded-lg p-3">
+              <div className="text-gray-500">Last risk</div>
+              <div className="font-mono">{lastRisk !== null ? lastRisk.toFixed(3) : '-'}</div>
+            </div>
+            <div className="border rounded-lg p-3">
+              <div className="text-gray-500">Risk threshold</div>
+              <div className="font-mono">{riskThreshold ? riskThreshold.threshold.toFixed(3) : '-'}</div>
+            </div>
+            <div className="border rounded-lg p-3">
+              <div className="text-gray-500">Recommended action</div>
+              <div className="font-mono">
+                {lastRisk !== null && riskThreshold
+                  ? hallucinationRisk.decideAction(lastRisk, riskThreshold)
+                  : '-'}
+              </div>
+            </div>
+          </div>
+          <p className="mt-3 text-xs text-gray-600">Actions: generate (safe), fetch_more_context (increase support), abstain (fail‑closed), or reroute (e.g., different model/backends).</p>
         </div>
 
         {/* SLO Status Dashboard */}

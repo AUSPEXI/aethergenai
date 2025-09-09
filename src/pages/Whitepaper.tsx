@@ -60,6 +60,7 @@ const Whitepaper: React.FC = () => {
           <a href="#sustainability" className="text-blue-600 hover:underline">Sustainability</a>
           <a href="#limitations" className="text-blue-600 hover:underline">Limitations & Responsible Use</a>
           <a href="#roadmap" className="text-blue-600 hover:underline">Roadmap (Public)</a>
+          <a href="#risk-guard" className="text-blue-600 hover:underline">Pre‑generation Risk Guard</a>
         </div>
 
         <section id="abstract" className="mb-10">
@@ -131,6 +132,16 @@ const Whitepaper: React.FC = () => {
             <li><b>Shadow evals + SLOs</b>: changes run under utility, stability, privacy, and latency gates; breaches trigger rollback.</li>
           </ul>
           <p className="text-slate-700 mt-3 text-sm">A simple falsifiable check: clamp latency and coverage, then measure wrong‑answer rate and re‑ask rate on a fresh‑news holdout pre/post gating.</p>
+        </section>
+
+        <section id="risk-guard" className="mb-10">
+          <h2 className="text-2xl font-semibold text-slate-900 mb-3">Pre‑generation Risk Guard</h2>
+          <p className="text-slate-800 mb-3">We estimate hallucination risk <b>before</b> generation using signals such as margin, entropy, retrieval support, and optional self‑consistency. A calibrated threshold bounds the hallucination rate (e.g., ≤ 5%) on held‑out data.</p>
+          <ul className="list-disc ml-6 text-slate-800 space-y-1">
+            <li><b>Calibration:</b> select target rate and compute a risk threshold that satisfies it on samples.</li>
+            <li><b>Policy:</b> below threshold → generate; above → fetch more context; far above → abstain or reroute.</li>
+            <li><b>Evidence:</b> thresholds and outcomes can be logged for audit alongside selective prediction and SLOs.</li>
+        </ul>
         </section>
 
         <section id="delivery" className="mb-10">

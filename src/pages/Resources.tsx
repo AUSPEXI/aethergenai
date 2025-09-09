@@ -413,6 +413,28 @@ export const Resources: React.FC = () => {
             </div>
           </div>
 
+          {/* Risk Guard quick info */}
+          <div className="mb-16 bg-rose-50 border border-rose-100 rounded-xl p-6">
+            <h3 className="text-2xl font-bold text-gray-900 mb-2 flex items-center">
+              <AlertTriangle className="w-6 h-6 mr-2 text-rose-600" /> Pre‑generation Hallucination Risk Guard
+            </h3>
+            <p className="text-gray-600 mb-4">Estimate risk before answering. Calibrate a threshold to bound hallucination rate and take actions (fetch context, abstain, reroute).</p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <Link to="/stability-demo" className="block bg-white rounded-lg p-4 border hover:shadow-md transition">
+                <div className="font-semibold text-gray-900 mb-1">Stability Demo</div>
+                <div className="text-sm text-gray-600">Risk Guard panel with target rate & threshold</div>
+              </Link>
+              <Link to="/whitepaper#risk-guard" className="block bg-white rounded-lg p-4 border hover:shadow-md transition">
+                <div className="font-semibold text-gray-900 mb-1">Whitepaper</div>
+                <div className="text-sm text-gray-600">Design, policy, and evidence notes</div>
+              </Link>
+              <Link to="/blog/hallucination-risk-guard-pre-generation" className="block bg-white rounded-lg p-4 border hover:shadow-md transition">
+                <div className="font-semibold text-gray-900 mb-1">Blog: Risk Guard</div>
+                <div className="text-sm text-gray-600">Quick start with thresholds & actions</div>
+              </Link>
+            </div>
+          </div>
+
           {/* Sustainability & Energy */}
           <div className="mb-16 bg-emerald-50 border border-emerald-100 rounded-xl p-6">
             <h3 className="text-2xl font-bold text-gray-900 mb-2 flex items-center">
@@ -426,7 +448,7 @@ export const Resources: React.FC = () => {
               </Link>
               <Link to="/blog/energy-efficient-ai-optimization-beats-scaling" className="block bg-white rounded-lg p-4 border hover:shadow-md transition">
                 <div className="font-semibold text-gray-900 mb-1">Energy‑Efficient AI</div>
-                <div className="text-sm text-gray-600">Optimization > scaling; adapters, pruning, quantization</div>
+                <div className="text-sm text-gray-600">Optimization &gt; scaling; adapters, pruning, quantization</div>
               </Link>
               <Link to="/blog/green-ai-carbon-neutral-machine-learning" className="block bg-white rounded-lg p-4 border hover:shadow-md transition">
                 <div className="font-semibold text-gray-900 mb-1">Green AI: Carbon‑Neutral Systems</div>

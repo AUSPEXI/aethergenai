@@ -33,6 +33,11 @@ export const faqSections: FAQSection[] = [
       { q: 'How do you handle domain shift?', a: 'Stability and drift monitors surface shifts; operating points and retrieval sources can be adapted, and changes documented in evidence.' },
       { q: 'Are results auditable?', a: 'Yes—decisions and acceptance results are logged in signed evidence bundles for reproduction by auditors.' },
       { q: 'Can we disable controls?', a: 'Enterprise can configure thresholds, but safety gates default to fail‑closed for high‑risk workflows.' },
+      { q: 'What is the Risk Guard?', a: 'A pre‑generation risk score that estimates hallucination likelihood before answering, enabling actions like fetch‑more‑context, abstain, or reroute.' },
+      { q: 'How is risk computed?', a: 'From signals like margin, entropy, retrieval support, and optional self‑consistency. We calibrate a threshold to bound hallucination rate (e.g., 5%).' },
+      { q: 'How do thresholds work?', a: 'Pick a target hallucination rate (e.g., 0.05). Calibrate a risk threshold so that responses below the threshold satisfy the target on held‑out data.' },
+      { q: 'What actions are taken at high risk?', a: 'If risk exceeds the threshold, we fetch more context, abstain (fail‑closed), or reroute to a different backend/policy.' },
+      { q: 'Is this audited?', a: 'Risk thresholds and outcomes can be logged in evidence bundles alongside selective prediction and SLOs for auditability.' },
     ],
   },
   {

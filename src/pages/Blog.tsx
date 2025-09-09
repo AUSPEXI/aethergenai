@@ -147,6 +147,17 @@ const Blog = () => {
 
   const blogPosts = [
     {
+      title: 'Pre‑generation Hallucination Risk Guard',
+      excerpt: 'Estimate risk before answering. Calibrate a target rate and act: fetch context, abstain, or reroute.',
+      author: 'Gwylym Owen',
+      date: 'September 8, 2025',
+      readTime: '5 min read',
+      category: 'Technology',
+      icon: Shield,
+      published: true,
+      slug: 'hallucination-risk-guard-pre-generation'
+    },
+    {
       title: 'On‑Device AI: Hybrid Routing & SLOs',
       excerpt: 'CPU/NPU‑first routing with fallback‑rate, battery, and thermal SLOs—plus evidence and telemetry boundaries.',
       author: 'Gwylym Owen',
@@ -901,6 +912,7 @@ const Blog = () => {
     'unity-catalog-delivery-turning-models-into-procurement-ready-products',
     'navigating-the-illusion-of-conscious-ai'
     ,'on-device-ai-slos-hybrid-routing'
+    ,'hallucination-risk-guard-pre-generation'
   ];
 
   const seenSlugs = new Set<string>();

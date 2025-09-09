@@ -11,6 +11,7 @@ import { cpuRunner } from '../services/cpuRunnerService'
 import { residualBank, ResidualSignal } from '../services/residualBankService'
 import { buildEvidenceBundle, downloadSignedEvidenceZip } from '../services/evidenceService'
 import { hallucinationRisk, RiskThreshold } from '../services/hallucinationRiskService'
+import { platformApi } from '../services/platformApi'
 import BackButton from '../components/BackButton'
 
 export const StabilityDemo: React.FC = () => {
@@ -156,6 +157,23 @@ export const StabilityDemo: React.FC = () => {
         selfConsistency: Math.random() // placeholder
       })
       setLastRisk(risk)
+
+      // If live, log a compact summary to MLflow via Netlify function
+      if (platformApi.isLive()) {
+        try {
+          await platformApi.logMlflow({
+            summary: {
+              slo_utility: currentMetrics.utility,
+              slo_latency_p95: currentMetrics.p95_latency,
+              slo_privacy_mi: currentMetrics.membership_advantage,
+              ondev_fallback_rate: currentMetrics.fallback_rate,
+              ondev_energy_mwh: currentMetrics.energy_mwh,
+              ondev_temp_delta_c: currentMetrics.temp_delta_c,
+              risk_guard: risk
+            }
+          })
+        } catch {}
+      }
     }, 5000)
     
     return () => clearInterval(interval)

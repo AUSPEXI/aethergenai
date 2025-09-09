@@ -19,6 +19,7 @@ import {
   EfficiencyReport,
   CarbonFootprint 
 } from '../services/efficiencyMetricsService'
+import { platformApi } from '../services/platformApi'
 
 export const EfficiencyDemo: React.FC = () => {
   const [selectedModel, setSelectedModel] = useState('healthcare-fraud-detector')
@@ -98,6 +99,18 @@ export const EfficiencyDemo: React.FC = () => {
       // Refresh report
       const report = await efficiencyMetricsService.generateEfficiencyReport(selectedModel, 'daily')
       setEfficiencyReport(report)
+
+      if (platformApi.isLive()) {
+        platformApi.logMlflow({
+          summary: {
+            eff_opt: 1,
+            eff_type: config.optimization_type,
+            eff_device: selectedDevice,
+            eff_delta_latency_pct: (result.after_metrics.latency_p95 - result.before_metrics.latency_p95) / result.before_metrics.latency_p95,
+            eff_delta_energy_pct: (result.after_metrics.energy_per_task - result.before_metrics.energy_per_task) / result.before_metrics.energy_per_task
+          }
+        }).catch(()=>{})
+      }
     } catch (error) {
       console.error('Optimization failed:', error)
     }
@@ -112,6 +125,16 @@ export const EfficiencyDemo: React.FC = () => {
         optimization_status: optimizationResults.length > 0 ? 'optimized' : 'baseline'
       })
       setCurrentMetrics(metrics)
+      if (platformApi.isLive() && metrics) {
+        platformApi.logMlflow({
+          summary: {
+            eff_energy_task: metrics.energy_metrics.energy_per_task_joules,
+            eff_cost_inf: metrics.cost_metrics.cost_per_inference_usd,
+            eff_latency_p95: metrics.performance_metrics.latency_p95_ms,
+            eff_throughput: metrics.performance_metrics.throughput_tasks_per_second
+          }
+        }).catch(()=>{})
+      }
     }, 5000)
     
     return () => clearInterval(interval)

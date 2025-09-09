@@ -23,6 +23,7 @@ import {
 } from 'lucide-react'
 import { marketplaceAssetService, MarketplaceAsset, Listing, ConversionMetrics } from '../services/marketplaceAssetService'
 import { trialManagementService, TrialRequest, TrialProvisioning, TrialAnalytics } from '../services/trialManagementService'
+import { platformApi } from '../services/platformApi'
 
 export const MarketplaceDemo: React.FC = () => {
   const [assets, setAssets] = useState<MarketplaceAsset[]>([])
@@ -287,6 +288,9 @@ export const MarketplaceDemo: React.FC = () => {
       
       if (provisioning.status === 'active') {
         setTrialStatus(`Trial provisioned successfully! Access URL: ${provisioning.accessUrl}`)
+        if (platformApi.isLive()) {
+          platformApi.logMlflow({ summary: { mkt_trial_provisioned: 1, mkt_platform: selectedPlatform } }).catch(()=>{})
+        }
         
         // Refresh active trials
         const trials = await trialManagementService.getActiveTrials()
@@ -316,6 +320,9 @@ export const MarketplaceDemo: React.FC = () => {
       URL.revokeObjectURL(url)
       
       setGenerationStatus('Package generated and downloaded successfully!')
+      if (platformApi.isLive()) {
+        platformApi.logMlflow({ summary: { mkt_package_generated: 1, mkt_platform: selectedPlatform, mkt_asset_type: asset.type } }).catch(()=>{})
+      }
     } catch (error) {
       setGenerationStatus(`Error generating package: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
@@ -333,6 +340,9 @@ export const MarketplaceDemo: React.FC = () => {
       setConversionMetrics(metrics)
       
       setTrialStatus('Trial converted successfully!')
+      if (platformApi.isLive()) {
+        platformApi.logMlflow({ summary: { mkt_trial_converted: 1, mkt_tier: tier } }).catch(()=>{})
+      }
     } catch (error) {
       setTrialStatus(`Error converting trial: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }

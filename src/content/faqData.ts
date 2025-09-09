@@ -68,6 +68,19 @@ export const faqSections: FAQSection[] = [
     ],
   },
   {
+    id: 'ondevice',
+    title: 'On‑Device AI & SLOs',
+    items: [
+      { q: 'What on‑device modes are supported?', a: 'Device‑only, hybrid (device first, cloud fallback), and cloud‑only. Hybrid is default for best latency and cost.' },
+      { q: 'How is fallback rate controlled?', a: 'Set a max fallback rate SLO (e.g., 15%). Routing enforces it by tightening selective thresholds or deferring non‑urgent requests when the budget is at risk.' },
+      { q: 'What about battery and thermal limits?', a: 'Set max battery mWh per inference and max temperature delta in °C. When limits are approached, the system reduces coverage, downshifts models, or routes to cloud.' },
+      { q: 'What telemetry is collected from devices?', a: 'Sampled local metrics: p95 latency, energy estimate, temperature delta, fallback reasons. Raw data stays on device; optional DP summaries may sync.' },
+      { q: 'How does this interact with selective prediction?', a: 'Selective thresholds can be tuned per device class to meet target coverage while respecting battery/thermal budgets and fallback caps.' },
+      { q: 'Do NPUs change behavior?', a: 'We detect supported ops and prefer NPU; fallback chain is NPU → GPU → CPU. Unsupported ops raise telemetry to inform builds.' },
+      { q: 'Where is the playbook?', a: 'See Resources → On‑Device AI Playbook for routing, SLOs, packaging, and telemetry guidance.' },
+    ],
+  },
+  {
     id: 'delivery-uc',
     title: 'Delivery (Unity Catalog)',
     items: [

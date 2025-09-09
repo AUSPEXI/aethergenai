@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>On‑Device AI: Hybrid Routing & SLOs</title>
+    <meta name="description" content="CPU/NPU‑first routing with fallback‑rate, battery, and thermal SLOs—plus evidence and telemetry boundaries." />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <style>
+      body { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, Apple Color Emoji, Segoe UI Emoji; color:#0f172a; background:#ffffff; }
+      .container{ max-width: 900px; margin: 0 auto; padding: 2rem 1rem; }
+      h1{ font-size: 2rem; line-height: 1.2; margin-bottom: 1rem; }
+      h2{ font-size: 1.375rem; margin-top: 1.75rem; margin-bottom: .5rem; }
+      p{ color:#334155; line-height:1.7; margin:.5rem 0; }
+      ul{ color:#334155; margin-left:1.25rem; }
+      code, pre { background:#f8fafc; border:1px solid #e2e8f0; border-radius: .375rem; padding: .125rem .375rem; }
+      a{ color:#2563eb; text-decoration:none; }
+      .pill{ display:inline-block; background:#eef2ff; color:#4f46e5; padding:.25rem .5rem; border-radius:999px; font-size:.75rem; }
+      .box{ background:#f8fafc; border:1px solid #e2e8f0; border-radius:.75rem; padding:1rem; margin:1rem 0; }
+    </style>
+  </head>
+  <body>
+    <main class="container">
+      <span class="pill">Technology</span>
+      <h1>On‑Device AI: Hybrid Routing & SLOs</h1>
+      <p><strong>TL;DR</strong> Hybrid routing prefers CPU/NPU for gates and re‑rankers, with measurable SLOs: <em>fallback rate</em>, <em>battery budget</em>, and <em>thermal guard</em>. Evidence includes sampled telemetry summaries; raw data stays on device.</p>
+
+      <h2>What we shipped</h2>
+      <ul>
+        <li>Optional on‑device SLOs in the SLO service: <code>ondevice.enabled</code>, <code>max_fallback_rate</code>, <code>max_battery_mwh</code>, <code>max_temp_delta_c</code>.</li>
+        <li>Demo wiring in Stability Demo to simulate on‑device metrics and visualize status.</li>
+        <li>Docs: On‑Device AI Playbook with routing, packaging, telemetry, and privacy boundaries.</li>
+      </ul>
+
+      <h2>Quick start</h2>
+      <pre><code>ondevice: { enabled: true, max_fallback_rate: 0.15, max_battery_mwh: 2.5, max_temp_delta_c: 6 }</code></pre>
+      <p>During evaluation, provide metrics: <code>fallback_rate</code>, <code>energy_mwh</code>, <code>temp_delta_c</code>. Thresholds can be tuned per device class.</p>
+
+      <h2>Routing policy</h2>
+      <p>Modes: device‑only, hybrid (default), cloud‑only. Prefer NPU where supported; fallback chain is NPU → GPU → CPU. Exceeding SLOs promotes to cloud or reduces coverage.</p>
+
+      <h2>Evidence & privacy</h2>
+      <p>Evidence bundles include device‑class tags and telemetry summaries. Raw data and residuals remain on device; optional DP summaries may sync.</p>
+
+      <div class="box">
+        <p>See also: <a href="/resources">Resources</a> · <a href="/faq#ondevice">FAQ – On‑Device AI & SLOs</a> · <a href="/stability-demo">Stability Demo</a> · <a href="/docs/on_device_ai_playbook">On‑Device AI Playbook</a></p>
+      </div>
+    </main>
+  </body>
+</html>
+
+

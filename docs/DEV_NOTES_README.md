@@ -173,3 +173,14 @@ Left To Do (Next up)
 8D track (signposted)
 - Phase 1: 4–6D geospatial/time-series synthetic backends; ablation of dimensional relevance.
 - Phase 2: agent-based sim + octonion/8D embeddings; release gated by ablation evidence.
+
+---
+
+Backlog candidates (no external API spend)
+- Social video bot workflow (n8n-inspired) — spec only for now
+  - Intake: Telegram webhook → image capture (mocked)
+  - Intent parse: structured JSON extraction (local, no LLM calls)
+  - Image analyze: stub to capture desired fields (camera, lighting, mood)
+  - Video generate: dry-run with callback simulation and evidence log
+  - Guard: IP safety scan on prompts and captions
+  - Deliverable: design doc, types, and Netlify function stubs disabled by default

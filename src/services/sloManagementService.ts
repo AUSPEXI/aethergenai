@@ -26,6 +26,13 @@ export interface SLOConfig {
       delta: number
     }
   }
+  // Optional on-device SLOs
+  ondevice?: {
+    enabled: boolean
+    max_fallback_rate?: number // fraction 0..1
+    max_battery_mwh?: number   // approximate budget per inference
+    max_temp_delta_c?: number  // degrees C over baseline
+  }
 }
 
 export interface SLOStatus {
@@ -170,6 +177,49 @@ class SLOManagementService {
       evidence_snapshot: `evidence-${modelId}-${Date.now()}`
     }
     statuses.push(privacyStatus)
+
+    // On-device optional SLOs
+    if (config.ondevice?.enabled) {
+      if (Number.isFinite(config.ondevice.max_fallback_rate)) {
+        const key = `${modelId}:fallback_rate`
+        const sm = this.smooth(key, currentMetrics.fallback_rate ?? 0)
+        statuses.push({
+          slo_type: 'latency', // reuse card styling; type list is fixed
+          current_value: sm,
+          threshold: config.ondevice.max_fallback_rate!,
+          status: this.applyHysteresis(key, this.calculateStatus(sm, config.ondevice.max_fallback_rate!, 0, true)),
+          breach_severity: this.calculateSeverity(sm, config.ondevice.max_fallback_rate!),
+          last_updated: new Date().toISOString(),
+          evidence_snapshot: `evidence-${modelId}-${Date.now()}`
+        })
+      }
+      if (Number.isFinite(config.ondevice.max_battery_mwh)) {
+        const key = `${modelId}:battery_mwh`
+        const sm = this.smooth(key, currentMetrics.energy_mwh ?? 0)
+        statuses.push({
+          slo_type: 'latency',
+          current_value: sm,
+          threshold: config.ondevice.max_battery_mwh!,
+          status: this.applyHysteresis(key, this.calculateStatus(sm, config.ondevice.max_battery_mwh!, 0, true)),
+          breach_severity: this.calculateSeverity(sm, config.ondevice.max_battery_mwh!),
+          last_updated: new Date().toISOString(),
+          evidence_snapshot: `evidence-${modelId}-${Date.now()}`
+        })
+      }
+      if (Number.isFinite(config.ondevice.max_temp_delta_c)) {
+        const key = `${modelId}:temp_delta`
+        const sm = this.smooth(key, currentMetrics.temp_delta_c ?? 0)
+        statuses.push({
+          slo_type: 'latency',
+          current_value: sm,
+          threshold: config.ondevice.max_temp_delta_c!,
+          status: this.applyHysteresis(key, this.calculateStatus(sm, config.ondevice.max_temp_delta_c!, 0, true)),
+          breach_severity: this.calculateSeverity(sm, config.ondevice.max_temp_delta_c!),
+          last_updated: new Date().toISOString(),
+          evidence_snapshot: `evidence-${modelId}-${Date.now()}`
+        })
+      }
+    }
 
     this.sloStatus.set(modelId, statuses)
 

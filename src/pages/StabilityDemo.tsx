@@ -54,7 +54,8 @@ export const StabilityDemo: React.FC = () => {
         epsilon: 0.8,
         delta: 1e-6
       }
-    }
+    },
+    ondevice: { enabled: true, max_fallback_rate: 0.15, max_battery_mwh: 2.5, max_temp_delta_c: 6 }
   })
 
   useEffect(() => {
@@ -102,7 +103,10 @@ export const StabilityDemo: React.FC = () => {
       utility: 0.82 + Math.random() * 0.02,
       stability_delta: 0.01 + Math.random() * 0.005,
       p95_latency: 95 + Math.random() * 15,
-      membership_advantage: 0.025 + Math.random() * 0.01
+      membership_advantage: 0.025 + Math.random() * 0.01,
+      fallback_rate: 0.05 + Math.random() * 0.03,
+      energy_mwh: 1.2 + Math.random() * 0.6,
+      temp_delta_c: 2 + Math.random() * 2
     }
     const seededStatus = await sloManagementService.evaluateSLO(selectedModel, seedMetrics)
     setSloStatus(seededStatus)
@@ -115,7 +119,10 @@ export const StabilityDemo: React.FC = () => {
         utility: 0.78 + Math.random() * 0.06,
         stability_delta: 0.01 + Math.random() * 0.01,
         p95_latency: 90 + Math.random() * 25,
-        membership_advantage: 0.025 + Math.random() * 0.02
+        membership_advantage: 0.025 + Math.random() * 0.02,
+        fallback_rate: 0.05 + Math.random() * 0.1,
+        energy_mwh: 1.0 + Math.random() * 1.2,
+        temp_delta_c: 1 + Math.random() * 5
       }
       
       const status = await sloManagementService.evaluateSLO(selectedModel, currentMetrics)

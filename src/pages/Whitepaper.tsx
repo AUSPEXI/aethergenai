@@ -82,6 +82,14 @@ const Whitepaper: React.FC = () => {
             <li><b>Delivery</b>: UC objects (Catalog/Schema/Volumes) with comments/tags and Marketplace packaging.</li>
             <li><b>Policy Guard</b>: entitlements, geo/sector denies, kill switch for revocation.</li>
           </ul>
+          <h3 className="text-xl font-semibold text-slate-900 mt-6 mb-2">On‑Device AI: Hybrid Routing & SLOs</h3>
+          <p className="text-slate-700 mb-2">Supported modes: device‑only, hybrid (device first, cloud fallback), and cloud‑only. Hybrid is default. Routing prefers CPU/NPU for gates and re‑rankers and promotes to cloud when constraints are exceeded.</p>
+          <ul className="list-disc ml-6 text-slate-800 space-y-1 mb-4">
+            <li>Fallback‑rate SLO: at most r_max of requests may route to cloud.</li>
+            <li>Battery budget: per‑inference energy cap E_max (mWh) by device class.</li>
+            <li>Thermal guard: max temperature delta ΔT_max (°C) relative to baseline.</li>
+          </ul>
+          <p className="text-slate-700 mb-4">Selective thresholds can be tuned per device segment to satisfy coverage and accuracy while respecting these SLOs. Evidence includes device‑class tags and sampled telemetry summaries; raw data remains on device.</p>
         </section>
 
         <section id="calibration" className="mb-10">

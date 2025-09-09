@@ -104,6 +104,15 @@ export const Resources: React.FC = () => {
       category: 'Technical Documentation',
       link: '/marketplace-demo',
       type: 'Interactive Demo'
+    },
+    // On-Device AI
+    {
+      icon: Zap,
+      title: 'On‑Device AI (Hybrid Routing & SLOs)',
+      description: 'CPU/NPU routing with fallback-rate, battery, and thermal SLOs; demo and playbook',
+      category: 'Technical Documentation',
+      link: '/stability-demo',
+      type: 'Guide + Demo'
     }
   ]
 
@@ -263,6 +272,13 @@ export const Resources: React.FC = () => {
                 Access Demo
                 <ArrowRight className="w-4 h-4 ml-1" />
               </Link>
+              {doc.title.includes('On‑Device AI') && (
+                <div className="mt-3">
+                  <Link to="/docs/on_device_ai_playbook" className="text-sm text-indigo-600 hover:text-indigo-700">
+                    On‑Device AI Playbook
+                  </Link>
+                </div>
+              )}
             </div>
           ))}
         </div>
@@ -375,6 +391,28 @@ export const Resources: React.FC = () => {
             </div>
           </div>
 
+          {/* On‑Device AI quick info */}
+          <div className="mb-16 bg-emerald-50 border border-emerald-100 rounded-xl p-6">
+            <h3 className="text-2xl font-bold text-gray-900 mb-2 flex items-center">
+              <Zap className="w-6 h-6 mr-2 text-emerald-600" /> On‑Device AI (Hybrid Routing & SLOs)
+            </h3>
+            <p className="text-gray-600 mb-4">CPU/NPU‑first routing with measurable SLOs: max fallback rate, battery budget, and thermal guard. See the demo and the playbook.</p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <Link to="/stability-demo" className="block bg-white rounded-lg p-4 border hover:shadow-md transition">
+                <div className="font-semibold text-gray-900 mb-1">Stability Demo</div>
+                <div className="text-sm text-gray-600">Live SLO dashboard with on‑device metrics</div>
+              </Link>
+              <Link to="/docs/on_device_ai_playbook" className="block bg-white rounded-lg p-4 border hover:shadow-md transition">
+                <div className="font-semibold text-gray-900 mb-1">On‑Device AI Playbook</div>
+                <div className="text-sm text-gray-600">Routing, SLOs, packaging, telemetry</div>
+              </Link>
+              <Link to="/blog/on-device-ai-slos-hybrid-routing" className="block bg-white rounded-lg p-4 border hover:shadow-md transition">
+                <div className="font-semibold text-gray-900 mb-1">Blog: Hybrid Routing & SLOs</div>
+                <div className="text-sm text-gray-600">Implementation notes and quick start</div>
+              </Link>
+            </div>
+          </div>
+
           {/* Sustainability & Energy */}
           <div className="mb-16 bg-emerald-50 border border-emerald-100 rounded-xl p-6">
             <h3 className="text-2xl font-bold text-gray-900 mb-2 flex items-center">
@@ -388,7 +426,7 @@ export const Resources: React.FC = () => {
               </Link>
               <Link to="/blog/energy-efficient-ai-optimization-beats-scaling" className="block bg-white rounded-lg p-4 border hover:shadow-md transition">
                 <div className="font-semibold text-gray-900 mb-1">Energy‑Efficient AI</div>
-                <div className="text-sm text-gray-600">Optimization &gt; scaling; adapters, pruning, quantization</div>
+                <div className="text-sm text-gray-600">Optimization > scaling; adapters, pruning, quantization</div>
               </Link>
               <Link to="/blog/green-ai-carbon-neutral-machine-learning" className="block bg-white rounded-lg p-4 border hover:shadow-md transition">
                 <div className="font-semibold text-gray-900 mb-1">Green AI: Carbon‑Neutral Systems</div>

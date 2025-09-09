@@ -147,6 +147,17 @@ const Blog = () => {
 
   const blogPosts = [
     {
+      title: 'On‑Device AI: Hybrid Routing & SLOs',
+      excerpt: 'CPU/NPU‑first routing with fallback‑rate, battery, and thermal SLOs—plus evidence and telemetry boundaries.',
+      author: 'Gwylym Owen',
+      date: 'September 8, 2025',
+      readTime: '5 min read',
+      category: 'Technology',
+      icon: Zap,
+      published: true,
+      slug: 'on-device-ai-slos-hybrid-routing'
+    },
+    {
       title: 'Pareto Thinking: 80/20 Gains at the Operating Point',
       excerpt: 'A few levers move most of the value: operating point, selective prediction, data contracts, and energy‑aware profiles.',
       author: 'Gwylym Owen',
@@ -889,6 +900,7 @@ const Blog = () => {
     'triumph-of-preparation-strategic-planning',
     'unity-catalog-delivery-turning-models-into-procurement-ready-products',
     'navigating-the-illusion-of-conscious-ai'
+    ,'on-device-ai-slos-hybrid-routing'
   ];
 
   const seenSlugs = new Set<string>();

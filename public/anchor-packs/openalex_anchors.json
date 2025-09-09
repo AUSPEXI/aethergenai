@@ -1,0 +1,46 @@
+{
+  "name": "OpenAlex — Open Anchor Pack v0",
+  "source": {
+    "dataset": "OpenAlex Works & Citations",
+    "url": "https://openalex.org/",
+    "license": "Open Data (CC BY)",
+    "attribution": "OurResearch / OpenAlex"
+  },
+  "schema": {
+    "citations": { "type": "integer" },
+    "references": { "type": "integer" },
+    "field": { "type": "string" },
+    "year": { "type": "integer" }
+  },
+  "aggregates": {
+    "row_count": 1000000,
+    "quantiles": {
+      "citations": { "p50": 4, "p90": 25, "p99": 190 },
+      "references": { "p50": 24, "p90": 60, "p99": 120 }
+    },
+    "segments": {
+      "field": [
+        { "key": "Computer Science", "share": 0.18 },
+        { "key": "Medicine", "share": 0.22 },
+        { "key": "Biology", "share": 0.16 },
+        { "key": "Engineering", "share": 0.12 },
+        { "key": "Physics", "share": 0.10 },
+        { "key": "Other", "share": 0.22 }
+      ],
+      "year": [
+        { "key": "≤2010", "share": 0.27 },
+        { "key": "2011-2016", "share": 0.29 },
+        { "key": "2017-2020", "share": 0.25 },
+        { "key": "≥2021", "share": 0.19 }
+      ]
+    },
+    "correlations": [
+      { "pair": ["references", "citations"], "pearson": 0.41 }
+    ]
+  },
+  "dp": { "epsilon": null, "delta": null, "note": "Non-DP anchors; add DP noise in-site if needed." },
+  "anchor_hash": "openalex_v0_demo",
+  "version": "0.0.1",
+  "disclaimer": "Illustrative anchors from public metadata; calibrate per field and time slice."}
+
+

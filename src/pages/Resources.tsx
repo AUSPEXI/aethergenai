@@ -229,7 +229,7 @@ export const Resources: React.FC = () => {
             <TrendingUp className="w-6 h-6 mr-2 text-amber-600" /> Pricing & Entitlements
           </h3>
           <p className="text-gray-700 mb-4">Rights-based tiers, compute ownership clarity, and evidence-linked SLAs.</p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Link to="/blog/pricing-and-entitlements-explained" className="block bg-white rounded-lg p-4 border hover:shadow-md transition">
               <div className="font-semibold text-gray-900 mb-1">Pricing & Entitlements Explained</div>
               <div className="text-sm text-gray-600">How tiers map to real needs without cannibalisation</div>
@@ -237,6 +237,10 @@ export const Resources: React.FC = () => {
             <Link to="/pricing" className="block bg-white rounded-lg p-4 border hover:shadow-md transition">
               <div className="font-semibold text-gray-900 mb-1">Pricing Page & Calculator</div>
               <div className="text-sm text-gray-600">Explore tiers and estimate costs quickly</div>
+            </Link>
+            <Link to="/zero-trust-calibration" className="block bg-white rounded-lg p-4 border hover:shadow-md transition">
+              <div className="font-semibold text-gray-900 mb-1">Zero‑Trust Calibration (1‑Week)</div>
+              <div className="text-sm text-gray-600">Calibrate in your Databricks, deliver signed evidence</div>
             </Link>
           </div>
         </div>
@@ -362,6 +366,49 @@ export const Resources: React.FC = () => {
                 </Link>
               </div>
             ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Open Anchor Packs */}
+      <div className="bg-white py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4 flex items-center justify-center">
+              <Download className="w-8 h-8 mr-3 text-emerald-600" />
+              Open Anchor Packs (v0)
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Public, attribution-friendly anchor bundles to calibrate synthetic generation without sharing raw data.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
+            <a href="/anchor-packs/nyc_taxi_anchors.json" className="bg-gray-50 rounded-xl p-6 hover:shadow-md transition border">
+              <div className="font-semibold text-gray-900 mb-1">NYC TLC Trips</div>
+              <div className="text-sm text-gray-600 mb-2">Distance/time/fare quantiles; borough and hour mixes; correlations</div>
+              <span className="inline-flex items-center text-emerald-700">
+                Download JSON <ExternalLink className="w-4 h-4 ml-1" />
+              </span>
+            </a>
+            <a href="/anchor-packs/sec_edgar_anchors.json" className="bg-gray-50 rounded-xl p-6 hover:shadow-md transition border">
+              <div className="font-semibold text-gray-900 mb-1">SEC EDGAR</div>
+              <div className="text-sm text-gray-600 mb-2">Financial ratios & segment mixes; validate by sector and period</div>
+              <span className="inline-flex items-center text-emerald-700">
+                Download JSON <ExternalLink className="w-4 h-4 ml-1" />
+              </span>
+            </a>
+            <a href="/anchor-packs/openalex_anchors.json" className="bg-gray-50 rounded-xl p-6 hover:shadow-md transition border">
+              <div className="font-semibold text-gray-900 mb-1">OpenAlex</div>
+              <div className="text-sm text-gray-600 mb-2">Citations/references quantiles; field/time mixes; corr</div>
+              <span className="inline-flex items-center text-emerald-700">
+                Download JSON <ExternalLink className="w-4 h-4 ml-1" />
+              </span>
+            </a>
+          </div>
+
+          <div className="text-sm text-gray-600">
+            <div className="mb-2">License/Attribution: See each JSON header. Consider adding DP noise before production use.</div>
           </div>
         </div>
       </div>

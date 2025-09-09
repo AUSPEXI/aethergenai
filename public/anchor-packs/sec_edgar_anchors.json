@@ -1,0 +1,50 @@
+{
+  "name": "SEC EDGAR — Open Anchor Pack v0",
+  "source": {
+    "dataset": "SEC EDGAR Filings (10-K/10-Q)",
+    "url": "https://www.sec.gov/edgar",
+    "license": "Open Government Data (US)",
+    "attribution": "U.S. Securities and Exchange Commission"
+  },
+  "schema": {
+    "debt_to_equity": { "type": "number" },
+    "gross_margin_pct": { "type": "number", "unit": "%" },
+    "r_and_d_pct": { "type": "number", "unit": "% of revenue" },
+    "sector": { "type": "string" },
+    "market_cap_bucket": { "type": "string" }
+  },
+  "aggregates": {
+    "row_count": 50000,
+    "quantiles": {
+      "debt_to_equity": { "p50": 0.9, "p90": 2.3, "p99": 5.7 },
+      "gross_margin_pct": { "p50": 41.0, "p90": 68.0, "p99": 85.0 },
+      "r_and_d_pct": { "p50": 6.0, "p90": 18.0, "p99": 35.0 }
+    },
+    "segments": {
+      "sector": [
+        { "key": "Technology", "share": 0.21 },
+        { "key": "Healthcare", "share": 0.15 },
+        { "key": "Financials", "share": 0.17 },
+        { "key": "Consumer", "share": 0.19 },
+        { "key": "Industrial", "share": 0.18 },
+        { "key": "Energy", "share": 0.10 }
+      ],
+      "market_cap_bucket": [
+        { "key": "Micro", "share": 0.25 },
+        { "key": "Small", "share": 0.28 },
+        { "key": "Mid", "share": 0.27 },
+        { "key": "Large", "share": 0.20 }
+      ]
+    },
+    "correlations": [
+      { "pair": ["gross_margin_pct", "r_and_d_pct"], "pearson": 0.29 },
+      { "pair": ["debt_to_equity", "gross_margin_pct"], "pearson": -0.18 }
+    ]
+  },
+  "dp": { "epsilon": null, "delta": null, "note": "Non-DP anchors; configure DP in extractor if required." },
+  "anchor_hash": "sec_edgar_v0_demo",
+  "version": "0.0.1",
+  "disclaimer": "Illustrative anchors from public filings; validate per sector and period before use."
+}
+
+

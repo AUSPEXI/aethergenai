@@ -1,0 +1,49 @@
+{
+  "name": "NYC TLC Trips — Open Anchor Pack v0",
+  "source": {
+    "dataset": "NYC TLC Trip Record Data",
+    "url": "https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page",
+    "license": "CC0 / Open Data",
+    "attribution": "NYC Taxi & Limousine Commission"
+  },
+  "schema": {
+    "trip_distance_km": { "type": "number", "unit": "km" },
+    "trip_time_min": { "type": "number", "unit": "minute" },
+    "fare_amount": { "type": "number", "unit": "USD" },
+    "pickup_borough": { "type": "string" },
+    "hour_of_day": { "type": "integer", "range": [0, 23] }
+  },
+  "aggregates": {
+    "row_count": 1000000,
+    "quantiles": {
+      "trip_distance_km": { "p50": 3.2, "p90": 10.7, "p99": 24.9 },
+      "trip_time_min": { "p50": 12.0, "p90": 32.0, "p99": 65.0 },
+      "fare_amount": { "p50": 12.5, "p90": 32.0, "p99": 95.0 }
+    },
+    "segments": {
+      "pickup_borough": [
+        { "key": "Manhattan", "share": 0.58 },
+        { "key": "Brooklyn", "share": 0.17 },
+        { "key": "Queens", "share": 0.18 },
+        { "key": "Bronx", "share": 0.04 },
+        { "key": "Staten Island", "share": 0.03 }
+      ],
+      "hour_of_day": [
+        { "key": "0-5", "share": 0.11 },
+        { "key": "6-11", "share": 0.22 },
+        { "key": "12-17", "share": 0.34 },
+        { "key": "18-23", "share": 0.33 }
+      ]
+    },
+    "correlations": [
+      { "pair": ["trip_distance_km", "fare_amount"], "pearson": 0.76 },
+      { "pair": ["trip_time_min", "fare_amount"], "pearson": 0.62 }
+    ]
+  },
+  "dp": { "epsilon": null, "delta": null, "note": "Non-DP sample anchors; add DP noise if needed." },
+  "anchor_hash": "nyc_taxi_v0_demo",
+  "version": "0.0.1",
+  "disclaimer": "Illustrative anchors derived from public statistics. Verify against the current month slice before production use."
+}
+
+

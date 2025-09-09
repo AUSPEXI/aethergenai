@@ -3,6 +3,7 @@ import { Play, Download, Shield, BarChart3 } from 'lucide-react'
 import { insurancePlaybooksService, PlaybooksConfig } from '../services/insurancePlaybooksService'
 import { insuranceEvaluationService } from '../services/insuranceEvaluationService'
 import { KillSwitchGate } from '../components/Guards/KillSwitchGate'
+import { platformApi } from '../services/platformApi'
 
 export const InsuranceFraudDemo: React.FC = () => {
   const [totalClaims, setTotalClaims] = useState(5000)
@@ -28,6 +29,18 @@ export const InsuranceFraudDemo: React.FC = () => {
     const stab = insuranceEvaluationService.segmentStability(gen.claims, 'region')
     const cost = insuranceEvaluationService.costCurve(gen.claims)
     setResult({ claims: gen.claims.slice(0, 5), yaml: gen.yaml, op, stab, cost })
+
+    if (platformApi.isLive()) {
+      platformApi.logMlflow({
+        summary: {
+          ins_op_utility: op.utility,
+          ins_op_ci_lo: op.ci[0],
+          ins_op_ci_hi: op.ci[1],
+          ins_stability_max_delta: stab.maxDelta,
+          ins_cost_auc: cost.auc ?? 0
+        }
+      }).catch(()=>{})
+    }
   }
 
   const exportCSV = () => {

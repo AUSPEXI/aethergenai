@@ -3,6 +3,7 @@ import { Download, QrCode, Shield, CheckCircle, FileText, Package } from 'lucide
 import JSZip from 'jszip'
 import { generateAirGappedBundle, AirGappedOptions } from '../services/edgePackagingService'
 import { VerificationKiosk } from '../components/VerificationKiosk'
+import { platformApi } from '../services/platformApi'
 
 export const AirGappedDemo: React.FC = () => {
   const [generationStatus, setGenerationStatus] = useState<string>('')
@@ -22,6 +23,20 @@ export const AirGappedDemo: React.FC = () => {
       const blob = await generateAirGappedBundle(demoOptions)
       setBundleInfo({ blob, size: blob.size, hasManifest: true, hasQRCode: true })
       setGenerationStatus('Bundle generated successfully!')
+
+      // Live mode: log packaging summary to MLflow via Netlify
+      if (platformApi.isLive()) {
+        try {
+          await platformApi.logMlflow({
+            summary: {
+              packaging_size_bytes: blob.size,
+              has_manifest: 1,
+              has_qr: 1,
+              device_vram_gb: demoOptions.deviceInfo.vramGB
+            }
+          })
+        } catch {}
+      }
     } catch (error) {
       setGenerationStatus(`Error: ${error}`)
     }

@@ -31,6 +31,9 @@
         <li>Policy: if risk &lt; threshold → generate; if ≥ threshold → fetch more context; if ≫ threshold → abstain or reroute.</li>
       </ul>
 
+      <h2>Why pre‑generation risk?</h2>
+      <p>Hallucinations correlate with internal uncertainty and weak support. Estimating risk before generation lets systems avoid costly wrong answers by fetching evidence or abstaining outright, improving precision under fixed latency budgets.</p>
+
       <h2>Quick start</h2>
       <pre><code>// Target rate
 target = 0.05
@@ -39,8 +42,33 @@ threshold = calibrate(samples, target)
 // Decide per request
 action = decide(risk, threshold)</code></pre>
 
+      <h2>Signals and weights</h2>
+      <ul>
+        <li><b>Margin</b> (higher is safer): distance to decision boundary or calibrated logit gap.</li>
+        <li><b>Entropy</b> (higher is riskier): distributional uncertainty over next tokens or candidates.</li>
+        <li><b>Retrieval</b> (higher is safer): evidence strength from RAG or citations.</li>
+        <li><b>Self‑consistency</b> (optional): agreement across sampled decodes or chains.</li>
+      </ul>
+
+      <h2>Calibration procedure</h2>
+      <ol>
+        <li>Collect (features, label) pairs where label indicates a known hallucination or correctness.</li>
+        <li>Compute risk for each sample and sort by ascending risk.</li>
+        <li>Choose the largest threshold where empirical hallucination rate ≤ target on held‑out data.</li>
+      </ol>
+
+      <h2>Policy integration</h2>
+      <p>Below threshold: generate. Near threshold: fetch more context (expand top‑k, add tools). Above high‑risk buffer: abstain or reroute to a stronger model. Record decisions and outcomes for audits.</p>
+
       <h2>Evidence & audits</h2>
       <p>Log thresholds and outcomes with selective prediction and SLO status inside evidence bundles. Keep it falsifiable and reproducible.</p>
+
+      <h2>Common pitfalls</h2>
+      <ul>
+        <li>Over‑abstaining: re‑calibrate per segment; ensure coverage targets remain useful.</li>
+        <li>Weak labels: validate sample correctness labels before calibration.</li>
+        <li>Domain shift: periodically refresh samples; track drift to maintain guarantees.</li>
+      </ul>
 
       <div class="box">
         <p>See also: <a href="/stability-demo">Stability Demo</a> · <a href="/whitepaper#risk-guard">Whitepaper</a> · <a href="/faq#hallucinations">FAQ</a></p>

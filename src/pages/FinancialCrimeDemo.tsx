@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Download, Shuffle, Play } from 'lucide-react'
 import { createGraph, exportEdgesCsv, exportNodesCsv, GraphSynthesisConfig } from '../services/graphSynthesisService'
 import { GraphEvaluationService } from '../services/graphEvaluationService'
+import { platformApi } from '../services/platformApi'
 
 export const FinancialCrimeDemo: React.FC = () => {
   const [seed, setSeed] = useState<number>(12345)
@@ -32,6 +33,20 @@ export const FinancialCrimeDemo: React.FC = () => {
     const sweep = evalSvc.sweep(graph, 'mule_ring.size', [10, 12, 15], op)
     setResult({ eval: evalRes, sweep: sweep.sweeps })
     setStatus('Done')
+
+    if (platformApi.isLive()) {
+      try {
+        await platformApi.logMlflow({
+          summary: {
+            fc_nodes: graph.nodes.length,
+            fc_edges: graph.edges.length,
+            fc_alerts_per_day: alertsPerDay,
+            fc_lift_vs_baseline: evalRes.utility.lift_vs_baseline,
+            fc_region_max_delta: evalRes.stability.region_max_delta
+          }
+        })
+      } catch {}
+    }
   }
 
   const downloadCsv = async (type: 'nodes' | 'edges') => {

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Play, Pause, Download, Shield, Activity, Crosshair } from 'lucide-react'
 import { swarmSimulationService, SwarmAgent } from '../services/swarmSimulationService'
 import { swarmEvaluationService, SwarmMetrics } from '../services/swarmEvaluationService'
+import { platformApi } from '../services/platformApi'
 
 export const SwarmSafetyDemo: React.FC = () => {
   const [running, setRunning] = useState(false)
@@ -37,6 +38,18 @@ export const SwarmSafetyDemo: React.FC = () => {
     setAgents(next)
     const m = swarmEvaluationService.compute(prevAgents, next, 10)
     setMetrics(m)
+    if (platformApi.isLive() && m) {
+      // Log lightweight swarm safety metrics
+      platformApi.logMlflow({
+        summary: {
+          swarm_min_sep: m.minSeparation,
+          swarm_sep_breaches: m.minSepBreaches,
+          swarm_lcc: m.largestConnectedComponent,
+          swarm_energy: m.energyProxy,
+          swarm_jerk: m.meanJerk
+        }
+      }).catch(()=>{})
+    }
     raf.current = requestAnimationFrame(loop)
   }
 

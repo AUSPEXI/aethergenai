@@ -8,6 +8,7 @@ import { datasetCardService, DatasetCard, DatasetCardOptions } from '../services
 import { modelCardService, ModelCard, ModelCardOptions } from '../services/modelCardService'
 import { unityCatalogService, UnityCatalogConfig, UnityCatalogExport } from '../services/unityCatalogService'
 import { buildEvidenceBundle, downloadSignedEvidenceZip, generateEvidenceIndex, downloadEvidenceIndex } from '../services/evidenceService'
+import { platformApi } from '../services/platformApi'
 
 export const CardsDemo: React.FC = () => {
   const [datasetCards, setDatasetCards] = useState<DatasetCard[]>([])
@@ -86,6 +87,18 @@ export const CardsDemo: React.FC = () => {
     setDatasetCards([datasetCard])
     setModelCards([modelCard])
     setUnityAssets([datasetAsset, modelAsset])
+
+    if (platformApi.isLive()) {
+      try {
+        await platformApi.logMlflow({
+          summary: {
+            card_dataset_quality: datasetCard.quality.data_health_score,
+            card_model_f1: modelCard.evaluation.operating_points?.[0]?.metrics?.f1 ?? 0,
+            uc_assets: 2
+          }
+        })
+      } catch {}
+    }
   }
 
   const handleGenerateCards = async () => {

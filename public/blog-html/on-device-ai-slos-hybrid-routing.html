@@ -32,6 +32,9 @@
         <li>Docs: On‑Device AI Playbook with routing, packaging, telemetry, and privacy boundaries.</li>
       </ul>
 
+      <h2>Why on‑device now</h2>
+      <p>Two forces drive on‑device AI adoption: (1) cost and latency benefits from running narrow tasks locally, and (2) stronger privacy and availability guarantees for regulated or intermittent environments. A hybrid policy lets you keep the best of both: CPU/NPU for cheap/fast gates and re‑rankers, and cloud for heavy or unsupported workloads.</p>
+
       <h2>Quick start</h2>
       <pre><code>ondevice: { enabled: true, max_fallback_rate: 0.15, max_battery_mwh: 2.5, max_temp_delta_c: 6 }</code></pre>
       <p>During evaluation, provide metrics: <code>fallback_rate</code>, <code>energy_mwh</code>, <code>temp_delta_c</code>. Thresholds can be tuned per device class.</p>
@@ -39,8 +42,41 @@
       <h2>Routing policy</h2>
       <p>Modes: device‑only, hybrid (default), cloud‑only. Prefer NPU where supported; fallback chain is NPU → GPU → CPU. Exceeding SLOs promotes to cloud or reduces coverage.</p>
 
+      <h2>SLOs in plain language (with examples)</h2>
+      <ul>
+        <li><b>Fallback‑rate</b>: cap the percent of requests sent to the cloud. Example: <code>max_fallback_rate=0.15</code> means at most 15% of traffic may offload.</li>
+        <li><b>Battery budget</b>: cap energy per inference. Example: <code>max_battery_mwh=2.5</code> caps per‑request energy; the system reduces coverage or defers when exceeded.</li>
+        <li><b>Thermal guard</b>: cap temperature rise. Example: <code>max_temp_delta_c=6</code> throttles when the device exceeds safe deltas.</li>
+      </ul>
+
+      <h2>Calibration and tuning</h2>
+      <ol>
+        <li>Collect a small set of local traces (latency, energy, thermal, fallback reasons).</li>
+        <li>Set initial SLOs per device class (e.g., handset vs gateway).</li>
+        <li>Run a short shadow window; measure observed fallback and energy.</li>
+        <li>Iteratively tighten or relax SLOs until they hold with buffer across segments.</li>
+      </ol>
+
+      <h2>Telemetry boundaries</h2>
+      <p>We log local, sampled summaries (e.g., P95 latency, energy estimate, fallback reason); raw content stays on the device. Optional DP summaries can sync to the platform for fleet‑level analysis.</p>
+
       <h2>Evidence & privacy</h2>
       <p>Evidence bundles include device‑class tags and telemetry summaries. Raw data and residuals remain on device; optional DP summaries may sync.</p>
+
+      <h2>Integration checklist</h2>
+      <ul>
+        <li>Set flags: <code>ONDEVICE_ENABLED</code>, <code>ONDEVICE_HYBRID</code>.</li>
+        <li>Provide metrics: <code>fallback_rate</code>, <code>energy_mwh</code>, <code>temp_delta_c</code>.</li>
+        <li>Define action policy when SLOs breach (reduce coverage, defer, or promote to cloud).</li>
+        <li>Add device‑class tags to evidence bundles.</li>
+      </ul>
+
+      <h2>Troubleshooting</h2>
+      <ul>
+        <li><b>Frequent promotions</b>: tighten selective thresholds or raise <code>max_fallback_rate</code> modestly while monitoring accuracy.</li>
+        <li><b>Thermal throttling</b>: reduce batch size, prefer INT8, or elevate <code>ΔT</code> guard with a lower throughput target.</li>
+        <li><b>Battery drain</b>: lower coverage or schedule bursts during charge windows.</li>
+      </ul>
 
       <div class="box">
         <p>See also: <a href="/resources">Resources</a> · <a href="/faq#ondevice">FAQ – On‑Device AI & SLOs</a> · <a href="/stability-demo">Stability Demo</a> · <a href="/docs/on_device_ai_playbook">On‑Device AI Playbook</a></p>

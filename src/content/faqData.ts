@@ -38,6 +38,7 @@ export const faqSections: FAQSection[] = [
       { q: 'How do thresholds work?', a: 'Pick a target hallucination rate (e.g., 0.05). Calibrate a risk threshold so that responses below the threshold satisfy the target on held‑out data.' },
       { q: 'What actions are taken at high risk?', a: 'If risk exceeds the threshold, we fetch more context, abstain (fail‑closed), or reroute to a different backend/policy.' },
       { q: 'Is this audited?', a: 'Risk thresholds and outcomes can be logged in evidence bundles alongside selective prediction and SLOs for auditability.' },
+      { q: 'Further reading', a: 'See the Whitepaper → Pre‑generation Risk Guard for related work and references (link: /whitepaper#risk-guard).' },
     ],
   },
   {

@@ -142,6 +142,7 @@ const Whitepaper: React.FC = () => {
             <li><b>Policy:</b> below threshold → generate; above → fetch more context; far above → abstain or reroute.</li>
             <li><b>Evidence:</b> thresholds and outcomes can be logged for audit alongside selective prediction and SLOs.</li>
         </ul>
+          <p className="text-slate-600 text-sm mt-3">Related work: Hassana Labs hallucination risk toolkit (<a className="text-blue-600 hover:underline" href="https://hassana.io/readme.html">link</a>), OpenAI “Why language models hallucinate” (<a className="text-blue-600 hover:underline" href="https://cdn.openai.com/pdf/d04913be-3f6f-4d2b-b283-ff432ef4aaa5/why-language-models-hallucinate.pdf">PDF</a>).</p>
         </section>
 
         <section id="delivery" className="mb-10">

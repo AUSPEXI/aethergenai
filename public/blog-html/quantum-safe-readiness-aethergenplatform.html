@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quantum‑Safe Readiness: A Practical Migration Path</title>
+  <meta name="description" content="How AethergenPlatform prepares for post‑quantum cryptography: air‑gapped delivery, dual‑control signing, crypto inventory, and a pragmatic roadmap to hybrid PQC." />
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Roboto, Arial, sans-serif; line-height: 1.65; color: #0f172a; margin: 0; background: #f5f7fb; }
+    .article { max-width: 960px; margin: 0 auto; background: #fff; padding: 48px 36px; box-shadow: 0 10px 30px rgba(0,0,0,0.06); border-radius: 12px; }
+    h1 { font-size: 36px; margin: 0 0 8px; color: #0b1220; }
+    .meta { color: #475569; font-size: 14px; margin-bottom: 28px; }
+    h2 { color: #0b1220; margin-top: 36px; font-size: 26px; }
+    h3 { color: #0b1220; margin-top: 24px; font-size: 20px; }
+    p, li { color: #1f2937; }
+    .callout { background: #ecfeff; border-left: 4px solid #06b6d4; padding: 16px; border-radius: 8px; }
+    ul { padding-left: 20px; }
+    a { color: #2563eb; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .hr { height: 1px; background: #e5e7eb; margin: 28px 0; border: 0; }
+  </style>
+  <!-- IP-safety: high-level descriptions only; no proprietary algorithms disclosed. -->
+</head>
+<body>
+  <div class="article">
+    <h1>Quantum‑Safe Readiness: A Practical Migration Path</h1>
+    <div class="meta"><strong>Auspexi</strong> • Updated: <script>document.write(new Date().toISOString().slice(0,10))</script> • Read time: ~10–12 minutes</div>
+
+    <div class="callout"><strong>TL;DR</strong>: We already ship air‑gapped packages, dual‑control signing, and evidence bundles with crypto inventories. Our roadmap adds <em>hybrid signatures</em> (ECDSA + ML‑DSA) and <em>ML‑KEM</em> for app‑level key exchange, enforced by <em>policy gates</em> that fail‑closed when a non‑PQC path is detected. All calibration runs in your tenant (zero‑trust), and no raw data leaves by default.</div>
+
+    <h2>Why quantum‑safe matters now</h2>
+    <p>NIST has finalized post‑quantum standards (ML‑KEM, ML‑DSA, SLH‑DSA, HQC). Major vendors are rolling out quantum‑resilient roadmaps across TLS, signatures, and key exchange. For builders delivering evidence‑bearing AI, crypto agility and migration discipline are as important as model quality.</p>
+
+    <h2>What AethergenPlatform already ships</h2>
+    <ul>
+      <li><strong>Air‑gapped packaging</strong>: offline bundles with SBOM, checksums, and QR‑verified manifests for secure review.</li>
+      <li><strong>Dual‑control signing</strong>: operational flow where releases require explicit approval (two‑person control) before signing artifacts.</li>
+      <li><strong>Evidence bundles</strong>: signed acceptance, stability, privacy probes, and manifests with integrity metadata (crypto inventory).</li>
+      <li><strong>Zero‑trust calibration</strong>: runs in your Databricks; outputs are small JSON artifacts and signed proof. No raw data leaves.</li>
+    </ul>
+
+    <h2>Our PQC migration approach</h2>
+    <p>We treat PQC like any other safety upgrade: inventory —› hybrid —› default —› deprecate legacy.</p>
+    <ol>
+      <li><strong>Inventory</strong>: declare hash/signature algorithms per artifact (manifest.json + crypto_profile.json) and surface them in evidence.</li>
+      <li><strong>Hybrid</strong>: adopt hybrid signatures (ECDSA + ML‑DSA) and hybrid key exchange (ECDH + ML‑KEM) at the application layer.</li>
+      <li><strong>Policy gates</strong>: CI and runtime gates fail‑closed when the required PQC profile is not present.</li>
+      <li><strong>Default + deprecate</strong>: once hybrid is stable, move to PQC‑only for high‑risk packages, keep hybrid for broad compatibility.</li>
+    </ol>
+
+    <h2>What “hybrid” means here</h2>
+    <ul>
+      <li><strong>Signatures</strong>: we produce both a classical signature (e.g., ECDSA/Ed25519) and a PQC signature (ML‑DSA). Verifiers accept either or require both by policy.</li>
+      <li><strong>Key exchange</strong>: for app‑level channels (e.g., evidence delivery), encapsulate a shared secret via ECDH + ML‑KEM and derive session keys.</li>
+    </ul>
+
+    <h2>Operational guardrails</h2>
+    <ul>
+      <li><strong>Fail‑closed</strong>: when PQC is required, non‑PQC paths throw, and releases halt until fixed.</li>
+      <li><strong>Crypto inventory</strong>: evidence explicitly lists algorithms, versions, and policies used for each artifact.</li>
+      <li><strong>Air‑gapped verification</strong>: verification instructions work offline; no cloud dependency to validate signatures.</li>
+    </ul>
+
+    <h2>Running in your tenant (zero‑trust)</h2>
+    <p>The safest place to calibrate is your environment. We provide notebooks that compute anchors and run acceptance checks inside your Databricks account, then export only signed summaries. This keeps your secrets and data in your control while producing proof that auditors can file.</p>
+
+    <h2>Roadmap highlights</h2>
+    <ul>
+      <li>Publish crypto_profile.json with every bundle; include hash/signature/KEM details.</li>
+      <li>Add optional “require_pqc=true” policy to block releases without hybrid signatures.</li>
+      <li>Introduce LibOQS/WASM path for ML‑DSA and ML‑KEM in offline verification tools.</li>
+      <li>Document verifier flows: classical‑only, PQC‑only, and hybrid‑required.</li>
+    </ul>
+
+    <div class="hr"></div>
+
+    <h2>Get hands on</h2>
+    <ul>
+      <li>Zero‑Trust Calibration: <a href="/zero-trust-calibration">/zero-trust-calibration</a></li>
+      <li>Air‑Gapped Delivery: <a href="/blog/air-gapped-ai-packaging-sbom-qr-manifests">/blog/air-gapped-ai-packaging-sbom-qr-manifests</a></li>
+      <li>Evidence Bundles: <a href="/blog/evidence-bundles-and-testing">/blog/evidence-bundles-and-testing</a></li>
+    </ul>
+
+    <p>We’re happy to run a private pilot to produce <strong>PQC‑ready evidence</strong> for your environment and policies.</p>
+  </div>
+</body>
+</html>
+
+

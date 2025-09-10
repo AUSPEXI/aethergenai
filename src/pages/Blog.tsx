@@ -147,6 +147,28 @@ const Blog = () => {
 
   const blogPosts = [
     {
+      title: 'Quantum‑Safe Readiness: A Practical Migration Path',
+      excerpt: 'Air‑gapped delivery, dual‑control signing, crypto inventory, and a pragmatic roadmap to hybrid PQC (ML‑DSA, ML‑KEM).',
+      author: 'Gwylym Owen',
+      date: 'September 10, 2025',
+      readTime: '12 min read',
+      category: 'Technology',
+      icon: Shield,
+      published: true,
+      slug: 'quantum-safe-readiness-aethergenplatform'
+    },
+    {
+      title: 'AethergenPlatform Milestone: Solo build, big surface, evidence first',
+      excerpt: 'Comprehensive milestone of a solo-built platform: evidence bundles, air-gapped delivery, on-device SLOs, pre-generation Risk Guard, selective prediction, 8D swarms, Databricks delivery, and carbon awareness.',
+      author: 'Gwylym Owen',
+      date: 'September 10, 2025',
+      readTime: '30 min read',
+      category: 'Technology',
+      icon: TrendingUp,
+      published: true,
+      slug: 'aethergenplatform-milestone-solo-innovations'
+    },
+    {
       title: 'Pre‑generation Hallucination Risk Guard',
       excerpt: 'Estimate risk before answering. Calibrate a target rate and act: fetch context, abstain, or reroute.',
       author: 'Gwylym Owen',
@@ -876,6 +898,7 @@ const Blog = () => {
 
   // Show only posts that have corresponding HTML files and remove duplicates by slug
   const validSlugs = [
+    'quantum-safe-readiness-aethergenplatform',
     'aethergenplatform-milestone-solo-innovations',
     'pareto-operating-point-efficiency-in-ai',
     'ablations-with-effect-sizes-proving-what-moves-the-needle',

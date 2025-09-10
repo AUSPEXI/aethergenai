@@ -147,6 +147,17 @@ const Blog = () => {
 
   const blogPosts = [
     {
+      title: 'Context Engineering: From RAG to Reliable Answers',
+      excerpt: 'Hybrid retrieval + signals + budget packing; feed Risk Guard and log provenance for audit.',
+      author: 'Gwylym Owen',
+      date: 'September 10, 2025',
+      readTime: '6 min read',
+      category: 'Technology',
+      icon: Brain,
+      published: true,
+      slug: 'context-engineering-layer'
+    },
+    {
       title: 'Quantum‑Safe Readiness: A Practical Migration Path',
       excerpt: 'Air‑gapped delivery, dual‑control signing, crypto inventory, and a pragmatic roadmap to hybrid PQC (ML‑DSA, ML‑KEM).',
       author: 'Gwylym Owen',
@@ -898,6 +909,7 @@ const Blog = () => {
 
   // Show only posts that have corresponding HTML files and remove duplicates by slug
   const validSlugs = [
+    'context-engineering-layer',
     'quantum-safe-readiness-aethergenplatform',
     'aethergenplatform-milestone-solo-innovations',
     'pareto-operating-point-efficiency-in-ai',

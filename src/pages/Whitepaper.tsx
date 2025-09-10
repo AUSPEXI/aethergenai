@@ -55,6 +55,7 @@ const Whitepaper: React.FC = () => {
           <a href="#architecture" className="text-blue-600 hover:underline">Architecture (High Level)</a>
           <a href="#calibration" className="text-blue-600 hover:underline">Calibration without Raw Data</a>
           <a href="#evidence" className="text-blue-600 hover:underline">Evidence Model</a>
+          <a href="#context" className="text-blue-600 hover:underline">Context Engineering Layer</a>
           <a href="#delivery" className="text-blue-600 hover:underline">Unity Catalog Delivery</a>
           <a href="#safety" className="text-blue-600 hover:underline">Privacy & Safety</a>
           <a href="#sustainability" className="text-blue-600 hover:underline">Sustainability</a>
@@ -70,6 +71,16 @@ const Whitepaper: React.FC = () => {
             <b> ZKP‑protected seeds</b> rather than raw data transfer. Outputs are packaged with <b>signed evidence</b> and delivered to <b>Unity Catalog</b> under
             change control. Acceptance gates (utility, privacy, stability) are fail‑closed to ensure responsible adoption.
           </p>
+        </section>
+
+        <section id="context" className="mb-10">
+          <h2 className="text-2xl font-semibold text-slate-900 mb-3">Context Engineering Layer</h2>
+          <p className="text-slate-800 mb-3">We add a retrieval‑first layer that improves context quality before generation. Hybrid retrieval (BM25 + dense + reranker) is combined with MMR de‑duplication and boosts for recency and source trust.</p>
+          <ul className="list-disc ml-6 text-slate-800 space-y-1">
+            <li><b>Signals:</b> retrieval_margin, support_docs, recency_score, source_trust, format_health</li>
+            <li><b>Policy:</b> signals feed the Risk Guard; if support is thin, fetch more context, ask to clarify, or abstain</li>
+            <li><b>Evidence:</b> context_provenance.json records signals and included sources for audit</li>
+          </ul>
         </section>
 
         <section id="architecture" className="mb-10">

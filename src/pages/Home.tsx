@@ -94,6 +94,13 @@ const Home = () => {
                 See Stability Demo
               </Link>
               <Link
+                to="/context-engineering"
+                className="bg-indigo-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition duration-300 flex items-center justify-center"
+              >
+                <Brain className="w-5 h-5 mr-2" />
+                Context Engineering
+              </Link>
+              <Link
                 to="/air-gapped-demo"
                 className="bg-green-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-700 transition duration-300 flex items-center justify-center"
               >

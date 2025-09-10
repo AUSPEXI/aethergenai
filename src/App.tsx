@@ -27,6 +27,7 @@ import ResourcesVisibilityScore from './pages/ResourcesVisibilityScore';
 import AI from './pages/AI';
 import Whitepaper from './pages/Whitepaper';
 import ZeroTrustCalibration from './pages/ZeroTrustCalibration';
+import ContextEngineering from './pages/ContextEngineering';
 import Publisher from './pages/Publisher';
 import BlogManager from './pages/BlogManager';
 import { AirGappedDemo } from './pages/AirGappedDemo';
@@ -96,6 +97,7 @@ function RoutedApp() {
           <Route path="/resources/visibility-score" element={<ResourcesVisibilityScore />} />
           <Route path="/whitepaper" element={<Whitepaper />} />
           <Route path="/zero-trust-calibration" element={<ZeroTrustCalibration />} />
+          <Route path="/context-engineering" element={<ContextEngineering />} />
                                   <Route path="/publisher" element={<Publisher />} />
                         <Route path="/blog-manager" element={<BlogManager />} />
                         <Route path="/air-gapped-demo" element={<AirGappedDemo />} />

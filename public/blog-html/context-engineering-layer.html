@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Context Engineering: From RAG to Reliable Answers</title>
+  <meta name="description" content="Hybrid retrieval, context quality signals, and budget packing that feed Risk Guard and evidence provenance." />
+  <style>body{font-family:Inter,system-ui,Arial,sans-serif;line-height:1.65;color:#0f172a;margin:0;background:#f5f7fb}.article{max-width:960px;margin:0 auto;background:#fff;padding:48px 36px;box-shadow:0 10px 30px rgba(0,0,0,.06);border-radius:12px}h1{font-size:36px;margin:0 0 8px;color:#0b1220}.meta{color:#475569;font-size:14px;margin-bottom:28px}h2{color:#0b1220;margin-top:36px;font-size:26px}ul{padding-left:20px}.callout{background:#ecfeff;border-left:4px solid #06b6d4;padding:16px;border-radius:8px}</style>
+</head>
+<body>
+<div class="article">
+  <h1>Context Engineering: From RAG to Reliable Answers</h1>
+  <div class="meta"><strong>Auspexi</strong> • Updated: <script>document.write(new Date().toISOString().slice(0,10))</script></div>
+  <div class="callout"><strong>TL;DR</strong>: We add a context layer on top of RAG: hybrid retrieval (BM25+dense+reranker), context signals (retrieval_margin, support_docs, recency, trust, format), token budget packing, and evidence provenance. Signals feed the Risk Guard to fetch/clarify/abstain before generation.</div>
+  <h2>Hybrid Retrieval</h2>
+  <ul>
+    <li>Combine BM25 + dense embeddings and an optional cross‑encoder reranker</li>
+    <li>MMR‑style de‑duplication; boosts for recency and source trust</li>
+  </ul>
+  <h2>Signals and Policy</h2>
+  <ul>
+    <li>Signals: retrieval_margin, support_docs, recency_score, source_trust, format_health</li>
+    <li>Policy: if signals are thin → fetch more, clarify, or abstain; otherwise generate</li>
+  </ul>
+  <h2>Evidence</h2>
+  <p>We ship context_provenance.json inside evidence zips with per‑query signals and included sources for audit.</p>
+  <h2>Get Started</h2>
+  <ul>
+    <li><a href="/context-engineering">Context Engineering page</a></li>
+    <li><a href="/whitepaper#context">Whitepaper section</a></li>
+  </ul>
+</div>
+</body>
+</html>
+
+

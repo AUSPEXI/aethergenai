@@ -19,11 +19,11 @@ export const Resources: React.FC = () => {
     },
     {
       icon: Brain,
-      title: 'Contextual Modeling (Dev)',
-      description: 'Ingest, retrieve, and compose context bundles; episodic/graph features and policies',
+      title: 'Context Engineering',
+      description: 'Hybrid retrieval, context signals, and budget packing with evidence provenance',
       category: 'Technical Documentation',
-      link: '/context-studio',
-      type: 'Interactive Demo'
+      link: '/context-engineering',
+      type: 'Guide + Demo'
     },
     {
       icon: Gauge,

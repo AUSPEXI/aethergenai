@@ -556,6 +556,13 @@ export async function downloadSignedEvidenceZip(bundle: EvidenceBundle, filename
   };
   zip.file('sbom.json', JSON.stringify(sbom, null, 2));
 
+  // Context provenance (placeholder structure; to be filled by ContextEngine callers)
+  const contextProvenance = {
+    version: '1.0',
+    queries: [], // callers append entries { id, retrieval_margin, support_docs, recency_score, source_trust, format_health, included_sources: [{id, source, score, hash?}] }
+  } as any;
+  zip.file('context_provenance.json', JSON.stringify(contextProvenance, null, 2));
+
   // Triumph of Preparation
   zip.folder('docs')?.file('decision_log.md', '# Decision Log\n- Example decision: OP fpr=1% set');
   zip.folder('runbooks')?.file('promotion.md', '- ensure gates PASS\n- sign evidence\n- update change-control');

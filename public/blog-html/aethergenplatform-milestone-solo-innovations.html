@@ -91,7 +91,7 @@
       <li><strong>Calibration</strong>: A target hallucination rate (e.g., 2%) is set and tuned on a labeled sample, a process refined over hundreds of hours.</li>
       <li><strong>Policy</strong>: Below threshold, generate; near threshold, fetch support; above threshold, abstain or reroute.</li>
     </ul>
-    <p>This feature draws inspiration from research by Hassana Labs and OpenAI on language model hallucinations. Our <a href="/whitepaper#risk-guard">Whitepaper</a> links to these studies, offering deeper context for those interested.</p>
+    <p>This feature is consistent with recent public research on pre‑generation risk estimation for language models. For references and discussion, see the <a href="/whitepaper#risk-guard">Whitepaper</a>.</p>
 
     <h2>Selective Prediction and Operating Points</h2>
     <p>Selective prediction empowers AethergenPlatform to say, “I’ll answer when I’m confident.” By tuning operating points for coverage and precision, the platform delivers more useful answers with fewer errors, complemented by an explicit abstain path. The evidence bundle logs the chosen point and tradeoffs, providing auditors with a clear picture. During the 1 billion record test, this feature maintained a 98% precision rate at 90% coverage, a balance honed over iterative runs.</p>
@@ -138,9 +138,9 @@
 
     <div class="hr"></div>
 
-    <h2>Real-World Impact: Use Cases and Lessons</h2>
-    <p>AethergenPlatform’s capabilities shine in diverse scenarios. A healthcare pilot used air-gapped delivery to generate synthetic patient data, achieving 99% fidelity for training models without risking PHI. An edge deployment in a remote mining operation leveraged on-device routing to monitor equipment health, reducing cloud costs by 60%. These cases, informed by the 6,000-hour build, highlight the platform’s versatility.</p>
-    <p>Lessons learned include the importance of iterative testing—ablation runs on the risk guard saved weeks of rework—and the value of evidence bundles in securing trust. The 1 billion record test taught us that scalability hinges on early validation, a principle now embedded in every feature.</p>
+    <h2>Applications & Lessons (Demonstrations)</h2>
+    <p>AethergenPlatform’s capabilities are demonstrated through internal runs and open‑data simulations. Air‑gapped packaging enables offline review of evidence; on‑device routing shows how to respect energy and thermal budgets while maintaining utility; and selective prediction with a pre‑generation risk guard illustrates how to bound error at a chosen operating point—without relying on customer data.</p>
+    <p>Key lessons: iterative ablations clarify what truly moves the needle; evidence bundles accelerate trust by making decisions auditable; and early validation at scale (e.g., the billion‑record run) keeps later integration predictable. These practices are now standard across the platform.</p>
 
     <h2>Technical Deep Dive: Behind the 1 Billion Record Milestone</h2>
     <p>The 1 billion record generation in ~5 hours on an older laptop was a proof of concept for AethergenPlatform’s efficiency. The process leveraged synthetic data pipelines with grounded anchors, and a pre-generation risk guard to reduce waste and maintain fidelity. Dozens of serverless functions coordinated the run, and CPU-first routing helped minimize thermal and battery impact.</p>

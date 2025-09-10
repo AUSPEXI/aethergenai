@@ -9,6 +9,7 @@ export interface KeyPair {
 	createdAt: string
 	expiresAt?: string
 	permissions: string[]
+	algorithm?: string
 	status: 'active' | 'expired' | 'revoked'
 }
 
@@ -47,7 +48,10 @@ class KeyManagementService {
 	// Generate a new key pair for air-gapped signing
 	async generateKeyPair(name: string, permissions: string[] = ['sign']): Promise<KeyPair> {
 		const id = `key-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
-		
+		// Read preferred signature algorithm from env (demo default)
+		const envSigAlgo = (typeof import !== 'undefined' ? (import.meta as any)?.env?.VITE_SIG_ALGO : undefined) as string | undefined
+		const algorithm = (envSigAlgo && String(envSigAlgo)) || 'demo-ecdsa'
+
 		// Generate a simple key pair (in production, use proper cryptographic libraries)
 		const publicKey = `aeg-public-${id}`
 		const privateKey = `aeg-private-${id}-${Math.random().toString(36).substr(2, 16)}`
@@ -60,6 +64,7 @@ class KeyManagementService {
 			createdAt: new Date().toISOString(),
 			expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(), // 1 year
 			permissions,
+			algorithm,
 			status: 'active'
 		}
 

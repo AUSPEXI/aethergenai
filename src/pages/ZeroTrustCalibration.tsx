@@ -55,6 +55,12 @@ export const ZeroTrustCalibration: React.FC = () => {
           </div>
         </div>
 
+        <div className="bg-white border border-emerald-200 rounded-xl p-6 mb-12">
+          <h3 className="text-lg font-bold text-gray-900 mb-2">Quantum‑Safe Readiness</h3>
+          <p className="text-gray-700 mb-3">We can produce PQC‑ready evidence: crypto inventory in manifests and optional hybrid signatures as policy. Learn more:</p>
+          <a href="/blog/quantum-safe-readiness-aethergenplatform" className="text-emerald-700 font-semibold inline-flex items-center">Read the roadmap <ExternalLink className="w-4 h-4 ml-1" /></a>
+        </div>
+
         <div className="bg-emerald-50 border border-emerald-100 rounded-xl p-6">
           <h3 className="text-lg font-bold text-gray-900 mb-2">What you get in one week</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

@@ -145,6 +145,7 @@ export type EvidenceSignatureRecord = {
     key_id: string;
     key_name: string;
     public_key: string;
+    algorithm?: string;
   };
 };
 
@@ -179,7 +180,8 @@ export async function signEvidenceBundle(bundle: EvidenceBundle, approver = 'sys
     signer: {
       key_id: key.id,
       key_name: key.name,
-      public_key: key.publicKey
+      public_key: key.publicKey,
+      algorithm: key.algorithm
     }
   };
 
@@ -192,6 +194,19 @@ export async function downloadSignedEvidenceZip(bundle: EvidenceBundle, filename
 
   // Core files
   zip.file('evidence.json', bundleJson);
+  // Crypto profile (declares algorithms used)
+  const requirePQC = ((import.meta as any)?.env?.VITE_REQUIRE_PQC === 'true');
+  const cryptoProfile = {
+    hash_algo: 'SHA-256',
+    sig_algo: (signatureRecord.signer.algorithm || 'demo-ecdsa'),
+    sig_mode: 'single',
+    kem: null,
+    created_at: new Date().toISOString()
+  };
+  if (requirePQC && !/ml-dsa|hybrid/i.test(String(cryptoProfile.sig_algo))) {
+    throw new Error('[Evidence] PQC required but signature algorithm is not PQC or hybrid');
+  }
+  zip.file('crypto_profile.json', JSON.stringify(cryptoProfile, null, 2));
   // include manifest and manifest_hash in signature
   const manifestString = JSON.stringify(manifest, null, 2);
   const manifestHash = await sha256HexBrowser(manifestString);

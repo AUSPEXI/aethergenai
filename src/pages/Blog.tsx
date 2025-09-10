@@ -876,6 +876,7 @@ const Blog = () => {
 
   // Show only posts that have corresponding HTML files and remove duplicates by slug
   const validSlugs = [
+    'aethergenplatform-milestone-solo-innovations',
     'pareto-operating-point-efficiency-in-ai',
     'ablations-with-effect-sizes-proving-what-moves-the-needle',
     'aethergenai-shipped-evidence-led-ai-training',

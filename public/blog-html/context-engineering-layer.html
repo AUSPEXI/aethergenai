@@ -12,6 +12,9 @@
   <h1>Context Engineering: From RAG to Reliable Answers</h1>
   <div class="meta"><strong>Auspexi</strong> • Updated: <script>document.write(new Date().toISOString().slice(0,10))</script></div>
   <div class="callout"><strong>TL;DR</strong>: We add a context layer on top of RAG: hybrid retrieval (BM25+dense+reranker), context signals (retrieval_margin, support_docs, recency, trust, format), token budget packing, and evidence provenance. Signals feed the Risk Guard to fetch/clarify/abstain before generation.</div>
+  <h2>Why context wins (a short story)</h2>
+  <p>Two identical models answer the same question. One sees a clean, relevant brief with citations; the other sees a noisy dump. The first answers correctly and concisely; the second hallucinates. Same model, different context. Our job is to engineer the brief.</p>
+
   <h2>Hybrid Retrieval</h2>
   <ul>
     <li>Combine BM25 + dense embeddings and an optional cross‑encoder reranker</li>
@@ -22,8 +25,28 @@
     <li>Signals: retrieval_margin, support_docs, recency_score, source_trust, format_health</li>
     <li>Policy: if signals are thin → fetch more, clarify, or abstain; otherwise generate</li>
   </ul>
+  <p>Signals map into our pre‑generation Risk Guard. High margin + strong support lowers risk; low margin + weak support triggers fetch or abstain. This prevents wasted tokens and bad answers.</p>
+
+  <h2>What good context looks like</h2>
+  <ul>
+    <li>Short and scoped: only spans that directly answer the question</li>
+    <li>Citation‑ready: include source IDs and hashable excerpts</li>
+    <li>Fresh enough: decay old content unless explicitly requested</li>
+    <li>Typed tool outputs: strict JSON or tables; no blob dumps</li>
+  </ul>
+
+  <h2>Budget packing</h2>
+  <p>We score spans, then pack them into a token budget so the model sees the best 2–3 pages of truth instead of 30 pages of noise. The remainder is accessible on demand.</p>
+
   <h2>Evidence</h2>
   <p>We ship context_provenance.json inside evidence zips with per‑query signals and included sources for audit.</p>
+
+  <h2>Measuring improvement</h2>
+  <ul>
+    <li>Retrieval: P@k, nDCG@k, citation‑hit rate</li>
+    <li>Answer quality: correctness@k, abstain rate at fixed coverage</li>
+    <li>Ops: token cost per accepted answer, latency p95</li>
+  </ul>
   <h2>Get Started</h2>
   <ul>
     <li><a href="/context-engineering">Context Engineering page</a></li>

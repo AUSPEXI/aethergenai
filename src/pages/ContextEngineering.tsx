@@ -19,13 +19,13 @@ export default function ContextEngineering() {
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white rounded-xl p-6 shadow"><Layers className="w-6 h-6 text-emerald-600" /><h3 className="font-bold mt-2">Hybrid Retrieval</h3><p className="text-sm text-gray-600">BM25 + dense + reranker with recency/trust boosts and MMR de-dup.</p></div>
-          <div className="bg-white rounded-xl p-6 shadow"><Filter className="w-6 h-6 text-indigo-600" /><h3 className="font-bold mt-2">Signals</h3><p className="text-sm text-gray-600">retrieval_margin, support_docs, recency_score, source_trust, format_health.</p></div>
-          <div className="bg-white rounded-xl p-6 shadow"><Zap className="w-6 h-6 text-amber-600" /><h3 className="font-bold mt-2">Budget Packer</h3><p className="text-sm text-gray-600">Packs top spans within token budget with provenance for evidence.</p></div>
+          <div className="bg-white rounded-xl p-6 shadow"><Layers className="w-6 h-6 text-emerald-600" /><h3 className="font-bold mt-2 text-gray-900">Hybrid Retrieval</h3><p className="text-sm text-gray-800">BM25 + dense + reranker with recency/trust boosts and MMR de-dup.</p></div>
+          <div className="bg-white rounded-xl p-6 shadow"><Filter className="w-6 h-6 text-indigo-600" /><h3 className="font-bold mt-2 text-gray-900">Signals</h3><p className="text-sm text-gray-800">retrieval_margin, support_docs, recency_score, source_trust, format_health.</p></div>
+          <div className="bg-white rounded-xl p-6 shadow"><Zap className="w-6 h-6 text-amber-600" /><h3 className="font-bold mt-2 text-gray-900">Budget Packer</h3><p className="text-sm text-gray-800">Packs top spans within token budget with provenance for evidence.</p></div>
         </div>
 
         <div className="bg-white rounded-xl p-6 shadow">
-          <h3 className="font-bold mb-2">How it integrates</h3>
+          <h3 className="font-bold mb-2 text-gray-900">How it integrates</h3>
           <ul className="list-disc pl-5 text-gray-700 space-y-1">
             <li>Signals feed the Hallucination Risk Guard for sufficiency checks</li>
             <li>Provenance is added to evidence as <code>context_provenance.json</code></li>
@@ -34,7 +34,7 @@ export default function ContextEngineering() {
         </div>
 
         <div className="bg-indigo-50 border border-indigo-100 rounded-xl p-6 mt-8">
-          <h3 className="font-bold mb-2">Live Demo (mocked)</h3>
+          <h3 className="font-bold mb-2 text-gray-900">Live Demo (mocked)</h3>
           <p className="text-gray-700 mb-3">Ranks hybrid spans, computes signals, maps to risk, and logs a compact summary (MLflow when live mode is enabled).</p>
           <DemoHarness />
         </div>

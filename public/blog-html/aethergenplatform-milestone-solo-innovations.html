@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AethergenPlatform Milestone: Solo build, 1 GB source, 50,000 files</title>
+  <meta name="description" content="A comprehensive, IP safe milestone overview of AethergenPlatform: evidence bundles, air gapped delivery, on device SLOs, pre generation risk guard, selective prediction, 8D swarms, Databricks delivery, carbon budgets, and more." />
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Inter, Arial, sans-serif; line-height: 1.65; color: #0f172a; margin: 0; background: #f5f7fb; }
+    .article { max-width: 960px; margin: 0 auto; background: #fff; padding: 48px 36px; box-shadow: 0 10px 30px rgba(0,0,0,0.06); border-radius: 12px; }
+    h1 { font-size: 36px; margin: 0 0 8px; color: #0b1220; }
+    .meta { color: #475569; font-size: 14px; margin-bottom: 28px; }
+    h2 { color: #0b1220; margin-top: 36px; font-size: 26px; }
+    h3 { color: #0b1220; margin-top: 24px; font-size: 20px; }
+    p, li { color: #1f2937; }
+    .callout { background: #ecfeff; border-left: 4px solid #06b6d4; padding: 16px; border-radius: 8px; }
+    .kbd { background: #111827; color: #fff; padding: 2px 6px; border-radius: 4px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
+    ul { padding-left: 20px; }
+    code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+    a { color: #2563eb; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .hr { height: 1px; background: #e5e7eb; margin: 28px 0; border: 0; }
+  </style>
+  <!-- IP safety: This article is intentionally high level and avoids proprietary algorithms or internal process details. -->
+</head>
+<body>
+  <div class="article">
+    <h1>AethergenPlatform Milestone: solo build, big surface, evidence first</h1>
+    <div class="meta"><strong>Auspexi</strong> • Updated: <script>document.write(new Date().toISOString().slice(0,10))</script> • Read time: ~30 minutes</div>
+
+    <div class="callout">
+      <strong>TL;DR</strong>: This is the story and system design of a solo built platform that focuses on reliability under constraints. It ships evidence bundles, air gapped delivery, on device first routing with SLOs, a pre generation hallucination risk guard, selective prediction, 8D swarm safety concepts, Databricks delivery, carbon and energy tracking, and a path from pilot to policy. The content here is public safe. Proprietary methods are intentionally abstracted.
+    </div>
+
+    <h2>What shipped, at a glance</h2>
+    <ul>
+      <li>Evidence bundles with signed summaries, manifests, and reproducible acceptance checks.</li>
+      <li>Air gapped packaging: SBOM, QR verified manifests, offline dashboards for review.</li>
+      <li>On device first routing with three SLOs: fallback rate, battery budget per request, and thermal delta caps.</li>
+      <li>Pre generation hallucination risk guard that estimates risk and takes safe actions before tokens are spent.</li>
+      <li>Selective prediction with calibrated abstention to hit a target error bound at a chosen coverage.</li>
+      <li>8D swarm safety concepts: state representation and safety envelopes described at a high level.</li>
+      <li>Databricks ready: jobs, notebooks, and Unity Catalog delivery model for governed assets.</li>
+      <li>Carbon and energy awareness: track, budget, and report per task with simple profiles.</li>
+      <li>Zero trust calibration: run inside the customer tenant, no raw data leaves by default.</li>
+      <li>Open anchor packs for calibration when customer seeds or anchors are not available.</li>
+    </ul>
+
+    <div class="hr"></div>
+
+    <h2>Design principles that guided the build</h2>
+    <ul>
+      <li><strong>Evidence over claims</strong>: every improvement must be tied to an operating point and logged as evidence.</li>
+      <li><strong>Privacy by default</strong>: synthetic first and air gapped options, with optional DP friendly anchors or ZKP protected seeds.</li>
+      <li><strong>Edge first</strong>: put intelligence near the task when it reduces cost and latency, escalate only when it is safe.</li>
+      <li><strong>Reliability beats size</strong>: better decisions at a fixed budget are more useful than raw scale without guardrails.</li>
+      <li><strong>Simple enough to prove</strong>: use controls and checks that can be explained and reproduced during audit.</li>
+    </ul>
+
+    <h2>Evidence bundles: the contract between engineering and approval</h2>
+    <p>Each change is accompanied by a bundle that contains signed metrics, operating point choices, stability bands, privacy checks, and a manifest with hashes. The goal is simple: give procurement and risk teams what they need in one place, without exposing internal IP. Bundles can be regenerated in CI to fail closed when something drifts out of tolerance.</p>
+    <ul>
+      <li>Acceptance report with utility and error measures at the chosen operating point.</li>
+      <li>Stability and drift checks with simple statistics and thresholds.</li>
+      <li>Privacy probes and optional budgets. What is measured is documented. What is not measured is stated.</li>
+      <li>Signed manifest and optional QR for field verification.</li>
+    </ul>
+
+    <h2>Air gapped and offline delivery</h2>
+    <p>Some teams cannot accept cloud dependencies. The platform supports offline packaging with SBOM, QR verified manifests, and dashboards that load without a network. The goal is to give reviewers everything needed to evaluate and file, without external calls. This is also useful for edge deployments in harsh environments.</p>
+
+    <h2>On device first routing with SLOs</h2>
+    <p>We enforce three simple SLOs for on device execution:</p>
+    <ul>
+      <li><strong>Fallback rate</strong>: percentage of requests that escalate from device to cloud must remain under a target bound.</li>
+      <li><strong>Battery budget</strong>: milliamp hour or milli watt hour budget per request to protect user experience.</li>
+      <li><strong>Thermal delta</strong>: maximum temperature rise per request to avoid throttling or device discomfort.</li>
+    </ul>
+    <p>Routing prefers CPU or NPU paths first, with promotion only when the budget and quality allow it. This reduces data center load and improves user responsiveness.</p>
+
+    <h2>Pre generation hallucination risk guard</h2>
+    <p>The platform estimates the risk of a wrong answer before generating it. If the estimated risk exceeds a calibrated threshold, the system can fetch more context, escalate to a different tool, or abstain. This prevents wasted tokens and reduces re ask loops.</p>
+    <ul>
+      <li><strong>Signals</strong>: margin, entropy, retrieval support, and optional self consistency, combined with simple weights.</li>
+      <li><strong>Calibration</strong>: choose a target hallucination rate and find a threshold on a labeled sample.</li>
+      <li><strong>Policy</strong>: below threshold generate, near threshold fetch more support, above threshold abstain or reroute.</li>
+    </ul>
+    <p>Related work that inspired this feature includes research by Hassana Labs and OpenAI on why language models hallucinate. See our Whitepaper section on Risk Guard for links and discussion.</p>
+
+    <h2>Selective prediction and operating points</h2>
+    <p>Selective prediction allows a model to say: I will answer when I am confident at the target quality. We then tune the operating point for coverage and precision. The outcome is more useful answers with fewer wrong ones, and an explicit abstain path for the rest. The evidence bundle records the chosen point and the tradeoffs.</p>
+
+    <h2>Synthetic data at scale with grounded anchors</h2>
+    <p>Generation is guided by schemas and checks. When real seeds are not available, we use <strong>anchors</strong>. Anchors are aggregates that describe distributions and mixes without exposing rows. They can come from public data or from a customer pipeline that runs in their own tenant. For sensitive scenarios, seeds can be protected by zero knowledge proofs so that engineering never sees the raw inputs while the system still calibrates to reality.</p>
+
+    <h2>8D swarms and safety envelopes</h2>
+    <p>For multi agent scenarios the platform documents a high level 8D state representation and safety envelope concepts. The intent is to keep agents stable under stress and to report evidence of safety margins, without disclosing proprietary control logic. The evaluation looks at separation, jerk, energy, and other simple signals, and it reports breaches with context.</p>
+
+    <h2>Ablation testing with effect sizes</h2>
+    <p>We prefer changes that move the needle. Ablations are run with effect sizes and confidence intervals at the target operating point. This makes it clear which interventions help and which should be removed. The results are summarized in the evidence bundle.</p>
+
+    <h2>Drift, stress, and stability operations</h2>
+    <p>Real systems change. The platform includes basic drift monitors and stress tests that flag when an operating point may no longer be safe. Rollback is automatic when gates are breached. Teams can see what changed and why a decision was taken.</p>
+
+    <h2>Zero trust calibration in your tenant</h2>
+    <p>Calibration runs inside the customer Databricks environment. Notebooks extract anchors and run acceptance checks. The outputs are small JSON files and a signed evidence package. No raw data leaves the account. This reduces approval time and makes security teams comfortable.</p>
+
+    <h2>Databricks delivery and Unity Catalog</h2>
+    <p>For governed delivery we package assets for Unity Catalog with manifests and migration guides. SLAs refer to evidence: operating point, stability bands, and refresh cadence. This makes the product ready for procurement.</p>
+
+    <h2>Carbon and energy awareness</h2>
+    <p>We track simple energy signals per task and encourage profiles that keep budgets under control. This helps sustainability goals and often improves performance too. On device routing reduces data center load which further helps carbon targets.</p>
+
+    <h2>From pilot to policy</h2>
+    <p>The fastest way to production is a private pilot with clear targets, in the customer tenant, with signed evidence. When it works and meets thresholds, it is easy to write a policy and scale. When it does not, the exit is clean and the findings are still useful.</p>
+
+    <h2>What is new this quarter</h2>
+    <ul>
+      <li>Open Anchor Packs: public and attribution friendly anchors for mobility, finance, and research domains.</li>
+      <li>SDK surface: trial gated functions for risk scoring, selective prediction, and SLO evaluation.</li>
+      <li>Zero trust calibration page with quick start notebooks.</li>
+      <li>CPU first integration options that make edge routing practical on common hardware.</li>
+    </ul>
+
+    <h2>What comes next</h2>
+    <ul>
+      <li>Per segment calibration at scale and better visual tooling for operating points.</li>
+      <li>More domain specific anchors and public benchmarks that anyone can rerun.</li>
+      <li>Refinements to evidence bundles to make audit even faster.</li>
+      <li>Marketplace ready packaging for datasets and niche models with clear SLAs.</li>
+    </ul>
+
+    <div class="hr"></div>
+
+    <h2>Get hands on</h2>
+    <ul>
+      <li>Zero trust calibration: <a href="/zero-trust-calibration">/zero-trust-calibration</a></li>
+      <li>On device SLOs: <a href="/blog/on-device-ai-slos-hybrid-routing">/blog/on-device-ai-slos-hybrid-routing</a></li>
+      <li>Risk guard overview: <a href="/blog/hallucination-risk-guard-pre-generation">/blog/hallucination-risk-guard-pre-generation</a></li>
+      <li>Open anchor packs: see Resources</li>
+    </ul>
+
+    <p>Thank you to the researchers and builders whose public work sharpened our thinking. For hallucination risk we studied writing from Hassana Labs and OpenAI. We link to that work in our Whitepaper for those who want more depth.</p>
+
+  </div>
+</body>
+</html>
+
+

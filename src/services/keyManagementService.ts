@@ -49,7 +49,7 @@ class KeyManagementService {
 	async generateKeyPair(name: string, permissions: string[] = ['sign']): Promise<KeyPair> {
 		const id = `key-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
 		// Read preferred signature algorithm from env (demo default)
-		const envSigAlgo = (typeof import !== 'undefined' ? (import.meta as any)?.env?.VITE_SIG_ALGO : undefined) as string | undefined
+		const envSigAlgo = ((import.meta as any)?.env?.VITE_SIG_ALGO) as string | undefined
 		const algorithm = (envSigAlgo && String(envSigAlgo)) || 'demo-ecdsa'
 
 		// Generate a simple key pair (in production, use proper cryptographic libraries)

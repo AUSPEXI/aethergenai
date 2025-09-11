@@ -85,6 +85,9 @@ const Home = () => {
             <p className="text-xl text-blue-100 max-w-3xl mx-auto mb-8">
               The only platform built for regulated AI operations with fail-closed gates, automated rollback, and evidence-backed stability
             </p>
+            <div className="inline-block bg-emerald-500/20 border border-emerald-400 text-emerald-200 px-4 py-2 rounded-full text-sm mb-4">
+              Latest results: 1,000,000 queries → 72% fewer tokens, 73% faster, 100% big‑model calls avoided. <Link to="/blog/evidence-efficient-ai-73-percent-faster" className="underline">Read</Link>
+            </div>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 to="/stability-demo"

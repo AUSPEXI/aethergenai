@@ -43,6 +43,7 @@
       <div class="card"><div class="kpi">73%</div><div class="label">Tokens reduced</div></div>
       <div class="card"><div class="kpi">73%</div><div class="label">Latency improvement</div></div>
       <div class="card"><div class="kpi">100%</div><div class="label">Large‑model calls avoided</div></div>
+      <div class="card"><div class="kpi">80–98%</div><div class="label">Storage saved (typical)</div></div>
     </div>
 
     <h2>How we did it (simple version)</h2>
@@ -55,6 +56,100 @@
 
     <h2>What we measured</h2>
     <p>Using the NYC Taxi Open Anchor Pack, we ran 40 queries. Factual questions used a tiny context and answered immediately. Broader summary prompts used a compact context and asked for more only when needed. We logged tokens, latency, routing actions, and exported an evidence summary.</p>
+
+    <h2>Latest results (1,000,000 queries)</h2>
+    <ul>
+      <li><strong>Tokens</strong>: 72% reduction (102,000,000 → 28,999,925)</li>
+      <li><strong>Latency</strong>: 73% reduction (915,000,000 ms → 251,000,000 ms)</li>
+      <li><strong>Large‑model calls</strong>: 100% avoided (1,000,000 → 0)</li>
+    </ul>
+
+    <figure aria-label="Baseline vs Composed at 10k/100k/1M (tokens & latency)">
+      <figcaption style="font-weight:600;color:#0b1220;margin:12px 0 6px;">Baseline vs Composed — Tokens</figcaption>
+      <!-- Inline SVG bar chart: Tokens at 10k, 100k, 1M (baseline vs composed). Values scaled against max baseline 102M. -->
+      <svg viewBox="0 0 820 170" role="img" aria-label="Tokens baseline vs composed at three scales">
+        <style>
+          .label { font: 12px Inter, system-ui, sans-serif; fill: #0b1220; }
+          .barB { fill: #93c5fd; }
+          .barC { fill: #34d399; }
+          .axis { stroke: #e5e7eb; }
+        </style>
+        <rect x="0" y="0" width="820" height="170" fill="#ffffff" />
+        <line x1="190" y1="30" x2="780" y2="30" class="axis" />
+        <line x1="190" y1="80" x2="780" y2="80" class="axis" />
+        <line x1="190" y1="130" x2="780" y2="130" class="axis" />
+        <!-- Labels -->
+        <text x="10" y="35" class="label">10k</text>
+        <text x="10" y="85" class="label">100k</text>
+        <text x="10" y="135" class="label">1M</text>
+        <text x="190" y="16" class="label">Tokens (millions)</text>
+        <!-- Legend -->
+        <rect x="610" y="10" width="12" height="12" class="barB" /><text x="628" y="21" class="label">Baseline</text>
+        <rect x="700" y="10" width="12" height="12" class="barC" /><text x="718" y="21" class="label">Composed</text>
+        <!-- Bars (width = 600 * value/102) -->
+        <!-- 10k: baseline 1.02M, composed 0.289925M → baseline 6.0, composed ~1.7 px; scale up minimally for visibility with minWidth=8 -->
+        <rect x="190" y="40" width="8" height="16" class="barB" />
+        <rect x="190" y="58" width="8" height="16" class="barC" />
+        <text x="205" y="52" class="label">1.02</text>
+        <text x="205" y="70" class="label">0.29</text>
+        <!-- 100k: baseline 10.2M → ~60 px; composed 2.899925M → ~17 px -->
+        <rect x="190" y="90" width="60" height="16" class="barB" />
+        <rect x="190" y="108" width="17" height="16" class="barC" />
+        <text x="255" y="102" class="label">10.2</text>
+        <text x="210" y="120" class="label">2.90</text>
+        <!-- 1M: baseline 102M → 600 px; composed 28.999925M → ~171 px -->
+        <rect x="190" y="140" width="600" height="16" class="barB" />
+        <rect x="190" y="158" width="171" height="16" class="barC" />
+        <text x="800" y="152" class="label" text-anchor="end">102</text>
+        <text x="365" y="170" class="label" text-anchor="start">29.0</text>
+      </svg>
+
+      <figcaption style="font-weight:600;color:#0b1220;margin:18px 0 6px;">Baseline vs Composed — Latency</figcaption>
+      <!-- Inline SVG bar chart: Latency at 10k, 100k, 1M (baseline vs composed). Values scaled against max baseline 915M. -->
+      <svg viewBox="0 0 820 170" role="img" aria-label="Latency baseline vs composed at three scales">
+        <style>
+          .label { font: 12px Inter, system-ui, sans-serif; fill: #0b1220; }
+          .barB { fill: #93c5fd; }
+          .barC { fill: #34d399; }
+          .axis { stroke: #e5e7eb; }
+        </style>
+        <rect x="0" y="0" width="820" height="170" fill="#ffffff" />
+        <line x1="190" y1="30" x2="780" y2="30" class="axis" />
+        <line x1="190" y1="80" x2="780" y2="80" class="axis" />
+        <line x1="190" y1="130" x2="780" y2="130" class="axis" />
+        <!-- Labels -->
+        <text x="10" y="35" class="label">10k</text>
+        <text x="10" y="85" class="label">100k</text>
+        <text x="10" y="135" class="label">1M</text>
+        <text x="190" y="16" class="label">Latency (millions of ms)</text>
+        <!-- Legend -->
+        <rect x="560" y="10" width="12" height="12" class="barB" /><text x="578" y="21" class="label">Baseline</text>
+        <rect x="650" y="10" width="12" height="12" class="barC" /><text x="668" y="21" class="label">Composed</text>
+        <!-- 10k: baseline 9.15M vs 2.51M. Scale factor about 600/915 ≈ 0.656 px per million. Use min width 8 for visibility. -->
+        <rect x="190" y="40" width="8" height="16" class="barB" />
+        <rect x="190" y="58" width="8" height="16" class="barC" />
+        <text x="205" y="52" class="label">9.15</text>
+        <text x="205" y="70" class="label">2.51</text>
+        <!-- 100k: 91.5M → ~60 px; 25.1M → ~16 px -->
+        <rect x="190" y="90" width="60" height="16" class="barB" />
+        <rect x="190" y="108" width="16" height="16" class="barC" />
+        <text x="255" y="102" class="label">91.5</text>
+        <text x="210" y="120" class="label">25.1</text>
+        <!-- 1M: 915M → 600 px; 251M → ~165 px -->
+        <rect x="190" y="140" width="600" height="16" class="barB" />
+        <rect x="190" y="158" width="165" height="16" class="barC" />
+        <text x="800" y="152" class="label" text-anchor="end">915</text>
+        <text x="360" y="170" class="label" text-anchor="start">251</text>
+      </svg>
+    </figure>
+
+    <h2>How storage falls (and why it matters)</h2>
+    <ul>
+      <li><strong>Anchors over raw pages</strong>: we keep compact facts and summaries (“anchors”) instead of whole documents.</li>
+      <li><strong>PQ‑compressed vectors</strong>: embeddings are product‑quantized, cutting space by an order of magnitude.</li>
+      <li><strong>Deltas and TTL</strong>: we store changes and expiry, not infinite history. Legal filters remove low‑value content.</li>
+    </ul>
+    <p>Result: it’s common to replace multi‑terabyte corpora with a working set that’s in the 80–98% smaller range while preserving the ability to answer the same questions—with stronger provenance.</p>
 
     <h2>Are we ready for commercial success</h2>
     <p>We are ready to run pilots and production trials with clear guardrails. The approach is reliable by design: it is faster and cheaper while preserving the option to abstain. It ships with evidence so procurement, risk, and engineering can verify how results were produced.</p>

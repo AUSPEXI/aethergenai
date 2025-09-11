@@ -36,7 +36,9 @@
     "blog:new": "node scripts/blog-new.mjs",
     "blog:delete": "node scripts/blog-delete.mjs",
     "scan:placeholders": "node scripts/scan-placeholders.cjs",
-    "guard:ip": "node scripts/ip-safety-guard.mjs"
+    "guard:ip": "node scripts/ip-safety-guard.mjs",
+    "eval:anchors": "tsx scripts/eval-anchors.ts",
+    "evidence:export": "node scripts/export-evidence.mjs"
   },
   "dependencies": {
     "@aws-sdk/client-dataexchange": "^3.525.0",

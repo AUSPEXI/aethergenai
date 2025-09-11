@@ -10,7 +10,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "prebuild": "node scripts/build-sitemap.mjs",
+    "prebuild": "node scripts/build-sitemap.mjs && node scripts/prerender-blog.mjs",
     "build": "vite build",
     "sanitize:blogs": "node scripts/sanitize-blogs.cjs",
     "lint:editorial": "node scripts/editorial-lint.cjs",

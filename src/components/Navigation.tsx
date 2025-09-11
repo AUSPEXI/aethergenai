@@ -27,6 +27,7 @@ const Navigation = () => {
     { name: 'Dashboard', href: '/account/dashboard', current: location.pathname.startsWith('/account/dashboard') },
     { name: 'Home', href: '/', current: location.pathname === '/' },
     { name: 'About', href: '/about', current: location.pathname === '/about' },
+    { name: 'Investors', href: '/investors', current: location.pathname.startsWith('/investors') },
     { name: 'Features', href: '/features', current: location.pathname === '/features' },
     { name: 'Technology', href: '/technology', current: location.pathname === '/technology' },
     { name: 'Roadmap', href: '/roadmap', current: location.pathname === '/roadmap' },

@@ -41,6 +41,7 @@ import { CardsDemo } from './pages/CardsDemo';
 import { StabilityDemo } from './pages/StabilityDemo'
 import { Features } from './pages/Features'
 import Dashboard from './pages/Dashboard'
+import Investors from './pages/Investors'
 import { EfficiencyDemo } from './pages/EfficiencyDemo'
 import { FinancialCrimeDemo } from './pages/FinancialCrimeDemo'
 import { Docs } from './pages/Docs'
@@ -91,6 +92,7 @@ function RoutedApp() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/account" element={<AuthPage />} />
           <Route path="/account/dashboard" element={<Dashboard />} />
+          <Route path="/investors" element={<Investors />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/terms" element={<TermsOfUse />} />
           <Route path="/dpa" element={<DPA />} />

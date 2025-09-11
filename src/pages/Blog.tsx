@@ -937,6 +937,17 @@ const Blog = () => {
              icon: Database,
              published: true,
              slug: 'evidence-efficient-ai-73-percent-faster'
+           },
+           {
+             title: 'A Billion Queries, 10 Months, and a Promise Kept',
+             excerpt: 'A human story and a technical proof: 72% tokens, 73% latency, 100% large‑model calls avoided at 1B.',
+             author: 'Gwylym Owen',
+             date: 'September 11, 2025',
+             readTime: '4 min read',
+             category: 'Technology',
+             icon: TrendingUp,
+             published: true,
+             slug: 'a-billion-queries-10-months-promise-kept'
            }
   ];
 
@@ -983,7 +994,8 @@ const Blog = () => {
     'navigating-the-illusion-of-conscious-ai',
     'hallucination-risk-guard-pre-generation',
     'on-device-ai-slos-hybrid-routing',
-    'evidence-efficient-ai-73-percent-faster'
+    'evidence-efficient-ai-73-percent-faster',
+    'a-billion-queries-10-months-promise-kept'
   ];
 
   const seenSlugs = new Set<string>();

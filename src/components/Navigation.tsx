@@ -24,6 +24,7 @@ const Navigation = () => {
 
   const navigationItems = [
     { name: 'Account', href: '/account', current: location.pathname === '/account' },
+    { name: 'Dashboard', href: '/account/dashboard', current: location.pathname.startsWith('/account/dashboard') },
     { name: 'Home', href: '/', current: location.pathname === '/' },
     { name: 'About', href: '/about', current: location.pathname === '/about' },
     { name: 'Features', href: '/features', current: location.pathname === '/features' },

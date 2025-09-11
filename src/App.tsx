@@ -31,6 +31,7 @@ import ContextEngineering from './pages/ContextEngineering';
 import ModelStarters from './pages/ModelStarters';
 import StarterDetail from './pages/StarterDetail';
 import ChooseModel from './pages/ChooseModel';
+import NycTaxiEval from './pages/NycTaxiEval';
 import Publisher from './pages/Publisher';
 import BlogManager from './pages/BlogManager';
 import { AirGappedDemo } from './pages/AirGappedDemo';
@@ -104,6 +105,7 @@ function RoutedApp() {
           <Route path="/build" element={<ModelStarters />} />
           <Route path="/starter/:type" element={<StarterDetail />} />
           <Route path="/choose-model" element={<ChooseModel />} />
+          <Route path="/experiments/nyc-taxi-eval" element={<NycTaxiEval />} />
                                   <Route path="/publisher" element={<Publisher />} />
                         <Route path="/blog-manager" element={<BlogManager />} />
                         <Route path="/air-gapped-demo" element={<AirGappedDemo />} />

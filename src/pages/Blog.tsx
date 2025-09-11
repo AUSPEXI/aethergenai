@@ -926,6 +926,17 @@ const Blog = () => {
              icon: Brain,
              published: false,
              slug: 'ai-human-partnership-friendship'
+           },
+           {
+             title: 'Evidence‑Efficient AI: 73% Token & Latency Savings',
+             excerpt: 'Plain‑English results from the NYC Taxi demo: faster, cheaper, and controlled—what it means for teams.',
+             author: 'Gwylym Owen',
+             date: 'September 11, 2025',
+             readTime: '3 min read',
+             category: 'Technology',
+             icon: Database,
+             published: true,
+             slug: 'evidence-efficient-ai-73-percent-faster'
            }
   ];
 
@@ -947,7 +958,6 @@ const Blog = () => {
     'dataset-and-model-cards-that-buyers-actually-use',
     'democratising-ai-post-moores-law-revolution',
     'drift-stress-stability-operating-ai-like-regulated',
-    'energy-efficient-ai-optimization-beats-scaling',
     'evidence-bundles-and-testing',
     'evidence-in-ci-failing-closed-passing-audits',
     'evidence-led-ai-regulated-industries',
@@ -955,7 +965,6 @@ const Blog = () => {
     'financial-crime-labs-synthetic-graphs-risk-evidence',
     'from-first-pilot-to-policy',
     'from-starlings-to-swarms-8d-safety',
-    'green-ai-carbon-neutral-machine-learning',
     'insurance-fraud-playbooks-synthetic-scenarios',
     'managed-delivery-on-databricks-slas-referencing-evidence',
     'offline-readiness-designing-models-for-harsh-disconnected-environments',
@@ -967,12 +976,14 @@ const Blog = () => {
     'segment-aware-evaluation-stability-that-survives-real-world-change',
     'synthetic-data-healthcare-fraud-without-phi',
     'synthetic-data-lifecycle',
-    'the-procurement-bundle-signatures-hashes-filing-made-simple',
     'triumph-of-preparation-strategic-planning',
     'unity-catalog-delivery-turning-models-into-procurement-ready-products',
-    'navigating-the-illusion-of-conscious-ai'
-    ,'on-device-ai-slos-hybrid-routing'
-    ,'hallucination-risk-guard-pre-generation'
+    'green-ai-carbon-neutral-machine-learning',
+    'energy-efficient-ai-optimization-beats-scaling',
+    'navigating-the-illusion-of-conscious-ai',
+    'hallucination-risk-guard-pre-generation',
+    'on-device-ai-slos-hybrid-routing',
+    'evidence-efficient-ai-73-percent-faster'
   ];
 
   const seenSlugs = new Set<string>();

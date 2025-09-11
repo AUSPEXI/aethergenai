@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Evidence‑Efficient AI: 73% Token and 73% Latency Savings (NYC Taxi Demo)</title>
+  <meta name="description" content="A plain‑English walkthrough of how we achieved 73% token and 73% latency savings with 100% large‑model call avoidance using open NYC Taxi anchors. What this means for you and for Aethergen." />
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, Inter, Segoe UI, Roboto, Arial, sans-serif; line-height: 1.7; color: #0f172a; margin: 0; background: #f5f7fb; }
+    .article { max-width: 960px; margin: 0 auto; background: #fff; padding: 48px 36px; box-shadow: 0 10px 30px rgba(0,0,0,0.06); border-radius: 12px; }
+    h1 { font-size: 34px; margin: 0 0 8px; color: #0b1220; }
+    .meta { color: #475569; font-size: 14px; margin-bottom: 20px; }
+    h2 { color: #0b1220; margin-top: 28px; font-size: 22px; }
+    p, li { color: #1f2937; }
+    ul { padding-left: 20px; }
+    .callout { background: #ecfeff; border-left: 4px solid #06b6d4; padding: 16px; border-radius: 8px; }
+    a { color:#2563eb; text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    .metrics { display:grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap:12px; margin:16px 0; }
+    .card { background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:14px; }
+    .kpi { font-size: 28px; font-weight: 800; color:#0b1220; }
+    .label { font-size: 13px; color:#475569; }
+  </style>
+</head>
+<body>
+  <div class="article">
+    <h1>Evidence‑Efficient AI: 73% Token and 73% Latency Savings (NYC Taxi Demo)</h1>
+    <div class="meta"><strong>Auspexi</strong> • Updated: <script>document.write(new Date().toISOString().slice(0,10))</script></div>
+
+    <div class="callout"><strong>TL;DR</strong>: We reduced tokens and latency by 73% and avoided all large‑model calls on a realistic task using open NYC Taxi anchors. In plain English: we now fetch only what we need, think with smaller pieces, and choose when to answer or ask for more context. This is faster, cheaper, and easier to trust.</div>
+
+    <h2>What this means for you</h2>
+    <ul>
+      <li><strong>Faster answers on normal hardware</strong>: a small on‑device model handles most work. You feel the speed.</li>
+      <li><strong>Lower bills</strong>: big models run rarely. Fewer tokens moved and processed.</li>
+      <li><strong>Fewer made‑up answers</strong>: when confidence is low, the system fetches more or abstains instead of guessing.</li>
+    </ul>
+
+    <h2>What this means for Aethergen</h2>
+    <p>We can operate with service targets for reliability and speed, and we can prove it. The platform composes small specialist pieces with clear guardrails and exports evidence so teams can review decisions without exposing raw data.</p>
+
+    <div class="metrics">
+      <div class="card"><div class="kpi">73%</div><div class="label">Tokens reduced</div></div>
+      <div class="card"><div class="kpi">73%</div><div class="label">Latency improvement</div></div>
+      <div class="card"><div class="kpi">100%</div><div class="label">Large‑model calls avoided</div></div>
+    </div>
+
+    <h2>How we did it (simple version)</h2>
+    <ul>
+      <li><strong>Retrieve then read</strong>: we do not try to remember the whole web. We fetch only a few relevant facts, then pack them efficiently.</li>
+      <li><strong>Small‑model first</strong>: a small model drafts answers. Only hard cases consider heavier tools.</li>
+      <li><strong>Risk check before answering</strong>: if confidence is low, we fetch more context or abstain. That stops low‑quality output.</li>
+      <li><strong>Compact memory</strong>: we keep tiny anchors and compressed vectors instead of storing raw pages.</li>
+    </ul>
+
+    <h2>What we measured</h2>
+    <p>Using the NYC Taxi Open Anchor Pack, we ran 40 queries. Factual questions used a tiny context and answered immediately. Broader summary prompts used a compact context and asked for more only when needed. We logged tokens, latency, routing actions, and exported an evidence summary.</p>
+
+    <h2>Are we ready for commercial success</h2>
+    <p>We are ready to run pilots and production trials with clear guardrails. The approach is reliable by design: it is faster and cheaper while preserving the option to abstain. It ships with evidence so procurement, risk, and engineering can verify how results were produced.</p>
+
+    <h2>What this is not</h2>
+    <ul>
+      <li>Not a claim that we memorized the world. We deliberately avoid that.</li>
+      <li>Not a promise of perfection. It is a controlled system that prefers to fetch more or abstain when uncertain.</li>
+      <li>Not tied to a specific vendor. It works with different model sizes and backends.</li>
+    </ul>
+
+    <h2>What you can do next</h2>
+    <ul>
+      <li>Explore the <a href="/context-engineering">Context Engineering</a> page to see how we select and pack information.</li>
+      <li>Try the <a href="/build">Model Starters</a> gallery and pick the right starter for your task.</li>
+      <li>Read the <a href="/blog/hallucination-controls-runtime-gating-evidence">Hallucination Controls</a> explainer to understand the risk checks.</li>
+      <li>Contact us about a pilot with your data in your environment.</li>
+    </ul>
+
+    <p>Questions or pilot requests: <a href="/contact">/contact</a></p>
+  </div>
+</body>
+</html>
+
+

@@ -42,9 +42,11 @@ function buildUrls() {
   const all = [...core, ...blog]
   return all.map(p => {
     const isBlog = p.startsWith('blog/')
-    const src = isBlog ? path.join(publicDir, 'blog-html', `${p.replace('blog/','')}.html`) : null
+    const slug = p.replace('blog/','')
+    const src = isBlog ? path.join(publicDir, 'blog-html', `${slug}.html`) : null
     const lastmod = src ? mtimeFor(src) : null
-    return { loc: `${SITE}/${p}`, lastmod }
+    const loc = isBlog ? `${SITE}/blog/${slug}/` : `${SITE}/${p}`
+    return { loc, lastmod }
   })
 }
 

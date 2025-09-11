@@ -1,6 +1,7 @@
 import React, { useEffect, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Navigation from './components/Navigation';
+import GlobalCtaRibbon from './components/GlobalCtaRibbon';
 import Home from './pages/Home';
 import About from './pages/About';
 import Pricing from './pages/Pricing';
@@ -42,6 +43,7 @@ import { StabilityDemo } from './pages/StabilityDemo'
 import { Features } from './pages/Features'
 import Dashboard from './pages/Dashboard'
 import Investors from './pages/Investors'
+import Pilot from './pages/Pilot'
 import { EfficiencyDemo } from './pages/EfficiencyDemo'
 import { FinancialCrimeDemo } from './pages/FinancialCrimeDemo'
 import { Docs } from './pages/Docs'
@@ -75,6 +77,7 @@ function RoutedApp() {
     <div className="min-h-screen bg-white flex flex-col">
       <ScrollToTop />
       {!hideChrome && <Navigation />}
+      {!hideChrome && <GlobalCtaRibbon />}
       <div className="flex-grow">
         <Routes>
           <Route path="/" element={<Home />} />
@@ -93,6 +96,7 @@ function RoutedApp() {
           <Route path="/account" element={<AuthPage />} />
           <Route path="/account/dashboard" element={<Dashboard />} />
           <Route path="/investors" element={<Investors />} />
+          <Route path="/pilot" element={<Pilot />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/terms" element={<TermsOfUse />} />
           <Route path="/dpa" element={<DPA />} />

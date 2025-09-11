@@ -3,6 +3,8 @@ Allow: /
 Allow: /.well-known/
 Allow: /ai
 Allow: /whitepaper
+# Prevent indexing of raw HTML sources for articles (use /blog/:slug instead)
+Disallow: /blog-html/
 # Optional crawl-delay for non-LLM bots
 # Crawl-delay: 2
 

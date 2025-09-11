@@ -29,6 +29,10 @@ function loadBlogSlugs() {
   return Array.from(slugs)
 }
 
+function mtimeFor(p) {
+  try { return fs.statSync(p).mtime.toISOString().slice(0,10) } catch { return null }
+}
+
 function buildUrls() {
   const core = [
     '', 'about', 'technology', 'pricing', 'press', 'resources', 'ai', 'whitepaper', 'blog', 'build', 'context-engineering', 'choose-model'
@@ -36,13 +40,18 @@ function buildUrls() {
   const slugs = loadBlogSlugs()
   const blog = slugs.map(s => `blog/${s}`)
   const all = [...core, ...blog]
-  return all.map(p => `${SITE}/${p}`)
+  return all.map(p => {
+    const isBlog = p.startsWith('blog/')
+    const src = isBlog ? path.join(publicDir, 'blog-html', `${p.replace('blog/','')}.html`) : null
+    const lastmod = src ? mtimeFor(src) : null
+    return { loc: `${SITE}/${p}`, lastmod }
+  })
 }
 
 function writeSitemap(urls) {
   const xml = `<?xml version="1.0" encoding="UTF-8"?>\n` +
   `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">` +
-  urls.map(u => `<url><loc>${u}</loc></url>`).join('') +
+  urls.map(u => `<url><loc>${u.loc}</loc>${u.lastmod ? `<lastmod>${u.lastmod}</lastmod>` : ''}</url>`).join('') +
   `</urlset>\n`
   fs.writeFileSync(sitemapPath, xml, 'utf-8')
   console.log(`Wrote sitemap with ${urls.length} URLs to ${path.relative(process.cwd(), sitemapPath)}`)

@@ -147,6 +147,28 @@ const Blog = () => {
 
   const blogPosts = [
     {
+      title: 'Build the Right Model: 8 Starters and How They Work',
+      excerpt: 'LLM, SLM, LAM, MoE, VLM, MLM, LCM, SAM—prewired with routing, context, risk, and evidence.',
+      author: 'Gwylym Owen',
+      date: 'September 10, 2025',
+      readTime: '8 min read',
+      category: 'Technology',
+      icon: Brain,
+      published: true,
+      slug: 'model-starters-8-presets'
+    },
+    {
+      title: 'Choose the Right Model: A Practical Helper',
+      excerpt: 'Answer a few questions and get a starter + routing + context + risk policy you can ship.',
+      author: 'Gwylym Owen',
+      date: 'September 10, 2025',
+      readTime: '7 min read',
+      category: 'Technology',
+      icon: Brain,
+      published: true,
+      slug: 'choose-the-right-model-helper'
+    },
+    {
       title: 'Context Engineering: From RAG to Reliable Answers',
       excerpt: 'Hybrid retrieval + signals + budget packing; feed Risk Guard and log provenance for audit.',
       author: 'Gwylym Owen',
@@ -909,6 +931,8 @@ const Blog = () => {
 
   // Show only posts that have corresponding HTML files and remove duplicates by slug
   const validSlugs = [
+    'model-starters-8-presets',
+    'choose-the-right-model-helper',
     'context-engineering-layer',
     'quantum-safe-readiness-aethergenplatform',
     'aethergenplatform-milestone-solo-innovations',

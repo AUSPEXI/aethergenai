@@ -26,6 +26,14 @@ export const Resources: React.FC = () => {
       type: 'Guide + Demo'
     },
     {
+      icon: Brain,
+      title: 'Build a Model (Starters)',
+      description: 'LLM, SLM, LAM, MoE, VLM, MLM, LCM, SAM — prefilled configs and evidence hooks',
+      category: 'Technical Documentation',
+      link: '/build',
+      type: 'Gallery'
+    },
+    {
       icon: Gauge,
       title: 'Metrics & A/B (Dev)',
       description: 'Submit Databricks metrics jobs, run A/B experiments, compare runs, publish acceptance',

@@ -255,6 +255,27 @@ const Technology = () => {
         </div>
       </section>
 
+      {/* Related Reading */}
+      <section className="py-12 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold text-slate-900 mb-6 text-center">Related reading</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Link to="/blog/context-engineering-layer" className="block bg-slate-50 border border-slate-200 rounded-xl p-5 hover:border-blue-300 hover:bg-blue-50/30 transition">
+              <div className="text-sm text-slate-600 mb-1">Context</div>
+              <div className="text-lg font-semibold text-slate-900">Context Engineering Layer</div>
+            </Link>
+            <Link to="/blog/model-starters-8-presets" className="block bg-slate-50 border border-slate-200 rounded-xl p-5 hover:border-blue-300 hover:bg-blue-50/30 transition">
+              <div className="text-sm text-slate-600 mb-1">Starters</div>
+              <div className="text-lg font-semibold text-slate-900">Build the Right Model: 8 Presets</div>
+            </Link>
+            <Link to="/blog/hallucination-controls-runtime-gating-evidence" className="block bg-slate-50 border border-slate-200 rounded-xl p-5 hover:border-blue-300 hover:bg-blue-50/30 transition">
+              <div className="text-sm text-slate-600 mb-1">Reliability</div>
+              <div className="text-lg font-semibold text-slate-900">Hallucination Controls: Runtime Gating & Evidence</div>
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* Pipelines Overview */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

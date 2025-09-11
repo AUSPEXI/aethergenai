@@ -700,19 +700,19 @@ export const StabilityDemo: React.FC = () => {
               </div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="border rounded-lg p-3 text-sm">
-                  <div className="text-gray-500">Threshold</div>
+                  <div className="text-gray-900">Threshold</div>
                   <div className="font-mono">{(conformalThresholds[selectedModel] ?? 0).toFixed(3)}</div>
                 </div>
                 <div className="border rounded-lg p-3 text-sm">
-                  <div className="text-gray-500">Coverage (obs)</div>
+                  <div className="text-gray-900">Coverage (obs)</div>
                   <div className="font-mono">{selectiveEval ? selectiveEval.coverage.toFixed(2) : '-'}</div>
                 </div>
                 <div className="border rounded-lg p-3 text-sm">
-                  <div className="text-gray-500">Abstain</div>
+                  <div className="text-gray-900">Abstain</div>
                   <div className="font-mono">{selectiveEval ? selectiveEval.abstain.toFixed(2) : '-'}</div>
                 </div>
                 <div className="border rounded-lg p-3 text-sm">
-                  <div className="text-gray-500">Error (accepted)</div>
+                  <div className="text-gray-900">Error (accepted)</div>
                   <div className="font-mono">{selectiveEval ? selectiveEval.errorRate.toFixed(2) : '-'}</div>
                 </div>
               </div>
@@ -737,7 +737,7 @@ export const StabilityDemo: React.FC = () => {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-3 text-sm">
                     {Object.entries(segmentThresholds).map(([k, v]) => (
                       <div key={k} className="border rounded p-2">
-                        <div className="text-gray-500">{k}</div>
+                        <div className="text-gray-900">{k}</div>
                         <div className="font-mono">{v.toFixed(3)}</div>
                       </div>
                     ))}

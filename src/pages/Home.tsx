@@ -254,10 +254,10 @@ const Home = () => {
 
           {/* Call to Action */}
           <div className="text-center">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl font-bold text-white mb-4">
               Ready to Operate AI with Confidence?
             </h2>
-            <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+            <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
               Join organizations that are transforming their AI operations with evidence-backed stability and fail-closed design principles.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">

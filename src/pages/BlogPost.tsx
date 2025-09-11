@@ -159,6 +159,52 @@ const BlogPost = () => {
     return () => { cancelled = true };
   }, [slug]);
 
+  // SEO: canonical, meta description, Article JSON-LD
+  React.useEffect(() => {
+    if (!post || !slug) return
+    const canonicalHref = `https://auspexi.com/blog/${encodeURIComponent(String(slug))}`
+    // canonical
+    let linkEl = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null
+    if (!linkEl) {
+      linkEl = document.createElement('link')
+      linkEl.setAttribute('rel', 'canonical')
+      document.head.appendChild(linkEl)
+    }
+    linkEl.setAttribute('href', canonicalHref)
+    // meta description
+    let descEl = document.querySelector('meta[name="description"]') as HTMLMetaElement | null
+    if (!descEl) {
+      descEl = document.createElement('meta')
+      descEl.setAttribute('name', 'description')
+      document.head.appendChild(descEl)
+    }
+    descEl.setAttribute('content', (post as any).excerpt || '')
+    // JSON-LD
+    const ld = {
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      headline: (post as any).title || String(slug),
+      author: { '@type': 'Person', name: (post as any).author || 'Auspexi' },
+      mainEntityOfPage: canonicalHref,
+      datePublished: (post as any).published_at || new Date().toISOString(),
+      dateModified: new Date().toISOString(),
+      image: 'https://auspexi.com/og-image.svg',
+      publisher: { '@type': 'Organization', name: 'Auspexi' },
+      description: (post as any).excerpt || ''
+    }
+    let ldEl = document.getElementById('ld-article-json') as HTMLScriptElement | null
+    if (!ldEl) {
+      ldEl = document.createElement('script')
+      ldEl.type = 'application/ld+json'
+      ldEl.id = 'ld-article-json'
+      document.head.appendChild(ldEl)
+    }
+    ldEl.textContent = JSON.stringify(ld)
+    return () => {
+      // Keep canonical/meta for history navigation; no cleanup to avoid flashes
+    }
+  }, [post, slug])
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">

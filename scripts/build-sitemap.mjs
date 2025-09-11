@@ -3,18 +3,30 @@ import path from 'path'
 
 const SITE = process.env.SITE_URL || 'https://auspexi.com'
 const publicDir = path.join(process.cwd(), 'public')
-const blogIndexPath = path.join(publicDir, 'blog-html', 'index.json')
+const blogHtmlDir = path.join(publicDir, 'blog-html')
+const blogIndexPath = path.join(blogHtmlDir, 'index.json')
 const sitemapPath = path.join(publicDir, 'sitemap.xml')
 
 function loadBlogSlugs() {
+  const slugs = new Set()
+  // From manifest
   try {
     const raw = fs.readFileSync(blogIndexPath, 'utf-8')
     const arr = JSON.parse(raw)
-    if (!Array.isArray(arr)) return []
-    return arr.map(x => x.slug).filter(Boolean)
-  } catch (_) {
-    return []
-  }
+    if (Array.isArray(arr)) arr.forEach(x => x?.slug && slugs.add(String(x.slug)))
+  } catch (_) {}
+  // Fallback: scan directory
+  try {
+    const files = fs.readdirSync(blogHtmlDir)
+    files.forEach(f => {
+      if (!f.endsWith('.html')) return
+      if (f.endsWith('.bak.html')) return
+      if (f === 'index.html') return
+      const slug = f.replace(/\.html$/, '')
+      if (slug) slugs.add(slug)
+    })
+  } catch (_) {}
+  return Array.from(slugs)
 }
 
 function buildUrls() {

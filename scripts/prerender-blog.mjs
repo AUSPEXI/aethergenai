@@ -11,13 +11,24 @@ function ensureDir(p) {
 }
 
 function readIndex() {
+  const entries = []
   try {
     const raw = fs.readFileSync(path.join(blogHtmlDir, 'index.json'), 'utf-8')
     const arr = JSON.parse(raw)
-    return Array.isArray(arr) ? arr : []
-  } catch (_) {
-    return []
-  }
+    if (Array.isArray(arr)) arr.forEach(x => x?.slug && entries.push({ slug: String(x.slug), title: x.title || '' }))
+  } catch (_) {}
+  // Also scan directory for .html files
+  try {
+    const files = fs.readdirSync(blogHtmlDir)
+    files.forEach(f => {
+      if (!f.endsWith('.html')) return
+      if (f.endsWith('.bak.html')) return
+      if (f === 'index.html') return
+      const slug = f.replace(/\.html$/, '')
+      if (!entries.find(e => e.slug === slug)) entries.push({ slug, title: '' })
+    })
+  } catch (_) {}
+  return entries
 }
 
 function extractContent(html) {

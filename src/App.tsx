@@ -28,6 +28,9 @@ import AI from './pages/AI';
 import Whitepaper from './pages/Whitepaper';
 import ZeroTrustCalibration from './pages/ZeroTrustCalibration';
 import ContextEngineering from './pages/ContextEngineering';
+import ModelStarters from './pages/ModelStarters';
+import StarterDetail from './pages/StarterDetail';
+import ChooseModel from './pages/ChooseModel';
 import Publisher from './pages/Publisher';
 import BlogManager from './pages/BlogManager';
 import { AirGappedDemo } from './pages/AirGappedDemo';
@@ -98,6 +101,9 @@ function RoutedApp() {
           <Route path="/whitepaper" element={<Whitepaper />} />
           <Route path="/zero-trust-calibration" element={<ZeroTrustCalibration />} />
           <Route path="/context-engineering" element={<ContextEngineering />} />
+          <Route path="/build" element={<ModelStarters />} />
+          <Route path="/starter/:type" element={<StarterDetail />} />
+          <Route path="/choose-model" element={<ChooseModel />} />
                                   <Route path="/publisher" element={<Publisher />} />
                         <Route path="/blog-manager" element={<BlogManager />} />
                         <Route path="/air-gapped-demo" element={<AirGappedDemo />} />

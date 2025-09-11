@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Build the Right Model: 8 Starters and How They Work</title>
+  <meta name="description" content="AethergenPlatform's Model Starters: LLM, SLM, LAM, MoE, VLM, MLM, LCM, SAM. What each does, when to use it, and how we wire routing, context, risk, and evidence." />
+  <style>
+    body { font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; line-height: 1.65; color: #0f172a; margin: 0; background: #f5f7fb; }
+    .article { max-width: 960px; margin: 0 auto; background: #fff; padding: 48px 36px; box-shadow: 0 10px 30px rgba(0,0,0,0.06); border-radius: 12px; }
+    h1 { font-size: 36px; margin: 0 0 8px; color: #0b1220; }
+    .meta { color: #475569; font-size: 14px; margin-bottom: 28px; }
+    h2 { color: #0b1220; margin-top: 36px; font-size: 26px; }
+    h3 { color: #0b1220; margin-top: 18px; font-size: 20px; }
+    p, li { color: #1f2937; }
+    ul { padding-left: 20px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; }
+    .card { background:#fff; border:1px solid #e5e7eb; border-radius:12px; padding:16px; }
+    .callout { background:#ecfeff; border-left:4px solid #06b6d4; padding:16px; border-radius:8px; }
+    a { color:#2563eb; text-decoration:none; }
+    a:hover { text-decoration:underline; }
+  </style>
+</head>
+<body>
+  <div class="article">
+    <h1>Build the Right Model: 8 Starters and How They Work</h1>
+    <div class="meta"><strong>Auspexi</strong> • Updated: <script>document.write(new Date().toISOString().slice(0,10))</script></div>
+    <div class="callout"><strong>TL;DR</strong>: We shipped a <em>Model Starters</em> gallery with 8 presets—LLM, SLM, LAM, MoE, VLM, MLM, LCM, SAM—each pre‑wired with routing (on‑device/hybrid), Context Engineering, pre‑generation Risk Guard, default SLOs, and evidence hooks. Start fast, ship with proof.</div>
+
+    <h2>Why we built it</h2>
+    <p>Not all models are built for the same thing. 2025 AI is a toolbox—generation, retrieval, planning, and perception. Picking the right model and wrapping it with context, policy, and evidence is the shortest path to reliable outcomes. Starters are small, opinionated scaffolds so you can move from idea → audited prototype in hours.</p>
+
+    <h2>The 8 presets</h2>
+    <div class="grid">
+      <div class="card"><h3>LLM</h3><p>Text generation with Context Engine (hybrid retrieval, signals, budget packing) + Risk Guard. Good for chat, copy, code.</p></div>
+      <div class="card"><h3>SLM (On‑Device)</h3><p>Small model with on‑device routing by default, cloud fallback within SLOs. Good for private, low‑latency assistants.</p></div>
+      <div class="card"><h3>LAM (Agents)</h3><p>Plan/act loop with typed tool wrappers, memory stub, and error normalization. Good for workflows and RPA‑like tasks.</p></div>
+      <div class="card"><h3>MoE</h3><p>Lightweight router sends inputs to specialized experts; per‑expert thresholds. Good for heterogeneous workloads at scale.</p></div>
+      <div class="card"><h3>VLM</h3><p>Image+text understanding; citation‑friendly context packing. Good for search, robotics, and inspection.</p></div>
+      <div class="card"><h3>MLM (Embeddings)</h3><p>Retrieval pipeline with P@k/nDCG harness. Good foundation for RAG and classification.</p></div>
+      <div class="card"><h3>LCM (Images)</h3><p>Fast image generation placeholder with device guardrails. Good for efficient creative tooling.</p></div>
+      <div class="card"><h3>SAM (Segmentation)</h3><p>Pixel‑level masks; mask viewer and export. Good for medical/industrial segmentation and AR.</p></div>
+    </div>
+
+    <h2>What’s inside each starter</h2>
+    <ul>
+      <li><strong>Routing</strong>: on‑device by default where feasible (SLM/VLM), hybrid fallback with SLOs otherwise</li>
+      <li><strong>Context Engineering</strong>: BM25+dense+reranker, signals (margin/support/recency/trust), token budget packing</li>
+      <li><strong>Risk Guard</strong>: pre‑generation risk estimation → fetch/clarify/abstain before generating</li>
+      <li><strong>Evidence</strong>: scaffold to export signed ZIPs with <code>context_provenance.json</code>, crypto profile, and acceptance artifacts</li>
+      <li><strong>SLO defaults</strong>: latency p95, coverage target, on‑device caps (fallback rate, battery, thermal)</li>
+    </ul>
+
+    <h2>How to use it</h2>
+    <ol>
+      <li>Open <a href="/build">Build a Model</a> and select a starter.</li>
+      <li>Click “Download Starter” to get a scaffold ZIP with configs and stubs.</li>
+      <li>Plug in your model/tooling, run acceptance checks, then export evidence.</li>
+    </ol>
+
+    <h2>Roadmap</h2>
+    <ul>
+      <li><strong>Choose‑the‑Right‑Model helper</strong>: a small wizard that asks task/modality/constraints and deep‑links to the best starter + routing (coming next).</li>
+      <li>Quickstart notebooks per starter for acceptance & evidence.</li>
+    </ul>
+
+    <p>Get started: <a href="/build">/build</a> • <a href="/context-engineering">Context Engineering</a> • <a href="/whitepaper#context">Whitepaper</a></p>
+  </div>
+</body>
+</html>
+
+

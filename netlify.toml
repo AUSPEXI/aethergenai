@@ -109,13 +109,12 @@
 # Serve prerendered blog pages and normalize trailing slashes (BEFORE SPA fallback)
 [[redirects]]
   from = "/blog/:slug"
-  to = "/blog/:slug/"
-  status = 301
-  force = true
+  to = "/blog/:slug/index.html"
+  status = 200
 
 [[redirects]]
-  from = "/blog/*"
-  to = "/blog/:splat/index.html"
+  from = "/blog/:slug/"
+  to = "/blog/:slug/index.html"
   status = 200
 
 # SPA fallback - serve index.html for all routes that don't match files or API endpoints

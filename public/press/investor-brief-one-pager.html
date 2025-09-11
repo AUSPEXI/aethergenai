@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AethergenPlatform — Investor One‑Pager (Printable)</title>
+  <meta name="description" content="Evidence‑efficient AI: 72% tokens, 73% latency, 100% big‑model calls avoided at 1B queries. Printable investor one‑pager." />
+  <style>
+    :root { --ink:#0f172a; --muted:#475569; }
+    body { font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; line-height: 1.6; color: var(--ink); margin: 0; }
+    .page { max-width: 900px; margin: 0 auto; padding: 32px 28px; }
+    h1 { margin: 0 0 6px; font-size: 28px; }
+    h2 { margin: 18px 0 8px; font-size: 18px; }
+    p, li { font-size: 14px; }
+    .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin: 12px 0 16px; }
+    .card { border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 12px; }
+    .big { font-weight: 800; font-size: 22px; }
+    .muted { color: var(--muted); font-size: 12px; }
+    .actions { margin-top: 16px; display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn { display:inline-block; background:#2563eb; color:#fff; padding:8px 12px; border-radius:8px; text-decoration:none; font-weight:600; font-size:14px; }
+    .btn.outline { background:transparent; color:#2563eb; border:1px solid #2563eb; }
+    @media print {
+      .no-print { display: none; }
+      .page { padding: 0; }
+      .card { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      a { color: var(--ink); text-decoration: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="no-print" style="display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:12px;">
+      <div class="muted">Investor One‑Pager (print to PDF)</div>
+      <button onclick="window.print()" class="btn outline">Print / Save as PDF</button>
+    </div>
+
+    <h1>AethergenPlatform — Investor One‑Pager</h1>
+    <p class="muted">Evidence‑efficient AI: same answers with less compute, lower latency, and stronger governance.</p>
+
+    <div class="kpis">
+      <div class="card"><div class="big">72%</div><div class="muted">Tokens reduced</div></div>
+      <div class="card"><div class="big">73%</div><div class="muted">Latency improvement</div></div>
+      <div class="card"><div class="big">100%</div><div class="muted">Large‑model calls avoided</div></div>
+      <div class="card"><div class="big">1,000,000,000</div><div class="muted">Queries at scale</div></div>
+    </div>
+
+    <h2>Why now</h2>
+    <ul>
+      <li>Compute and storage are the bottleneck; scaling alone is no longer viable.</li>
+      <li>We deliver reliability with less compute using retrieval‑first and small‑model‑first.</li>
+    </ul>
+
+    <h2>How it works</h2>
+    <ul>
+      <li>Retrieve, don’t memorize: hybrid search + budget packing.</li>
+      <li>SLM‑first: small models handle most work; escalate rarely.</li>
+      <li>Risk Guard: answer, fetch more, or abstain before generating.</li>
+      <li>Compact memory: anchors, PQ vectors, deltas; no raw corpora.</li>
+      <li>Evidence by default: metrics, provenance, crypto profile.</li>
+    </ul>
+
+    <h2>Results</h2>
+    <ul>
+      <li>Open data (NYC anchors): 1B queries with the profile above.</li>
+      <li>Closed data pilots typically see 60–90% fewer big‑model calls and 70–95% storage reduction.</li>
+    </ul>
+
+    <h2>Focus</h2>
+    <ul>
+      <li>3–5 closed‑data pilots with evidence reviews.</li>
+      <li>Productization: dashboard controls, evidence UX, offline kits.</li>
+    </ul>
+
+    <div class="actions">
+      <a class="btn" href="/blog/evidence-efficient-ai-73-percent-faster">Read the explainer</a>
+      <a class="btn outline" href="/pilot">Request a pilot</a>
+    </div>
+  </div>
+</body>
+</html>
+
+

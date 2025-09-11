@@ -1,7 +1,11 @@
 {
   "items": [
     { "type": "image", "src": "/og-image.svg", "alt": "AethergenAI OG Image", "caption": "AethergenAI overview" },
-    { "type": "image", "src": "/auspexi.svg", "alt": "Auspexi logo", "caption": "Auspexi brand" }
+    { "type": "image", "src": "/auspexi.svg", "alt": "Auspexi logo", "caption": "Auspexi brand" },
+    { "type": "link", "href": "/blog/evidence-efficient-ai-73-percent-faster", "caption": "Evidence‑Efficient AI: Results & explainer" },
+    { "type": "link", "href": "/blog/a-billion-queries-10-months-promise-kept", "caption": "A Billion Queries: Human story & impact" },
+    { "type": "text", "headline": "1B‑query proof", "body": "72% fewer tokens, 73% faster total latency, 100% large‑model calls avoided. Method generalizes to closed data with anchors, SLM‑first, and risk‑aware answers." },
+    { "type": "link", "href": "/press/investor-brief-one-pager.html", "caption": "Investor One‑Pager (printable)" }
   ]
 }
 

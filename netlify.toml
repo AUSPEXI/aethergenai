@@ -114,8 +114,8 @@
   force = true
 
 [[redirects]]
-  from = "/blog/*"
-  to = "/blog/:splat/index.html"
+  from = "/blog/:slug/"
+  to = "/blog/:slug/index.html"
   status = 200
 
 # SPA fallback - serve index.html for all routes that don't match files or API endpoints

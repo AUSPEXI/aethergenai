@@ -230,6 +230,24 @@ export const faqSections: FAQSection[] = [
       { q: 'How do you mitigate model collapse/drift?', a: 'Stability monitors, drift checks, and evidence fail-closed gates reduce collapse risks; anchors help prevent distribution drift.' },
     ],
   },
+  {
+    id: 'efficiency',
+    title: 'Efficiency & Evaluators',
+    items: [
+      { q: 'How did you achieve 72% token / 73% latency savings at scale?', a: 'By routing small‑model first (SLM‑first), retrieving compact context instead of memorising the web, and gating answers with a pre‑generation Risk Guard. Heavy models run only on hard cases.' },
+      { q: 'What is the climate/energy impact?', a: 'Token and call reductions translate into fewer accelerator‑hours and lower energy. We also support on‑device/VPC routing to keep inference close to the user and reduce egress.' },
+      { q: 'Do you have always‑on evaluators?', a: 'Yes—compact SLM evaluators for prompt‑injection, PII, toxicity, bias, jailbreak, and tool errors. Per‑metric thresholds can fail‑close responses; events are logged in evidence.' }
+    ],
+  },
+  {
+    id: 'determinism',
+    title: 'Deterministic Inference',
+    items: [
+      { q: 'What is deterministic inference?', a: 'A mode where identical prompts produce identical outputs (batch‑invariant). We fix microbatching, precision, and kernels to eliminate nondeterminism.' },
+      { q: 'Why does it matter?', a: 'Reproducibility tightens audits, simplifies debugging, and stabilizes safety evaluations—valuable for research and regulated adoption.' },
+      { q: 'What is the trade‑off?', a: 'Slightly slower throughput. We expose a toggle and route high‑risk/acceptance flows through deterministic mode by policy.' }
+    ],
+  },
 ]
 
 

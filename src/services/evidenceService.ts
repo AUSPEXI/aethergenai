@@ -44,6 +44,10 @@ export type EvidenceBundle = {
     total_cost_usd?: number;
     cost_per_record?: number;
   };
+  evaluation?: {
+    events?: Array<{ ts: string; metric: string; score: number; passed: boolean }>
+    summary?: Record<string, any>
+  }
 };
 
 export function buildEvidenceBundle(params: Partial<EvidenceBundle>): EvidenceBundle {
@@ -77,6 +81,23 @@ export function buildEvidenceBundle(params: Partial<EvidenceBundle>): EvidenceBu
       cost_per_record: 0.0000245
     },
     ...params,
+    evaluation: ((): any => {
+      try {
+        const raw = localStorage.getItem('aeg_eval_events')
+        if (!raw) return params.evaluation
+        const events = JSON.parse(raw)
+        const counts: Record<string, { n: number; fail: number; pass: number; avg: number }> = {}
+        for (const ev of events) {
+          counts[ev.metric] = counts[ev.metric] || { n: 0, fail: 0, pass: 0, avg: 0 }
+          counts[ev.metric].n += 1
+          counts[ev.metric].fail += ev.passed ? 0 : 1
+          counts[ev.metric].pass += ev.passed ? 1 : 0
+          counts[ev.metric].avg += ev.score
+        }
+        for (const k of Object.keys(counts)) counts[k].avg = counts[k].n ? counts[k].avg / counts[k].n : 0
+        return { events, summary: counts }
+      } catch { return params.evaluation }
+    })()
   } as EvidenceBundle;
 }
 

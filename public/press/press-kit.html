@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AethergenPlatform – Press Kit</title>
+  <meta name="description" content="Press kit with logo, OG image, evidence links, investor one‑pager, and media manifest." />
+  <style>
+    body { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; color:#0f172a; line-height:1.6; }
+    .container { max-width: 900px; margin: 40px auto; padding: 0 16px; }
+    h1 { font-size: 2rem; font-weight: 800; margin-bottom: 6px; }
+    .grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap:12px; }
+    .card { border:1px solid #e5e7eb; border-radius:12px; padding:14px; background:#fff; }
+    .row { display:flex; gap:10px; align-items:center; }
+    a { color:#2563eb; text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    .muted { color:#64748b; font-size: .9rem; }
+    .btn { display:inline-block; background:#2563eb; color:#fff; padding:10px 14px; border-radius:8px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Press Kit</h1>
+    <p class="muted">Direct asset links. For a zipped bundle, right‑click and “Save link as…” or request a custom pack.</p>
+
+    <div class="grid" style="margin-top:14px;">
+      <div class="card">
+        <div class="row"><strong>Logo (SVG)</strong></div>
+        <div><a href="/auspexi.svg" download>Download</a></div>
+      </div>
+      <div class="card">
+        <div class="row"><strong>Open Graph (SVG)</strong></div>
+        <div><a href="/og-image.svg" download>Download</a></div>
+      </div>
+      <div class="card">
+        <div class="row"><strong>Investor One‑Pager</strong></div>
+        <div><a href="/press/investor-brief-one-pager.html" target="_blank" rel="noreferrer">Open</a></div>
+      </div>
+      <div class="card">
+        <div class="row"><strong>Media Manifest</strong></div>
+        <div><a href="/press/manifest.json" target="_blank" rel="noreferrer">View</a></div>
+      </div>
+      <div class="card">
+        <div class="row"><strong>Explainer: Evidence‑Efficient AI</strong></div>
+        <div><a href="/blog/evidence-efficient-ai-73-percent-faster">Read</a></div>
+      </div>
+      <div class="card">
+        <div class="row"><strong>Story: A Billion Queries</strong></div>
+        <div><a href="/blog/a-billion-queries-10-months-promise-kept">Read</a></div>
+      </div>
+    </div>
+
+    <h2 style="margin-top:24px; font-size:1.25rem;">Video Clips</h2>
+    <p class="muted">We avoid zero‑second placeholders. If a clip displays 0s, it isn’t uploaded yet.</p>
+    <div id="videos" class="grid"></div>
+
+    <script>
+      // Load any video entries from manifest and skip 0-byte/0-duration placeholders
+      fetch('/press/manifest.json', { cache: 'no-store' })
+        .then(r => r.ok ? r.json() : null)
+        .then(man => {
+          const wrap = document.getElementById('videos');
+          if (!man || !Array.isArray(man.items)) return;
+          const vids = man.items.filter(it => it.type === 'video' && it.src);
+          vids.forEach(v => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            const video = document.createElement('video');
+            video.controls = true;
+            video.style.width = '100%';
+            video.style.background = '#000';
+            const src = document.createElement('source');
+            src.src = v.src;
+            video.appendChild(src);
+            const caption = document.createElement('div');
+            caption.className = 'muted';
+            caption.textContent = v.caption || v.src;
+            card.appendChild(video);
+            card.appendChild(caption);
+            wrap.appendChild(card);
+          });
+        })
+        .catch(() => {});
+    </script>
+  </div>
+</body>
+</html>
+
+

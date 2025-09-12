@@ -11,6 +11,7 @@ import { cpuRunner } from '../services/cpuRunnerService'
 import { residualBank, ResidualSignal } from '../services/residualBankService'
 import { buildEvidenceBundle, downloadSignedEvidenceZip } from '../services/evidenceService'
 import { hallucinationRisk, RiskThreshold } from '../services/hallucinationRiskService'
+import { PromptInjectionEvaluator, PiiLeakEvaluator, ToolErrorEvaluator, ToxicityEvaluator, BiasEvaluator, JailbreakEvaluator } from '../sdk/evaluators'
 import { platformApi } from '../services/platformApi'
 import BackButton from '../components/BackButton'
 
@@ -31,6 +32,8 @@ export const StabilityDemo: React.FC = () => {
   const [useCpuBackend, setUseCpuBackend] = useState<boolean>(false)
   const [riskTarget, setRiskTarget] = useState<number>(0.05)
   const [riskThreshold, setRiskThreshold] = useState<RiskThreshold | null>(null)
+  const [evalOn, setEvalOn] = useState<boolean>(false)
+  const evals = [new PromptInjectionEvaluator(), new PiiLeakEvaluator(), new ToolErrorEvaluator(), new ToxicityEvaluator(), new BiasEvaluator(), new JailbreakEvaluator()]
   const [lastRisk, setLastRisk] = useState<number | null>(null)
   const [sloConfig, setSloConfig] = useState<SLOConfig>({
     utility: {
@@ -693,9 +696,13 @@ export const StabilityDemo: React.FC = () => {
                 >
                   Calibrate
                 </button>
-                <label className="flex items-center gap-2 text-sm text-gray-700">
+                <label className="flex items-center gap-2 text-sm text-gray-900">
                   <input type="checkbox" checked={useCpuBackend} onChange={(e)=>setUseCpuBackend(e.target.checked)} />
                   Use CPU backend
+                </label>
+                <label className="flex items-center gap-2 text-sm text-gray-900">
+                  <input type="checkbox" checked={evalOn} onChange={(e)=>setEvalOn(e.target.checked)} />
+                  Always‑on Evaluators (6)
                 </label>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -714,6 +721,13 @@ export const StabilityDemo: React.FC = () => {
                 <div className="border rounded-lg p-3 text-sm">
                   <div className="text-gray-900">Error (accepted)</div>
                   <div className="font-mono">{selectiveEval ? selectiveEval.errorRate.toFixed(2) : '-'}</div>
+                </div>
+                <div className="col-span-2 md:col-span-4 border rounded-lg p-3 text-sm">
+                  <label className="flex items-center gap-2 text-gray-900">
+                    <input type="checkbox" onChange={(e)=>{ try { localStorage.setItem('aeg_deterministic', e.target.checked ? 'true' : 'false') } catch {} }} />
+                    Deterministic mode (batch‑invariant)
+                  </label>
+                  <div className="mt-2 text-xs text-gray-600">When enabled, critical paths use microbatch=1 and fixed precision. Evidence includes a determinism_profile.json.</div>
                 </div>
               </div>
               <div className="mt-4">
@@ -743,6 +757,28 @@ export const StabilityDemo: React.FC = () => {
                     ))}
                   </div>
                 )}
+              </div>
+              <div className="mt-4 border rounded-lg p-3 text-sm">
+                <div className="text-sm text-gray-900 font-semibold mb-2">Evaluator thresholds & fail‑closed</div>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  {['prompt_injection','pii_leak','toxicity','bias','jailbreak'].map((m)=> (
+                    <div key={m}>
+                      <label className="block text-gray-900">{m}</label>
+                      <input type="number" min={0} max={1} step={0.05} defaultValue={0.7} onChange={(e)=>{
+                        try {
+                          const thr = parseFloat(e.target.value)
+                          const obj = JSON.parse(localStorage.getItem('aeg_eval_thresholds')||'{}')
+                          obj[m] = thr
+                          localStorage.setItem('aeg_eval_thresholds', JSON.stringify(obj))
+                        } catch {}
+                      }} className="w-28 border rounded px-2 py-1 text-gray-900 bg-white" />
+                    </div>
+                  ))}
+                  <div className="flex items-center gap-2">
+                    <input type="checkbox" onChange={(e)=>{ try { localStorage.setItem('aeg_eval_fail_closed', e.target.checked ? 'true' : 'false') } catch {} }} />
+                    <span className="text-gray-900">Fail‑closed on high risk</span>
+                  </div>
+                </div>
               </div>
               <div className="mt-4">
                 <div className="flex items-center justify-between">

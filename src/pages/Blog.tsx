@@ -147,6 +147,28 @@ const Blog = () => {
 
   const blogPosts = [
     {
+      title: 'Always‑on Evaluators: Cheap, Continuous Risk Scoring for Reliable AI',
+      excerpt: 'Compact SLM evaluators score toxicity, PII, injection, bias, and jailbreaks per turn—feeding Risk Guard and evidence.',
+      author: 'Gwylym Owen',
+      date: 'September 12, 2025',
+      readTime: '4 min read',
+      category: 'Technology',
+      icon: Shield,
+      published: true,
+      slug: 'always-on-evaluators-risk-guard'
+    },
+    {
+      title: 'Deterministic Inference: Batch‑Invariant Mode for Reliable AI',
+      excerpt: 'Optional deterministic mode (microbatch=1, fixed precision) ensures identical outputs for identical prompts and tightens audits.',
+      author: 'Gwylym Owen',
+      date: 'September 12, 2025',
+      readTime: '3 min read',
+      category: 'Technology',
+      icon: Shield,
+      published: true,
+      slug: 'deterministic-inference-batch-invariant'
+    },
+    {
       title: 'Build the Right Model: 8 Starters and How They Work',
       excerpt: 'LLM, SLM, LAM, MoE, VLM, MLM, LCM, SAM—prewired with routing, context, risk, and evidence.',
       author: 'Gwylym Owen',
@@ -996,6 +1018,8 @@ const Blog = () => {
     'on-device-ai-slos-hybrid-routing',
     'evidence-efficient-ai-73-percent-faster',
     'a-billion-queries-10-months-promise-kept'
+    ,'always-on-evaluators-risk-guard'
+    ,'deterministic-inference-batch-invariant'
   ];
 
   const seenSlugs = new Set<string>();

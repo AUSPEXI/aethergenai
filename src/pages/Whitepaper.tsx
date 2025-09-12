@@ -130,6 +130,31 @@ const Whitepaper: React.FC = () => {
           </ul>
         </section>
 
+        <section id="evaluators" className="mb-10">
+          <h2 className="text-2xl font-semibold text-slate-900 mb-3">Always‑on Evaluators (SLM)</h2>
+          <p className="text-slate-800 mb-3">Compact small language models run continuously to score safety/quality metrics per turn (e.g., prompt injection, PII leak, toxicity, bias, jailbreak, tool errors). Scores inform the Risk Guard and can fail‑close responses when thresholds are exceeded.</p>
+          <ul className="list-disc ml-6 text-slate-800 space-y-1">
+            <li><b>Thresholds:</b> per‑metric, segment‑aware; configurable with a fail‑closed policy.</li>
+            <li><b>Evidence:</b> evaluation events and summaries are embedded in signed evidence bundles.</li>
+            <li><b>Runtime:</b> CPU/NPU‑first; GPU optional; parallelise cheap checks, sample heavy ones.</li>
+          </ul>
+        </section>
+
+        <section id="deterministic" className="mb-10">
+          <h2 className="text-2xl font-semibold text-slate-900 mb-3">Deterministic Inference (Batch‑Invariant)</h2>
+          <p className="text-slate-800 mb-3">Optional deterministic mode ensures identical outputs for identical prompts by fixing microbatching and precision and selecting deterministic kernels. This strengthens reproducibility for research, safety, and audits.</p>
+          <ul className="list-disc ml-6 text-slate-800 space-y-1">
+            <li><b>Mechanics:</b> microbatch=1 on critical paths; float32 matmul; fixed KV cache precision; deterministic attention where available.</li>
+            <li><b>Policy:</b> high‑risk and acceptance evaluations run in deterministic mode; fast paths may remain non‑deterministic.</li>
+            <li><b>Evidence:</b> determinism_profile.json summarizes flags, kernels, unique_outputs over N runs, and slowdown_factor.</li>
+          </ul>
+        </section>
+
+        <section id="evidence-scale" className="mb-10">
+          <h2 className="text-2xl font-semibold text-slate-900 mb-3">Evidence at Scale</h2>
+          <p className="text-slate-800 mb-3">Large‑scale runs (e.g., 1B queries) summarise resource savings and decision quality in evidence: token and latency reduction, large‑model call avoidance, and evaluator summaries. Procurement can verify signatures and thresholds.</p>
+        </section>
+
         <section id="hallucination-controls" className="mb-10">
           <h2 className="text-2xl font-semibold text-slate-900 mb-3">Hallucination Controls (Runtime)</h2>
           <p className="text-slate-800 mb-3">

@@ -109,7 +109,7 @@ const TermsOfUse = () => (
           <h2 className="text-xl font-semibold text-slate-900 mb-2">10. Contact Information</h2>
           <p className="text-slate-700">Legal/Privacy: sales@auspexi.com</p>
           <p className="text-slate-700">General/Support: sales@auspexi.com</p>
-          <p className="text-slate-700">Address: Auspexi Ltd, London, United Kingdom</p>
+          <p className="text-slate-700">Address: Auspexi Ltd, Surrey, United Kingdom</p>
         </section>
       </div>
     </div>

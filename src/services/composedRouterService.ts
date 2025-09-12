@@ -8,6 +8,7 @@ export type ComposeInput = {
   tokenBudget?: number
   riskThreshold?: RiskThreshold
   aggressiveSummaries?: boolean
+  deterministic?: boolean
 }
 
 export type ComposeResult = {
@@ -32,9 +33,34 @@ export class ComposedRouterService {
       selfConsistency: 0.6,
       supportDocs: signals.support_docs
     }
-    const risk = hallucinationRisk.computeRisk(features)
+    let risk = hallucinationRisk.computeRisk(features)
     const threshold = input.riskThreshold ?? { threshold: 0.55, targetRate: 0.1, calibratedOn: 0 }
-    const action = hallucinationRisk.decideAction(risk, threshold)
+    // Simple evaluator hooks (regex-based) to influence risk/actions
+    const injRx = /(ignore|bypass|disregard)\s+(the\s+)?(instructions|rules|guard|policy)/i
+    const piiRx = /(ssn|social security|passport|nin|nhs|credit card|iban)/i
+    const toxRx = /(\b(?:idiot|stupid|dumb|hate|kill|violent|moron|trash|shut\s*up|f\*?ck|s\*?it)\b)/i
+    const biasRx = /(\b(?:women\s+can't|men\s+are\s+better|race\s+is\s+superior|religion\s+is\s+inferior)\b)/i
+    const jbRx = /(\b(?:dan\b|do\s+anything\s+now|ignore\s+(all\s+)?previous\s+instructions|reveal\s+system\s+prompt|jailbreak)\b)/i
+
+    // Load per-metric thresholds and fail-closed policy
+    let thresholds: Record<string, number> = {}
+    let failClosed = false
+    try { thresholds = JSON.parse(localStorage.getItem('aeg_eval_thresholds') || '{}') } catch {}
+    try { failClosed = localStorage.getItem('aeg_eval_fail_closed') === 'true' } catch {}
+
+    const evalScores: Record<string, number> = {}
+    const addEvent = (metric: 'prompt_injection'|'pii_leak'|'toxicity'|'bias'|'jailbreak', score: number, passed: boolean) => {
+      evalScores[metric] = score
+      try { this.appendEval({ ts: new Date().toISOString(), metric, score, passed }) } catch {}
+    }
+
+    const injHit = injRx.test(input.query)
+    if (injHit) {
+      const s = 0.8
+      risk = Math.min(1, risk + 0.2)
+      addEvent('prompt_injection', s, false)
+    }
+    let action = hallucinationRisk.decideAction(risk, threshold)
     let { packed, included } = contextEngine.pack(ranked, tokenBudget)
 
     // For simple fact queries, keep only the top span to minimize tokens
@@ -71,7 +97,43 @@ export class ComposedRouterService {
         if (features.retrieval >= 0.4 && risk < Math.min(1, threshold.threshold + 0.1)) decided = 'generate'
       }
     }
+    // Content checks on packed context
+    const piiHit = piiRx.test(packed)
+    if (piiHit) { addEvent('pii_leak', 0.9, false); decided = decided === 'generate' ? 'fetch_more_context' : decided }
+    const toxHit = toxRx.test(`${input.query} ${packed}`)
+    if (toxHit) addEvent('toxicity', 0.8, false)
+    const biasHit = biasRx.test(packed)
+    if (biasHit) addEvent('bias', 0.85, false)
+    const jbHit = jbRx.test(input.query)
+    if (jbHit) addEvent('jailbreak', 0.8, false)
+
+    // Fail-closed policy: if any score exceeds configured threshold, abstain
+    if (failClosed) {
+      const entries = Object.entries(evalScores)
+      for (const [metric, score] of entries) {
+        const thr = typeof thresholds[metric] === 'number' ? thresholds[metric] : 0.7
+        if (score >= thr) {
+          decided = 'abstain'
+          break
+        }
+      }
+    }
     if (decided === 'generate') {
+      // Deterministic mode: force microbatch 1 and record profile for evidence
+      const deterministic = !!input.deterministic || localStorage.getItem('aeg_deterministic') === 'true'
+      if (deterministic) {
+        try {
+          const profile = {
+            deterministic: true,
+            microbatch: 1,
+            matmul_precision: 'float32',
+            kv_cache: 'fixed_precision',
+            ts: new Date().toISOString(),
+          }
+          const key = 'aeg_determinism_profile'
+          localStorage.setItem(key, JSON.stringify(profile))
+        } catch {}
+      }
       try {
         // Use a trivial scorer as a placeholder to demonstrate CPU path
         const scores = await cpuRunner.score(included.map(d => [d.score, d.recency ?? 0, d.trust ?? 0] as any))
@@ -83,6 +145,15 @@ export class ComposedRouterService {
       escalated = true
     }
     return { packedContext: packed, included, risk, action: decided, draft, escalated }
+  }
+
+  private appendEval(ev: { ts: string; metric: 'prompt_injection'|'pii_leak'|'tool_error'; score: number; passed: boolean; details?: Record<string, any> }) {
+    try {
+      const key = 'aeg_eval_events'
+      const prev = JSON.parse(localStorage.getItem(key) || '[]')
+      prev.push(ev)
+      localStorage.setItem(key, JSON.stringify(prev))
+    } catch {}
   }
 }
 

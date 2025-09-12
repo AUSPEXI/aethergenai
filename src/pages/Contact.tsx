@@ -12,7 +12,7 @@ const Contact = () => {
     {
       icon: MapPin,
       title: 'Location',
-      details: ['London, United Kingdom'],
+      details: ['Surrey, United Kingdom'],
       description: 'Headquartered in the heart of London'
     },
     {

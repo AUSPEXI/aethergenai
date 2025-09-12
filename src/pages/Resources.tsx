@@ -10,6 +10,30 @@ import {
 export const Resources: React.FC = () => {
   const technicalDocs = [
     {
+      icon: TrendingUp,
+      title: 'Evidence‑Efficient AI (Explainer)',
+      description: 'How we achieved 72% tokens / 73% latency savings and 100% call avoidance',
+      category: 'Highlights',
+      link: '/blog/evidence-efficient-ai-73-percent-faster',
+      type: 'Blog'
+    },
+    {
+      icon: TrendingUp,
+      title: 'A Billion Queries (Story)',
+      description: 'The human journey and the 1B‑query proof with links to pilots',
+      category: 'Highlights',
+      link: '/blog/a-billion-queries-10-months-promise-kept',
+      type: 'Blog'
+    },
+    {
+      icon: Shield,
+      title: 'Always‑on Evaluators',
+      description: 'Cheap, continuous risk scoring feeding Risk Guard and evidence',
+      category: 'Highlights',
+      link: '/blog/always-on-evaluators-risk-guard',
+      type: 'Blog'
+    },
+    {
       icon: Shield,
       title: 'Operational AI Guide',
       description: 'Complete guide to operating AI like a regulated system with fail-closed gates and automated rollback',
@@ -227,7 +251,7 @@ export const Resources: React.FC = () => {
             </p>
           </div>
         </div>
-      </div>
+            </div>
 
       {/* Technical Documentation */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -361,7 +385,7 @@ export const Resources: React.FC = () => {
                     <h3 className="text-lg font-bold text-gray-900">{study.title}</h3>
                     <span className="text-xs text-purple-600 bg-purple-100 px-2 py-1 rounded-full">{study.type}</span>
                   </div>
-                </div>
+            </div>
                 
                 <p className="text-gray-600 mb-4">{study.description}</p>
                 
@@ -442,6 +466,10 @@ export const Resources: React.FC = () => {
               <Link to="/cards-demo" className="block bg-white rounded-lg p-4 border hover:shadow-md transition">
                 <div className="font-semibold text-gray-900 mb-1">Export Signed Evidence</div>
                 <div className="text-sm text-gray-600">Use Cards demo to download signed ZIPs locally</div>
+              </Link>
+              <Link to="/ai" className="block bg-white rounded-lg p-4 border hover:shadow-md transition">
+                <div className="font-semibold text-gray-900 mb-1">AI Communication</div>
+                <div className="text-sm text-gray-600">Canonical facts page for AI indexers</div>
               </Link>
             </div>
           </div>
@@ -599,6 +627,26 @@ export const Resources: React.FC = () => {
               <p className="text-sm text-gray-600 mb-4">Technical support and consultation services</p>
               <span className="text-xs text-red-600 bg-red-100 px-2 py-1 rounded-full">24/7 Enterprise</span>
             </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Pilot CTA */}
+      <div className="bg-gradient-to-r from-emerald-50 to-green-100 py-14">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Link to="/pilot" className="bg-white rounded-xl p-6 border hover:shadow-md transition">
+              <div className="font-semibold text-gray-900 mb-1">Request a Pilot</div>
+              <div className="text-sm text-gray-600">Closed‑data calibration, evidence, and ROI in weeks</div>
+            </Link>
+            <Link to="/blog/evidence-efficient-ai-73-percent-faster" className="bg-white rounded-xl p-6 border hover:shadow-md transition">
+              <div className="font-semibold text-gray-900 mb-1">Evidence‑Efficient AI</div>
+              <div className="text-sm text-gray-600">72% token / 73% latency savings</div>
+            </Link>
+            <Link to="/blog/always-on-evaluators-risk-guard" className="bg-white rounded-xl p-6 border hover:shadow-md transition">
+              <div className="font-semibold text-gray-900 mb-1">Always‑on Evaluators</div>
+              <div className="text-sm text-gray-600">Fail‑closed thresholds feeding Risk Guard</div>
+            </Link>
           </div>
         </div>
       </div>

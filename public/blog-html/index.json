@@ -195,6 +195,16 @@
     "readTime": "18 min read"
   },
   {
+    "slug": "always-on-evaluators-risk-guard",
+    "title": "Always‑on Evaluators: Cheap, Continuous Risk Scoring for Reliable AI",
+    "readTime": "4 min read"
+  },
+  {
+    "slug": "deterministic-inference-batch-invariant",
+    "title": "Deterministic Inference: Batch‑Invariant Mode for Reliable AI",
+    "readTime": "3 min read"
+  },
+  {
     "slug": "a-billion-queries-10-months-promise-kept",
     "title": "A Billion Queries, 10 Months, and a Promise Kept",
     "readTime": "4 min read"

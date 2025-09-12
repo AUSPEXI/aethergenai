@@ -206,6 +206,11 @@ const Technology = () => {
                 <div className="text-white text-lg">Records Generated</div>
               </div>
               <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20 hover:bg-white/20 transition-all duration-300 transform hover:scale-105">
+                <div className="text-4xl font-bold text-green-400 mb-1">72%/73%</div>
+                <div className="text-white text-lg">Tokens / Latency</div>
+                <div className="text-blue-100 text-sm mt-1"><a href="/blog/evidence-efficient-ai-73-percent-faster" className="underline">Read explainer</a></div>
+              </div>
+              <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20 hover:bg-white/20 transition-all duration-300 transform hover:scale-105">
                 <div className="text-4xl font-bold text-green-400 mb-3">11</div>
                 <div className="text-white text-lg">Proprietary Inventions</div>
               </div>
@@ -226,7 +231,8 @@ const Technology = () => {
           </div>
           <div className="mt-3 text-sm text-slate-600">
             New to calibration and seeds? <Link to="/faq" className="text-blue-600 hover:underline">See the FAQ</Link> for anchors vs ZKP seeds and delivery. &nbsp;|&nbsp; 
-            Read our <Link to="/blog/hallucination-controls-runtime-gating-evidence" className="text-blue-600 hover:underline">Hallucination Controls (Runtime) explainer</Link>.
+            Read our <Link to="/blog/hallucination-controls-runtime-gating-evidence" className="text-blue-600 hover:underline">Hallucination Controls (Runtime)</Link> ·
+            <Link to="/blog/always-on-evaluators-risk-guard" className="text-blue-600 hover:underline ml-1">Always‑on Evaluators</Link>
           </div>
         </div>
       </section>

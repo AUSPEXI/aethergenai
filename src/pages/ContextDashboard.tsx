@@ -35,7 +35,11 @@ export default function ContextDashboard() {
       if (rp) setResultsPath(rp)
     } catch {}
     ;(async () => {
-      try { const r=await fetch('/context-gates.json'); if(r.ok) setGates(await r.json()) } catch {}
+      try {
+        const r=await fetch('/context-gates.json');
+        if(r.ok) setGates(await r.json())
+        else setError('Failed to load gates')
+      } catch (e:any) { setError(e?.message || 'Failed to load gates') }
       await fetchCollected()
     })()
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -93,7 +97,7 @@ export default function ContextDashboard() {
         <button onClick={fetchCollected} className="mt-2 px-3 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">Fetch Metrics</button>
       </div>
       <div className="mb-4">
-        <button onClick={async()=>{ const r=await fetch('/context-gates.json'); if(r.ok) setGates(await r.json())}} className="px-3 py-2 bg-slate-800 text-white rounded hover:bg-slate-900">Load Gates</button>
+        <button onClick={async()=>{ try { const r=await fetch('/context-gates.json'); if(r.ok) setGates(await r.json()); else setError('Failed to load gates') } catch(e:any){ setError(e?.message||'Failed to load gates') } }} className="px-3 py-2 bg-slate-800 text-white rounded hover:bg-slate-900">Load Gates</button>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-white border rounded p-4">

@@ -5,7 +5,12 @@
     { "type": "link", "href": "/blog/evidence-efficient-ai-73-percent-faster", "caption": "Evidence‑Efficient AI: Results & explainer" },
     { "type": "link", "href": "/blog/a-billion-queries-10-months-promise-kept", "caption": "A Billion Queries: Human story & impact" },
     { "type": "text", "headline": "1B‑query proof", "body": "72% fewer tokens, 73% faster total latency, 100% large‑model calls avoided. Method generalizes to closed data with anchors, SLM‑first, and risk‑aware answers." },
-    { "type": "link", "href": "/press/investor-brief-one-pager.html", "caption": "Investor One‑Pager (printable)" }
+    { "type": "link", "href": "/press/investor-brief-one-pager.html", "caption": "Investor One‑Pager (printable)" },
+    { "type": "link", "href": "/press/facts/journalist-fact-sheet.html", "caption": "Fact Sheet – Journalist" },
+    { "type": "link", "href": "/press/facts/investor-fact-sheet.html", "caption": "Fact Sheet – Investor" },
+    { "type": "link", "href": "/press/facts/enterprise-fact-sheet.html", "caption": "Fact Sheet – Enterprise" },
+    { "type": "link", "href": "/press/facts/partner-fact-sheet.html", "caption": "Fact Sheet – Partner" },
+    { "type": "link", "href": "/press/facts/research-fact-sheet.html", "caption": "Fact Sheet – Research" }
   ]
 }
 

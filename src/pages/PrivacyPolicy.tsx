@@ -116,7 +116,7 @@ const PrivacyPolicy = () => (
           <h2 className="text-xl font-semibold text-slate-900 mb-2">7. Contact Information</h2>
           <p className="text-slate-700">Data Protection Lead: sales@auspexi.com</p>
           <p className="text-slate-700">General Inquiries: sales@auspexi.com</p>
-          <p className="text-slate-700">Address: Auspexi Ltd, London, United Kingdom</p>
+          <p className="text-slate-700">Address: Auspexi Ltd, Surrey, United Kingdom</p>
         </section>
 
         <section className="mb-6">

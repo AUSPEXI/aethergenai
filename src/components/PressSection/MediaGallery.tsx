@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 
 type MediaItem = {
-  type: 'image' | 'video';
-  src: string;
-  alt?: string;
-  caption?: string;
-};
+  type: 'image' | 'video'
+  src: string
+  alt?: string
+  caption?: string
+}
 
 const defaultItems: MediaItem[] = [
   { type: 'image', src: '/og-image.svg', alt: 'AethergenAI OG Image', caption: 'AethergenAI overview' },
@@ -22,8 +22,14 @@ const MediaGallery: React.FC<{ items?: MediaItem[] }> = ({ items }) => {
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => {
         if (cancelled) return;
-        if (data && Array.isArray(data.items)) setLoaded(data.items as MediaItem[]);
-        else setLoaded(defaultItems);
+        if (data && Array.isArray(data.items)) {
+          const sanitized: MediaItem[] = (data.items as any[])
+            .filter((it) => (it && (it.type === 'image' || it.type === 'video') && typeof it.src === 'string' && it.src.length > 0))
+            .map((it) => ({ type: it.type, src: it.src, alt: it.alt, caption: it.caption }))
+          setLoaded(sanitized.length > 0 ? sanitized : defaultItems)
+        } else {
+          setLoaded(defaultItems)
+        }
       })
       .catch(() => setLoaded(defaultItems));
     return () => {

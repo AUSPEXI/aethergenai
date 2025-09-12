@@ -1,0 +1,15 @@
+Entity: Auspexi
+Instance of → Company
+Industry → Artificial Intelligence
+Specialization → Synthetic Data
+Founded by → Gwylym Pryce-Owen
+Founded in → 2023
+Product → AethergenPlatform
+AethergenPlatform → Type of → AI Training Platform
+AethergenPlatform → Focus → Privacy-Preserving Synthetic Data
+Official website → https://auspexi.com
+Canonical facts page → https://auspexi.com/ai
+Contact email → sales@auspexi.com
+Evidence → https://auspexi.com/blog/evidence-efficient-ai-73-percent-faster
+Evidence → https://auspexi.com/blog/a-billion-queries-10-months-promise-kept
+

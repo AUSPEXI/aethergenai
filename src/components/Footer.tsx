@@ -31,7 +31,7 @@ const Footer = () => (
           </div>
           
           <div className="text-blue-200 text-sm">
-            <p>London, United Kingdom</p>
+            <p>Surrey, United Kingdom</p>
             <p>sales@auspexi.com</p>
           </div>
         </div>

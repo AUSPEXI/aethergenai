@@ -370,7 +370,7 @@ export const MarketplaceDemo: React.FC = () => {
             <Package className="mr-3 text-blue-600" />
             Universal Marketplace Demo
           </h1>
-          <p className="text-lg text-gray-600">
+          <p className="text-lg text-gray-900">
             Platform-agnostic marketplace system for managing assets, trials, and conversions
           </p>
         </div>
@@ -403,7 +403,7 @@ export const MarketplaceDemo: React.FC = () => {
           <div className="bg-white rounded-lg shadow-md p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Total Assets</p>
+                <p className="text-sm font-medium text-gray-900">Total Assets</p>
                 <p className="text-2xl font-bold text-gray-900">{assets.length}</p>
               </div>
               <Package className="h-8 w-8 text-blue-600" />
@@ -413,7 +413,7 @@ export const MarketplaceDemo: React.FC = () => {
           <div className="bg-white rounded-lg shadow-md p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Active Trials</p>
+                <p className="text-sm font-medium text-gray-900">Active Trials</p>
                 <p className="text-2xl font-bold text-gray-900">{activeTrials.length}</p>
               </div>
               <Users className="h-8 w-8 text-green-600" />
@@ -423,7 +423,7 @@ export const MarketplaceDemo: React.FC = () => {
           <div className="bg-white rounded-lg shadow-md p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Conversion Rate</p>
+                <p className="text-sm font-medium text-gray-900">Conversion Rate</p>
                 <p className="text-2xl font-bold text-gray-900">
                   {(getAverageConversionRate() * 100).toFixed(1)}%
                 </p>
@@ -435,7 +435,7 @@ export const MarketplaceDemo: React.FC = () => {
           <div className="bg-white rounded-lg shadow-md p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Total Revenue</p>
+                <p className="text-sm font-medium text-gray-900">Total Revenue</p>
                 <p className="text-2xl font-bold text-gray-900">${getTotalRevenue()}</p>
               </div>
               <DollarSign className="h-8 w-8 text-green-600" />
@@ -464,11 +464,11 @@ export const MarketplaceDemo: React.FC = () => {
                   </span>
                 </div>
                 
-                <p className="text-gray-600 mb-4">{asset.description}</p>
+                <p className="text-gray-900 mb-4">{asset.description}</p>
                 
                 <div className="flex flex-wrap gap-2 mb-4">
                   {asset.tags.map(tag => (
-                    <span key={tag} className="px-2 py-1 bg-gray-100 text-gray-700 rounded-md text-xs">
+                    <span key={tag} className="px-2 py-1 bg-gray-100 text-gray-900 rounded-md text-xs">
                       {tag}
                     </span>
                   ))}
@@ -476,19 +476,19 @@ export const MarketplaceDemo: React.FC = () => {
                 
                 <div className="grid grid-cols-2 gap-4 mb-4">
                   <div>
-                    <p className="text-sm text-gray-600">Type</p>
+                    <p className="text-sm text-gray-900">Type</p>
                     <p className="font-medium">{asset.type}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">Version</p>
+                    <p className="text-sm text-gray-900">Version</p>
                     <p className="font-medium">{asset.version}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">Size</p>
+                    <p className="text-sm text-gray-900">Size</p>
                     <p className="font-medium">{(asset.metadata.fileSize / 1024 / 1024).toFixed(1)} MB</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">Trials</p>
+                    <p className="text-sm text-gray-900">Trials</p>
                     <p className="font-medium">{asset.trials.enabled ? 'Enabled' : 'Disabled'}</p>
                   </div>
                 </div>
@@ -613,13 +613,13 @@ export const MarketplaceDemo: React.FC = () => {
         {/* Status Messages */}
         {trialStatus && (
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-8">
-            <p className="text-blue-800">{trialStatus}</p>
+            <p className="text-blue-900">{trialStatus}</p>
           </div>
         )}
         
         {generationStatus && (
           <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-8">
-            <p className="text-green-800">{generationStatus}</p>
+            <p className="text-green-900">{generationStatus}</p>
           </div>
         )}
 
@@ -633,21 +633,21 @@ export const MarketplaceDemo: React.FC = () => {
             <div className="text-center">
               <Package className="h-12 w-12 text-blue-600 mx-auto mb-3" />
               <h3 className="font-semibold mb-2">Asset Management</h3>
-              <p className="text-gray-600 text-sm">
+              <p className="text-gray-900 text-sm">
                 Create, manage, and package datasets and models with comprehensive metadata and evidence
               </p>
             </div>
             <div className="text-center">
               <Users className="h-12 w-12 text-green-600 mx-auto mb-3" />
               <h3 className="font-semibold mb-2">Trial System</h3>
-              <p className="text-gray-600 text-sm">
+              <p className="text-gray-900 text-sm">
                 Automated trial provisioning, usage tracking, and conversion analytics
               </p>
             </div>
             <div className="text-center">
               <Shield className="h-12 w-12 text-purple-600 mx-auto mb-3" />
               <h3 className="font-semibold mb-2">Platform Agnostic</h3>
-              <p className="text-gray-600 text-sm">
+              <p className="text-gray-900 text-sm">
                 Works with Databricks, Azure, or your own marketplace infrastructure
               </p>
             </div>

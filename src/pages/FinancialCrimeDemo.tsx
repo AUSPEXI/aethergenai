@@ -67,8 +67,8 @@ export const FinancialCrimeDemo: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
       <div className="max-w-6xl mx-auto bg-white rounded-xl shadow p-6">
-        <h1 className="text-3xl font-bold mb-4">Financial Crime Lab</h1>
-        <p className="text-slate-600 mb-6">Generate synthetic transaction graphs with typologies, evaluate at operating budgets, and export for analysis.</p>
+        <h1 className="text-3xl font-bold mb-4 text-gray-900">Financial Crime Lab</h1>
+        <p className="text-gray-900 mb-6">Generate synthetic transaction graphs with typologies, evaluate at operating budgets, and export for analysis.</p>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
           <div>
@@ -92,15 +92,15 @@ export const FinancialCrimeDemo: React.FC = () => {
         {graphCounts && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
             <div className="bg-blue-50 p-4 rounded-lg">
-              <div className="text-sm text-slate-600">Nodes</div>
+              <div className="text-sm text-gray-900">Nodes</div>
               <div className="text-2xl font-bold text-blue-900">{graphCounts.nodes.toLocaleString()}</div>
             </div>
             <div className="bg-blue-50 p-4 rounded-lg">
-              <div className="text-sm text-slate-600">Edges</div>
+              <div className="text-sm text-gray-900">Edges</div>
               <div className="text-2xl font-bold text-blue-900">{graphCounts.edges.toLocaleString()}</div>
             </div>
             <div className="bg-blue-50 p-4 rounded-lg">
-              <div className="text-sm text-slate-600">OP Alerts/day</div>
+              <div className="text-sm text-gray-900">OP Alerts/day</div>
               <div className="text-2xl font-bold text-blue-900">{alertsPerDay.toLocaleString()}</div>
             </div>
           </div>
@@ -110,14 +110,14 @@ export const FinancialCrimeDemo: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
             <div className="bg-green-50 p-4 rounded-lg">
               <h3 className="font-semibold text-green-900 mb-2">Utility & Stability</h3>
-              <div className="text-sm text-green-800">Lift vs. baseline: {(result.eval.utility.lift_vs_baseline*100).toFixed(1)}% (CI [{(result.eval.utility.ci[0]*100).toFixed(0)}%, {(result.eval.utility.ci[1]*100).toFixed(0)}%])</div>
-              <div className="text-sm text-green-800">Region max delta: {(result.eval.stability.region_max_delta*100).toFixed(1)}%</div>
-              <div className="text-sm text-green-800">Product max delta: {(result.eval.stability.product_max_delta*100).toFixed(1)}%</div>
+              <div className="text-sm text-gray-900">Lift vs. baseline: {(result.eval.utility.lift_vs_baseline*100).toFixed(1)}% (CI [{(result.eval.utility.ci[0]*100).toFixed(0)}%, {(result.eval.utility.ci[1]*100).toFixed(0)}%])</div>
+              <div className="text-sm text-gray-900">Region max delta: {(result.eval.stability.region_max_delta*100).toFixed(1)}%</div>
+              <div className="text-sm text-gray-900">Product max delta: {(result.eval.stability.product_max_delta*100).toFixed(1)}%</div>
             </div>
             <div className="bg-yellow-50 p-4 rounded-lg">
               <h3 className="font-semibold text-yellow-900 mb-2">Latency & Cost</h3>
-              <div className="text-sm text-yellow-800">p50/p95/p99: {result.eval.latency.p50}/{result.eval.latency.p95}/{result.eval.latency.p99} ms</div>
-              <div className="text-sm text-yellow-800">Cases/analyst-hour: {result.eval.cost.cases_per_analyst_hour.toFixed(1)}</div>
+              <div className="text-sm text-gray-900">p50/p95/p99: {result.eval.latency.p50}/{result.eval.latency.p95}/{result.eval.latency.p99} ms</div>
+              <div className="text-sm text-gray-900">Cases/analyst-hour: {result.eval.cost.cases_per_analyst_hour.toFixed(1)}</div>
             </div>
             <div className="md:col-span-2 bg-slate-50 p-4 rounded-lg">
               <h3 className="font-semibold text-slate-900 mb-2">Sensitivity (mule_ring.size)</h3>

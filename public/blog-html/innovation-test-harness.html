@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Innovation Test Harness: Fast, Deterministic Model Evaluation</title>
+  <meta name="description" content="Deterministic, repeatable evaluation with ablations, stability probes, privacy checks, and exportable evidence. Turn experiments into auditable results fast." />
+  <style>
+    body{font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;color:#0f172a;line-height:1.7;margin:0;background:#f6f7fb}
+    .wrap{max-width:900px;margin:40px auto;padding:0 16px}
+    h1{font-size:2rem;margin:0 0 8px}
+    h2{font-size:1.25rem;margin-top:22px}
+    pre{white-space:pre-wrap;word-break:break-word;overflow-x:auto;background:#f8fafc;border:1px solid #e2e8f0;padding:12px;border-radius:8px}
+    .note{background:#eef2ff;border:1px solid #c7d2fe;padding:12px 14px;border-radius:10px;color:#1e3a8a}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Innovation Test Harness: Fast, Deterministic Model Evaluation</h1>
+    <p class="note">Deterministic, repeatable evaluation with ablations, stability probes, privacy checks, and exportable evidence. Built for rapid iteration and auditability.</p>
+
+    <h2>Why a Harness?</h2>
+    <p>Engineering velocity dies when each evaluation is bespoke. The harness provides <strong>determinism</strong> (fixed seeds, frozen recipes) and <strong>coverage</strong> (utility, stability, privacy) in a single, repeatable run. It produces signed evidence suitable for internal review and external buyers without exposing proprietary code.</p>
+
+    <h2>Architecture</h2>
+    <ul>
+      <li>Deterministic runs: fixed seeds, pinned versions, dataset snapshots (Delta commit/version).</li>
+      <li>Reproducible configs: JSON/YAML recipes; recipe hash recorded.</li>
+      <li>Ablations & probes: module toggles, feature families, DP budgets; stability under noise/fault injections.</li>
+      <li>Evidence export: signed manifest with metrics and deltas; checksums + SBOM for artifacts.</li>
+    </ul>
+
+    <h2>Capabilities</h2>
+    <ul>
+      <li>Model registry: Hugging Face + proprietary adapters with semantic versioning.</li>
+      <li>Task adapters: classification, ranking, regression, and generative scoring.</li>
+      <li>Ablations: feature drops, module on/off, DP ε schedules; quantisation levels.</li>
+      <li>Stability: jitter/dropout, domain shifts, corruption (vision/text), drift sweeps.</li>
+      <li>Privacy: membership inference, attribute disclosure; optional DP accounting.</li>
+      <li>Exports: CSV/Parquet summaries, JSON evidence bundle, signed manifest.json.</li>
+    </ul>
+
+    <h2>Workflow</h2>
+    <ol>
+      <li>Select dataset/task (snapshot) and one or more models.</li>
+      <li>Choose ablations and probes (e.g., ε ∈ {0.5, 0.8, 1.0}; brightness ±15%).</li>
+      <li>Run the suite; compare lift vs baseline and probe outcomes.</li>
+      <li>Export the evidence bundle; attach to review, contract, or listing.</li>
+    </ol>
+
+    <h2>Example Config</h2>
+    <pre>{
+  "task": "classification",
+  "dataset": { "name": "aml_graph_v2", "deltaVersion": 143 },
+  "models": [
+    { "id": "hf:distilroberta-base", "rev": "1.1.0" },
+    { "id": "internal:graph-ranker-v3", "rev": "3.2.4" }
+  ],
+  "ablations": { "features": ["device_id"], "dp_epsilons": [0.5, 0.8, 1.0] },
+  "stability": { "packet_drop": 0.1, "time_shift": "7d" },
+  "metrics": ["auc", "f1", "ks"],
+  "privacy": { "mia": true, "attribute": ["age_band", "segment"] }
+}</pre>
+
+    <h2>Evidence Outputs</h2>
+    <ul>
+      <li>Utility: AUC/F1/MAE/KS deltas vs baseline; confidence intervals.</li>
+      <li>Stability: drift sensitivity and performance under corruptions.</li>
+      <li>Privacy: MIA/attribute disclosure summaries; DP ε/δ when used.</li>
+      <li>Lineage: dataset versions, recipe hash, artifact checksums, container digest.</li>
+      <li>Ablation table: per‑toggle deltas for review.</li>
+    </ul>
+
+    <h2>Reading Results</h2>
+    <ul>
+      <li>Highlight changes that matter with effect sizes and uncertainty.</li>
+      <li>Fail‑closed: if privacy bounds exceed thresholds or utility regresses beyond tolerance.</li>
+    </ul>
+
+    <h2>Try it</h2>
+    <p>Use the Stability Demo and Evidence Export to generate a small, local bundle with simulated data. Deterministic mode ensures identical outputs for identical prompts.</p>
+  </div>
+</body>
+</html>
+
+

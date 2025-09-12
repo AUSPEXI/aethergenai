@@ -139,7 +139,7 @@ export const AutomotiveDemo: React.FC = () => {
 					<h1 className="text-4xl font-bold text-gray-900 mb-4">
 						🚗 Automotive Quality Control Demo
 					</h1>
-					<p className="text-xl text-gray-600 max-w-3xl mx-auto">
+					<p className="text-xl text-gray-900 max-w-3xl mx-auto">
 						Experience the complete automotive quality control system with golden runs, 
 						calibration workflows, maintenance procedures, and edge packaging.
 					</p>
@@ -164,7 +164,7 @@ export const AutomotiveDemo: React.FC = () => {
 								}`}
 							>
 								<div className="font-semibold capitalize">{type}</div>
-								<div className="text-sm text-gray-600 mt-1">
+								<div className="text-sm text-gray-900 mt-1">
 									{getStationDescription(type)}
 								</div>
 							</button>
@@ -217,8 +217,8 @@ export const AutomotiveDemo: React.FC = () => {
 						</div>
 						
 						<div className="bg-gray-50 rounded-lg p-4">
-							<h3 className="font-semibold mb-2">Golden Run Status:</h3>
-							<p className="text-sm text-gray-600">{goldenRunStatus || 'Ready to create golden run'}</p>
+							<h3 className="font-semibold mb-2 text-gray-900">Golden Run Status:</h3>
+							<p className="text-sm text-gray-900">{goldenRunStatus || 'Ready to create golden run'}</p>
 						</div>
 					</div>
 				</div>

@@ -34,7 +34,20 @@ const Press = () => {
       {/* Press Kit Builder */}
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <PressKitBuilder />
+          <PressKitBuilder onDownload={(kit) => {
+            try {
+              const a = (kit?.audience || '').toLowerCase()
+              const map: Record<string, string> = {
+                'journalist/media': '/press/kits/journalist.html',
+                'investor/vc': '/press/kits/investor.html',
+                'enterprise client': '/press/kits/enterprise.html',
+                'strategic partner': '/press/kits/partner.html',
+                'research institution': '/press/kits/research.html',
+              }
+              const target = map[a] || '/press/press-kit.html'
+              window.location.href = target
+            } catch (_) { /* no-op */ }
+          }} />
         </div>
       </section>
 

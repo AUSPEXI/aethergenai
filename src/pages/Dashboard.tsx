@@ -46,6 +46,14 @@ export default function Dashboard() {
             <div className="flex items-center mb-2 text-slate-900"><FileText className="w-5 h-5 mr-2 text-indigo-600" /> Evidence‑Efficient AI (73%)</div>
             <div className="text-slate-700 text-sm">Plain‑English explainer and results.</div>
           </Link>
+          <Link to="/stability-demo#evaluators" className="block bg-white border border-slate-200 rounded-xl p-6 hover:border-blue-300 hover:bg-blue-50/30 transition">
+            <div className="flex items-center mb-2 text-slate-900"><Shield className="w-5 h-5 mr-2 text-indigo-600" /> Evaluations</div>
+            <div className="text-slate-700 text-sm">Thresholds & fail‑closed actions; live scores.</div>
+          </Link>
+          <Link to="/blog/a-billion-queries-10-months-promise-kept" className="block bg-white border border-slate-200 rounded-xl p-6 hover:border-blue-300 hover:bg-blue-50/30 transition">
+            <div className="flex items-center mb-2 text-slate-900"><FileText className="w-5 h-5 mr-2 text-indigo-600" /> A Billion Queries (Story)</div>
+            <div className="text-slate-700 text-sm">Human story, 1B proof, and pilot CTA.</div>
+          </Link>
 
           <Link to="/air-gapped-demo" className="block bg-white border border-slate-200 rounded-xl p-6 hover:border-blue-300 hover:bg-blue-50/30 transition">
             <div className="flex items-center mb-2 text-slate-900"><Package className="w-5 h-5 mr-2 text-indigo-600" /> Evidence Export</div>

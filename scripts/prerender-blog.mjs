@@ -43,7 +43,7 @@ function extractContent(html) {
   return { title, description, style, body }
 }
 
-function buildDoc({ slug, title, description, style, body }) {
+function buildDoc({ slug, title, description, style, body, mtimeIso }) {
   const canonical = `${SITE}/blog/${slug}`
   const ld = {
     '@context': 'https://schema.org',
@@ -51,12 +51,14 @@ function buildDoc({ slug, title, description, style, body }) {
     headline: title,
     author: { '@type': 'Person', name: 'Gwylym Pryce-Owen' },
     mainEntityOfPage: canonical,
-    datePublished: new Date().toISOString(),
+    datePublished: mtimeIso,
+    dateModified: mtimeIso,
     image: `${SITE}/og-image.svg`,
     publisher: { '@type': 'Organization', name: 'Auspexi' },
     license: 'PROPRIETARY',
     creator: { '@type': 'Organization', name: 'Auspexi' },
-    description
+    description,
+    articleBody: stripTags(body).slice(0, 15000)
   }
   const backBar = `\n<div style="position:sticky;top:0;z-index:50;background:#ffffff;border-bottom:1px solid #e5e7eb;">\n  <div style="max-width:960px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px;">\n    <a href="/" style="color:#0f172a;text-decoration:none;font-weight:700">Auspexi</a>\n    <button onclick="(function(){try{history.back()}catch(e){} setTimeout(function(){ if(!document.referrer || !/\\/blog/.test(document.referrer)){ location.href='/blog' } },50);})()" style="margin-left:auto;background:#2563eb;color:#fff;border:none;padding:6px 10px;border-radius:6px;cursor:pointer">← Back to Blog</button>\n  </div>\n</div>`
   return `<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="utf-8"/>\n<meta name="viewport" content="width=device-width, initial-scale=1"/>\n<title>${escapeHtml(title)}</title>\n<link rel="canonical" href="${canonical}"/>\n<meta name="description" content="${escapeHtml(description)}"/>\n<script type="application/ld+json">${JSON.stringify(ld)}</script>\n<style>${style}</style>\n</head>\n<body>\n${backBar}\n${body}\n</body>\n</html>\n`
@@ -64,6 +66,15 @@ function buildDoc({ slug, title, description, style, body }) {
 
 function escapeHtml(s) {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+}
+
+function stripTags(html) {
+  return String(html)
+    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
 }
 
 function run() {
@@ -77,12 +88,13 @@ function run() {
     const slug = entry.slug
     const src = path.join(blogHtmlDir, `${slug}.html`)
     if (!fs.existsSync(src)) continue
+    const mtimeIso = fs.statSync(src).mtime.toISOString()
     const raw = fs.readFileSync(src, 'utf-8')
     const { title, description, style, body } = extractContent(raw)
     const outDir = path.join(blogOutDir, slug)
     ensureDir(outDir)
     const outFile = path.join(outDir, 'index.html')
-    const doc = buildDoc({ slug, title, description, style, body })
+    const doc = buildDoc({ slug, title, description, style, body, mtimeIso })
     fs.writeFileSync(outFile, doc, 'utf-8')
     console.log(`Prerendered /blog/${slug}`)
   }

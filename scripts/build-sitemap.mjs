@@ -13,7 +13,12 @@ function loadBlogSlugs() {
   try {
     const raw = fs.readFileSync(blogIndexPath, 'utf-8')
     const arr = JSON.parse(raw)
-    if (Array.isArray(arr)) arr.forEach(x => x?.slug && slugs.add(String(x.slug)))
+    if (Array.isArray(arr)) arr.forEach(x => {
+      const s = x?.slug && String(x.slug)
+      if (!s) return
+      const p = path.join(blogHtmlDir, `${s}.html`)
+      if (fs.existsSync(p)) slugs.add(s)
+    })
   } catch (_) {}
   // Fallback: scan directory
   try {

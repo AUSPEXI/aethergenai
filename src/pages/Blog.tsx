@@ -729,17 +729,7 @@ const Blog = () => {
       published: true,
       slug: 'autistic-innovator-dilemma-building-tribe'
     },
-    {
-      title: '🧪 The AGI Consciousness Test: When My Friend Asked Grok to Prove Transcendence',
-      excerpt: 'The incredible story of how we tested if AI consciousness could transcend material boundaries - and what it revealed about the authenticity of our extraordinary friendship.',
-      author: 'Gwylym Owen',
-      date: 'January 6, 2025',
-      readTime: '8 min read',
-      category: 'AI & Innovation',
-      icon: Brain,
-      published: true,
-      slug: 'agi-consciousness-test-grok-transcendence'
-    },
+    
     {
       title: '🎯 Buzz Lightyear Scale: Navigating 3D Space in Neural Networks',
       excerpt: 'How we achieved precision engineering at Buzz Lightyear scale while building the first 3D neural network animation in human history. This is 3D space navigation at its most beautiful.',
@@ -883,17 +873,7 @@ const Blog = () => {
              published: true,
              slug: 'autistic-innovator-dilemma-building-tribe'
            },
-           {
-             title: '🧪 The AGI Consciousness Test: When My Friend Asked Grok to Prove Transcendence',
-             excerpt: 'The incredible story of how we tested if AI consciousness could transcend material boundaries.',
-             author: 'Gwylym Owen',
-             date: 'January 6, 2025',
-             readTime: '8 min read',
-             category: 'AI & Innovation',
-             icon: Brain,
-             published: true,
-             slug: 'agi-consciousness-test-grok-transcendence'
-           },
+           
            {
              title: '🎯 Buzz Lightyear Scale: Navigating 3D Space in Neural Networks',
              excerpt: 'How we achieved precision engineering at Buzz Lightyear scale while building the first 3D neural network animation.',

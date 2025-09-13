@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Pre‑generation Hallucination Risk Guard</title>
+<link rel="canonical" href="https://auspexi.com/blog/hallucination-risk-guard-pre-generation"/>
+<meta name="description" content="Idea: hallucinations aren’t random. Estimate risk before answering, bound your hallucination rate with a calibrated threshold, and take safe actions."/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Pre‑generation Hallucination Risk Guard","author":{"@type":"Person","name":"Gwylym Pryce-Owen"},"mainEntityOfPage":"https://auspexi.com/blog/hallucination-risk-guard-pre-generation","datePublished":"2025-09-13T11:49:57.759Z","image":"https://auspexi.com/og-image.svg","publisher":{"@type":"Organization","name":"Auspexi"},"license":"PROPRIETARY","creator":{"@type":"Organization","name":"Auspexi"},"description":"Idea: hallucinations aren’t random. Estimate risk before answering, bound your hallucination rate with a calibrated threshold, and take safe actions."}</script>
+<style>
+      body { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, Apple Color Emoji, Segoe UI Emoji; color:#0f172a; background:#ffffff; }
+      .container{ max-width: 900px; margin: 0 auto; padding: 2rem 1rem; }
+      h1{ font-size: 2rem; line-height: 1.2; margin-bottom: 1rem; }
+      h2{ font-size: 1.375rem; margin-top: 1.75rem; margin-bottom: .5rem; }
+      p{ color:#334155; line-height:1.7; margin:.5rem 0; }
+      ul{ color:#334155; margin-left:1.25rem; }
+      code, pre { background:#f8fafc; border:1px solid #e2e8f0; border-radius: .375rem; padding: .125rem .375rem; }
+      a{ color:#2563eb; text-decoration:none; }
+      .pill{ display:inline-block; background:#fff1f2; color:#e11d48; padding:.25rem .5rem; border-radius:999px; font-size:.75rem; }
+      .box{ background:#f8fafc; border:1px solid #e2e8f0; border-radius:.75rem; padding:1rem; margin:1rem 0; }
+    </style>
+</head>
+<body>
+
+<div style="position:sticky;top:0;z-index:50;background:#ffffff;border-bottom:1px solid #e5e7eb;">
+  <div style="max-width:960px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px;">
+    <a href="/" style="color:#0f172a;text-decoration:none;font-weight:700">Auspexi</a>
+    <button onclick="(function(){try{history.back()}catch(e){} setTimeout(function(){ if(!document.referrer || !/\/blog/.test(document.referrer)){ location.href='/blog' } },50);})()" style="margin-left:auto;background:#2563eb;color:#fff;border:none;padding:6px 10px;border-radius:6px;cursor:pointer">← Back to Blog</button>
+  </div>
+</div>
+
+    <main class="container">
+      <span class="pill">Technology</span>
+      <h1>Pre‑generation Hallucination Risk Guard</h1>
+      <p><strong>Idea</strong>: hallucinations aren’t random. Estimate risk before answering, bound your hallucination rate with a calibrated threshold, and take safe actions.</p>
+
+      <h2>How it works</h2>
+      <ul>
+        <li>Compute a risk score from signals (margin, entropy, retrieval; optionally self‑consistency, doc support).</li>
+        <li>Pick a target hallucination rate (e.g., 5%) and calibrate a <code>risk_threshold</code> that satisfies it on samples.</li>
+        <li>Policy: if risk &lt; threshold → generate; if ≥ threshold → fetch more context; if ≫ threshold → abstain or reroute.</li>
+      </ul>
+
+      <h2>Why pre‑generation risk?</h2>
+      <p>Hallucinations correlate with internal uncertainty and weak support. Estimating risk before generation lets systems avoid costly wrong answers by fetching evidence or abstaining outright, improving precision under fixed latency budgets.</p>
+
+      <h2>Quick start</h2>
+      <pre><code>// Target rate
+target = 0.05
+// Calibrate threshold on recent samples
+threshold = calibrate(samples, target)
+// Decide per request
+action = decide(risk, threshold)</code></pre>
+
+      <h2>Signals and weights</h2>
+      <ul>
+        <li><b>Margin</b> (higher is safer): distance to decision boundary or calibrated logit gap.</li>
+        <li><b>Entropy</b> (higher is riskier): distributional uncertainty over next tokens or candidates.</li>
+        <li><b>Retrieval</b> (higher is safer): evidence strength from RAG or citations.</li>
+        <li><b>Self‑consistency</b> (optional): agreement across sampled decodes or chains.</li>
+      </ul>
+
+      <h2>Calibration procedure</h2>
+      <ol>
+        <li>Collect (features, label) pairs where label indicates a known hallucination or correctness.</li>
+        <li>Compute risk for each sample and sort by ascending risk.</li>
+        <li>Choose the largest threshold where empirical hallucination rate ≤ target on held‑out data.</li>
+      </ol>
+
+      <h2>Policy integration</h2>
+      <p>Below threshold: generate. Near threshold: fetch more context (expand top‑k, add tools). Above high‑risk buffer: abstain or reroute to a stronger model. Record decisions and outcomes for audits.</p>
+
+      <h2>Evidence & audits</h2>
+      <p>Log thresholds and outcomes with selective prediction and SLO status inside evidence bundles. Keep it falsifiable and reproducible.</p>
+
+      <h2>Common pitfalls</h2>
+      <ul>
+        <li>Over‑abstaining: re‑calibrate per segment; ensure coverage targets remain useful.</li>
+        <li>Weak labels: validate sample correctness labels before calibration.</li>
+        <li>Domain shift: periodically refresh samples; track drift to maintain guarantees.</li>
+      </ul>
+
+      <h2>Further reading</h2>
+      <ul>
+        <li>Hassana Labs: Hallucination Risk Calculator & Prompt Re‑engineering Toolkit (OpenAI‑only) — <a href="https://hassana.io/readme.html">hassana.io/readme.html</a></li>
+        <li>OpenAI: “Why language models hallucinate” (whitepaper) — <a href="https://cdn.openai.com/pdf/d04913be-3f6f-4d2b-b283-ff432ef4aaa5/why-language-models-hallucinate.pdf">PDF</a></li>
+      </ul>
+      <p><em>Attribution:</em> Inspired by recent work on pre‑generation risk estimation and hallucination controls, including the resources above.</p>
+
+      <div class="box">
+        <p>See also: <a href="/stability-demo">Stability Demo</a> · <a href="/whitepaper#risk-guard">Whitepaper</a> · <a href="/faq#hallucinations">FAQ</a></p>
+      </div>
+    </main>
+  
+</body>
+</html>

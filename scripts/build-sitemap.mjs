@@ -45,7 +45,7 @@ function buildUrls() {
     const slug = p.replace('blog/','')
     const src = isBlog ? path.join(publicDir, 'blog-html', `${slug}.html`) : null
     const lastmod = src ? mtimeFor(src) : null
-    const loc = isBlog ? `${SITE}/blog/${slug}/` : `${SITE}/${p}`
+    const loc = isBlog ? `${SITE}/blog/${slug}` : `${SITE}/${p}`
     return { loc, lastmod }
   })
 }

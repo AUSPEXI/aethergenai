@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Insurance Fraud Playbooks: Synthetic Scenarios for Safer Evaluation</title>
+<link rel="canonical" href="https://auspexi.com/blog/insurance-fraud-playbooks-synthetic-scenarios"/>
+<meta name="description" content="By Gwylym Owen — 20–28 min read"/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Insurance Fraud Playbooks: Synthetic Scenarios for Safer Evaluation","author":{"@type":"Person","name":"Gwylym Pryce-Owen"},"mainEntityOfPage":"https://auspexi.com/blog/insurance-fraud-playbooks-synthetic-scenarios","datePublished":"2025-09-13T11:49:37.233Z","image":"https://auspexi.com/og-image.svg","publisher":{"@type":"Organization","name":"Auspexi"},"license":"PROPRIETARY","creator":{"@type":"Organization","name":"Auspexi"},"description":"By Gwylym Owen — 20–28 min read"}</script>
+<style>
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: none;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .article {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        h2 {
+            color: #34495e;
+            font-size: 1.8em;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+        p {
+            margin-bottom: 20px;
+            font-size: 1.1em;
+        }
+        .meta {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        .highlight {
+            background-color: #e8f5e8;
+            padding: 15px;
+            border-left: 4px solid #27ae60;
+            margin: 20px 0;
+        }
+        blockquote {
+            border-left: 4px solid #3498db;
+            padding-left: 20px;
+            margin: 20px 0;
+            font-style: italic;
+            color: #555;
+        }
+        .framework {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #27ae60;
+        }
+        .framework h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        .framework ol {
+            padding-left: 20px;
+        }
+        .framework li {
+            margin-bottom: 10px;
+        }
+        .carbon-tracker {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 25px 0;
+        }
+        .carbon-tracker h3 {
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+        .carbon-tracker ul {
+            list-style: none;
+            padding: 0;
+        }
+        .carbon-tracker li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+        .carbon-tracker li:last-child {
+            border-bottom: none;
+        }
+    
+  </style>
+</head>
+<body>
+
+<div style="position:sticky;top:0;z-index:50;background:#ffffff;border-bottom:1px solid #e5e7eb;">
+  <div style="max-width:960px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px;">
+    <a href="/" style="color:#0f172a;text-decoration:none;font-weight:700">Auspexi</a>
+    <button onclick="(function(){try{history.back()}catch(e){} setTimeout(function(){ if(!document.referrer || !/\/blog/.test(document.referrer)){ location.href='/blog' } },50);})()" style="margin-left:auto;background:#2563eb;color:#fff;border:none;padding:6px 10px;border-radius:6px;cursor:pointer">← Back to Blog</button>
+  </div>
+</div>
+
+  <div class="article">
+<h1>Insurance Fraud Playbooks: Synthetic Scenarios for Safer Evaluation</h1>
+  <p><em>By Gwylym Owen — 20–28 min read</em></p>
+
+  <h2>Executive Summary</h2>
+  <p>AethergenPlatform can provide <strong>synthetic playbooks</strong>—parameterized fraud scenarios that allow investigators and data teams to evaluate detection strategies safely without exposing protected health information (PHI) or personally identifiable information (PII). Each playbook includes evidence at operating points (OPs) and privacy probes, enabling procurement to sign off quickly and confidently as of September 2025.</p>
+
+  <h2>Typology Library: Comprehensive Fraud Patterns</h2>
+  <p>The typology library captures a wide range of insurance fraud behaviors, each with configurable parameters for realistic testing:</p>
+  <ul>
+    <li><strong>Upcoding</strong>: Overbilling by specialty (e.g., cardiology), with a factor range (e.g., 1.1x to 1.5x normal rates).</li>
+    <li><strong>Unbundling</strong>: Splitting components (e.g., lab tests) with pressure to bundle (e.g., 80% bundling rate).</li>
+    <li><strong>Phantom Providers</strong>: Fake providers with distance/time collisions (e.g., claims from 50 miles apart in 1 hour).</li>
+    <li><strong>Doctor Shopping</strong>: Overlapping prescriptions with device reuse (e.g., 25% reuse rate across patients).</li>
+    <li><strong>Duplicate Billing</strong>: Repeated claims with delay windows (e.g., 7-14 days) and modifiers (e.g., +10% fee).</li>
+    <li><strong>Kickback Rings</strong>: Referral cycles with abnormal amounts (e.g., $500+ per referral).</li>
+  </ul>
+
+  <h2>Parameters: Customizable Scenarios</h2>
+  <p>Playbooks are highly tunable to reflect real-world variability:</p>
+  <ul>
+    <li><strong>Prevalence and Severity</strong>: Distributions for fraud frequency (e.g., 4% base rate) and impact (e.g., $1,000-$5,000 losses).</li>
+    <li><strong>Co-occurrence Rates</strong>: Probability of multiple typologies overlapping (e.g., upcoding with unbundling at 15%).</li>
+    <li><strong>Timing Windows</strong>: Adjustable periods for fraud events (e.g., 14-day windows for doctor shopping).</li>
+    <li><strong>Regional and Plan Overlays</strong>: Tailoring to specific insurance plans or geographic areas (e.g., higher prevalence in urban zones).</li>
+  </ul>
+
+  <h2>Evidence at Operating Point: Actionable Metrics</h2>
+  <p>Each playbook delivers evidence tailored to operational needs:</p>
+  <ul>
+    <li><strong>Detection at Fixed FPR Budgets</strong>: Performance at set false-positive rates (e.g., 1% FPR for 2,000 alerts/day), with confidence intervals (e.g., [0.75, 0.78]).</li>
+    <li><strong>Segment Stability</strong>: Consistency across regions (e.g., NA, EU) and specialties (e.g., orthopedics), with max deltas (e.g., < 3%).</li>
+    <li><strong>Cost Curves</strong>: Incremental cases per analyst-hour (e.g., 5 cases/hour at 1% FPR) to optimize resource allocation.</li>
+  </ul>
+
+  <h2>Privacy: Safeguarding Data</h2>
+  <p>Privacy is paramount, ensured through rigorous testing:</p>
+  <ul>
+    <li><strong>Probes</strong>: Membership-inference and attribute-disclosure tests with confidence intervals (e.g., MIA at 2% [1%, 3%], below 5% threshold).</li>
+    <li><strong>Optional DP Budgets</strong>: Differential privacy settings per policy (e.g., ε=2.0, δ=1e-6) with utility impact (e.g., -1% ± 0.5%), disclosed in evidence.</li>
+  </ul>
+
+  <h2>Playbook Generation: A Deeper Dive</h2>
+  <p>AethergenPlatform automates playbook creation via a structured process:</p>
+  <ol>
+    <li><strong>Schema Design</strong>: Define fields (e.g., provider ID, claim amount) and privacy constraints in a designer tool.</li>
+    <li><strong>Synthetic Data</strong>: Generate datasets with calibrated distributions and typology parameters, logged with seeds.</li>
+    <li><strong>Evaluation Pipeline</strong>: Run models, compute OP metrics, stability bands, and privacy probes, generating plots and tables.</li>
+    <li><strong>Bundling</strong>: Create a signed ZIP with `metrics/`, `plots/`, `configs/`, and `playbook.yaml`, including hashes.</li>
+  </ol>
+
+  <h2>Playbook YAML: Detailed Configuration</h2>
+  <pre>
+playbooks:
+  upcoding:
+    prevalence: 0.04
+    factor: {min: 1.1, max: 1.5}
+    specialty_weights: {cardiology: 0.3, orthopedics: 0.25}
+  doctor_shopping:
+    window_days: 14
+    device_reuse: 0.25
+    co_occurrence: {unbundling: 0.15}
+  phantom_providers:
+    collision_window: 1h
+    distance_threshold: 50mi
+  duplicate_billing:
+    delay_range: [7, 14]
+    modifier: 0.1
+  </pre>
+
+  <h2>Case Study: Payer Fraud Detection</h2>
+  <p><strong>Scenario</strong>: A health insurance payer tested fraud detection using upcoding and doctor shopping playbooks.</p>
+  <ul>
+    <li><strong>OP Definition</strong>: 2,000 alerts/day at 1% FPR, set with operations.</li>
+    <li><strong>Utility</strong>: +23% yield vs. legacy rules, CI [20%, 26%].</li>
+    <li><strong>Stability</strong>: 2.1% max delta across regions, within 3% gate.</li>
+    <li><strong>Cost</strong>: 6 cases/analyst-hour, up from 4.9 with rules.</li>
+    <li><strong>Privacy</strong>: MIA at 1.8% (CI [1%, 2.6%], below 5% threshold); no DP applied.</li>
+    <li><strong>Outcome</strong>: Procurement accepted with quarterly refresh and rollback SOPs after a 12-day review.</li>
+  </ul>
+
+  <h2>Case Study: Specialty Fraud at a Regional Insurer</h2>
+  <p><strong>Scenario</strong>: A regional insurer targeted unbundling and phantom provider fraud.</p>
+  <ul>
+    <li><strong>OP Definition</strong>: 1,500 alerts/day at 0.5% FPR.</li>
+    <li><strong>Utility</strong>: +19% detection lift, CI [16%, 22%].</li>
+    <li><strong>Stability</strong>: 1.9% max delta across specialties, within 3% gate.</li>
+    <li><strong>Cost</strong>: 5.2 cases/analyst-hour, improving efficiency.</li>
+    <li><strong>Privacy</strong>: Attribute-disclosure at 1.2% (CI [0.5%, 1.9%], below 3% threshold) with ε-DP at 1.5.</li>
+    <li><strong>Outcome</strong>: Policy adopted in 15 days with evidence bundle filed.</li>
+  </ul>
+
+  <h2>Governance and Change-Control</h2>
+  <p>AethergenPlatform ensures safe deployment:</p>
+  <ul>
+    <li><strong>CI Gates</strong>: Fail-closed checks on OP utility, stability, and privacy before release.</li>
+    <li><strong>Change Logs</strong>: `.aethergen/change-log.json` tracks updates, signed per playbook release.</li>
+    <li><strong>Rollback SOPs</strong>: Predefined triggers and procedures, rehearsed during review.</li>
+  </ul>
+
+  <h2>FAQ</h2>
+  <details>
+    <summary>Can we tune prevalence on the fly?</summary>
+    <p>Yes—parameters are exposed in Jupyter notebooks and dashboards for safe rehearsal and adjustment.</p>
+  </details>
+  <details>
+    <summary>How do we avoid overfitting to synthetic quirks?</summary>
+    <p>We use feature ablations and sanity checks; playbooks include intended use limits and stability metrics in evidence to guide real-world validation.</p>
+  </details>
+  <details>
+    <summary>Can we share playbooks with auditors?</summary>
+    <p>Yes—export as Parquet with schemas, and the evidence bundle includes seeds for regeneration and verification.</p>
+  </details>
+
+  <h2>Glossary</h2>
+  <ul>
+    <li><strong>Operating Point (OP)</strong>: Threshold for detection performance (e.g., 1% FPR).</li>
+    <li><strong>Playbook</strong>: Parameterized synthetic scenario for fraud evaluation.</li>
+    <li><strong>Evidence Bundle</strong>: Signed ZIP with metrics, plots, and configs for audit.</li>
+  </ul>
+
+  <h2>Closing</h2>
+  <p>Playbooks make insurance fraud evaluations repeatable, safe, and auditable. <strong>AethergenPlatform</strong> delivers these scenarios with the proof buyers need, streamlining adoption as of September 2025.</p>
+
+  <p><a href="/contact" class="aeg-btn">Contact Sales →</a></p>
+  </div>
+
+</body>
+</html>

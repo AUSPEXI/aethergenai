@@ -49,11 +49,13 @@ function buildDoc({ slug, title, description, style, body }) {
     '@context': 'https://schema.org',
     '@type': 'Article',
     headline: title,
-    author: { '@type': 'Person', name: 'Gwylym Owen' },
+    author: { '@type': 'Person', name: 'Gwylym Pryce-Owen' },
     mainEntityOfPage: canonical,
     datePublished: new Date().toISOString(),
     image: `${SITE}/og-image.svg`,
     publisher: { '@type': 'Organization', name: 'Auspexi' },
+    license: 'PROPRIETARY',
+    creator: { '@type': 'Organization', name: 'Auspexi' },
     description
   }
   const backBar = `\n<div style="position:sticky;top:0;z-index:50;background:#ffffff;border-bottom:1px solid #e5e7eb;">\n  <div style="max-width:960px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px;">\n    <a href="/" style="color:#0f172a;text-decoration:none;font-weight:700">Auspexi</a>\n    <button onclick="(function(){try{history.back()}catch(e){} setTimeout(function(){ if(!document.referrer || !/\\/blog/.test(document.referrer)){ location.href='/blog' } },50);})()" style="margin-left:auto;background:#2563eb;color:#fff;border:none;padding:6px 10px;border-radius:6px;cursor:pointer">← Back to Blog</button>\n  </div>\n</div>`

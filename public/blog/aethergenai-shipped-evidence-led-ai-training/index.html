@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Shipping AethergenPlatform: Evidence-Led, Privacy-Preserving AI Training</title>
+<link rel="canonical" href="https://auspexi.com/blog/aethergenai-shipped-evidence-led-ai-training"/>
+<meta name="description" content="By Gwylym Owen — 40–60 min read"/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Shipping AethergenPlatform: Evidence-Led, Privacy-Preserving AI Training","author":{"@type":"Person","name":"Gwylym Pryce-Owen"},"mainEntityOfPage":"https://auspexi.com/blog/aethergenai-shipped-evidence-led-ai-training","datePublished":"2025-09-13T11:49:43.913Z","image":"https://auspexi.com/og-image.svg","publisher":{"@type":"Organization","name":"Auspexi"},"license":"PROPRIETARY","creator":{"@type":"Organization","name":"Auspexi"},"description":"By Gwylym Owen — 40–60 min read"}</script>
+<style>
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: none;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .article {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        h2 {
+            color: #34495e;
+            font-size: 1.8em;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+        p {
+            margin-bottom: 20px;
+            font-size: 1.1em;
+        }
+        .meta {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        .highlight {
+            background-color: #e8f5e8;
+            padding: 15px;
+            border-left: 4px solid #27ae60;
+            margin: 20px 0;
+        }
+        blockquote {
+            border-left: 4px solid #3498db;
+            padding-left: 20px;
+            margin: 20px 0;
+            font-style: italic;
+            color: #555;
+        }
+        .framework {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #27ae60;
+        }
+        .framework h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        .framework ol {
+            padding-left: 20px;
+        }
+        .framework li {
+            margin-bottom: 10px;
+        }
+        .carbon-tracker {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 25px 0;
+        }
+        .carbon-tracker h3 {
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+        .carbon-tracker ul {
+            list-style: none;
+            padding: 0;
+        }
+        .carbon-tracker li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+        .carbon-tracker li:last-child {
+            border-bottom: none;
+        }
+    
+  </style>
+</head>
+<body>
+
+<div style="position:sticky;top:0;z-index:50;background:#ffffff;border-bottom:1px solid #e5e7eb;">
+  <div style="max-width:960px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px;">
+    <a href="/" style="color:#0f172a;text-decoration:none;font-weight:700">Auspexi</a>
+    <button onclick="(function(){try{history.back()}catch(e){} setTimeout(function(){ if(!document.referrer || !/\/blog/.test(document.referrer)){ location.href='/blog' } },50);})()" style="margin-left:auto;background:#2563eb;color:#fff;border:none;padding:6px 10px;border-radius:6px;cursor:pointer">← Back to Blog</button>
+  </div>
+</div>
+
+  <div class="article">
+<h1>Shipping AethergenPlatform: Evidence-Led, Privacy-Preserving AI Training</h1>
+  <p><em>By Gwylym Owen — 40–60 min read</em></p>
+
+  <h2>Executive Summary</h2>
+  <p>AethergenPlatform provides a modular pipeline for high‑fidelity synthetic data, schema design, and model training—Databricks‑ready and enterprise‑grade. Every release includes <strong>evidence bundles</strong> with signed metrics, stability bands, latency SLOs, and privacy probes. SLAs reference evidence as of September 2025.</p>
+
+  <h2>Architecture</h2>
+  <p>Here’s the powerhouse setup:</p>
+  <ul>
+    <li><strong>Schema Designer</strong>: Vocabularies and constraints—build it right!</li>
+    <li><strong>Generators</strong>: Copula, sequence, graph with overlays.</li>
+    <li><strong>Validation & Privacy</strong>: CI gates to keep it clean and secure—check it twice!</li>
+    <li><strong>Packaging</strong>: To Unity Catalog and Marketplace—ready to roll!</li>
+    <li><strong>Evidence Delivery</strong>: Catalog-ready for procurement—proof in hand!</li>
+  </ul>
+
+  <h2>Pipeline</h2>
+  <pre>
+schema → seeds → generation → overlays → validation → privacy → training → packaging → evidence
+                               ↘ ablations ↗
+  </pre>
+
+  <h2>Evidence</h2>
+  <p>Here’s the proof you can trust:</p>
+  <ul>
+    <li><strong>Utility</strong>: At OP with CIs and segment stability—measure the win!</li>
+    <li><strong>Latency</strong>: Distributions (p50/p95/p99)—speed matters!</li>
+    <li><strong>Privacy</strong>: Probes with optional DP budgets—keep it private!</li>
+    <li><strong>SBOM & Manifest</strong>: Environment fingerprints—full transparency!</li>
+  </ul>
+
+  <h2>SLAs</h2>
+  <p>We’ve got your back with these commitments:</p>
+  <ul>
+    <li><strong>Evidence Regen</strong>: Next business day—quick turnaround!</li>
+    <li><strong>Incident Triage</strong>: Same day for production promotions—fast fixes!</li>
+    <li><strong>Refresh Cadence</strong>: Monthly or on change—stay current!</li>
+  </ul>
+
+  <h2>Case Study</h2>
+  <p><strong>Scenario</strong>: A simulated healthcare claims detector setup.</p>
+  <p>OP utility hit 0.758 [0.749,0.767]; region stability stayed ≤0.03; procurement signed off in a simulated two-week cycle. Evidence and SBOM filed with the contract—smooth sailing!</p>
+
+  <h2>Case Study</h2>
+  <p><strong>Scenario</strong>: A simulated AML graph detector trial.</p>
+  <p>Motif features boosted OP utility by +3.8% (CI +3.0,+4.6); buyers re-ran metrics in a trial workspace; listing converted after a week-long simulated pilot—proof paid off!</p>
+
+  <h2>Buyer Quickstart</h2>
+  <pre>
+# 1) Register assets in Unity Catalog
+# 2) Load sample table; run UDF at OP
+# 3) Verify OP utility and stability summaries
+# 4) File SBOM and manifest; sign acceptance
+  </pre>
+
+  <h2>Closing</h2>
+  <p>We ship proof, not promises. With <strong>AethergenPlatform</strong>, adoption accelerates because every release is a verifiable evidence unit.</p>
+
+  <h2>Platform Modules</h2>
+  <p>Here’s the toolkit:</p>
+  <ul>
+    <li><strong>Schema Designer</strong>: Entities, relations, constraints, vocabularies—design with flair!</li>
+    <li><strong>Generators</strong>: Copula, sequence, graph with overlays—craft the data!</li>
+    <li><strong>Validation</strong>: Marginals, joints, temporal checks, effect sizes—test it tough!</li>
+    <li><strong>Privacy</strong>: Membership/attribute probes; optional DP budgets—lock it down!</li>
+    <li><strong>Training</strong>: Adapters, instruction tuning, domain adaptation—train smart!</li>
+    <li><strong>Packaging</strong>: MLflow/ONNX/GGUF, Unity Catalog, Marketplace—deliver anywhere!</li>
+    <li><strong>Evidence</strong>: Signed metrics, dashboards, SBOM, manifests—trust built in!</li>
+  </ul>
+
+  <h2>Reference Architecture</h2>
+  <pre>
+sources → schema → seeds → generation → overlays → validation → privacy → training
+                                                              ↘ ablations ↗
+                             packaging → catalog/marketplace → evidence → procurement
+  </pre>
+
+  <h2>Data Schemas</h2>
+  <pre>
+entities:
+  Patient: {id, age, region}
+  Provider: {id, specialty, region}
+  Claim: {id, patient_id, provider_id, date, pos, amount}
+  LineItem: {id, claim_id, cpt, icd10, units}
+relations:
+  Patient 1..* Claim; Claim 1..* LineItem; Claim.provider_id → Provider.id
+constraints:
+  amount ≥ 0; units ≥ 1; CPT in CPT_v12
+  </pre>
+
+  <h2>Generation Recipes</h2>
+  <pre>
+claims_v3:
+  generator: copula+sequence
+  params:
+    amount.ln_mu: 4.1
+    amount.ln_sigma: 0.7
+    interarrival.mixexp: {lambda: [0.3,0.8], weight: [0.4,0.6]}
+  overlays:
+    upcoding: {prevalence: 0.03, factor: 1.2}
+    duplicate_billing: {delay_days: 7}
+  </pre>
+
+  <h2>Overlay Library</h2>
+  <p>Spice it up with these:</p>
+  <ul>
+    <li>Upcoding, Unbundling, Phantom Providers—catch the cheats!</li>
+    <li>Duplicate Billing, Doctor Shopping, Kickback Rings—root out fraud!</li>
+    <li>Mule Rings, Structuring, Velocity Spikes (graphs)—network savvy!</li>
+  </ul>
+
+  <h2>Validation & KPIs</h2>
+  <p>Check it and measure it:</p>
+  <ul>
+    <li><strong>Fidelity</strong>: Marginals/joints/temporal within tolerances—keep it real!</li>
+    <li><strong>Utility@OP</strong>: KPI at threshold with CIs—hit the target!</li>
+    <li><strong>Stability</strong>: Max deltas across segments (region/product/lifecycle)—stay steady!</li>
+    <li><strong>Ablations</strong>: Effect sizes; keep winners, ditch losers—smart moves!</li>
+  </ul>
+
+  <h2>Operating Point Selection</h2>
+  <pre>
+capacity:
+  analysts_per_day: 20
+  cases_per_analyst: 100
+budget:
+  alerts_per_day: 2000
+op:
+  target_fpr: 0.01
+  threshold_sweep: [0.70, 0.76]
+  </pre>
+
+  <h2>Privacy Program</h2>
+  <p>Controls:</p>
+  <ul>
+    <li><strong>Membership Inference</strong>: Report AUC−0.5 with CIs—test the leaks!</li>
+    <li><strong>Attribute Disclosure</strong>: Compare to baseline leakage—spot the risks!</li>
+    <li><strong>Optional DP</strong>: Disclose ε, δ and utility impact—balance privacy and power!</li>
+  </ul>
+
+  <h2>Training Flows</h2>
+  <p>Train it up:</p>
+  <ul>
+    <li><strong>Adapters</strong>: Instruction tuning with OP-aligned eval suites—teach it right!</li>
+    <li><strong>Domain Adaptation</strong>: Synthetic augmentations with limits documented—fit the niche!</li>
+    <li><strong>Robustness</strong>: Noise/OCR checks where relevant—toughen it up!</li>
+  </ul>
+
+  <h2>Packaging</h2>
+  <p>Wrap it and ship it:</p>
+  <ul>
+    <li><strong>Artifacts</strong>: MLflow/ONNX/GGUF with device profiles (INT8/FP16/Q4)—hardware-ready!</li>
+    <li><strong>Unity Catalog</strong>: Tables, UDFs with evidence comments—easy access!</li>
+    <li><strong>Marketplace</strong>: README, pricing JSON, trial notebook—market-ready!</li>
+  </ul>
+
+  <h2>Evidence Bundle</h2>
+  <pre>
+index.json
+├─ metrics/utility@op.json
+├─ metrics/stability_by_segment.json
+├─ metrics/latency.json
+├─ privacy/probes.json
+├─ plots/op_tradeoffs.html
+├─ plots/stability_bars.html
+├─ configs/evaluation.yaml
+├─ configs/thresholds.yaml
+├─ sbom.json
+├─ manifest.json
+└─ seeds/seeds.txt
+  </pre>
+
+  <h2>Manifest</h2>
+  <pre>
+{
+  "version": "2025.01",
+  "artifacts": ["metrics/utility@op.json", "plots/op_tradeoffs.html", "sbom.json"],
+  "hashes": {"metrics/utility@op.json": "sha256:..."},
+  "env": {"python": "3.11", "numpy": "1.26.4"}
+}
+  </pre>
+
+  <h2>CI/CD Stages</h2>
+  <pre>
+evaluate → evidence → gates → package → publish
+fail-closed on any gate breach
+  </pre>
+
+  <h2>SLAs</h2>
+  <pre>
+Capability               Assisted       Full-Service
+Response                 1 business day 4 hours
+Refresh                  Monthly        Negotiated
+Dashboard fixes          24 hours       24 hours
+  </pre>
+
+  <h2>Unity Catalog Delivery</h2>
+  <pre>
+COMMENT ON TABLE prod.ai.claims IS 'Purpose: fraud triage; OP: fpr=1%; Evidence: manifest 2025.01.';
+GRANT SELECT ON TABLE prod.ai.claims TO `buyer-group`;
+  </pre>
+
+  <h2>Acceptance Form</h2>
+  <pre>
+bundle_id: 8e7...
+op_utility: PASS
+stability: PASS
+latency: PASS
+privacy: PASS
+decision: APPROVE | REJECT
+signoff: ____________  date: ________
+  </pre>
+
+  <h2>Operational Dashboards</h2>
+  <p>Keep the pulse alive:</p>
+  <ul>
+    <li><strong>Trends</strong>: OP utility and stability over time—watch it grow!</li>
+    <li><strong>Latency</strong>: Distributions with incident/rollback timelines—stay sharp!</li>
+    <li><strong>Usage</strong>: Adoption metrics by segment—see the impact!</li>
+  </ul>
+
+  <h2>Security & Compliance</h2>
+  <p>Lock it tight:</p>
+  <ul>
+    <li><strong>SBOM</strong>: Per release; vulnerabilities tracked—stay secure!</li>
+    <li><strong>Manifests</strong>: Signed with key rotation and revocation lists—trustworthy!</li>
+    <li><strong>Export</strong>: Control statements where needed—global ready!</li>
+  </ul>
+
+  <h2>Buyer Quickstart</h2>
+  <pre>
+# 1) Load sample
+# 2) Run UDF at OP
+# 3) Compute OP utility
+# 4) Review stability summary
+  </pre>
+
+  <h2>Runbook</h2>
+  <p>Your action plan:</p>
+  <ol>
+    <li><strong>Detect Change</strong>: Regenerate evidence—stay on top!</li>
+    <li><strong>Gates Pass</strong>: Package and publish—ship it!</li>
+    <li><strong>Gates Fail</strong>: Fix and rerun; log incident if needed—learn and adapt!</li>
+  </ol>
+
+  <h2>Incident Template</h2>
+  <pre>
+INC-2025-0012: stability breach in APAC → rollback to 8e7...; patch overlay; re-evaluate; promote 2025.02
+  </pre>
+
+  <h2>FAQs</h2>
+  <details>
+    <summary>Can we run fully offline?</summary>
+    <p>Yes—air‑gapped bundles with offline dashboards and QR‑verifiable manifests.</p>
+  </details>
+  <details>
+    <summary>Do we support private listings?</summary>
+    <p>Yes—Unity Catalog private schemas and Marketplace private listings.</p>
+  </details>
+  <details>
+    <summary>How do we verify claims?</summary>
+    <p>Use bundled dashboards, manifests, and signatures; optionally re‑compute OP metrics with notebooks.</p>
+  </details>
+
+  <h2>Procurement Mapping</h2>
+  <p>Tie it to the deal:</p>
+  <ul>
+    <li><strong>Evidence Bundle</strong>: Contract exhibit; SBOM in supply chain annex—legal proof!</li>
+    <li><strong>SLAs</strong>: Response and refresh tied to OP/stability—solid commitments!</li>
+    <li><strong>Evidence IDs</strong>: Referenced in POs/renewals—track it all!</li>
+  </ul>
+
+  <h2>Closing</h2>
+  <p>Shipping is an evidence release. <strong>AethergenPlatform</strong> makes AI delivery a governed, evidence‑first process—audit‑ready, reproducible, and rollback‑safe.</p>
+
+  <p><a href="/contact" class="aeg-btn">Contact Sales →</a></p>
+  </div>
+
+</body>
+</html>

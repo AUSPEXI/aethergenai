@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Unity Catalog Delivery: Turning Models into Procurement-Ready Products</title>
+<link rel="canonical" href="https://auspexi.com/blog/unity-catalog-delivery-turning-models-into-procurement-ready-products"/>
+<meta name="description" content="By Gwylym Owen — 30–45 min read"/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Unity Catalog Delivery: Turning Models into Procurement-Ready Products","author":{"@type":"Person","name":"Gwylym Pryce-Owen"},"mainEntityOfPage":"https://auspexi.com/blog/unity-catalog-delivery-turning-models-into-procurement-ready-products","datePublished":"2025-09-13T11:49:47.552Z","image":"https://auspexi.com/og-image.svg","publisher":{"@type":"Organization","name":"Auspexi"},"license":"PROPRIETARY","creator":{"@type":"Organization","name":"Auspexi"},"description":"By Gwylym Owen — 30–45 min read"}</script>
+<style>
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: none;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .article {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        h2 {
+            color: #34495e;
+            font-size: 1.8em;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+        p {
+            margin-bottom: 20px;
+            font-size: 1.1em;
+        }
+        .meta {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        .highlight {
+            background-color: #e8f5e8;
+            padding: 15px;
+            border-left: 4px solid #27ae60;
+            margin: 20px 0;
+        }
+        blockquote {
+            border-left: 4px solid #3498db;
+            padding-left: 20px;
+            margin: 20px 0;
+            font-style: italic;
+            color: #555;
+        }
+        .framework {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #27ae60;
+        }
+        .framework h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        .framework ol {
+            padding-left: 20px;
+        }
+        .framework li {
+            margin-bottom: 10px;
+        }
+        .carbon-tracker {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 25px 0;
+        }
+        .carbon-tracker h3 {
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+        .carbon-tracker ul {
+            list-style: none;
+            padding: 0;
+        }
+        .carbon-tracker li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+        .carbon-tracker li:last-child {
+            border-bottom: none;
+        }
+    
+  </style>
+</head>
+<body>
+
+<div style="position:sticky;top:0;z-index:50;background:#ffffff;border-bottom:1px solid #e5e7eb;">
+  <div style="max-width:960px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px;">
+    <a href="/" style="color:#0f172a;text-decoration:none;font-weight:700">Auspexi</a>
+    <button onclick="(function(){try{history.back()}catch(e){} setTimeout(function(){ if(!document.referrer || !/\/blog/.test(document.referrer)){ location.href='/blog' } },50);})()" style="margin-left:auto;background:#2563eb;color:#fff;border:none;padding:6px 10px;border-radius:6px;cursor:pointer">← Back to Blog</button>
+  </div>
+</div>
+
+  <div class="article">
+<h1>Unity Catalog Delivery: Turning Models into Procurement-Ready Products</h1>
+  <p><em>By Gwylym Owen — 30–45 min read</em></p>
+
+  <h2>Executive Summary</h2>
+  <p>Unity Catalog transforms data and AI assets into <strong>governed products</strong>. AethergenPlatform packages datasets and models with <strong>evidence bundles</strong>, entitlements, lineage, and change-control hooks—so buyers can evaluate, adopt, and operate with confidence as of September 2025.</p>
+
+  <h2>What “Procurement-Ready” Means</h2>
+  <p>Key elements:</p>
+  <ul>
+    <li><strong>Registration</strong>: Assets shine as catalog objects with descriptions and grants—findable treasures!</li>
+    <li><strong>Evidence</strong>: Metrics at operating points with confidence intervals, signed and reproducible—proof of power!</li>
+    <li><strong>Entitlements</strong>: Access mapped to groups/roles and contractual tiers—tailored access!</li>
+    <li><strong>Lineage</strong>: Sources and transformations recorded—trace the flow.</li>
+    <li><strong>Change-control</strong>: Versions, manifests, and rollback SOPs—control the chaos!</li>
+    <li><strong>Support</strong>: Refresh cadence, SLAs, and contact routes—reliable support!</li>
+  </ul>
+
+  <h2>Asset Types</h2>
+  <p>Asset collection:</p>
+  <ul>
+    <li><strong>Tables</strong> (Delta/Parquet) for datasets and features—data goldmines!</li>
+    <li><strong>Functions</strong> for inference (e.g., model UDFs)—actionable functions.</li>
+    <li><strong>Models</strong> in MLflow/ONNX with registry entries—model marvels!</li>
+    <li><strong>Views</strong> for consumable slices with stability contracts—flexible slices!</li>
+  </ul>
+
+  <h2>Registration SOP</h2>
+  <p>Standard operating procedure:</p>
+  <ol>
+    <li>Create catalog and schema (admin)—set the stage!</li>
+    <li>Register tables/models; apply grants—grant the access!</li>
+    <li>Add descriptions linking to evidence manifests—tell the tale!</li>
+    <li>Attach lineage metadata and tags (tier, RMAs)—apply metadata.</li>
+    <li>Export HTML/PDF cards for procurement files—deliver the goods!</li>
+  </ol>
+
+  <h2>Descriptions that Help Buyers</h2>
+  <pre>
+COMMENT ON TABLE prod.ai.claims
+IS 'Purpose: fraud triage. OP: fpr=0.01. Evidence: manifest 2025.01. Refresh: monthly.';
+
+COMMENT ON FUNCTION prod.ai.fraud_infer
+IS 'Model v2025.01. Threshold=0.73. Stability bands: region<=0.03. Evidence bundle linked.';
+  </pre>
+
+  <h2>Entitlements</h2>
+  <p>Access levels:</p>
+  <ul>
+    <li><strong>Self-Service</strong>: Read access to public samples and docs—open to all!</li>
+    <li><strong>Assisted</strong>: Read on packaged tables and UDFs; priority support—guided journey!</li>
+    <li><strong>Full-Service</strong>: Private schemas, custom adapters, SLAs—premium support.</li>
+  </ul>
+
+  <h2>Evidence Integration</h2>
+  <p>Integrate evidence:</p>
+  <ul>
+    <li>Evidence manifest ID listed in object comments—link the evidence!</li>
+    <li>Artifacts saved to governed storage with hashes—secure the scroll!</li>
+    <li>Dashboards exported to HTML/PDF alongside cards—visual victory!</li>
+  </ul>
+
+  <h2>Lineage & Governance</h2>
+  <p>Lineage:</p>
+  <ul>
+    <li>Lineage from seeds → generation → validation → packaging → catalog—document the path.</li>
+    <li>Change-logs reference semantic versions and evidence IDs—track the evolution!</li>
+    <li>Incidents and rollbacks attach to artifact hashes—handle the hiccups!</li>
+  </ul>
+
+  <h2>Operating Points in Catalog</h2>
+  <p>Guide the use:</p>
+  <ul>
+    <li>Store thresholds in config tables, not code—central control!</li>
+    <li>Expose current OP and alternatives for scenario planning—plan ahead!</li>
+    <li>Publish effect sizes for recent ablations with CIs—show the impact!</li>
+  </ul>
+
+  <h2>Example: Inference Function Wrapper</h2>
+  <pre>
+-- Pseudo-SQL/UDF documentation block
+CREATE FUNCTION prod.ai.fraud_infer(amount DECIMAL, code STRING, ...)
+RETURNS DOUBLE
+COMMENT 'Model v2025.01 @ threshold 0.73; evidence: manifest 8e7...'
+-- Implementation references registered model artifact
+  </pre>
+
+  <h2>Promotion Gates</h2>
+  <p>Approval gates:</p>
+  <ul>
+    <li>Utility at OP meets target with CI—prove the power!</li>
+    <li>Segment stability within bands—keep it steady!</li>
+    <li>Latency SLOs met for UDFs—ensure the speed!</li>
+    <li>Evidence signed; SBOM validated—seal the deal!</li>
+  </ul>
+
+  <h2>Change-Control Template</h2>
+  <pre>
+Release: model-x 2025.02
+Changes: threshold → 0.74; motifs on; residuals kept
+Evidence: manifest 2025.02 (hash ...)
+Gates: PASS
+Rollback: ticket #1234 rehearsed
+  </pre>
+
+  <h2>Buyer Journey</h2>
+  <p>Buyer journey:</p>
+  <ol>
+    <li>Discover asset via search or curated schema—find the treasure!</li>
+    <li>Read description and evidence link—learn the lore!</li>
+    <li>Open sample notebook; run inference at OP—validate behavior.</li>
+    <li>Evaluate effect sizes and stability summaries—judge the power!</li>
+    <li>Request entitlements; proceed to contract—claim the prize!</li>
+  </ol>
+
+  <h2>Sample Notebook Outline</h2>
+  <p>Notebook outline:</p>
+  <ul>
+    <li>Connect to catalog; confirm grants—set the stage!</li>
+    <li>Load sample table; run UDF; compute metrics at OP—execute end‑to‑end.</li>
+    <li>Plot trade-off; inspect segment stability—see the results!</li>
+    <li>Record results and evidence manifest ID—document the victory!</li>
+  </ul>
+
+  <h2>Tables that Stay Useful</h2>
+  <p>Enduring assets:</p>
+  <ul>
+    <li>Stable schemas with deprecation notices—future-proofed!</li>
+    <li>Views for backward compatibility and migration—smooth transitions!</li>
+    <li>Versioned paths for reproducibility—lock the history!</li>
+  </ul>
+
+  <h2>Security & Compliance</h2>
+  <p>Guard the realm:</p>
+  <ul>
+    <li>SBOM and license checks per release—verify the ingredients!</li>
+    <li>Audit logs for grants and access—track the keys!</li>
+    <li>No PHI/PII in published evidence; synthetic noted clearly—keep it safe!</li>
+  </ul>
+
+  <h2>Pricing & Entitlements Hook</h2>
+  <p>Tailored tiers:</p>
+  <ul>
+    <li>Catalog tags align with subscription tier—align metadata.</li>
+    <li>Private schemas for full-service customers—exclusive realms!</li>
+    <li>Usage dashboards per tenant where applicable—monitor the use!</li>
+  </ul>
+
+  <h2>Use Case Example</h2>
+  <p><strong>Scenario</strong>: A regulated buyer’s onboarding.</p>
+  <p>A regulated buyer onboarded a fraud detector in Unity Catalog: they explored sample tables, ran UDF inference at OP (0.73, FPR 0.01 [0.009,0.011]), verified stability across regions ≤0.03, and filed the evidence bundle and SBOM with procurement. Time-to-adoption: two weeks—simulated as of September 2025!</p>
+
+  <h2>FAQ</h2>
+  <details>
+    <summary>Can we publish private listings only?</summary>
+    <p>Yes—private schemas and grants align with entitlements; evidence still ships.</p>
+  </details>
+  <details>
+    <summary>How are breaking changes handled?</summary>
+    <p>Deprecation periods with views and migration notes; card and evidence versions advance—smooth evolution!</p>
+  </details>
+  <details>
+    <summary>Can we embed OP thresholds in UDFs?</summary>
+    <p>Prefer config tables to avoid redeploys; UDFs read current thresholds.</p>
+  </details>
+  <details>
+    <summary>How do we handle multi-tenant customers?</summary>
+    <p>Use per-tenant schemas and tags; meter usage with workspace logs—custom realms!</p>
+  </details>
+
+  <h2>Glossary</h2>
+  <ul>
+    <li><strong>Unity Catalog</strong>: Databricks governance layer for data/AI assets—central hub.</li>
+    <li><strong>Operating Point</strong>: Threshold where buyers evaluate/use—your power level!</li>
+    <li><strong>Evidence Bundle</strong>: Signed metrics/configs/hashes for reproducibility—your proof scroll!</li>
+  </ul>
+
+  <h2>Checklists</h2>
+  <p>Cast it right:</p>
+  <ul>
+    <li>Descriptions link to evidence; grants correct—set the scene!</li>
+    <li>OP thresholds stored in config table—central command!</li>
+    <li>Lineage and tags populated; SBOM validated—verify artifacts.</li>
+    <li>Notebook executes end‑to‑end—validate operation.</li>
+  </ul>
+
+  <h2>Appendix: Comment Blocks</h2>
+  <pre>
+COMMENT ON VIEW prod.ai.claims_view
+IS 'Back-compat view; deprecates 2025-06-30; see migration guide.';
+  </pre>
+
+  <h2>Appendix: JSON Metadata</h2>
+  <pre>
+{
+  "asset": "prod.ai.fraud_infer",
+  "version": "2025.01",
+  "op": {"fpr": 0.01, "threshold": 0.73},
+  "evidence": {"manifest": "8e7..."},
+  "tags": ["tier:assisted", "domain:claims"]
+}
+  </pre>
+
+  <h2>Closing</h2>
+  <p>Unity Catalog delivery turns models into governed products. With <strong>AethergenPlatform</strong>, every asset ships with the evidence and controls buyers require—so adoption is faster, safer, and auditable.</p>
+
+  <p><a href="/contact" class="aeg-btn">Contact Sales →</a></p>
+
+  <h2>Role Matrix</h2>
+  <pre>
+Role          Tables   Models   UDFs   Views
+Admin         RWX      RWX      RWX    RWX
+DataEng       RW       RW       R      RW
+Analyst       R        R        R      R
+  </pre>
+
+  <h2>Grant Commands</h2>
+  <pre>
+GRANT SELECT ON TABLE prod.ai.claims TO `analyst-group`;
+GRANT EXECUTE ON FUNCTION prod.ai.fraud_infer TO `analyst-group`;
+  </pre>
+
+  <h2>Migration Notes</h2>
+  <p>Smooth the transition:</p>
+  <ul>
+    <li>Use views to bridge schema changes; set end-of-life dates—ease the shift!</li>
+    <li>Publish migration guides with examples and checks—guide the way!</li>
+  </ul>
+
+  <h2>Evidence Links in Catalog</h2>
+  <p>Connect the proof:</p>
+  <ul>
+    <li>Attach manifest IDs in comments; include short URL to dashboard export—quick access!</li>
+    <li>Store evidence in governed storage with lifecycle policies—secure the archive!</li>
+  </ul>
+
+  <h2>Operational Dashboards</h2>
+  <p>Monitoring:</p>
+  <ul>
+    <li>Adoption metrics (queries, users, workspaces)—track the uptake!</li>
+    <li>Performance at OP across segments—measure the might!</li>
+    <li>Incident tracker with rollback statistics—learn from the battles!</li>
+    <li>Usage trends by tenant for billing insights—keep it fair!</li>
+  </ul>
+
+  <h2>Sample README</h2>
+  <pre>
+# Fraud Inference UDF
+Use at OP=0.73 for analyst budget 2k alerts/day.
+Evidence manifest: 8e7...
+  </pre>
+
+  <h2>Contractual Hooks</h2>
+  <p>Tie it to the deal:</p>
+  <ul>
+    <li>Asset IDs and versions referenced in SOW—lock the terms!</li>
+    <li>SLAs tied to catalog object uptime and refresh cadence—guarantee the service!</li>
+  </ul>
+
+  <h2>Security</h2>
+  <p>Fortify the realm:</p>
+  <ul>
+    <li>Key rotation for private assets; audit logs reviewed weekly—stay secure!</li>
+    <li>SBOM checks on every model update—verify the brew!</li>
+  </ul>
+
+  <h2>Case Studies</h2>
+  <p>Additional examples:</p>
+  <p><strong>Scenario 1</strong>: A regulated buyer onboarded a fraud detector in Unity Catalog: explored samples, ran UDF at OP (0.73, FPR 0.01 [0.009,0.011]), verified stability ≤0.03, and filed evidence/SBOM in two weeks—simulated as of September 2025!</p>
+  <p><strong>Scenario 2</strong>: A healthcare firm registered patient models with private schemas: adoption rose 25% in a month, with zero compliance issues, thanks to evidence links—simulated success!</p>
+
+  <h2>Closing Notes</h2>
+  <p>Catalog delivery is where engineering, risk, and procurement unite. With evidence‑aware objects, clear entitlements, and robust migration paths, <strong>AethergenPlatform</strong> turns models into durable, adoptable products.</p>
+  </div>
+
+</body>
+</html>

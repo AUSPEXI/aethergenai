@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Synthetic Data 101 for Healthcare: Fraud Detection Without PHI/PII</title>
+<link rel="canonical" href="https://auspexi.com/blog/synthetic-data-healthcare-fraud-without-phi"/>
+<meta name="description" content="By Gwylym Owen — 20–28 min read"/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Synthetic Data 101 for Healthcare: Fraud Detection Without PHI/PII","author":{"@type":"Person","name":"Gwylym Pryce-Owen"},"mainEntityOfPage":"https://auspexi.com/blog/synthetic-data-healthcare-fraud-without-phi","datePublished":"2025-09-13T11:49:44.652Z","image":"https://auspexi.com/og-image.svg","publisher":{"@type":"Organization","name":"Auspexi"},"license":"PROPRIETARY","creator":{"@type":"Organization","name":"Auspexi"},"description":"By Gwylym Owen — 20–28 min read"}</script>
+<style>
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: none;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .article {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        h2 {
+            color: #34495e;
+            font-size: 1.8em;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+        p {
+            margin-bottom: 20px;
+            font-size: 1.1em;
+        }
+        .meta {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        .highlight {
+            background-color: #e8f5e8;
+            padding: 15px;
+            border-left: 4px solid #27ae60;
+            margin: 20px 0;
+        }
+        blockquote {
+            border-left: 4px solid #3498db;
+            padding-left: 20px;
+            margin: 20px 0;
+            font-style: italic;
+            color: #555;
+        }
+        .framework {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #27ae60;
+        }
+        .framework h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        .framework ol {
+            padding-left: 20px;
+        }
+        .framework li {
+            margin-bottom: 10px;
+        }
+        .carbon-tracker {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 25px 0;
+        }
+        .carbon-tracker h3 {
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+        .carbon-tracker ul {
+            list-style: none;
+            padding: 0;
+        }
+        .carbon-tracker li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+        .carbon-tracker li:last-child {
+            border-bottom: none;
+        }
+    
+  </style>
+</head>
+<body>
+
+<div style="position:sticky;top:0;z-index:50;background:#ffffff;border-bottom:1px solid #e5e7eb;">
+  <div style="max-width:960px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px;">
+    <a href="/" style="color:#0f172a;text-decoration:none;font-weight:700">Auspexi</a>
+    <button onclick="(function(){try{history.back()}catch(e){} setTimeout(function(){ if(!document.referrer || !/\/blog/.test(document.referrer)){ location.href='/blog' } },50);})()" style="margin-left:auto;background:#2563eb;color:#fff;border:none;padding:6px 10px;border-radius:6px;cursor:pointer">← Back to Blog</button>
+  </div>
+</div>
+
+  <div class="article">
+<h1>Synthetic Data 101 for Healthcare: Fraud Detection Without PHI/PII</h1>
+  <p><em>By Gwylym Owen — 20–28 min read</em></p>
+
+  <h2>Executive Summary</h2>
+  <p>Healthcare fraud programs often stall when privacy rules block sharing, testing, and verification. AethergenPlatform supports a synthetic‑first pipeline that captures <strong>behavior</strong> without exposing <strong>identity</strong>. Teams can prototype, evaluate, and provide evidence with corpora that mirror real claims—PHI/PII‑free. This piece walks through the data model, generation process, typology library, evaluation gates, and evidence packaging to move from pilot to production in regulated zones as of September 2025.</p>
+
+  <h2>Problem Context</h2>
+  <p>Fraud typologies evolve faster than change‑control cycles. Rules become stale, models drift, and analyst workload increases. Real data cannot leave secure zones, so collaboration slows, tools remain untested, and vendor claims are difficult to verify. Synthetic corpora enable <strong>safe iteration</strong>, <strong>repeatable evaluation</strong>, and <strong>procurement‑grade evidence</strong>.</p>
+
+  <h2>Clinical-Claims Data Model</h2>
+  <p>Here’s the blueprint, simplified:</p>
+  <ul>
+    <li><strong>Entities</strong>: Patient (de‑identified), provider, facility, payer plan, claim, line item, prescription, lab event.</li>
+    <li><strong>Core Attributes</strong>: Dates, CPT/HCPCS/ICD codes, NPI/specialty (synthetic), amounts (billed/allowed/paid), place of service, modifiers, units, referrals, prior‑auth flags.</li>
+    <li><strong>Relations</strong>: Provider↔facility affiliation, patient↔provider panels, claim↔line items, episodes of care, referral chains, pharmacy fill sequences.</li>
+  </ul>
+
+  <h2>Dataset Schema Example</h2>
+  <pre>
+claims(
+  claim_id, patient_id*, provider_id*, facility_id*, date, pos,
+  cpt, icd10, modifiers, units, amount_billed, amount_allowed, amount_paid,
+  payer_plan, referral_flag, prior_auth_flag
+)
+
+lines(
+  line_id, claim_id, cpt, icd10, modifiers, units, npi*, specialty,
+  amount_billed, amount_allowed, amount_paid
+)
+
+rx(
+  rx_id, patient_id*, provider_id*, date, drug_class, dose, days_supply,
+  payment_amount, device_id*
+)
+
+labs(
+  lab_id, patient_id*, loinc_code, result_band, units, date
+)
+
+*Synthetic identifiers only; no PHI/PII in evaluation corpora.
+  </pre>
+
+  <h2>Metrics Appendix</h2>
+  <p>Measure what matters:</p>
+  <ul>
+    <li><strong>Lift@Budget</strong>: Cases found at fixed FPR (0.5%, 1%, 2%)—hit the target!</li>
+    <li><strong>Stability</strong>: Max segment delta across specialty/region/plan bands—keep it steady!</li>
+    <li><strong>Drift Early-Warning</strong>: Change-point scores for code usage and cadence—spot the shifts!</li>
+    <li><strong>Analyst Yield</strong>: Cases per analyst-hour at chosen thresholds—maximize efficiency!</li>
+    <li><strong>Privacy</strong>: Membership/attribute probe advantage vs random—lock it down!</li>
+  </ul>
+
+  <h2>Acceptance Checklist</h2>
+  <p>Checklist:</p>
+  <ul>
+    <li><strong>Target KPI</strong>: Defined and tied to analyst staffing—set the goal!</li>
+    <li><strong>Operating Points</strong>: Fixed with CI bands reported—clear metrics!</li>
+    <li><strong>Privacy Probes</strong>: Under thresholds (DP budgets if used)—secure it!</li>
+    <li><strong>Drift Monitors</strong>: Documented rollback rules—plan for change!</li>
+    <li><strong>Evidence Bundle</strong>: Signed and archived—proof ready!</li>
+  </ul>
+
+  <h2>Use Case Example</h2>
+  <p><strong>Scenario</strong>: A simulated regional upcoding sweep for a payer.</p>
+  <p>A four‑week pilot on orthopedic claims could lock operating points at 1% FPR. A synthetic‑trained baseline might boost reviewed‑case yield versus legacy rules while reducing false escalations. Stability could hold across regions; privacy probes would be monitored. Procurement proceeds only if gates pass and rollback is defined.</p>
+
+  <h2>FAQ</h2>
+  <details>
+    <summary>Does synthetic data replace real investigations?</summary>
+    <p>No. Synthetic data is for testing and development; real investigations confirm outcomes.</p>
+  </details>
+  <details>
+    <summary>Can we tune prevalence to stress analysts?</summary>
+    <p>Yes. Typologies are adjustable to simulate workload and policy trade‑offs.</p>
+  </details>
+  <details>
+    <summary>How do you prevent overfitting to synthetic quirks?</summary>
+    <p>We use ablation to ensure robust features win; sanity-check rankings on approved internal samples; and lay out limits in the evidence bundle—keeping it real!</p>
+  </details>
+
+  <h2>Glossary</h2>
+  <ul>
+    <li><strong>Operating Point</strong>: Threshold where the detector runs in production—your line in the sand!</li>
+    <li><strong>Evidence Bundle</strong>: Signed package of metrics, configs, seeds, and hashes—your proof pack!</li>
+    <li><strong>Membership Inference</strong>: Attack checking if a record influenced training—test the leaks!</li>
+    <li><strong>DP</strong>: Differential privacy; limits any one record’s impact—privacy power!</li>
+  </ul>
+
+  <h2>Procurement Q&A</h2>
+  <ul>
+    <li><strong>Export Formats</strong>: Parquet/Delta; dashboards as HTML/PDF; notebooks as HTML—flexible delivery!</li>
+    <li><strong>Runtime</strong>: On-prem preferred; VPC supported; no PHI/PII leaves the enclave—secure as can be!</li>
+    <li><strong>Support</strong>: SLAs for evidence regen and drift incident triage—got your back!</li>
+  </ul>
+
+  <h2>Contact</h2>
+  <p>Ready to tackle fraud detection safely and effectively? <a href="/contact">Contact us</a> about a focused pilot.</p>
+
+  <h2>Generation Pipeline</h2>
+  <p>Let’s build it step by step:</p>
+  <ol>
+    <li><strong>Schema Design</strong>: Pick fields and ranges for fraud utility; encode CPT families, ICD hierarchies—set the stage!</li>
+    <li><strong>Distribution Learning</strong>: Learn marginals and joint structure from seeds/redacted aggregates; fit copulas or conditionals—keep dependencies alive!</li>
+    <li><strong>Sequence Synthesis</strong>: Craft episode timelines (admissions→procedures→discharge; refills) with realistic timing and seasonality—tell the story!</li>
+    <li><strong>Typology Injection</strong>: Add parameterised fraud behaviors (below) with tunable prevalence and severity—mix it up!</li>
+    <li><strong>Validation</strong>: Run fidelity and privacy checks; tweak until thresholds pass—make it solid!</li>
+  </ol>
+
+  <h2>Fidelity: What “Good Enough” Means</h2>
+  <p>Here’s the standard:</p>
+  <ul>
+    <li><strong>Marginals</strong>: Code, specialty, geography, amount distributions within tolerances—align it!</li>
+    <li><strong>Joints</strong>: Realistic provider-procedure-amount ties; plausible co-coding; age-procedure fits—make sense!</li>
+    <li><strong>Temporal</strong>: Weekday/season effects; episode lengths; refill cadences; denial/rebill loops—capture the flow!</li>
+    <li><strong>Tail Coverage</strong>: Keep rare but plausible events; cap impossibles with constraints—cover the edges!</li>
+    <li><strong>Utility Checks</strong>: Baseline detectors on synthetic hit target lift on hold-out synthetic and match rankings on approved samples—prove it works!</li>
+  </ul>
+
+  <h2>Privacy: What We Measure</h2>
+  <p>No assumptions here:</p>
+  <ul>
+    <li><strong>Process Isolation</strong>: Eval corpora have no PHI/PII; seeds are minimal and controlled—locked tight!</li>
+    <li><strong>Membership Inference</strong>: Attacks show low advantage at release settings—test it!</li>
+    <li><strong>Attribute Disclosure</strong>: Sensitive prediction stays at/below baseline leakage—safe bets!</li>
+    <li><strong>Differential Privacy (Optional)</strong>: Per-policy ε, δ budgets with impact notes when mandated—privacy with power!</li>
+  </ul>
+
+  <h2>Fraud Typology Library</h2>
+  <p>Tune these fraud flavors:</p>
+  <ul>
+    <li><strong>Upcoding</strong>: Inflate CPT within specialties; adjust overbilling factor, code families, audit risk—catch the cheats!</li>
+    <li><strong>Unbundling</strong>: Split components; tweak compliance pressure and recurrence—spot the splits!</li>
+    <li><strong>Phantom Billing</strong>: Claims sans service; vary facility mix, distance anomalies, timing clashes—phantom busters!</li>
+    <li><strong>Doctor Shopping</strong>: Overlapping scripts; control window, drug class, device ties—track the hoppers!</li>
+    <li><strong>Duplicate Billing</strong>: Repeat claims with modifiers; adjust delay and payer rules—double trouble!</li>
+    <li><strong>Kickback Rings</strong>: Referral cycles with odd financials; expose graph motifs and flows—ring the alarm!</li>
+  </ul>
+
+  <h2>Feature Families</h2>
+  <p>Build the signals:</p>
+  <ul>
+    <li><strong>Code Semantics</strong>: Family distance, incompatible pairs, specialty fits—code savvy!</li>
+    <li><strong>Temporal</strong>: Visit cadence, inter-arrival z-scores, day/week effects—time it right!</li>
+    <li><strong>Financial</strong>: Amount residuals vs peers, payer mix quirks, denial/rebill patterns—money talks!</li>
+    <li><strong>Graph</strong>: Provider-patient motifs, referral cycles, shared devices—connect the dots!</li>
+  </ul>
+
+  <h2>Modeling and Thresholds</h2>
+  <p>Keep it clear and strong:</p>
+  <p>Use transparent baselines (rules, tree ensembles) with deep models for lift and interpretability. Pick <strong>operating points</strong> matching investigator capacity (alerts/day/team) and share the trade-off. Pilots often target “+X% cases at fixed FPR” over raw AUC—practical wins!</p>
+
+  <h2>Evaluation Gates</h2>
+  <p>Procurement-ready checks:</p>
+  <ul>
+    <li><strong>Operating Point Utility</strong>: Detection at fixed FPR budgets with CIs—hit the mark!</li>
+    <li><strong>Segment Stability</strong>: Specialty, region, plan type deltas within bounds—steady as she goes!</li>
+    <li><strong>Drift Sensitivity</strong>: Early-warning KPIs under simulated shifts—stay alert!</li>
+    <li><strong>Analyst Cost Curves</strong>: Incremental cases per analyst-hour—maximize effort!</li>
+    <li><strong>Privacy Gates</strong>: Probes under thresholds; DP budgets honored if used—secure it!</li>
+  </ul>
+
+  <h2>Evidence Bundle</h2>
+  <p>Shipped with every release:</p>
+  <ul>
+    <li><strong>Hashes</strong>: Schema, recipe, environment; SBOM for artifacts—full trace!</li>
+    <li><strong>Fidelity Metrics</strong>: CIs, visual comparisons for marginals/joints—see the fit!</li>
+    <li><strong>Privacy Results</strong>: Probes and interpretations; DP params if used—lock it down!</li>
+    <li><strong>Ablation Table</strong>: Feature/recipe impacts—keep the winners!</li>
+    <li><strong>Notes</strong>: Use, limits, drift monitors, rollback rules, change-control—cover all bases!</li>
+  </ul>
+
+  <h2>Pilot → Policy in Four Weeks</h2>
+  <p>Your roadmap:</p>
+  <ol>
+    <li><strong>Week 1</strong>: Pick a typology and KPI; lock schema; generate v1 corpora—kick it off!</li>
+    <li><strong>Week 2</strong>: Train baselines; tune operating points; check fidelity/privacy—refine it!</li>
+    <li><strong>Week 3</strong>: Red-team failures; set gates; package evidence—test the edges!</li>
+    <li><strong>Week 4</strong>: Run acceptance with stakeholders; sign off thresholds and rollback—seal the deal!</li>
+  </ol>
+
+  <h2>Integration</h2>
+  <p>Plug it in:</p>
+  <ul>
+    <li><strong>Deployment</strong>: On-prem or private cloud; edge bundles for air-gapped review—flexible fit!</li>
+    <li><strong>Data Interchange</strong>: Parquet/Delta; Databricks-ready jobs—smooth flow!</li>
+    <li><strong>Governance</strong>: Signed evidence bundles in CI/CD and doc control—locked tight!</li>
+  </ul>
+
+  <blockquote>
+    <p><strong>AethergenPlatform</strong> prioritizes evidence. You get realism without identifiers, utility at your alert budget, and reproducible packages suitable for audit.</p>
+  </blockquote>
+
+  <p><a href="/contact" class="aeg-btn">Contact Sales →</a></p>
+
+  <h2>Worked Example: Upcoding Review</h2>
+  <p>Let’s break it down:</p>
+  <ol>
+    <li><strong>Setup</strong>: Define CPT family and specialty constraints; set cost bands—lay the ground!</li>
+    <li><strong>Generate</strong>: Create cohort with tunable upcoding prevalence and factor—mix it up!</li>
+    <li><strong>Train</strong>: Baseline trees + rules; calibrate to 1% FPR—tune it tight!</li>
+    <li><strong>Report</strong>: Cases per analyst-hour with explanations and feature contributions—show the win!</li>
+  </ol>
+
+  <h2>Worked Example: Doctor Shopping</h2>
+  <p>Another go:</p>
+  <ol>
+    <li><strong>Emit</strong>: Overlapping prescription sequences across providers and pharmacies—build the case!</li>
+    <li><strong>Construct</strong>: Device/address correlations and cadence features—connect the dots!</li>
+    <li><strong>Compare</strong>: Rules vs learned models; tweak escalation policies—find the best!</li>
+    <li><strong>Publish</strong>: Stability across regions and plan types—prove it holds!</li>
+  </ol>
+
+  <h2>Analyst Experience</h2>
+  <p>Make it easy:</p>
+  <ul>
+    <li><strong>Reproducible Notebooks</strong>: Tied to evidence bundle versions—trace it back!</li>
+    <li><strong>Scenario Sliders</strong>: Adjust prevalence/severity without coding—play with it!</li>
+    <li><strong>One-Click Reruns</strong>: Fixed seeds for training—quick and consistent!</li>
+  </ul>
+
+  <h2>Limits and Non-Goals</h2>
+  <p>Know the boundaries:</p>
+  <ul>
+    <li><strong>No Perfect Match</strong>: Synthetic doesn’t mimic micro-populations perfectly; we measure fidelity and disclose limits—honest approach!</li>
+    <li><strong>No PHI/PII</strong>: Eval corpora stay identifier-free—no leaks!</li>
+    <li><strong>No Fragile Heuristics</strong>: Features validated via ablation—robust wins!</li>
+  </ul>
+
+  <h2>Next Steps</h2>
+  <p>Let’s get moving:</p>
+  <ul>
+    <li><strong>Pick Typology</strong>: Choose one and a KPI; plan a two-week pilot—start small!</li>
+    <li><strong>Align Gates</strong>: Match acceptance with investigator capacity—set the bar!</li>
+    <li><strong>Review Evidence</strong>: Check the draft bundle before promotion—finalize it!</li>
+  </ul>
+  </div>
+
+</body>
+</html>

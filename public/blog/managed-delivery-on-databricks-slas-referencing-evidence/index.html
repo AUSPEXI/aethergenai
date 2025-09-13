@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Managed Delivery on Databricks: SLAs Referencing Evidence (Not Hype)</title>
+<link rel="canonical" href="https://auspexi.com/blog/managed-delivery-on-databricks-slas-referencing-evidence"/>
+<meta name="description" content="By Gwylym Owen — 20–28 min read"/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Managed Delivery on Databricks: SLAs Referencing Evidence (Not Hype)","author":{"@type":"Person","name":"Gwylym Pryce-Owen"},"mainEntityOfPage":"https://auspexi.com/blog/managed-delivery-on-databricks-slas-referencing-evidence","datePublished":"2025-09-13T11:49:38.761Z","image":"https://auspexi.com/og-image.svg","publisher":{"@type":"Organization","name":"Auspexi"},"license":"PROPRIETARY","creator":{"@type":"Organization","name":"Auspexi"},"description":"By Gwylym Owen — 20–28 min read"}</script>
+<style>
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: none;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .article {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        h2 {
+            color: #34495e;
+            font-size: 1.8em;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+        p {
+            margin-bottom: 20px;
+            font-size: 1.1em;
+        }
+        .meta {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        .highlight {
+            background-color: #e8f5e8;
+            padding: 15px;
+            border-left: 4px solid #27ae60;
+            margin: 20px 0;
+        }
+        blockquote {
+            border-left: 4px solid #3498db;
+            padding-left: 20px;
+            margin: 20px 0;
+            font-style: italic;
+            color: #555;
+        }
+        .framework {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #27ae60;
+        }
+        .framework h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        .framework ol {
+            padding-left: 20px;
+        }
+        .framework li {
+            margin-bottom: 10px;
+        }
+        .carbon-tracker {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 25px 0;
+        }
+        .carbon-tracker h3 {
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+        .carbon-tracker ul {
+            list-style: none;
+            padding: 0;
+        }
+        .carbon-tracker li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+        .carbon-tracker li:last-child {
+            border-bottom: none;
+        }
+    
+  </style>
+</head>
+<body>
+
+<div style="position:sticky;top:0;z-index:50;background:#ffffff;border-bottom:1px solid #e5e7eb;">
+  <div style="max-width:960px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px;">
+    <a href="/" style="color:#0f172a;text-decoration:none;font-weight:700">Auspexi</a>
+    <button onclick="(function(){try{history.back()}catch(e){} setTimeout(function(){ if(!document.referrer || !/\/blog/.test(document.referrer)){ location.href='/blog' } },50);})()" style="margin-left:auto;background:#2563eb;color:#fff;border:none;padding:6px 10px;border-radius:6px;cursor:pointer">← Back to Blog</button>
+  </div>
+</div>
+
+  <div class="article">
+<h1>Managed Delivery on Databricks: SLAs Referencing Evidence (Not Hype)</h1>
+  <p><em>By Gwylym Owen — 20–28 min read</em></p>
+
+  <h2>Executive Summary</h2>
+  <p>AethergenPlatform can offer managed delivery where service level agreements (SLAs) are grounded in <strong>evidence</strong>—operating points (OPs), stability bands, and refresh cadences—integrated within your Databricks environment. Unlike black-box solutions, every component is transparent, auditable, and reproducible, ensuring trust and reliability as of September 2025.</p>
+
+  <h2>Scope: Comprehensive Integration</h2>
+  <p>The managed delivery service spans key Databricks functionalities:</p>
+  <ul>
+    <li><strong>Unity Catalog Registration</strong>: Assets are registered with entitlements, ensuring access control and lineage tracking.</li>
+    <li><strong>Evidence Bundle Regeneration</strong>: Automated regeneration of signed bundles (metrics, plots, configs, SBOMs) on demand or schedule.</li>
+    <li><strong>Refresh Cadence and Incident Response</strong>: Scheduled updates and rapid triage to maintain SLA compliance.</li>
+  </ul>
+
+  <h2>SLA Design: Measurable Commitments</h2>
+  <p>SLAs are built to align with operational needs and evidence:</p>
+  <ul>
+    <li><strong>Evidence Refresh</strong>: Monthly updates or on-demand regeneration after code/model changes, with versioned bundles.</li>
+    <li><strong>Incident Triage</strong>: Response within the same business day (e.g., 4-hour initial assessment) for critical issues.</li>
+    <li><strong>Promotion Only When Gates Pass</strong>: Deployment halts unless OP utility, stability, latency, and privacy gates are met, verified by CI.</li>
+  </ul>
+
+  <h2>Evidence Alignment: Transparent Metrics</h2>
+  <p>Evidence ties directly to SLA terms for accountability:</p>
+  <ul>
+    <li><strong>OP Thresholds and Stability Bands</strong>: Documented targets (e.g., 1% FPR, < 3% delta across regions) with confidence intervals in `metrics/utility@op.json`.</li>
+    <li><strong>Dashboards Exported</strong>: HTML and PDF dashboards (e.g., `plots/op_tradeoffs.html`) for offline review, linked to bundle IDs.</li>
+    <li><strong>Bundle IDs Recorded</strong>: Each SLA references a unique bundle ID (e.g., `8e7...`) for traceability in Unity Catalog.</li>
+  </ul>
+
+  <h2>Databricks Workflow: Seamless Execution</h2>
+  <p>AethergenPlatform integrates with Databricks for end-to-end delivery:</p>
+  <ol>
+    <li><strong>Asset Registration</strong>: Use Databricks CLI or API to register models and evidence in Unity Catalog with role-based access.</li>
+    <li><strong>Evaluation Pipeline</strong>: Run notebooks to compute OP metrics, stability bands, and privacy probes, leveraging Databricks’ distributed compute.</li>
+    <li><strong>Bundle Generation</strong>: CI/CD pipeline (e.g., GitHub Actions) signs and uploads bundles to Databricks storage, with hashes logged.</li>
+    <li><strong>Monitoring</strong>: Databricks Jobs schedule refresh cadences and trigger incident alerts based on SLA thresholds.</li>
+  </ol>
+
+  <h2>Case Study: Enterprise Private Listings</h2>
+  <p><strong>Scenario</strong>: A large enterprise managed private model listings on Databricks.</p>
+  <ul>
+    <li><strong>Setup</strong>: Registered 5 models with Unity Catalog, each with SLA-backed evidence bundles.</li>
+    <li><strong>Performance</strong>: OP utility at 0.76 [0.74, 0.78], stability < 2% across regions, latency p95 at 110ms.</li>
+    <li><strong>Process</strong>: Monthly refresh cadence maintained, with incident triage within 4 hours.</li>
+    <li><strong>Outcome</strong>: Upgrades referenced bundle IDs and migration notes, reducing downtime by 30% and securing contract renewal in 10 days.</li>
+  </ul>
+
+  <h2>Case Study: Financial Institution Deployment</h2>
+  <p><strong>Scenario</strong>: A financial institution deployed a fraud detection model.</p>
+  <ul>
+    <li><strong>Setup</strong>: Integrated with Databricks, registering assets and setting a quarterly refresh cadence.</li>
+    <li><br>Performance</strong>: +15% detection lift at 1% FPR, stability < 2.5% across product lines, privacy MIA at 1.5%.</li>
+    <li><strong>Process</strong>: CI gates ensured promotion only after evidence validation; incident response averaged 3 hours.</li>
+    <li><strong>Outcome</strong>: SLA-aligned contract signed in 12 days, with bundles filed for audit.</li>
+  </ul>
+
+  <h2>Governance and Change-Control</h2>
+  <p>AethergenPlatform ensures robust oversight:</p>
+  <ul>
+    <li><strong>Fail-Closed CI Gates</strong>: Checks OP utility, stability, latency, and privacy against SLA thresholds before promotion.</li>
+    <li><strong>Change Logs</strong>: `.aethergen/change-log.json` tracks updates, signed and linked to bundle IDs.</li>
+    <li><strong>Rollback Procedures</strong>: Predefined scripts revert to last stable bundle, rehearsed during incidents.</li>
+  </ul>
+
+  <h2>FAQ</h2>
+  <details>
+    <summary>Can we run hybrid (self-service + managed)?</summary>
+    <p>Yes—some assets can be self-served via Databricks notebooks, while others fall under managed SLAs with evidence tracking.</p>
+  </details>
+  <details>
+    <summary>How are changes approved?</summary>
+    <p>Promotion gates must pass CI checks; change-control meetings reference evidence bundles and bundle IDs for approval.</p>
+  </details>
+  <details>
+    <summary>What if an SLA is breached?</summary>
+    <p>Incident response kicks in same-day, with evidence regenerated to assess impact and guide remediation.</p>
+  </details>
+
+  <h2>Glossary</h2>
+  <ul>
+    <li><strong>Operating Point (OP)</strong>: Threshold for performance metrics (e.g., 1% FPR).</li>
+    <li><strong>Stability Band</strong>: Allowable performance delta across segments.</li>
+    <li><strong>Evidence Bundle</strong>: Signed ZIP with metrics and configs for audit.</li>
+  </ul>
+
+  <h2>Closing</h2>
+  <p>SLAs that point to <strong>evidence</strong> make delivery predictable and trustworthy. With <strong>AethergenPlatform</strong> on Databricks, buyers receive governed assets and reproducible proof, simplifying adoption as of September 2025.</p>
+
+  <p><a href="/contact" class="aeg-btn">Contact Sales →</a></p>
+  </div>
+
+</body>
+</html>

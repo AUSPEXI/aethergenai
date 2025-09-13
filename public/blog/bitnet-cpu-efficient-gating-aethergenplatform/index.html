@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>BitNet on CPUs: Optional Backend for Gating and Edge</title>
+<link rel="canonical" href="https://auspexi.com/blog/bitnet-cpu-efficient-gating-aethergenplatform"/>
+<meta name="description" content="Microsoft has released bitnet.cpp, a fast 1‑bit/ternary LLM inference framework for CPUs, alongside research on BitNet architectures (paper). For AethergenPlatform, this opens a practical path to CPU‑first deployments where GPUs are unavailable, air‑gapped, or reserved for heavier stages."/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"BitNet on CPUs: Optional Backend for Gating and Edge","author":{"@type":"Person","name":"Gwylym Pryce-Owen"},"mainEntityOfPage":"https://auspexi.com/blog/bitnet-cpu-efficient-gating-aethergenplatform","datePublished":"2025-09-13T11:49:52.602Z","image":"https://auspexi.com/og-image.svg","publisher":{"@type":"Organization","name":"Auspexi"},"license":"PROPRIETARY","creator":{"@type":"Organization","name":"Auspexi"},"description":"Microsoft has released bitnet.cpp, a fast 1‑bit/ternary LLM inference framework for CPUs, alongside research on BitNet architectures (paper). For AethergenPlatform, this opens a practical path to CPU‑first deployments where GPUs are unavailable, air‑gapped, or reserved for heavier stages."}</script>
+<style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #111827; background: #f8fafc; margin: 0; padding: 24px; }
+    .article { background: #ffffff; max-width: 920px; margin: 0 auto; padding: 40px; border-radius: 12px; box-shadow: 0 10px 20px rgba(0,0,0,0.06); }
+    h1 { font-size: 2.2rem; color: #111827; margin: 0 0 8px; }
+    .meta { color: #6b7280; font-size: 0.9rem; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #e5e7eb; }
+    h2 { font-size: 1.5rem; color: #111827; margin-top: 32px; margin-bottom: 12px; }
+    p { margin: 12px 0; }
+    ul { margin: 12px 0 12px 20px; }
+    .note { background: #eef2ff; border-left: 4px solid #6366f1; padding: 12px 14px; border-radius: 8px; color: #1f2937; }
+    .kbd { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace; background: #f3f4f6; border: 1px solid #e5e7eb; padding: 2px 6px; border-radius: 4px; }
+    a { color: #1d4ed8; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .cta { margin-top: 24px; background: #eff6ff; border: 1px solid #bfdbfe; padding: 16px; border-radius: 10px; }
+    code { background: #f3f4f6; padding: 2px 6px; border-radius: 4px; }
+  </style>
+</head>
+<body>
+
+<div style="position:sticky;top:0;z-index:50;background:#ffffff;border-bottom:1px solid #e5e7eb;">
+  <div style="max-width:960px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px;">
+    <a href="/" style="color:#0f172a;text-decoration:none;font-weight:700">Auspexi</a>
+    <button onclick="(function(){try{history.back()}catch(e){} setTimeout(function(){ if(!document.referrer || !/\/blog/.test(document.referrer)){ location.href='/blog' } },50);})()" style="margin-left:auto;background:#2563eb;color:#fff;border:none;padding:6px 10px;border-radius:6px;cursor:pointer">← Back to Blog</button>
+  </div>
+</div>
+
+  <div class="article">
+    <h1>BitNet on CPUs: Optional Backend for Gating and Edge</h1>
+    <div class="meta"><strong>By Auspexi</strong> • September 2025 • 7 min read</div>
+
+    <p>Microsoft has released <a href="https://github.com/microsoft/bitnet" target="_blank" rel="noopener">bitnet.cpp</a>, a fast 1‑bit/ternary LLM inference framework for CPUs, alongside research on BitNet architectures (<a href="https://arxiv.org/abs/2310.11453" target="_blank" rel="noopener">paper</a>). For AethergenPlatform, this opens a practical path to CPU‑first deployments where GPUs are unavailable, air‑gapped, or reserved for heavier stages.</p>
+
+    <div class="note">
+      <strong>Positioning.</strong> We integrate BitNet as an <em>optional CPU backend</em> for selective prediction gates and retrieval re‑ranking. We report measured results on our workloads and hardware only. We do not make blanket performance or energy claims.
+    </div>
+
+    <h2>Why this matters</h2>
+    <ul>
+      <li><strong>Edge and air‑gapped.</strong> Run small decision models locally on x86 CPUs.</li>
+      <li><strong>Selective prediction.</strong> Accept easy cases on CPU; route hard cases to larger models.</li>
+      <li><strong>Retrieval re‑ranking.</strong> Improve context quality with a low‑latency CPU scorer.</li>
+      <li><strong>Operational simplicity.</strong> Fewer dependencies for on‑prem installs.</li>
+    </ul>
+
+    <h2>How we integrate</h2>
+    <p>We added a CPU backend option to our demo and internal services:</p>
+    <ul>
+      <li><strong>CPU runner client.</strong> A tiny adapter with <span class="kbd">/score</span> and <span class="kbd">/rerank</span> endpoints.</li>
+      <li><strong>Netlify proxy.</strong> A proxy function with a safe weighted‑score fallback when no runner is present.</li>
+      <li><strong>UI toggle.</strong> In the Stability & SLO demo, enable “Use CPU backend” to route calibration via the CPU path.</li>
+    </ul>
+
+    <div class="note">
+      <strong>Try it locally.</strong> You can point the UI and proxy to a local BitNet HTTP wrapper. When no runner is available, the proxy falls back to a deterministic weighted score for demonstration.
+    </div>
+
+    <h2>Configuration</h2>
+    <p>Add these environment variables if you run a local CPU runner service:</p>
+    <ul>
+      <li><code>VITE_CPU_RUNNER_URL</code> (frontend, e.g., <code>http://localhost:8088</code>)</li>
+      <li><code>CPU_RUNNER_BASE</code> (Netlify function, e.g., <code>http://localhost:8088</code>)</li>
+    </ul>
+    <p>Then open the Stability demo and toggle <em>Use CPU backend</em> when calibrating selective prediction.</p>
+
+    <h2>Reliability and evidence</h2>
+    <ul>
+      <li>We calibrate thresholds from observed signals (margin/entropy/retrieval) and record results in evidence bundles.</li>
+      <li>Unity Catalog comments and tags store configuration notes for auditability.</li>
+      <li>All gating remains fail‑closed with SLOs and rollback rules unchanged.</li>
+    </ul>
+
+    <h2>Further reading</h2>
+    <ul>
+      <li>Microsoft: <a href="https://github.com/microsoft/bitnet" target="_blank" rel="noopener">bitnet.cpp repository</a></li>
+      <li>Research: <a href="https://arxiv.org/abs/2310.11453" target="_blank" rel="noopener">BitNet paper</a></li>
+      <li>Our background: <a href="/blog/hallucination-controls-runtime-gating-evidence">Hallucination controls and runtime gating</a></li>
+    </ul>
+
+    <div class="cta">
+      <strong>Call to action.</strong> If you need CPU‑first options in regulated or air‑gapped environments, we can help evaluate gating on your workloads and report measured outcomes.
+    </div>
+  </div>
+
+</body>
+</html>

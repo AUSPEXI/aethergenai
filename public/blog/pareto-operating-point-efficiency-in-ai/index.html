@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Pareto Thinking for AI: 80/20 Gains at the Operating Point</title>
+<link rel="canonical" href="https://auspexi.com/blog/pareto-operating-point-efficiency-in-ai"/>
+<meta name="description" content="Teams often chase marginal model accuracy while the biggest wins sit elsewhere: choosing the right operating point, setting clear contracts, and routing uncertain cases. Pareto thinking turns these into first‑class levers."/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Pareto Thinking for AI: 80/20 Gains at the Operating Point","author":{"@type":"Person","name":"Gwylym Pryce-Owen"},"mainEntityOfPage":"https://auspexi.com/blog/pareto-operating-point-efficiency-in-ai","datePublished":"2025-09-13T11:50:02.889Z","image":"https://auspexi.com/og-image.svg","publisher":{"@type":"Organization","name":"Auspexi"},"license":"PROPRIETARY","creator":{"@type":"Organization","name":"Auspexi"},"description":"Teams often chase marginal model accuracy while the biggest wins sit elsewhere: choosing the right operating point, setting clear contracts, and routing uncertain cases. Pareto thinking turns these into first‑class levers."}</script>
+<style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.65; color: #0f172a; margin: 0; background: #f5f7fb; }
+    .article { max-width: 920px; margin: 0 auto; background: #fff; padding: 48px 36px; box-shadow: 0 10px 30px rgba(0,0,0,0.06); border-radius: 12px; }
+    h1 { font-size: 36px; margin: 0 0 10px; color: #0b1220; }
+    h2 { font-size: 24px; margin-top: 32px; color: #0b1220; }
+    p, li { color: #1f2937; }
+    .meta { color: #475569; font-size: 14px; margin-bottom: 28px; }
+    .callout { background: #eff6ff; border-left: 4px solid #3b82f6; padding: 16px; border-radius: 8px; }
+    .figure { text-align: center; margin: 24px 0; }
+    .figure svg { max-width: 100%; height: auto; }
+  </style>
+</head>
+<body>
+
+<div style="position:sticky;top:0;z-index:50;background:#ffffff;border-bottom:1px solid #e5e7eb;">
+  <div style="max-width:960px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px;">
+    <a href="/" style="color:#0f172a;text-decoration:none;font-weight:700">Auspexi</a>
+    <button onclick="(function(){try{history.back()}catch(e){} setTimeout(function(){ if(!document.referrer || !/\/blog/.test(document.referrer)){ location.href='/blog' } },50);})()" style="margin-left:auto;background:#2563eb;color:#fff;border:none;padding:6px 10px;border-radius:6px;cursor:pointer">← Back to Blog</button>
+  </div>
+</div>
+
+  <div class="article">
+    <h1>Pareto Thinking for AI: 80/20 Gains at the Operating Point</h1>
+    <div class="meta">Auspexi • Updated: <script>document.write(new Date().toISOString().slice(0,10))</script></div>
+
+    <div class="callout"><strong>TL;DR</strong>: Most gains come from a few levers. In production AI, focus on the operating point, data contracts, selective prediction, and energy‑aware deployment. The result is better reliability at lower cost.</div>
+
+    <h2>Why Pareto Matters for AI</h2>
+    <p>Teams often chase marginal model accuracy while the biggest wins sit elsewhere: choosing the right operating point, setting clear contracts, and routing uncertain cases. Pareto thinking turns these into first‑class levers.</p>
+
+    <h2>Four 80/20 Levers</h2>
+    <ol>
+      <li><strong>Operating Point (OP)</strong>: pick the threshold that maximises expected utility for your risk class and latency budget, not just global accuracy.</li>
+      <li><strong>Selective Prediction</strong>: allow <em>abstain</em> when support is thin; measure coverage and wrong‑answer rate at the same time budget.</li>
+      <li><strong>Data Contracts</strong>: lock in schema, units, and ranges; test violations early. Quality jumps when upstream is governed.</li>
+      <li><strong>Energy‑Aware Profiles</strong>: choose the lowest‑power quantisation/runtime that meets your OP. Cost and carbon fall together.</li>
+    </ol>
+
+    <div class="figure">
+      <svg width="900" height="320" viewBox="0 0 900 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Pareto view: few levers, most gains">
+        <rect width="900" height="320" fill="#ffffff"/>
+        <g transform="translate(40,20)" font-family="Inter,Arial" fill="#0f172a">
+          <text x="410" y="0" text-anchor="middle" font-size="16">Few levers → most gains</text>
+          <rect x="0" y="40" width="520" height="20" fill="#3b82f6"/>
+          <rect x="0" y="80" width="420" height="20" fill="#60a5fa"/>
+          <rect x="0" y="120" width="280" height="20" fill="#93c5fd"/>
+          <rect x="0" y="160" width="160" height="20" fill="#bfdbfe"/>
+          <text x="540" y="55" font-size="12">Operating point</text>
+          <text x="540" y="95" font-size="12">Selective prediction</text>
+          <text x="540" y="135" font-size="12">Data contracts</text>
+          <text x="540" y="175" font-size="12">Energy profile</text>
+        </g>
+      </svg>
+    </div>
+
+    <h2>Measuring What Matters</h2>
+    <ul>
+      <li><strong>Fixed‑coverage evaluation</strong>: hold latency and acceptance rate constant; compare wrong‑answer rate and re‑ask rate before/after controls.</li>
+      <li><strong>Segment stability</strong>: watch variation across regions/products/time windows; tune OPs where gaps persist.</li>
+      <li><strong>Energy KPI</strong>: tokens/sec or tasks/joule at OP; track quantisation swaps vs quality.</li>
+    </ul>
+
+    <h2>From “Noise” to Value (IP‑safe overview)</h2>
+    <p>Most systems discard the by‑products of inference—uncertain spans, disagreement between sources, failed tool calls, and mundane telemetry. We treat these signals as a resource (without storing raw content):</p>
+    <ul>
+      <li><strong>Lightweight summaries</strong>: compress uncertainty and outcome signals into simple counts/percentiles by group and time window (no raw text or images). These summaries help pick safer operating points.</li>
+      <li><strong>Verify‑or‑abstain routing</strong>: when evidence is thin, prefer a helpful abstention or a quick clarification over a confident error. Coverage stays tunable, and risk is explicit.</li>
+      <li><strong>Group‑aware tuning</strong>: where allowed, use the summaries to set per‑group thresholds so quality and stability improve in the places that need it most.</li>
+      <li><strong>Targeted robustness</strong>: hard examples are synthesised from the edges of the distribution (again, from summaries—not raw data) to retrain small improvements where they count.</li>
+      <li><strong>Energy‑aware profiles</strong>: pick the lowest‑power quantisation/runtime that keeps the same quality at the chosen acceptance level.</li>
+    </ul>
+    <p>This approach stays privacy‑first and publication‑safe: we work with aggregate signals and ship the results as evidence (thresholds chosen, metrics achieved), not the implementation internals.</p>
+
+    <h2>How We Operate</h2>
+    <p>We prioritise runtime reliability and auditability: gate answers when support is weak, verify outputs against contracts, and deliver signed evidence with configuration and metrics. When energy is the constraint, we choose the lightest profile that passes the same gates.</p>
+
+    <div class="callout">
+      <strong>Related</strong>: See how we make decisions safe enough for production—gating, abstention, and verification—in our write‑up on <a href="/blog/hallucination-controls-runtime-gating-evidence">Hallucination Controls</a>.
+    </div>
+
+    <h2>What We Publish vs What We Keep Private</h2>
+    <ul>
+      <li><strong>We publish</strong>: operating targets, acceptance results, and high‑level methods (what/why), plus signed evidence bundles.</li>
+      <li><strong>We withhold</strong>: internal parameterisations, heuristics, and implementation details that are not necessary for audit or procurement.</li>
+    </ul>
+
+    <h2>Thanks</h2>
+    <p>Thanks to a manufacturing leader who reminded us to “find the few things that move the needle.” The Pareto lens is as useful in AI as it is on the factory floor.</p>
+
+    <p>Questions or pilots? <a href="/contact">Get in touch</a>.</p>
+  </div>
+
+</body>
+</html>

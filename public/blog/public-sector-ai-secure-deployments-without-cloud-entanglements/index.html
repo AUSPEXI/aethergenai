@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Public Sector AI: Secure Deployments Without Cloud Entanglements</title>
+<link rel="canonical" href="https://auspexi.com/blog/public-sector-ai-secure-deployments-without-cloud-entanglements"/>
+<meta name="description" content="By Gwylym Owen — 18–24 min read"/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Public Sector AI: Secure Deployments Without Cloud Entanglements","author":{"@type":"Person","name":"Gwylym Pryce-Owen"},"mainEntityOfPage":"https://auspexi.com/blog/public-sector-ai-secure-deployments-without-cloud-entanglements","datePublished":"2025-09-13T11:49:41.604Z","image":"https://auspexi.com/og-image.svg","publisher":{"@type":"Organization","name":"Auspexi"},"license":"PROPRIETARY","creator":{"@type":"Organization","name":"Auspexi"},"description":"By Gwylym Owen — 18–24 min read"}</script>
+<style>
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: none;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .article {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        h2 {
+            color: #34495e;
+            font-size: 1.8em;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+        p {
+            margin-bottom: 20px;
+            font-size: 1.1em;
+        }
+        .meta {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        .highlight {
+            background-color: #e8f5e8;
+            padding: 15px;
+            border-left: 4px solid #27ae60;
+            margin: 20px 0;
+        }
+        blockquote {
+            border-left: 4px solid #3498db;
+            padding-left: 20px;
+            margin: 20px 0;
+            font-style: italic;
+            color: #555;
+        }
+        .framework {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #27ae60;
+        }
+        .framework h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        .framework ol {
+            padding-left: 20px;
+        }
+        .framework li {
+            margin-bottom: 10px;
+        }
+        .carbon-tracker {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 25px 0;
+        }
+        .carbon-tracker h3 {
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+        .carbon-tracker ul {
+            list-style: none;
+            padding: 0;
+        }
+        .carbon-tracker li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+        .carbon-tracker li:last-child {
+            border-bottom: none;
+        }
+    
+  </style>
+</head>
+<body>
+
+<div style="position:sticky;top:0;z-index:50;background:#ffffff;border-bottom:1px solid #e5e7eb;">
+  <div style="max-width:960px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px;">
+    <a href="/" style="color:#0f172a;text-decoration:none;font-weight:700">Auspexi</a>
+    <button onclick="(function(){try{history.back()}catch(e){} setTimeout(function(){ if(!document.referrer || !/\/blog/.test(document.referrer)){ location.href='/blog' } },50);})()" style="margin-left:auto;background:#2563eb;color:#fff;border:none;padding:6px 10px;border-radius:6px;cursor:pointer">← Back to Blog</button>
+  </div>
+</div>
+
+  <div class="article">
+<h1>Public Sector AI: Secure Deployments Without Cloud Entanglements</h1>
+  <p><em>By Gwylym Owen — 18–24 min read</em></p>
+
+  <h2>Executive Summary</h2>
+  <p>Public sector teams need AI that operates in <strong>restricted</strong> networks and <strong>air‑gapped</strong> environments. AethergenPlatform can package models and datasets with SBOMs, signed manifests, and offline dashboards so procurement and security teams can approve deployments without internet access as of September 2025.</p>
+
+  <h2>Requirements: The Hard Limits</h2>
+  <p>These are the rules of the game, and we’re playing to win:</p>
+  <ul>
+    <li><strong>No Live Internet</strong>: Only removable media (e.g., USB drives or DVDs) gets the job done—cloud’s off the table!</li>
+    <li><strong>On-Prem Verification</strong>: Signatures and hashes checked right there with your trusty kiosk—trust but verify!</li>
+    <li><strong>Offline Evidence</strong>: HTML and PDF dashboards (e.g., `utility_report.html`) for auditors to pore over without a network.</li>
+    <li><strong>Access Controls</strong>: Role-based access with logs—who’s in, who’s out, all tracked!</li>
+    <li><strong>Audit Trails</strong>: Every move logged (e.g., installation timestamps) for that paper trail the suits love.</li>
+  </ul>
+
+  <h2>Delivery</h2>
+  <p>Delivery approach:</p>
+  <ul>
+    <li><strong>Signed Tarballs</strong>: Compressed packs with manifests and SBOMs, locked with a digital handshake via `KeyManagementService`.</li>
+    <li><strong>Policy Packs</strong>: Configurable rules (e.g., threshold limits) to match mission requirements.</li>
+    <li><strong>Device Profiles</strong>: Optimized for your gear (e.g., Jetson Orin NX at 30W, INT8 mode) to keep it humming.</li>
+    <li><strong>QR‑Verifiable Manifest Labels</strong>: Scan a label and the kiosk displays the manifest hash for verification.</li>
+  </ul>
+
+  <h2>Evidence: Proof You Can Touch</h2>
+  <p>Here’s the meaty proof to back it up:</p>
+  <ul>
+    <li><strong>Operating-Point Utility</strong>: Metrics with confidence intervals (e.g., 0.75 [0.73, 0.77] at 1% FPR)—no guesswork!</li>
+    <li><strong>Segment Stability Summaries</strong>: Stability across regions or shifts (e.g., < 2% delta) in a neat table.</li>
+    <li><strong>Privacy Probe Reports</strong>: Membership advantage (e.g., 0.03 below 0.05) and attribute checks, with optional DP budgets (e.g., ε=2.0).</li>
+    <li><strong>Change-Control Logs</strong>: `.aethergen/change-log.json` tracks updates, signed for your peace of mind.</li>
+  </ul>
+
+  <h2>Use Case Example: Lab Lockdown</h2>
+  <p><strong>Scenario</strong>: A top-secret lab needed detectors in an enclave—no cloud, just grit!</p>
+  <ul>
+    <li><strong>Setup</strong>: Deployed signed tarballs, verified hashes on-site, and fired up offline dashboards.</li>
+    <li><strong>Result</strong>: Security gave a thumbs-up, SBOMs were filed, and evidence showed 0.74 utility with < 1% stability drift.</li>
+    <li><strong>Win</strong>: Approval zipped through in 3 days—beat the usual months-long slog!</li>
+  </ul>
+
+  <h2>Use Case Example: Defense Depot</h2>
+  <p><strong>Scenario</strong>: A defense site wanted secure monitoring offline.</p>
+  <ul>
+    <li><strong>Setup</strong>: Delivered via USB with QR labels, policy packs, and HTML evidence.</li>
+    <li><strong>Result</strong>: Privacy probes passed (0.02 advantage), and self-tests confirmed setup in 2 hours.</li>
+    <li><strong>Win</strong>: Audit cleared remotely, saving travel costs and time!</li>
+  </ul>
+
+  <h2>Deployment SOP</h2>
+  <ol>
+    <li><strong>Receive Media</strong>: Pop in that USB or DVD—check for scratches first!</li>
+    <li><strong>Verify Signatures</strong>: Kiosk scans QR, matches hashes—trust established!</li>
+    <li><strong>Install & Self-Test</strong>: Run the golden set, generate a ticket—proof of life!</li>
+    <li><strong>Log & Store</strong>: Record in audit trail, stash evidence locally—done and dusted!</li>
+  </ol>
+
+  <h2>FAQ</h2>
+  <details>
+    <summary>Can we receive private annexes?</summary>
+    <p>Yes—bundled separately with their own manifests and controls.</p>
+  </details>
+  <details>
+    <summary>How do we handle updates?</summary>
+    <p>Use signed media, let the kiosk verify the manifest, and log self‑test tickets.</p>
+  </details>
+  <details>
+    <summary>What if hardware fails the self-test?</summary>
+    <p>Rollback to the last good image, re‑run tests, and escalate per SOP.</p>
+  </details>
+
+  <h2>Glossary</h2>
+  <ul>
+    <li><strong>Air‑Gapped</strong>: Fully offline environment.</li>
+    <li><strong>SBOM</strong>: Software Bill of Materials—your supply chain’s resume.</li>
+    <li><strong>Manifest</strong>: The signed list proving what’s what.</li>
+  </ul>
+
+  <h2>Checklist</h2>
+  <ul>
+    <li><strong>Media Received</strong>: Check—USB intact?</li>
+    <li><strong>Signatures Verified</strong>: Kiosk says yes—green light!</li>
+    <li><strong>Self-Test Passed</strong>: Golden set rocks—ticket in hand!</li>
+    <li><strong>Evidence Stored</strong>: Dashboards and logs safe—audit-ready!</li>
+  </ul>
+
+  <h2>Device Profiles: Tailored to Your Gear</h2>
+  <ul>
+    <li><strong>Jetson Orin NX</strong>: INT8, batch=1, p95≤25ms, 30W cap—lean and mean!</li>
+    <li><strong>Industrial PC</strong>: FP16, batch=2, p95≤18ms, fan curve B—powerhouse mode!</li>
+    <li><strong>ARM SBC</strong>: Q4 quant, batch=1, p95≤40ms, throttle-ready—budget champ!</li>
+  </ul>
+
+  <h2>Security Matrix: Covering All Angles</h2>
+  <pre>
+threat, control, evidence
+signature_spoof, hash_verify, kiosk_log
+data_leak, access_control, audit_trail
+update_tamper, signed_media, manifest_hash
+  </pre>
+
+  <h2>Offline Dashboard Sample</h2>
+  <pre>
+Utility@OP: 0.74 [0.73,0.75]
+Stability: < 1% delta (regions)
+Privacy: 0.02 advantage (PASS)
+  </pre>
+
+  <h2>Procurement Playbook</h2>
+  <ul>
+    <li><strong>Review SBOM</strong>: Check dependencies—any surprises?</li>
+    <li><strong>Verify Evidence</strong>: Dashboards match OP claims—spot check!</li>
+    <li><strong>Sign Off</strong>: Attach manifest IDs to contract—seal the deal!</li>
+  </ul>
+
+  <h2>Closing</h2>
+  <p>Air‑gapped and restricted zones need AI that brings its own proof. <strong>AethergenPlatform</strong> delivers signed packs and offline dashboards to keep public‑sector missions secure and efficient.</p>
+
+  <p><a href="/contact" class="aeg-btn">Contact Sales →</a></p>
+  </div>
+
+</body>
+</html>

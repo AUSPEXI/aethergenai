@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Choose the Right Model: A Practical Helper</title>
+<link rel="canonical" href="https://auspexi.com/blog/choose-the-right-model-helper"/>
+<meta name="description" content="2025 isn’t about the biggest model—it’s about the right model at the right time, with the right guardrails. A small on‑device model with great context often outperforms a large cloud model with noisy input, at a fraction of the cost and carbon."/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Choose the Right Model: A Practical Helper","author":{"@type":"Person","name":"Gwylym Pryce-Owen"},"mainEntityOfPage":"https://auspexi.com/blog/choose-the-right-model-helper","datePublished":"2025-09-13T11:49:53.088Z","image":"https://auspexi.com/og-image.svg","publisher":{"@type":"Organization","name":"Auspexi"},"license":"PROPRIETARY","creator":{"@type":"Organization","name":"Auspexi"},"description":"2025 isn’t about the biggest model—it’s about the right model at the right time, with the right guardrails. A small on‑device model with great context often outperforms a large cloud model with noisy input, at a fraction of the cost and carbon."}</script>
+<style>
+    body { font-family: -apple-system, BlinkMacSystemFont, Inter, Segoe UI, Roboto, Arial, sans-serif; line-height: 1.65; color: #0f172a; margin: 0; background: #f5f7fb; }
+    .article { max-width: 960px; margin: 0 auto; background: #fff; padding: 48px 36px; box-shadow: 0 10px 30px rgba(0,0,0,0.06); border-radius: 12px; }
+    h1 { font-size: 36px; margin: 0 0 8px; color: #0b1220; }
+    .meta { color: #475569; font-size: 14px; margin-bottom: 28px; }
+    h2 { color: #0b1220; margin-top: 32px; font-size: 24px; }
+    p, li { color: #1f2937; }
+    ul { padding-left: 20px; }
+    .callout { background: #ecfeff; border-left: 4px solid #06b6d4; padding: 16px; border-radius: 8px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+    .card { background:#fff; border:1px solid #e5e7eb; border-radius:12px; padding:16px; }
+    a { color:#2563eb; text-decoration:none; }
+    a:hover { text-decoration:underline; }
+  </style>
+</head>
+<body>
+
+<div style="position:sticky;top:0;z-index:50;background:#ffffff;border-bottom:1px solid #e5e7eb;">
+  <div style="max-width:960px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px;">
+    <a href="/" style="color:#0f172a;text-decoration:none;font-weight:700">Auspexi</a>
+    <button onclick="(function(){try{history.back()}catch(e){} setTimeout(function(){ if(!document.referrer || !/\/blog/.test(document.referrer)){ location.href='/blog' } },50);})()" style="margin-left:auto;background:#2563eb;color:#fff;border:none;padding:6px 10px;border-radius:6px;cursor:pointer">← Back to Blog</button>
+  </div>
+</div>
+
+  <div class="article">
+    <h1>Choose the Right Model: A Practical Helper</h1>
+    <div class="meta"><strong>Auspexi</strong> • Updated: <script>document.write(new Date().toISOString().slice(0,10))</script></div>
+    <div class="callout"><strong>TL;DR</strong>: The best model is the one that fits your task, constraints, and evidence needs. Our helper asks a few questions and recommends a starter + routing + context + risk policy—so you ship something reliable, fast.</div>
+
+    <h2>What the helper asks</h2>
+    <ul>
+      <li><strong>Task</strong>: generate text, retrieve/search, plan/act, segment images, multimodal Q&A</li>
+      <li><strong>Modalities</strong>: text only, text+image, image only</li>
+      <li><strong>Constraints</strong>: on‑device vs cloud, latency p95, energy/thermal SLOs, privacy posture</li>
+      <li><strong>Scale</strong>: users/requests/sec (router vs single expert)</li>
+      <li><strong>Evidence</strong>: audit depth needed; acceptance gates to pass</li>
+    </ul>
+
+    <h2>Recommendation logic (high level)</h2>
+    <div class="grid">
+      <div class="card"><strong>LLM</strong><br/>Text gen with Context Engine + Risk Guard.<br/><em>When:</em> chat/copy/code; cloud or hybrid.<br/><em>Starter:</em> LLM.</div>
+      <div class="card"><strong>SLM</strong><br/>Small model on device with fallback SLOs.<br/><em>When:</em> private, low‑latency, field use.<br/><em>Starter:</em> SLM.</div>
+      <div class="card"><strong>LAM</strong><br/>Plan/act with typed tools; memory loop.<br/><em>When:</em> agents, workflows, RPA.<br/><em>Starter:</em> LAM.</div>
+      <div class="card"><strong>MoE</strong><br/>Route to specialized experts.<br/><em>When:</em> heterogeneous tasks under scale.
+      <br/><em>Starter:</em> MoE.</div>
+      <div class="card"><strong>VLM</strong><br/>Image+text understanding.<br/><em>When:</em> search, robotics, inspection.<br/><em>Starter:</em> VLM.</div>
+      <div class="card"><strong>MLM</strong><br/>Embeddings, retrieval & ranking.<br/><em>When:</em> search/classification, RAG foundation.<br/><em>Starter:</em> MLM.</div>
+      <div class="card"><strong>LCM</strong><br/>Fast image generation.<br/><em>When:</em> efficient device‑friendly image gen.<br/><em>Starter:</em> LCM.</div>
+      <div class="card"><strong>SAM</strong><br/>Pixel‑level segmentation.<br/><em>When:</em> medical/industrial masks, AR.
+      <br/><em>Starter:</em> SAM.</div>
+    </div>
+
+    <h2>Routing, context, and risk—baked in</h2>
+    <ul>
+      <li><strong>Routing</strong>: on‑device by default where feasible (SLM/VLM paths), hybrid fallback with SLOs otherwise</li>
+      <li><strong>Context</strong>: hybrid retrieval (BM25+dense+reranker), signals (margin/support/recency/trust), token budget packing</li>
+      <li><strong>Risk</strong>: pre‑generation Risk Guard uses signals to fetch/clarify/abstain before generating</li>
+      <li><strong>Evidence</strong>: export signed ZIPs with <code>context_provenance.json</code>, crypto profile, and acceptance gates</li>
+    </ul>
+
+    <h2>How to use it now</h2>
+    <ol>
+      <li>Open <a href="/build">Build a Model</a> and pick a starter.</li>
+      <li>Read the short prompt: “What are you building?” Pick task, modality, constraints.</li>
+      <li>Download the scaffold ZIP and run the acceptance checks before integrating data.</li>
+    </ol>
+
+    <h2>Why this matters</h2>
+    <p>2025 isn’t about the biggest model—it’s about the right model at the right time, with the right guardrails. A small on‑device model with great context often outperforms a large cloud model with noisy input, at a fraction of the cost and carbon.</p>
+
+    <h2>Next steps</h2>
+    <ul>
+      <li>Add an interactive helper page that outputs a starter + routing + SLO profile (say “go” to enable it).</li>
+      <li>Publish quickstart notebooks per starter for acceptance & evidence.</li>
+    </ul>
+
+    <p>Get started: <a href="/build">/build</a> • <a href="/context-engineering">Context Engineering</a> • <a href="/whitepaper#context">Whitepaper</a></p>
+  </div>
+
+</body>
+</html>

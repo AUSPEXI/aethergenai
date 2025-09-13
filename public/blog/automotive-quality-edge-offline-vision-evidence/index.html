@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Automotive Quality at the Edge: Offline Vision with Verifiable Results</title>
+<link rel="canonical" href="https://auspexi.com/blog/automotive-quality-edge-offline-vision-evidence"/>
+<meta name="description" content="By Gwylym Owen — 20–28 min read"/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Automotive Quality at the Edge: Offline Vision with Verifiable Results","author":{"@type":"Person","name":"Gwylym Pryce-Owen"},"mainEntityOfPage":"https://auspexi.com/blog/automotive-quality-edge-offline-vision-evidence","datePublished":"2025-09-13T11:49:28.571Z","image":"https://auspexi.com/og-image.svg","publisher":{"@type":"Organization","name":"Auspexi"},"license":"PROPRIETARY","creator":{"@type":"Organization","name":"Auspexi"},"description":"By Gwylym Owen — 20–28 min read"}</script>
+<style>
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: none;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .article {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        h2 {
+            color: #34495e;
+            font-size: 1.8em;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+        p {
+            margin-bottom: 20px;
+            font-size: 1.1em;
+        }
+        .meta {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        .highlight {
+            background-color: #e8f5e8;
+            padding: 15px;
+            border-left: 4px solid #27ae60;
+            margin: 20px 0;
+        }
+        blockquote {
+            border-left: 4px solid #3498db;
+            padding-left: 20px;
+            margin: 20px 0;
+            font-style: italic;
+            color: #555;
+        }
+        .framework {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #27ae60;
+        }
+        .framework h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        .framework ol {
+            padding-left: 20px;
+        }
+        .framework li {
+            margin-bottom: 10px;
+        }
+        .carbon-tracker {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 25px 0;
+        }
+        .carbon-tracker h3 {
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+        .carbon-tracker ul {
+            list-style: none;
+            padding: 0;
+        }
+        .carbon-tracker li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+        .carbon-tracker li:last-child {
+            border-bottom: none;
+        }
+    
+  </style>
+</head>
+<body>
+
+<div style="position:sticky;top:0;z-index:50;background:#ffffff;border-bottom:1px solid #e5e7eb;">
+  <div style="max-width:960px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px;">
+    <a href="/" style="color:#0f172a;text-decoration:none;font-weight:700">Auspexi</a>
+    <button onclick="(function(){try{history.back()}catch(e){} setTimeout(function(){ if(!document.referrer || !/\/blog/.test(document.referrer)){ location.href='/blog' } },50);})()" style="margin-left:auto;background:#2563eb;color:#fff;border:none;padding:6px 10px;border-radius:6px;cursor:pointer">← Back to Blog</button>
+  </div>
+</div>
+
+  <div class="article">
+<h1>Automotive Quality at the Edge: Offline Vision with Verifiable Results</h1> <p><em>By Gwylym Owen — 20–28 min read</em></p> <p>Picture a mechanic on an automotive assembly line, eyes glued to a monitor as cameras scan for scratches on a freshly painted hood. The conveyor can’t stop—latency must be razor-sharp, security ironclad, and quality provable with hard data. That’s the edge AI challenge, and AethergenPlatform delivers camera ingest, calibration, inference, policy actions, and signed evidence logs—all air-gapped and ready for the toughest stations. This guide lays out the architecture, timing budgets, acceptance gates, and evidence bundles that let QA and procurement sign off with confidence. Every detail is now live and operational as of September 1, 2025.</p> <h2>Executive Summary</h2> <p>Assembly lines demand deterministic latency, zero-trust packaging, and auditable quality evidence. AethergenPlatform ships edge bundles for air-gapped stations: camera ingest, calibration, inference, policy actions, and signed evidence logs. This guide details station architecture, timing budgets, acceptance gates, and the evidence bundle that lets QA and procurement sign with confidence. All features are</p> <h2>Station Context and Constraints</h2> <p>Every station faces unique pressures. Imagine a conductor syncing an orchestra—every millisecond counts. <strong>Latency: 5–50 ms/frame</strong> is typical, ensuring actions don’t stall conveyors. <strong>Uptime: operate through network outages</strong> with local watchdogs and restart policies keeping the beat. <strong>Traceability: link decisions to lot, shift, operator, and configuration state</strong> for full accountability. <strong>Change-control: versioned policies, thresholds, and binaries with checksums</strong> maintain stability. These constraints shape a system built for the chaos of the line.</p> <ul> <li><strong>Latency</strong>: 5–50 ms/frame typical; actions must not stall conveyors.</li> <li><strong>Uptime</strong>: operate through network outages; local watchdogs and restart policies.</li> <li><strong>Traceability</strong>: link decisions to lot, shift, operator, and configuration state.</li> <li><strong>Change-control</strong>: versioned policies, thresholds, and binaries with checksums.</li> </ul> <h2>Station Types</h2> <p>Each station tackles a specific challenge. <strong>Surface defects</strong> catch paint flaws, scratches, and dents with eagle-eyed precision. <strong>Assembly checks</strong> verify fasteners, gaps, and alignment to ensure a tight fit. <strong>Electrical</strong> tests confirm connector presence and indicator functionality. <strong>Interior</strong> scans for stitching issues, wrinkles, and fit problems. AethergenPlatform tailors solutions for every role on the line.</p> <ul> <li><strong>Surface defects</strong>: paint, scratches, dents.</li> <li><strong>Assembly checks</strong>: fasteners, gaps, alignment.</li> <li><strong>Electrical</strong>: connector presence, indicator tests.</li> <li><strong>Interior</strong>: stitching, wrinkles, fit.</li> </ul> <h2>Defect Taxonomy</h2> <p>Defects fall into clear categories. Critical issues stop the line, major ones trigger rework, and minor ones tally for trends—think of it as a triage system for quality. <strong>Per-class thresholds and escalation routes</strong> are baked into the policy pack, ensuring every flaw gets the right response.</p> <ul> <li>Critical (stop line), Major (rework), Minor (tally for trends).</li> <li>Per-class thresholds and escalation routes are part of the policy pack.</li> </ul> <h2>Golden Run Protocol</h2> <p>This is your station’s health check. <strong>Capture golden images after calibration</strong> to set the baseline. <strong>Run model with logging at full verbosity</strong> to catch every detail. <strong>Freeze operating points and store signed evidence</strong> to lock in quality. It’s like a pre-race tune-up, fully operational as of September 1, 2025.</p> <ol> <li>Capture golden images after calibration.</li> <li>Run model with logging at full verbosity.</li> <li>Freeze operating points and store signed evidence.</li> </ol> <h2>Lighting Scenarios</h2> <p>Lighting can make or break vision systems. <strong>Day, night, mixed; seasonal presets</strong> adapt to the environment. <strong>Histogram alarms; auto switch profiles within bounds</strong> keep detection steady, like adjusting stage lights for a live show</p> <ul> <li>Day, night, mixed; seasonal presets.</li> <li>Histogram alarms; auto switch profiles within bounds.</li> </ul> <h2>Security Model</h2> <p>Security is non-negotiable. <strong>Offline signed packages; QR hash verification</strong> ensures trust without a network. <strong>Role-based access; local audit logs</strong> track every move. <strong>Rollback artifacts stored locally with checksums</strong> provide a safety net. It’s a fortress built for the edge</p> <ul> <li>Offline signed packages; QR hash verification.</li> <li>Role-based access; local audit logs.</li> <li>Rollback artifacts stored locally with checksums.</li> </ul> <h2>Maintenance SOP</h2> <p>Maintenance keeps the system humming. <strong>Enter maintenance mode; snapshot current state</strong> to preserve the baseline. <strong>Recalibrate camera/lighting; record deltas</strong> to track changes. <strong>Re-run golden set; compare drift and accept/reject</strong> to validate performance. It’s a pit stop done right</p> <ol> <li>Enter maintenance mode; snapshot current state.</li> <li>Recalibrate camera/lighting; record deltas.</li> <li>Re-run golden set; compare drift and accept/reject.</li> </ol> <h2>FAQ</h2> <details> <summary>What if inference spikes above budget?</summary> <p>Policy triggers a fallback model or raises thresholds temporarily; evidence logs the event and recovery.</p> </details> <details> <summary>Can we run two models per station?</summary> <p>Yes—ensemble or shadow modes are supported. Shadow output is retained in evidence for future promotions.</p> </details> <details> <summary>How do we prove nothing changed?</summary> <p>Manifest + SBOM hashes must match the release notes; QR hash scan is the quick check.</p> </details> <h2>Glossary</h2> <ul> <li><strong>Operating point</strong>: defect score threshold per class.</li> <li><strong>Golden set</strong>: curated frames used to verify station health.</li> <li><strong>Rework loop</strong>: policy route for flagged items.</li> </ul> <h2>Checklist for Go-Live</h2> <p>Before you launch, ensure: <strong>Calibration signed off</strong> by the team. <strong>Golden run stored; hashes match</strong> for consistency. <strong>Operating points documented with effect sizes</strong> for transparency. <strong>Rollback and maintenance SOP rehearsed</strong> for readiness. All items are</p> <ul> <li>Calibration signed off.</li> <li>Golden run stored; hashes match.</li> <li>Operating points documented with effect sizes.</li> <li>Rollback and maintenance SOP rehearsed.</li> </ul> <h2>Reference Architecture</h2> <p>This is the backbone of the system. <strong>Capture & preprocess</strong> handles camera sync, lens distortion correction, and illumination normalization. <strong>On-device inference</strong> runs defect detection and classification with model variants per station. <strong>Policy layer</strong> manages accept/reject/flag routing, rework loop integration, and safety interlocks. <strong>Evidence logger</strong> creates signed summaries and retains sample frames under configurable policies. All components are</p> <ul> <li><strong>Capture & preprocess</strong>: camera sync, lens distortion correction, illumination normalization.</li> <li><strong>On-device inference</strong>: defect detection/classification; model variants per station.</li> <li><strong>Policy layer</strong>: accept/reject/flag routing; rework loop integration; safety interlocks.</li> <li><strong>Evidence logger</strong>: signed summaries; sample frame retention under configurable policies.</li> </ul> <h2>Calibration & Robustness</h2> <p>Calibration keeps it accurate. <strong>Golden images</strong> and alignment targets handle camera reposition events. <strong>Lighting profiles</strong> with seasonal/shift presets and drift alarms on histogram shifts adapt to conditions. <strong>Tooling changes</strong> tracked in metadata de-risk false alarms after maintenance. All features are</p> <ul> <li><strong>Golden images</strong> and alignment targets for camera reposition events.</li> <li><strong>Lighting profiles</strong> with seasonal/shift presets; drift alarms on histogram shifts.</li> <li><strong>Tooling changes</strong> tracked in metadata to de-risk false alarms after maintenance.</li> </ul> <h2>KPIs That Operations Care About</h2> <p>Numbers drive decisions. <strong>Per-class sensitivity/specificity</strong> at chosen operating points tracks accuracy. <strong>False-call cost</strong> and rework minutes per 1k units by shift measure efficiency. <strong>Throughput impact</strong> (units/hour) at current thresholds gauges speed. <strong>Stability</strong> across lighting/tooling/seasonal shifts ensures reliability. All metrics are</p> <ul> <li><strong>Per-class sensitivity/specificity</strong> at chosen operating points.</li> <li><strong>False-call cost</strong> and rework minutes per 1k units by shift.</li> <li><strong>Throughput impact</strong> (units/hour) at current thresholds.</li> <li><strong>Stability</strong> across lighting/tooling/seasonal shifts.</li> </ul> <h2>Evidence Bundle (QA, Audit, Procurement)</h2> <p>This is your proof package. <strong>Model cards</strong> detail training data specs, limits, and known failure modes. <strong>Operating points</strong> per class include ROC/PR curves and confidence intervals. <strong>Traceability</strong> links lot/shift decisions, policy thresholds, and rework triggers. <strong>SBOM</strong> and signed manifests (hashes) cover all binaries and configs. All components are</p> <ul> <li><strong>Model cards</strong> with training data specs, limits, and known failure modes.</li> <li><strong>Operating points</strong> per class with ROC/PR curves and confidence intervals.</li> <li><strong>Traceability</strong>: lot/shift decisions, policy thresholds, and rework triggers.</li> <li><strong>SBOM</strong> and signed manifests (hashes) for all binaries and configs.</li> </ul> <h2>Offline Packaging & Policy Packs</h2> <p>Device-specific builds (INT8/Q4/FP16) and <strong>policy packs</strong> (thresholds, logging) ship as a signed tarball. Optional QR-encoded manifest hashes enable handheld verification at the line—no network required. All features are</p> <h2>Acceptance and Rollout</h2> <p>Here’s the deployment playbook. <strong>Pilot</strong>: one station, one defect class; freeze acceptance criteria and rework policy. <strong>Gates</strong>: select operating points; document effect sizes; capture golden runs. <strong>Rollback</strong>: define drift alarms and reversion triggers; rehearse the procedure. <strong>Scale-out</strong>: replicate station bundles; keep gates identical to preserve evidence. All steps are</p> <ol> <li><strong>Pilot</strong>: one station, one defect class; freeze acceptance criteria and rework policy.</li> <li><strong>Gates</strong>: select operating points; document effect sizes; capture golden runs.</li> <li><strong>Rollback</strong>: define drift alarms and reversion triggers; rehearse the procedure.</li> <li><strong>Scale-out</strong>: replicate station bundles; keep gates identical to preserve evidence.</li> </ol> <blockquote> <p>With <strong>AethergenPlatform</strong> you don’t just deploy models—you deploy <em>proof</em>. QA signs off on numbers that map to throughput and rework, not vibes.</p> </blockquote> <p><a class="aeg-btn" href="/contact">Contact Sales →</a></p> <h2>Timing Budgets</h2> <p>Every step is timed like a race. <strong>Capture: 1–3 ms</strong> grabs the frame. <strong>Preprocess: 1–5 ms</strong> cleans it up. <strong>Inference: 5–25 ms</strong> (model-dependent) spots defects. <strong>Policy & I/O: 1–5 ms</strong> decides the action. All within 5–26ms total latency</p> <ul> <li><strong>Capture</strong>: 1–3 ms</li> <li><strong>Preprocess</strong>: 1–5 ms</li> <li><strong>Inference</strong>: 5–25 ms (model-dependent)</li> <li><strong>Policy & I/O</strong>: 1–5 ms</li> </ul> <h2>Failure Modes and Safeguards</h2> <p>Failures happen—here’s the safety net. <strong>Camera dropout</strong> → failover to redundant sensor; alert operator. <strong>Lighting shift</strong> → alarm and auto-adjust profile; hold thresholds if needed. <strong>Model error spike</strong> → revert to last good operating point; log evidence. All safeguards are</p> <ul> <li>Camera dropout → failover to redundant sensor; alert operator.</li> <li>Lighting shift → alarm and auto-adjust profile; hold thresholds if needed.</li> <li>Model error spike → revert to last good operating point; log evidence.</li> </ul> <h2>Rework Integration</h2> <p>The policy layer ties into rework cells. Defects above severity S route automatically, and evidence links each rework to the original frame and decision context. All features are</p> <h2>Procurement Checklist</h2> <p>Before signing off, confirm: <strong>SBOM + signed manifests</strong> are in hand. <strong>Per-class operating points with CIs</strong> are documented. <strong>Golden image sets and calibration procedures</strong> are ready. <strong>Rollback scripts and rehearsal records</strong> are tested. All items are</p> <ul> <li>SBOM + signed manifests</li> <li>Per-class operating points with CIs</li> <li>Golden image sets and calibration procedures</li> <li>Rollback scripts and rehearsal records</li> </ul>
+  </div>
+
+</body>
+</html>

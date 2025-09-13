@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Evidence in CI: Failing Closed and Passing Audits with Confidence</title>
+<link rel="canonical" href="https://auspexi.com/blog/evidence-in-ci-failing-closed-passing-audits"/>
+<meta name="description" content="By Gwylym Owen — 45–60 min read"/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Evidence in CI: Failing Closed and Passing Audits with Confidence","author":{"@type":"Person","name":"Gwylym Pryce-Owen"},"mainEntityOfPage":"https://auspexi.com/blog/evidence-in-ci-failing-closed-passing-audits","datePublished":"2025-09-13T11:49:32.341Z","image":"https://auspexi.com/og-image.svg","publisher":{"@type":"Organization","name":"Auspexi"},"license":"PROPRIETARY","creator":{"@type":"Organization","name":"Auspexi"},"description":"By Gwylym Owen — 45–60 min read"}</script>
+<style>
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: none;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .article {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        h2 {
+            color: #34495e;
+            font-size: 1.8em;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+        p {
+            margin-bottom: 20px;
+            font-size: 1.1em;
+        }
+        .meta {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        .highlight {
+            background-color: #e8f5e8;
+            padding: 15px;
+            border-left: 4px solid #27ae60;
+            margin: 20px 0;
+        }
+        blockquote {
+            border-left: 4px solid #3498db;
+            padding-left: 20px;
+            margin: 20px 0;
+            font-style: italic;
+            color: #555;
+        }
+        .framework {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #27ae60;
+        }
+        .framework h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        .framework ol {
+            padding-left: 20px;
+        }
+        .framework li {
+            margin-bottom: 10px;
+        }
+        .carbon-tracker {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 25px 0;
+        }
+        .carbon-tracker h3 {
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+        .carbon-tracker ul {
+            list-style: none;
+            padding: 0;
+        }
+        .carbon-tracker li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+        .carbon-tracker li:last-child {
+            border-bottom: none;
+        }
+    
+  </style>
+</head>
+<body>
+
+<div style="position:sticky;top:0;z-index:50;background:#ffffff;border-bottom:1px solid #e5e7eb;">
+  <div style="max-width:960px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px;">
+    <a href="/" style="color:#0f172a;text-decoration:none;font-weight:700">Auspexi</a>
+    <button onclick="(function(){try{history.back()}catch(e){} setTimeout(function(){ if(!document.referrer || !/\/blog/.test(document.referrer)){ location.href='/blog' } },50);})()" style="margin-left:auto;background:#2563eb;color:#fff;border:none;padding:6px 10px;border-radius:6px;cursor:pointer">← Back to Blog</button>
+  </div>
+</div>
+
+  <div class="article">
+<h1>Evidence in CI: Failing Closed and Passing Audits with Confidence</h1>
+<p><em>By Gwylym Owen — 45–60 min read</em></p>
+
+<h2>Executive Summary</h2>
+<p>Shipping AI in regulated environments demands more than accuracy. It requires <strong>evidence</strong> regenerated on every change, <strong>gates</strong> that fail closed, and <strong>artifacts</strong> that auditors can file. AethergenPlatform bakes evidence generation into CI so every release carries signed metrics, configurations, seeds, and hashes. If gates fail, promotion is blocked. If gates pass, procurement has everything they need.</p>
+
+<h2>Why Evidence in CI</h2>
+<ul>
+  <li>Removes ambiguity: the same pipeline that builds artifacts builds proof.</li>
+  <li>Accelerates adoption: procurement receives reproducible packages.</li>
+  <li>Reduces incidents: fail‑closed gates prevent shaky promotions.</li>
+  <li>Shortens post‑mortems: evidence is attached to every change.</li>
+</ul>
+
+<h2>Core Gates</h2>
+<ul>
+  <li><strong>Utility@OP</strong>: performance at declared operating points with CIs.</li>
+  <li><strong>Stability</strong>: max deltas across segments (region/product/lifecycle) within bands.</li>
+  <li><strong>Robustness</strong> (where applicable): degradations under corruptions within bounds.</li>
+  <li><strong>Latency</strong>: p95/p99 response times within SLOs.</li>
+  <li><strong>Privacy</strong>: probes (and optional DP budgets) under thresholds.</li>
+  <li><strong>Packaging</strong>: manifests, SBOM, lineage, and dashboard exports present.</li>
+</ul>
+
+<h2>Pipeline Overview</h2>
+<pre>
+commit → build → evaluate → evidence → gates → package → publish
+                       ↘ fail‑closed ↗
+</pre>
+
+<h2>Operating Points (OPs)</h2>
+<ul>
+  <li>Chosen in partnership with operations (e.g., analysts/day; false‑positive budget).</li>
+  <li>Stored in config tables; never hard‑coded.</li>
+  <li>Used consistently for evaluation and dashboards.</li>
+</ul>
+
+<h2>Configuration</h2>
+<pre>
+op:
+  fpr: 0.01
+stability:
+  region_max_delta: 0.03
+  product_max_delta: 0.02
+latency:
+  p95_ms: 120
+privacy:
+  membership_advantage_max: 0.05
+</pre>
+
+<h2>Evidence Artifacts</h2>
+<ul>
+  <li>metrics/utility@op.json</li>
+  <li>metrics/stability_by_segment.json</li>
+  <li>metrics/robustness.json (if relevant)</li>
+  <li>metrics/latency.json</li>
+  <li>privacy/probes.json (and dp.json)</li>
+  <li>plots/roc_pr_curves.html</li>
+  <li>plots/stability_bars.html</li>
+  <li>configs/evaluation.yaml</li>
+  <li>configs/thresholds.yaml</li>
+  <li>sbom.json</li>
+  <li>manifest.json (hashes)</li>
+</ul>
+
+<h2>Manifest (Sketch)</h2>
+<pre>
+{
+  "version": "2025.01",
+  "artifacts": [
+    "metrics/utility@op.json",
+    "metrics/stability_by_segment.json",
+    "plots/roc_pr_curves.html",
+    "configs/evaluation.yaml",
+    "sbom.json"
+  ],
+  "hashes": {"metrics/utility@op.json": "sha256:..."},
+  "seeds": "seeds/seeds.txt"
+}
+</pre>
+
+<h2>Fail‑Closed Logic</h2>
+<pre>
+if not gates.utility.pass: fail()
+if not gates.stability.pass: fail()
+if not gates.latency.pass: fail()
+if not gates.privacy.pass: fail()
+package_and_publish()
+</pre>
+
+<h2>Dashboards</h2>
+<ul>
+  <li>OP utility with confidence intervals.</li>
+  <li>Segment stability deltas.</li>
+  <li>Latency distributions (p50/p95/p99).</li>
+  <li>Privacy probe summaries and budgets.</li>
+</ul>
+
+<h2>Reproducibility</h2>
+<ul>
+  <li>Seeds pinned; configs hashed.</li>
+  <li>Environment fingerprints recorded.</li>
+  <li>Evidence regenerated on every change.</li>
+</ul>
+
+<h2>Example Utility@OP</h2>
+<pre>
+{
+  "op": "fpr=0.01",
+  "global": {"metric": 0.758, "ci": [0.749, 0.767]},
+  "segments": {
+    "region": {"NA": 0.761, "EU": 0.753, "APAC": 0.749}
+  }
+}
+</pre>
+
+<h2>Latency Report</h2>
+<pre>
+{"p50": 42, "p95": 97, "p99": 142}
+</pre>
+
+<h2>Privacy Probes</h2>
+<pre>
+{"membership_advantage": 0.03, "ci": [0.01, 0.05], "threshold": 0.05}
+</pre>
+
+<h2>Ablations</h2>
+<ul>
+  <li>Effect sizes reported with CIs at OP.</li>
+  <li>Negative deltas block promotion unless waived with compensating controls.</li>
+</ul>
+
+<h2>Case Study: Healthcare Detector</h2>
+<p>Gates included OP utility (fpr=1%), region stability ≤0.03, and p95≤120ms. An ablation adding claim‑graph motifs increased utility by +3.8% (CI +3.0, +4.6). Privacy probes remained under thresholds. Release passed, with evidence attached to the change and filed with procurement.</p>
+
+<h2>Case Study: Edge Vision Station</h2>
+<p>Station latency spiked in self‑tests; fail‑closed blocked promotion. Fallback model profile reduced latency; Gates re‑ran green. Evidence recorded both attempts; procurement filed the passing manifest.</p>
+
+<h2>Runbooks</h2>
+<h3>Incident</h3>
+<ol>
+  <li>Detect breach in staging/production; snapshot evidence.</li>
+  <li>Rollback automatically; notify owners.</li>
+  <li>Open incident; attach evidence; analyze deltas by segment.</li>
+  <li>Patch; run shadow; promote after gates pass.</li>
+ </ol>
+<h3>Promotion</h3>
+<ol>
+  <li>Build candidate; compute evidence.</li>
+  <li>Verify gates; get QA sign‑off.</li>
+  <li>Publish package; register in catalog; post release notes.</li>
+ </ol>
+
+<h2>Templates</h2>
+<pre>
+release.yaml
+gates:
+  utility@op: {min: 0.75}
+  stability: {region_max_delta: 0.03}
+  latency: {p95_ms: 120}
+  privacy: {membership_advantage_max: 0.05}
+</pre>
+
+<h2>Catalog Hooks</h2>
+<ul>
+  <li>Comment fields reference evidence manifest IDs.</li>
+  <li>Threshold tables store OP for discovery and reproducibility.</li>
+</ul>
+
+<h2>Procurement Alignment</h2>
+<ul>
+  <li>Evidence bundle → contract exhibit.</li>
+  <li>SLAs tied to OP and stability bands.</li>
+  <li>SBOM ensures supply‑chain controls.</li>
+</ul>
+
+<h2>Security</h2>
+<ul>
+  <li>Artifacts signed; hashes stored in manifest.</li>
+  <li>Access to seeds and configs logged.</li>
+  <li>Evidence stored in governed buckets.</li>
+</ul>
+
+<h2>FAQ</h2>
+<details>
+  <summary>Why fail‑closed?</summary>
+  <p>It prevents risky promotions and replaces “it should be fine” with <em>numbers</em>.</p>
+ </details>
+<details>
+  <summary>Do we need all gates for every release?</summary>
+  <p>Yes for production promotion; experimental branches can skip but cannot be deployed.</p>
+ </details>
+<details>
+  <summary>How long do CIs take?</summary>
+  <p>We balance fidelity and timeliness; dashboards are cached; heavy jobs run in parallel.</p>
+ </details>
+
+<h2>Glossary</h2>
+<ul>
+  <li><strong>OP</strong>: operating point where decisions are made.</li>
+  <li><strong>CI</strong>: confidence interval.</li>
+  <li><strong>Fail‑closed</strong>: block promotion on gate failure.</li>
+</ul>
+
+<h2>Checklists</h2>
+<ul>
+  <li>OP thresholds pinned and published.</li>
+  <li>Gates defined; dashboards exportable.</li>
+  <li>Evidence artifacts signed; hashes verified.</li>
+  <li>Release notes include manifest IDs.</li>
+</ul>
+
+<h2>Appendix: CI Pseudocode</h2>
+<pre>
+stage evaluate:
+  run utility@op
+  run stability
+  run latency
+  run privacy
+
+stage evidence:
+  export plots
+  write manifest.json
+  sign artifacts
+
+stage gates:
+  if any fail → exit 1
+
+stage package:
+  tar models+configs+evidence
+</pre>
+
+<h2>Appendix: Release Notes Template</h2>
+<pre>
+Release: model‑x 2025.01
+OP: fpr=1%
+Utility: 0.758 [0.749,0.767]
+Stability max deltas: region 0.012, product 0.015
+Latency: p95 97ms
+Privacy: membership_advantage 0.03 (≤0.05)
+Manifest: 8e7...
+</pre>
+
+<h2>Closing</h2>
+<p>Evidence in CI is how we ship <strong>trust</strong>, not just code. With <strong>AethergenPlatform</strong>, every release is an auditable unit: numbers, artifacts, and controls. Gates make safety routine; evidence makes adoption fast.</p>
+
+<h2>Narrative: Audit Day Walkthrough</h2>
+<p>The auditor receives the release folder. They open the HTML dashboards offline, check the manifest hashes, and confirm OP and stability bands. They review the SBOM and sign the acceptance form that references the bundle ID. No screen‑sharing, no chasing. Everything is in the box.</p>
+
+<h2>Acceptance Form (Template)</h2>
+<pre>
+Acceptance: model‑x 2025.01
+Bundle ID: 8e7...
+OP: fpr=1% | Utility: 0.758 [0.749,0.767]
+Stability: region<=0.03 | product<=0.02
+Latency: p95=97ms | p99=142ms
+Privacy: membership_advantage=0.03 (<=0.05)
+SBOM: present | Manifest: present
+Signatures: verified
+Accepted by: ____________ Date: ______
+</pre>
+
+<h2>Extended Gates Catalog</h2>
+<ul>
+  <li>Coverage gates: required features present and within ranges.</li>
+  <li>Explainability gates (optional): feature attributions stable across seeds.</li>
+  <li>Data drift gates: input distribution shift thresholds.</li>
+  <li>Deployment gates: model registry checks; rollout strategy defined.</li>
+</ul>
+
+<h2>Environment Fingerprints</h2>
+<pre>
+{
+  "python": "3.11.6",
+  "cuda": "12.1",
+  "libraries": {
+    "numpy": "1.26.4",
+    "pandas": "2.2.1"
+  }
+}
+</pre>
+
+<h2>Red‑Team Exercises</h2>
+<ul>
+  <li>Try to promote with failing stability → blocked; incident logged.</li>
+  <li>Remove plots → packaging gate fails; CI halts.</li>
+  <li>Alter OP mid‑pipeline → config hash mismatch; stop.
+</ul>
+
+<h2>Rollout Strategies</h2>
+<ul>
+  <li>Shadow for 1–2 weeks; compare OP metrics and deltas.</li>
+  <li>Canary percentage; monitor stability and latency.</li>
+  <li>Full promotion only when gates hold and incidents are zero.</li>
+</ul>
+
+<h2>CI/CD Example (YAML)</h2>
+<pre>
+steps:
+  - name: build
+    run: make build
+  - name: evaluate
+    run: make evaluate
+  - name: evidence
+    run: make evidence
+  - name: gates
+    run: make gates
+  - name: package
+    run: make package
+</pre>
+
+<h2>Dashboard Sections</h2>
+<ul>
+  <li>Executive summary (OP utility, stability bands, latency, privacy).</li>
+  <li>Detailed charts and segment tables.</li>
+  <li>Ablation forest plots with CIs.</li>
+  <li>Appendices with configs and hashes.</li>
+</ul>
+
+<h2>Segment Table (Example)</h2>
+<pre>
+segment, metric, ci_low, ci_high, delta
+NA, 0.761, 0.752, 0.770, +0.003
+EU, 0.753, 0.744, 0.762, -0.005
+APAC, 0.749, 0.740, 0.758, -0.009
+</pre>
+
+<h2>Explainers</h2>
+<ul>
+  <li>What OP means and why it maps to operations.</li>
+  <li>Why stability matters more than a single global metric.</li>
+  <li>How privacy probes set measurable boundaries.</li>
+</ul>
+
+<h2>Threshold Tables</h2>
+<pre>
+thresholds:
+  model_x:
+    op: 0.73
+    region_bands: 0.03
+    product_bands: 0.02
+</pre>
+
+<h2>Run Log (Excerpt)</h2>
+<pre>
+2025-01-22 08:12Z evaluate utility@op ... OK
+2025-01-22 08:13Z evaluate stability ... OK (max delta region=0.012)
+2025-01-22 08:14Z evaluate latency ... OK (p95=97ms)
+2025-01-22 08:15Z evaluate privacy ... OK (adv=0.03)
+2025-01-22 08:16Z evidence bundle ... OK (manifest=8e7...)
+2025-01-22 08:17Z gates ............ PASS
+2025-01-22 08:18Z package .......... OK
+</pre>
+
+<h2>Support & SLAs</h2>
+<ul>
+  <li>Evidence regeneration: next business day.</li>
+  <li>Incident triage: same day for production promotions.</li>
+  <li>Dashboard export fixes: 24 hours.</li>
+</ul>
+
+<h2>Common Pitfalls</h2>
+<ul>
+  <li>Publishing only AUC; fix: report OP utility and CIs.</li>
+  <li>Hard‑coding thresholds; fix: use config tables.</li>
+  <li>Skipping segment checks; fix: enforce stability gates.</li>
+</ul>
+
+<h2>Legal Hooks</h2>
+<ul>
+  <li>Bundle IDs referenced in contract exhibits.</li>
+  <li>SBOM compliance checked every release.</li>
+  <li>Retention policies for evidence artifacts.</li>
+</ul>
+
+<h2>Extended FAQ</h2>
+<details>
+  <summary>Can we waive a gate?</summary>
+  <p>Only with explicit approval and compensating controls; waiver recorded with expiry.</p>
+ </details>
+<details>
+  <summary>What if privacy probes oscillate near thresholds?</summary>
+  <p>Increase sample sizes and use moving averages with alarms; document decisions.</p>
+ </details>
+<details>
+  <summary>Do we need robustness gates for text?</summary>
+  <p>Often no; but drift and stability are still mandatory.</p>
+ </details>
+
+<h2>Appendix: CSV/JSON Schemas</h2>
+<pre>
+utility@op.csv: segment:string,metric:float,ci_low:float,ci_high:float,delta:float
+latency.json: {"p50":int,"p95":int,"p99":int}
+</pre>
+
+<h2>Appendix: Checklist (One‑Pager)</h2>
+<pre>
+[ ] OP utility with CIs
+[ ] Stability bands
+[ ] Latency SLOs
+[ ] Privacy probes
+[ ] SBOM and signatures
+[ ] Manifest hashes
+[ ] Release notes with bundle ID
+</pre>
+
+<h2>Closing Notes (Extended)</h2>
+<p>Evidence turns “trust us” into “prove it.” With <strong>AethergenPlatform</strong>, CI makes proof routine: repeatable, signed, and ready for audit or procurement—no heroics required.</p>
+  </div>
+
+</body>
+</html>

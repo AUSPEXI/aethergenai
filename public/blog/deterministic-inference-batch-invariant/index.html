@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Deterministic Inference: Batch‑Invariant Mode for Reliable AI</title>
+<link rel="canonical" href="https://auspexi.com/blog/deterministic-inference-batch-invariant"/>
+<meta name="description" content="New: turn on Deterministic mode in the Stability Demo to force batch‑invariant behavior. Identical prompts will produce identical outputs under fixed precision and microbatching. Evidence logs a determinism profile."/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Deterministic Inference: Batch‑Invariant Mode for Reliable AI","author":{"@type":"Person","name":"Gwylym Pryce-Owen"},"mainEntityOfPage":"https://auspexi.com/blog/deterministic-inference-batch-invariant","datePublished":"2025-09-13T11:49:50.843Z","image":"https://auspexi.com/og-image.svg","publisher":{"@type":"Organization","name":"Auspexi"},"license":"PROPRIETARY","creator":{"@type":"Organization","name":"Auspexi"},"description":"New: turn on Deterministic mode in the Stability Demo to force batch‑invariant behavior. Identical prompts will produce identical outputs under fixed precision and microbatching. Evidence logs a determinism profile."}</script>
+<style>body{font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;color:#0f172a;line-height:1.7;margin:0;background:#fff}.wrap{max-width:900px;margin:40px auto;padding:0 16px}h1{font-size:2rem;margin:0 0 8px}.note{background:#eef2ff;border:1px solid #c7d2fe;padding:12px 14px;border-radius:10px;color:#1e3a8a}</style>
+</head>
+<body>
+
+<div style="position:sticky;top:0;z-index:50;background:#ffffff;border-bottom:1px solid #e5e7eb;">
+  <div style="max-width:960px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px;">
+    <a href="/" style="color:#0f172a;text-decoration:none;font-weight:700">Auspexi</a>
+    <button onclick="(function(){try{history.back()}catch(e){} setTimeout(function(){ if(!document.referrer || !/\/blog/.test(document.referrer)){ location.href='/blog' } },50);})()" style="margin-left:auto;background:#2563eb;color:#fff;border:none;padding:6px 10px;border-radius:6px;cursor:pointer">← Back to Blog</button>
+  </div>
+</div>
+
+  <div class="wrap">
+    <h1>Deterministic Inference: Batch‑Invariant Mode for Reliable AI</h1>
+    <p class="note">New: turn on <b>Deterministic mode</b> in the Stability Demo to force batch‑invariant behavior. Identical prompts will produce identical outputs under fixed precision and microbatching. Evidence logs a determinism profile.</p>
+
+    <h2>Why</h2>
+    <p>Reproducibility simplifies debugging, strengthens audits, and stabilizes evaluator scores. Nondeterminism often comes from batch‑dependent kernels and floating‑point subtleties; we expose a mode that minimizes these effects.</p>
+
+    <h2>How</h2>
+    <ul>
+      <li>Microbatch = 1 on critical paths</li>
+      <li>Float32 matmul; fixed KV cache precision</li>
+      <li>Prefer deterministic attention/kernels where available</li>
+      <li>Evidence: <code>determinism_profile.json</code> with flags, kernels, unique_outputs (N runs), slowdown_factor</li>
+    </ul>
+
+    <h2>Trade‑off</h2>
+    <p>Slightly slower throughput. We route high‑risk and acceptance flows through deterministic mode; fast paths can remain default.</p>
+
+    <p>See also: <a href="/whitepaper#deterministic">Whitepaper</a> · <a href="/faq">FAQ</a> · <a href="/stability-demo">Stability Demo</a></p>
+  </div>
+
+</body>
+</html>

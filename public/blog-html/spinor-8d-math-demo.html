@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Geometry in Motion: Spinors, 8D Manifolds, and Why It Matters</title>
+  <meta name="description" content="A research demo: spinors and 8D manifolds as practical math tooling—identity checking, toy Dirac problems, and visual reasoning—not cryptographic claims." />
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, Inter, Segoe UI, Roboto, Arial, sans-serif; line-height: 1.7; color: #0f172a; margin: 0; background: #f5f7fb; }
+    .article { max-width: 960px; margin: 0 auto; background: #fff; padding: 48px 36px; box-shadow: 0 10px 30px rgba(0,0,0,0.06); border-radius: 12px; }
+    h1 { font-size: 34px; margin: 0 0 8px; color: #0b1220; }
+    .meta { color: #475569; font-size: 14px; margin-bottom: 28px; }
+    h2 { color: #0b1220; margin-top: 28px; font-size: 22px; }
+    p, li { color: #1f2937; }
+    ul { padding-left: 20px; }
+    .callout { background: #ecfeff; border-left: 4px solid #06b6d4; padding: 16px; border-radius: 8px; }
+    a { color:#2563eb; text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    code { background:#e2e8f0; padding:2px 6px; border-radius:6px; }
+  </style>
+</head>
+<body>
+  <div class="article">
+    <h1>Geometry in Motion: Spinors, 8D Manifolds, and Why It Matters</h1>
+    <div class="meta"><strong>Auspexi</strong> • Updated: <script>document.write(new Date().toISOString().slice(0,10))</script></div>
+
+    <div class="callout"><strong>TL;DR</strong>: We built math tooling—retrieval with citations, a Clifford‑aware layer stub, and notebooks—to reason about spinors and 8D manifolds. It turns hard ideas into simple, visual, shareable checks that speed up reviews and decision‑making.</div>
+
+    <div class="callout" style="background:#f0f9ff;border-left-color:#3b82f6">
+      <strong>Key takeaways</strong>
+      <ul>
+        <li><strong>Clearer decisions</strong>: turn complex math into checked, cited artifacts anyone can follow.</li>
+        <li><strong>Fewer review cycles</strong>: small, repeatable notebooks + benchmarks reduce risk and back‑and‑forth.</li>
+        <li><strong>Ready today</strong>: run the two notebooks and share the short JSON summary from the benchmark script.</li>
+      </ul>
+    </div>
+
+    <h2>A plain‑English tour (no jargon)</h2>
+    <p><strong>What is a spinor?</strong> Think of a compass needle that doesn’t just point north/south, but also behaves a little oddly when you spin it—sometimes you need a full double turn to get “back to where you started.” That behavior helps describe how things rotate in space at a very fine level. Our tools help you reason about those rotations consistently.</p>
+    <p><strong>What is an 8D manifold?</strong> Imagine a map with many coordinates, not just left/right/up/down, but extra dials (like temperature, pressure, time, charge). An “8D manifold” is a clean way to keep track of eight of those dials at once. We use it as a structured space to test ideas and keep transformations honest.</p>
+    <p><strong>Why should a non‑expert care?</strong> Because complex math shows up in real decisions (safety, quality, risk). If you can turn a whiteboard sketch into a small, checked, and <em>cited</em> artifact everyone understands, you save meetings, reduce risk, and move faster.</p>
+
+    <h2>What the demo does</h2>
+    <ul>
+      <li><strong>Retrieval with citations</strong>: curated corpus for Cℓ(8), Spin(8) triality, Dirac operators, and 8D geometry.</li>
+      <li><strong>Clifford‑aware layer stub</strong>: a typed API to preserve multivector/spinor structure (research scaffolding).</li>
+      <li><strong>Notebooks</strong>: identity checks in Cℓ(8) and a toy 8D Dirac “sanity” grid to communicate intuition.</li>
+      <li><strong>Benchmarks</strong>: a tiny script produces signed run metrics to keep results reproducible.</li>
+    </ul>
+
+    <h2>See it in 60 seconds</h2>
+    <ul>
+      <li><strong>Open</strong> <code>notebooks/spinor_identities.ipynb</code> and run the first cell. You’ll see basic rotation “truths” (like <em>how basis directions multiply</em>) checked automatically.</li>
+      <li><strong>Open</strong> <code>notebooks/dirac_8d_toy.ipynb</code>. It prints simple numbers from a tiny “grid” in 8D—just enough to sanity‑check intuition.</li>
+      <li><strong>Run</strong> <code>scripts/math/benchmark_spinor.py</code> to get a short JSON summary you can paste into docs or share with reviewers.</li>
+    </ul>
+
+    <h2>Why this matters commercially</h2>
+    <ul>
+      <li><strong>Faster evidence</strong>: turn hard math into checked, cited artifacts that non‑experts can follow.</li>
+      <li><strong>Better reviews</strong>: step‑by‑step derivations and sanity checks reduce review cycles and risk.</li>
+      <li><strong>Cross‑functional clarity</strong>: VCs, buyers, and compliance teams see how we reason—not just outcomes.</li>
+    </ul>
+
+    <h2>Who benefits</h2>
+    <ul>
+      <li><strong>Engineering leaders</strong>: fewer back‑and‑forths; clearer, testable math in design docs.</li>
+      <li><strong>Risk & compliance</strong>: artifacts with citations and repeatable runs, not hand‑waving.</li>
+      <li><strong>Buyers & investors</strong>: a window into <em>how</em> we think—showing rigor without exposing IP.</li>
+    </ul>
+
+    <h2>How to run it</h2>
+    <ul>
+      <li>Math corpus: <code>docs/math/citations.jsonl</code>, <code>docs/math/RAG_README.md</code></li>
+      <li>Layer stub: <code>src/math/equivariant/layers/spin8Clifford.ts</code></li>
+      <li>Notebooks: <code>notebooks/spinor_identities.ipynb</code>, <code>notebooks/dirac_8d_toy.ipynb</code></li>
+      <li>Benchmarks: <code>scripts/math/benchmark_spinor.py</code></li>
+    </ul>
+
+    <h2>Applications (now and next)</h2>
+    <ul>
+      <li><strong>Now</strong>: math‑heavy product docs, scientific demos for buyers, and internal validation of complex transformations.</li>
+      <li><strong>Next</strong>: group‑equivariant models for engineering domains (materials, vision on manifolds), with citations and evidence bundles.</li>
+    </ul>
+
+    <h2>What this is (and isn’t)</h2>
+    <p>This is practical math tooling for reasoning and communication. Security work lives in our separate PQC rollout, which follows NIST standards and ships signed posture metrics.</p>
+
+    <p><a href="/pilot">Request a Pilot</a> • <a href="/contact">Contact Sales</a></p>
+  </div>
+</body>
+</html>
+

@@ -1,10 +1,32 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Shield, Activity, Target, Flame, Siren, RotateCcw, FileText, Lock, Database, Zap, Globe, CheckCircle, TrendingUp, Users, Brain, ExternalLink, Code, BarChart3, Award, Star, Eye, Sparkles, Cpu, Rocket, Package, Car } from 'lucide-react';
 import ReactLazy, { Suspense } from 'react';
 const AethergenHero = React.lazy(() => import('../components/UI/AethergenHero'));
 
 const Home = () => {
+  const heroHostRef = useRef<HTMLDivElement | null>(null);
+  const [heroVisible, setHeroVisible] = useState<boolean>(false);
+  const [heroActivated, setHeroActivated] = useState<boolean>(false);
+  const prefersReducedMotion = (() => { try { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch { return false; } })();
+  useEffect(() => {
+    if (prefersReducedMotion) return; // keep poster unless user clicks
+    const el = heroHostRef.current;
+    if (!el) return;
+    let done = false;
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        if (e.isIntersecting && e.intersectionRatio >= 0.5) {
+          setHeroVisible(true);
+          done = true;
+          io.disconnect();
+          break;
+        }
+      }
+    }, { threshold: [0, 0.25, 0.5, 0.75, 1] });
+    io.observe(el);
+    return () => { if (!done) io.disconnect(); };
+  }, [prefersReducedMotion]);
   const currentSuites = {
     healthcare: [
       { name: 'FRAUD DETECTION', description: 'Advanced healthcare fraud detection and prevention', icon: Shield, color: 'text-red-500' },
@@ -63,9 +85,18 @@ const Home = () => {
   return (
     <div className="min-h-screen">
       {/* Hero Section with Neural Network Animation */}
-      <Suspense fallback={<div className="w-full h-[70vh] md:h-[78vh] min-h-[400px] md:min-h-[520px] bg-[#0b1120] flex items-center justify-center text-white">Loading…</div>}>
-        <AethergenHero />
-      </Suspense>
+      <div ref={heroHostRef} className="relative">
+        {(heroVisible || heroActivated) && !prefersReducedMotion ? (
+          <Suspense fallback={<div className="w-full h-[70vh] md:h-[78vh] min-h-[400px] md:min-h-[520px] bg-[#0b1120] flex items-center justify-center text-white">Loading…</div>}>
+            <AethergenHero />
+          </Suspense>
+        ) : (
+          <div className="w-full h-[70vh] md:h-[78vh] min-h-[400px] md:min-h-[520px] bg-[#0b1120] overflow-hidden relative flex items-center justify-center">
+            <img src="/press/hero-poster.jpg" alt="Hero preview" loading="eager" decoding="async" className="absolute inset-0 w-full h-full object-cover opacity-80" />
+            <button onClick={() => setHeroActivated(true)} className="relative z-10 px-5 py-2 rounded-md bg-white/10 border border-white/30 text-white hover:bg-white/20">View interactive</button>
+          </div>
+        )}
+      </div>
       {/* IP-Safe Summary */}
       <section className="py-4 bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">

@@ -23,10 +23,12 @@ const AI: React.FC = () => {
     } catch (_) {}
   }, []);
 
-  // Lightweight Three.js visual loaded on idle
+  // Lightweight Three.js visual loaded on idle + only when in view; respect reduced motion; DPR cap
   useEffect(() => {
     const container = document.getElementById('ai-visual');
     if (!container) return;
+    const prefersReducedMotion = (() => { try { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch { return false; } })();
+    if (prefersReducedMotion) return;
 
     let disposed = false;
     let cleanup: (() => void) | null = null;
@@ -41,7 +43,9 @@ const AI: React.FC = () => {
       camera.position.set(0, 0, 6);
 
       const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      const isMobile = (() => { try { return window.matchMedia && window.matchMedia('(max-width: 768px)').matches; } catch { return false; } })();
+      const baseCap = isMobile ? 1.0 : 1.5;
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, baseCap));
       renderer.setSize(container.clientWidth, container.clientHeight);
       container.innerHTML = '';
       container.appendChild(renderer.domElement);
@@ -73,8 +77,14 @@ const AI: React.FC = () => {
       };
       window.addEventListener('mousemove', onMouseMove);
 
+      let lastTs = performance.now();
       const animate = () => {
         if (disposed) return;
+        const now = performance.now();
+        const dt = now - lastTs;
+        // 30fps throttle when tab hidden or under load
+        if (document.hidden && dt < 33) { requestAnimationFrame(animate); return; }
+        lastTs = now;
         camera.position.x += (mouseX * 2 - camera.position.x) * 0.03;
         camera.position.y += (-mouseY * 2 - camera.position.y) * 0.03;
         camera.lookAt(0, 0, 0);
@@ -108,16 +118,34 @@ const AI: React.FC = () => {
       };
     };
 
+    // Only start when in viewport and idle
     const idle = (window as any).requestIdleCallback as undefined | ((cb: () => void, opts?: any) => number);
     let idleId: number | null = null;
-    if (typeof idle === 'function') {
-      idleId = idle(() => start(), { timeout: 1500 });
-    } else {
-      setTimeout(() => start(), 0);
-    }
+    let canStart = false;
+    const maybeStart = () => {
+      if (!canStart) return;
+      if (typeof idle === 'function') {
+        idleId = idle(() => start(), { timeout: 1500 });
+      } else {
+        setTimeout(() => start(), 0);
+      }
+    };
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        if (e.target === container) {
+          if (e.isIntersecting && e.intersectionRatio >= 0.5) {
+            canStart = true;
+            maybeStart();
+            io.disconnect();
+          }
+        }
+      }
+    }, { threshold: [0, 0.25, 0.5, 0.75, 1] });
+    io.observe(container);
 
     return () => {
       disposed = true;
+      try { io.disconnect(); } catch {}
       if (idleId && (window as any).cancelIdleCallback) (window as any).cancelIdleCallback(idleId);
       if (cleanup) cleanup();
     };

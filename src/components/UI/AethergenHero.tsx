@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState, useCallback } from "react";
 import * as THREE from "three";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { OrbitControls, Text3D, Html } from "@react-three/drei";
+import { OrbitControls, Text3D } from "@react-three/drei";
 
 // Helpers
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
@@ -11,7 +11,6 @@ const rand = (a: number, b: number) => a + Math.random() * (b - a);
 const TMP_V1 = new THREE.Vector3();
 const TMP_V2 = new THREE.Vector3();
 const MAX_BOUND_SPAWN_PER_FRAME = 12;
-const MAX_EJECT_SPAWN_PER_FRAME = 10;
 
 // Config
 const CFG = {
@@ -32,7 +31,7 @@ const CFG = {
   photons: {
     batchEveryMs: 3000, // Reduced to spawn more frequently
     lifeMs: 150000,
-    loyalPerBatch: 48, // Doubled for more photons
+    loyalPerBatch: 48, // base; will scale down on constrained devices
     speedBound: 0.05,
     radius: 0.02,
     undulation: 0.02,
@@ -41,7 +40,7 @@ const CFG = {
     localExplosionSpeed: 0.12, // Low velocity for local halo
     sentientFlightMs: 7000, // period where all look fast
     sentientEaseOutMs: 8000, // ease down to slow random
-    maxCount: 3200, // safety cap to prevent runaway spawning
+    maxCount: 3200, // base; scaled by capScaleRef and device conditions
   },
   motion: {
     sentientSwirlStrength: 0.004, // very subtle swirl
@@ -255,73 +254,15 @@ function ControlTuner({ controlsRef, center, boundary }: { controlsRef: React.Mu
 }
 
 // Camera tracker (on-canvas overlay)
-function CameraTracker() {
-  const { camera } = useThree();
-  const [data, setData] = useState({ p: [0,0,0], r: [0,0,0] });
-  useFrame(() => {
-    setData({ p: [camera.position.x, camera.position.y, camera.position.z], r: [camera.rotation.x, camera.rotation.y, camera.rotation.z] });
-      });
-  return (
-    <Html transform={false} style={{ position: 'absolute', left: 16, top: 16, zIndex: 200, pointerEvents: 'none' }}>
-      <div className="bg-black/80 text-white p-2 rounded font-mono text-[10px] w-44">
-        <div className="text-cyan-400 font-bold text-[9px]">Camera</div>
-        <div>Pos: [{data.p[0].toFixed(1)}, {data.p[1].toFixed(1)}, {data.p[2].toFixed(1)}]</div>
-        <div>Rot: [{data.r[0].toFixed(2)}, {data.r[1].toFixed(2)}, {data.r[2].toFixed(2)}]</div>
-      </div>
-    </Html>
-  );
-}
-
-// Title position tracker (fixed UI)
-function TitlePositionTracker({ position }: { position: [number, number, number] }) {
-  return (
-    <div className="absolute top-4 right-4 bg-black/80 text-white p-2 rounded font-mono text-[10px] z-[200] pointer-events-none w-40">
-      <div className="text-yellow-400 font-bold mb-1 text-[9px]">Title Position</div>
-      <div>X: {position[0].toFixed(2)}</div>
-      <div>Y: {position[1].toFixed(2)}</div>
-      <div>Z: {position[2].toFixed(2)}</div>
-      <div className="text-[9px] text-gray-300 mt-1">Left click green cube to pick up • Right click to drop</div>
-    </div>
-  );
-}
+// (debug HUD components removed)
 
 // Title3D with grabber
-function Title3D({ position, scale = 1, onPositionChange, onDragStart, onDragEnd, isPickedUp, setIsPickedUp, onCubePose, onSubtitleBoundsWorld }: {
+function Title3D({ position, scale = 1, onSubtitleBoundsWorld }: {
   position: [number, number, number];
   scale?: number;
-  onPositionChange: (p: [number, number, number]) => void;
-  onDragStart: () => void; onDragEnd: () => void;
-  isPickedUp: boolean; setIsPickedUp: (p: boolean) => void;
-  onCubePose?: (pos: [number, number, number], rotEuler: [number, number, number], quat: [number, number, number, number]) => void;
   onSubtitleBoundsWorld?: (min: [number, number, number], max: [number, number, number]) => void;
 }) {
-  const [pickupStart, setPickupStart] = useState<[number, number, number]>([0,0,0]);
-  const [mouseStart, setMouseStart] = useState<[number, number, number]>([0,0,0]);
-  const cubeRef = useRef<THREE.Mesh>(null!);
   const subtitleRef = useRef<THREE.Mesh>(null!);
-
-  useEffect(() => {
-    const onMove = (e: MouseEvent) => {
-      if (!isPickedUp) return;
-      const dx = (e.clientX - mouseStart[0]) * 0.02;
-      const dy = (e.clientY - mouseStart[1]) * -0.02;
-      onPositionChange([pickupStart[0] + dx, pickupStart[1] + dy, pickupStart[2]]);
-    };
-    window.addEventListener('mousemove', onMove);
-    return () => window.removeEventListener('mousemove', onMove);
-  }, [isPickedUp, mouseStart, pickupStart, onPositionChange]);
-
-  useFrame(() => {
-    if (!cubeRef.current) return;
-    if (!onCubePose) return;
-    const wp = new THREE.Vector3();
-    const wq = new THREE.Quaternion();
-    const we = new THREE.Euler();
-    cubeRef.current.getWorldPosition(wp);
-    cubeRef.current.getWorldQuaternion(wq);
-    we.setFromQuaternion(wq, 'XYZ');
-    onCubePose([wp.x, wp.y, wp.z], [we.x, we.y, we.z], [wq.x, wq.y, wq.z, wq.w]);
-  });
 
   useFrame(() => {
     if (!subtitleRef.current || !onSubtitleBoundsWorld) return;
@@ -352,27 +293,6 @@ function Title3D({ position, scale = 1, onPositionChange, onDragStart, onDragEnd
     }
     onSubtitleBoundsWorld([min.x, min.y, min.z], [max.x, max.y, max.z]);
   });
-
-  const handleLeft = (e: any) => {
-    if (e.button !== 0) return;
-    e.stopPropagation();
-    if (!isPickedUp) {
-      setIsPickedUp(true);
-      setPickupStart(position);
-      setMouseStart([e.clientX, e.clientY, 0]);
-      document.body.style.cursor = 'grabbing';
-      onDragStart();
-    }
-  };
-  const handleRight = (e: any) => {
-    if (e.button !== 2) return;
-    e.preventDefault(); e.stopPropagation();
-    if (isPickedUp) {
-      setIsPickedUp(false);
-      document.body.style.cursor = 'default';
-      onDragEnd();
-    }
-  };
 
   return (
     <group position={position} scale={[scale, scale, scale]}>
@@ -418,6 +338,20 @@ function NeuralNetwork({ sceneRef, onGlitchChange, networkPosition, networkRotat
   const highSinceRef = useRef<number | null>(null);
   const capScaleRef = useRef<number>(1.0);
   const maxCountRef = useRef<number>(CFG.photons.maxCount);
+  // Device-conditional cap init (balanced profile)
+  useEffect(() => {
+    const prefersReducedMotionLocal = (() => { try { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch { return false; } })();
+    const saveDataLocal = (() => { try { return (navigator as any)?.connection?.saveData === true; } catch { return false; } })();
+    const lowEnd = (() => { try { return (navigator as any)?.hardwareConcurrency && (navigator as any).hardwareConcurrency <= 4; } catch { return false; } })();
+    let scale = 1.0;
+    if (prefersReducedMotionLocal) scale *= 0.7;
+    if (saveDataLocal) scale *= 0.7;
+    if (lowEnd) scale *= 0.85;
+    // Clamp to 0.6..1.0
+    scale = Math.max(0.6, Math.min(1.0, scale));
+    capScaleRef.current = Math.min(capScaleRef.current, scale);
+    maxCountRef.current = Math.floor(CFG.photons.maxCount * capScaleRef.current);
+  }, []);
 
   // Touch sceneRef to avoid unused warning
   void sceneRef.current;
@@ -497,7 +431,7 @@ function NeuralNetwork({ sceneRef, onGlitchChange, networkPosition, networkRotat
   };
 
   // Trickle spawn: spawn one bound photon distributed across nodes
-  const spawnOneBound = (ts: number) => {
+  /* const spawnOneBound = (ts: number) => {
     if (!nodes.length) return;
     const node = nodes[Math.floor(Math.random() * nodes.length)];
     const ng = edgesByNodeRef.current[node.key] || [];
@@ -518,10 +452,10 @@ function NeuralNetwork({ sceneRef, onGlitchChange, networkPosition, networkRotat
         },
       ];
     });
-  };
+  }; */
 
   // Post-glitch ejection spawn: same rate, born unbound and behave like randoms
-  const spawnOneEjected = (ts: number) => {
+  /* const spawnOneEjected = (ts: number) => {
     if (!nodes.length) return;
     const n = nodes[Math.floor(Math.random() * nodes.length)];
     const dir = TMP_V1.set(rand(-1,1), rand(-1,1), rand(-1,1)).normalize();
@@ -541,7 +475,7 @@ function NeuralNetwork({ sceneRef, onGlitchChange, networkPosition, networkRotat
     } else {
       setPhotons((prev) => (prev.length >= maxCountRef.current ? prev : [...prev, { ...base, mode: "sentient", behavior: "random" } as Photon]));
     }
-  };
+  }; */
 
   // One-off explosion: spawn 3 free photons per node with slightly higher initial velocity
   const spawnExplosion = (ts: number) => {
@@ -651,7 +585,6 @@ function NeuralNetwork({ sceneRef, onGlitchChange, networkPosition, networkRotat
     const dt = Math.min(16.67, ts - last.current) / 16.67; // Normalize to 60 FPS
     last.current = ts;
     const elapsed = ts - t0.current;
-    const sElapsed = sentientStartMs.current !== null ? (ts - sentientStartMs.current) : 0;
     const boundSpeed = CFG.photons.speedBound * (networkScale / 1.6);
 
     // Adaptive FPS governor (auto scale caps 0.6x..1.0x)
@@ -778,7 +711,7 @@ function NeuralNetwork({ sceneRef, onGlitchChange, networkPosition, networkRotat
     setPhotons((prev) => {
       let settledAfter = 0;
       const updated = prev
-        .map((p, i) => {
+        .map((p, _idx) => {
           if (p.mode === "bound") {
             let t = clamp(p.t + boundSpeed * dt, 0, 1);
             if (t >= 1) {
@@ -988,7 +921,7 @@ function NeuralNetwork({ sceneRef, onGlitchChange, networkPosition, networkRotat
       })}
 
       {/* Photons */}
-      {photons.map((p, i) => {
+      {photons.map((p, idx) => {
         let x = 0, y = 0, z = 0;
         if (p.mode === "bound") {
           const a = nodeByKeyRef.current[p.edge[0]];
@@ -1007,7 +940,7 @@ function NeuralNetwork({ sceneRef, onGlitchChange, networkPosition, networkRotat
         const pulse = isSettled && p.letterReadTime ? (1 + Math.sin((performance.now() - p.letterReadTime) * 0.004) * 0.12) : 1;
         const coreColor = p.hue;
         return (
-          <group key={i} position={[x, y, z]} scale={[pulse, pulse, pulse]}>
+          <group key={idx} position={[x, y, z]} scale={[pulse, pulse, pulse]}>
             {/* Core */}
             <mesh>
               <sphereGeometry args={[CFG.photons.radius, 10, 10]} />
@@ -1046,32 +979,27 @@ export default function AethergenHero() {
   const showPressTools = (() => {
     try { return new URLSearchParams(window.location.search).get('press') === '1'; } catch { return false; }
   })();
-  const [titlePosition, setTitlePosition] = useState<[number, number, number]>(() => {
+  const [titlePosition] = useState<[number, number, number]>(() => {
     try {
       const saved = localStorage.getItem('hero.titlePosition');
       if (saved) return JSON.parse(saved);
     } catch {}
     return [-10.65, 3.21, 0.0];
   });
-  const [isDraggingTitle, setIsDraggingTitle] = useState(false);
-  const [isPickedUp, setIsPickedUp] = useState(false);
-  const [isTitleLocked, setIsTitleLocked] = useState<boolean>(() => {
-    try { const s = localStorage.getItem('hero.titleLocked'); if (s) return JSON.parse(s); } catch {}
-    return true; // default lock to provided coordinates
-  });
-  const [networkPosition, setNetworkPosition] = useState<[number, number, number]>([0,0,0]);
-  const [networkRotation, setNetworkRotation] = useState<[number, number, number]>([0,0,0]);
+  const [networkPosition] = useState<[number, number, number]>([0,0,0]);
+  const [networkRotation] = useState<[number, number, number]>([0,0,0]);
   const isMobile = (() => { try { return window.matchMedia && window.matchMedia('(max-width: 768px)').matches; } catch { return false; } })();
-  const [networkScale, setNetworkScale] = useState(isMobile ? 1.2 : 1.6);
-  const [cubePose, setCubePose] = useState({ pos: [0,0,0] as [number,number,number], rot: [0,0,0] as [number,number,number], quat: [0,0,0,1] as [number,number,number,number] });
+  const prefersReducedMotion = (() => { try { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch { return false; } })();
+  const saveData = (() => { try { return (navigator as any)?.connection?.saveData === true; } catch { return false; } })();
+  const [networkScale] = useState(isMobile ? 1.2 : 1.6);
   const [subtitleBoundsWorld, setSubtitleBoundsWorld] = useState<{min:[number,number,number], max:[number,number,number]}|null>(null);
   const [anchorTargetsLocal, setAnchorTargetsLocal] = useState<[number,number,number][]>([]);
   const [flyTo, setFlyTo] = useState<{ startAt: number; toPos: [number,number,number]; toTarget: [number,number,number]; durationMs: number } | null>(null);
   const flyTimerRef = useRef<number | null>(null);
   // Interaction hint: show on hero hover; hide on first interaction or when leaving hero
   const [showHint, setShowHint] = useState<boolean>(false);
-  const hintTimerRef = useRef<number | null>(null);
-  const clearHintTimer = useCallback(() => { if (hintTimerRef.current) { clearTimeout(hintTimerRef.current); hintTimerRef.current = null; } }, []);
+  const hintTimerRef = useRef<number | undefined>(undefined);
+  const clearHintTimer = useCallback(() => { if (hintTimerRef.current !== undefined) { clearTimeout(hintTimerRef.current); hintTimerRef.current = undefined; } }, []);
   const armHintTimer = useCallback(() => {
     clearHintTimer();
     hintTimerRef.current = window.setTimeout(() => setShowHint(false), 5000) as unknown as number;
@@ -1083,11 +1011,11 @@ export default function AethergenHero() {
     const onPointer = () => dismissHint();
     const onWheel = () => dismissHint();
     // Defer binding briefly so the hint is visible for at least a moment
-    const bindId = setTimeout(() => {
+    const bindId = window.setTimeout(() => {
       window.addEventListener('pointerdown', onPointer, { once: true } as any);
       window.addEventListener('wheel', onWheel, { once: true } as any);
     }, 400);
-    return () => { clearTimeout(bindId); window.removeEventListener('pointerdown', onPointer as any); window.removeEventListener('wheel', onWheel as any); clearTimeout(hintTimerRef.current); };
+    return () => { window.clearTimeout(bindId as unknown as number); window.removeEventListener('pointerdown', onPointer as any); window.removeEventListener('wheel', onWheel as any); clearHintTimer(); };
   }, [showHint, dismissHint]);
   
   // Control black screen flashes when glitch is active
@@ -1119,28 +1047,7 @@ export default function AethergenHero() {
     };
   }, [glitchActive]);
 
-  // Global right-click to drop title (works even when OrbitControls captures RIGHT)
-  useEffect(() => {
-    const onMouseDown = (e: MouseEvent) => {
-      if (isPickedUp && e.button === 2) {
-        e.preventDefault();
-        setIsPickedUp(false);
-        setIsDraggingTitle(false);
-        document.body.style.cursor = 'default';
-      }
-    };
-    const onContextMenu = (e: MouseEvent) => {
-        if (isPickedUp) {
-          e.preventDefault();
-      }
-    };
-    window.addEventListener('mousedown', onMouseDown);
-    window.addEventListener('contextmenu', onContextMenu);
-    return () => {
-      window.removeEventListener('mousedown', onMouseDown);
-      window.removeEventListener('contextmenu', onContextMenu);
-    };
-  }, [isPickedUp]);
+  // Right-click handling removed (no drag interaction)
 
   return (
     <div
@@ -1156,13 +1063,18 @@ export default function AethergenHero() {
         style={{ position: "absolute", inset: 0, zIndex: 1, cursor: 'grab' }}
         onContextMenu={(e)=>{ e.preventDefault(); e.stopPropagation(); }}
         onPointerDown={(e:any)=>{
-          if (e.button === 2 && isPickedUp) {
-            setIsPickedUp(false); setIsDraggingTitle(false); document.body.style.cursor='default';
+          if (e.button === 2) {
+            document.body.style.cursor='default';
           }
         }}
         onCreated={({ scene, gl }) => {
           sceneRef.current = scene;
           canvasElRef.current = gl.domElement as HTMLCanvasElement;
+          // Balanced DPR caps: mobile 1.0, desktop 1.5; also respect reduced-motion/save-data by lowering DPR
+          const baseCap = isMobile ? 1.0 : 1.5;
+          const conservative = (prefersReducedMotion || saveData) ? Math.min(baseCap, 1.0) : baseCap;
+          const targetDpr = Math.min(window.devicePixelRatio || 1, conservative);
+          try { (gl as any).setPixelRatio?.(targetDpr); } catch {}
         }}
       >
         <color attach="background" args={[CFG.colors.bg]} />
@@ -1213,12 +1125,6 @@ export default function AethergenHero() {
         <Title3D 
           position={titlePosition}
           scale={isMobile ? 0.55 : 1}
-          onPositionChange={(p)=>{ if (!isTitleLocked) setTitlePosition(p); }}
-          onDragStart={()=>{ if (!isTitleLocked) setIsDraggingTitle(true); }}
-          onDragEnd={()=>{ if (!isTitleLocked) setIsDraggingTitle(false); }}
-          isPickedUp={isPickedUp && !isTitleLocked}
-          setIsPickedUp={(v)=>{ if (!isTitleLocked) setIsPickedUp(v); }}
-          onCubePose={(pos, rot, quat)=> setCubePose({ pos, rot, quat })}
           onSubtitleBoundsWorld={(min,max)=> setSubtitleBoundsWorld({min, max})}
         />
         <EasterEggSignature />

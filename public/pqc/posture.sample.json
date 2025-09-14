@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "generatedAt": "2025-09-14T00:00:00.000Z",
+  "env": "staging",
+  "libraries": {
+    "openssl": "3.2.x",
+    "oqs-provider": "0.9.x",
+    "liboqs": "0.10.x"
+  },
+  "algorithms": {
+    "kem": "ML-KEM",
+    "signature": "ML-DSA",
+    "hybrid": true
+  },
+  "handshake": {
+    "successRate": 0.9992,
+    "p95LatencyMs": 38.4,
+    "baselineP95Ms": 33.1,
+    "retries": 7
+  },
+  "sizes": {
+    "certBytes": 1800,
+    "sigBytes": 2700,
+    "pubKeyBytes": 1312
+  },
+  "constantTimeChecks": {
+    "passes": true,
+    "notes": "no variable-time hotspots detected in hot paths"
+  }
+}

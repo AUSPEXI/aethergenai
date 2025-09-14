@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Post‑Quantum Readiness: Standards‑Only Rollout That Won’t Break Production</title>
+  <meta name="description" content="How we adopted NIST PQC safely: hybrid KEM (ML‑KEM + X25519), dual‑signing with ML‑DSA, internal PKI cross‑sign, and signed posture metrics—without breaking clients or SLAs." />
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, Inter, Segoe UI, Roboto, Arial, sans-serif; line-height: 1.7; color: #0f172a; margin: 0; background: #f5f7fb; }
+    .article { max-width: 960px; margin: 0 auto; background: #fff; padding: 48px 36px; box-shadow: 0 10px 30px rgba(0,0,0,0.06); border-radius: 12px; }
+    h1 { font-size: 34px; margin: 0 0 8px; color: #0b1220; }
+    .meta { color: #475569; font-size: 14px; margin-bottom: 28px; }
+    h2 { color: #0b1220; margin-top: 28px; font-size: 22px; }
+    p, li { color: #1f2937; }
+    ul { padding-left: 20px; }
+    .callout { background: #ecfeff; border-left: 4px solid #06b6d4; padding: 16px; border-radius: 8px; }
+    a { color:#2563eb; text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    .kpi { background: linear-gradient(135deg,#0b1530,#0b4ad6); border-radius:12px; padding:20px; margin:18px 0; color:#fff; display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:space-between; }
+    .kpi b { font-weight:800; }
+    .btn { background:#22c55e; color:#052e16; padding:10px 14px; border-radius:999px; font-weight:800; }
+    code { background:#e2e8f0; padding:2px 6px; border-radius:6px; }
+  </style>
+</head>
+<body>
+  <div class="article">
+    <h1>Post‑Quantum Readiness: Standards‑Only Rollout That Won’t Break Production</h1>
+    <div class="meta"><strong>Auspexi</strong> • Updated: <script>document.write(new Date().toISOString().slice(0,10))</script></div>
+
+    <div class="callout"><strong>TL;DR</strong>: We implemented NIST‑selected PQC the safe way: <strong>hybrid KEM</strong> (ML‑KEM + X25519) for transport, <strong>dual‑signing</strong> with ML‑DSA for code and artifacts, and <strong>internal PKI cross‑sign</strong>—all measured with <strong>signed posture metrics</strong>. Classical remains on by default; PQC is a controlled toggle.</div>
+
+    <h2>Why this matters</h2>
+    <ul>
+      <li><strong>Investor confidence</strong>: a credible, standards‑only path reduces cryptographic risk without novel schemes.</li>
+      <li><strong>Operational safety</strong>: hybridization and cross‑signing prevent client breakage while we migrate.</li>
+      <li><strong>Auditability</strong>: we ship posture metrics (success rate, latency, sizes, constant‑time checks) with every release.</li>
+    </ul>
+
+    <div class="kpi">
+      <div style="color:#fff"><b>Standards</b>: ML‑KEM (Kyber), ML‑DSA (Dilithium), FALCON (size‑critical), SPHINCS+ (diversity)</div>
+      <a class="btn" href="/pilot">Request a Pilot</a>
+    </div>
+
+    <h2>What we shipped</h2>
+    <ul>
+      <li><strong>Hybrid KEM on transport</strong>: enable <code>x25519_mlkem768</code> alongside classical groups for mTLS/gRPC and QUIC; browsers stay classical until ecosystem support is universal.</li>
+      <li><strong>Dual‑signing</strong>: sign artifacts with ML‑DSA and current scheme; verify both paths in CI/CD; record sizes and verification time.</li>
+      <li><strong>Internal PKI cross‑sign</strong>: ML‑DSA leafs cross‑signed by the existing chain for controlled mTLS clients.</li>
+      <li><strong>Evidence by default</strong>: posture JSON includes success rate, p95 handshake latency deltas, payload sizes, versions, and constant‑time checks.</li>
+    </ul>
+
+    <h2>Adoption plan (that won’t hurt users)</h2>
+    <ol>
+      <li><strong>Stage</strong>: PQ‑only, classical‑only, and hybrid clients all succeed in staging.</li>
+      <li><strong>Canary</strong>: 1% → 25% → 100% rollout with rollback switch; monitor negotiated groups and failure reasons.</li>
+      <li><strong>Dual‑sign everywhere</strong>: code signing and image attestation accept both signatures; warn, don’t fail, when PQ verification is unavailable.</li>
+      <li><strong>Public TLS later</strong>: move public endpoints when OS/browsers normalize PQC roots.</li>
+    </ol>
+
+    <h2>Commercial impact</h2>
+    <ul>
+      <li><strong>Procurement‑ready</strong>: auditors see signed posture metrics, not claims.</li>
+      <li><strong>Low integration friction</strong>: hybrid keeps SLAs stable; no mass client upgrades day‑one.</li>
+      <li><strong>Future‑proof</strong>: no novelty risk; we track NIST families and vendor HSM/KMS support.</li>
+    </ul>
+
+    <h2>What we did not do</h2>
+    <p>No bespoke cryptography. No security claims tied to research math. PQC is standards‑only.</p>
+
+    <h2>Get the details</h2>
+    <ul>
+      <li>Hybrid KEM guide: <a href="/docs/pqc/hybrid-kem.html" onclick="return false;">docs/pqc/hybrid-kem.md</a></li>
+      <li>Dual‑signing rollout: <a href="/docs/pqc/code-signing-dual.html" onclick="return false;">docs/pqc/code-signing-dual.md</a></li>
+      <li>Posture schema: <a href="/docs/pqc/evidence-schema.json" onclick="return false;">docs/pqc/evidence-schema.json</a></li>
+    </ul>
+
+    <p><a href="/pilot">Request a Pilot</a> • <a href="/contact">Contact Sales</a></p>
+  </div>
+</body>
+</html>

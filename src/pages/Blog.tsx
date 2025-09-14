@@ -147,6 +147,28 @@ const Blog = () => {
 
   const blogPosts = [
     {
+      title: 'Post‑Quantum Readiness: Standards‑Only Rollout That Won’t Break Production',
+      excerpt: 'How we adopted NIST PQC safely: hybrid KEM (ML‑KEM + X25519), dual‑signing with ML‑DSA, internal PKI cross‑sign, and signed posture metrics—without breaking clients or SLAs.',
+      author: 'Gwylym Owen',
+      date: 'September 14, 2025',
+      readTime: '8 min read',
+      category: 'Technology',
+      icon: Shield,
+      published: true,
+      slug: 'pqc-standards-safe-rollout'
+    },
+    {
+      title: 'Geometry in Motion: Spinors, 8D Manifolds, and Why It Matters',
+      excerpt: 'A research demo: spinors and 8D manifolds as practical math tooling—identity checking, toy Dirac problems, and visual reasoning—not cryptographic claims.',
+      author: 'Gwylym Owen',
+      date: 'September 14, 2025',
+      readTime: '7 min read',
+      category: 'Technology',
+      icon: Brain,
+      published: true,
+      slug: 'spinor-8d-math-demo'
+    },
+    {
       title: 'Always‑on Evaluators: Cheap, Continuous Risk Scoring for Reliable AI',
       excerpt: 'Compact SLM evaluators score toxicity, PII, injection, bias, and jailbreaks per turn—feeding Risk Guard and evidence.',
       author: 'Gwylym Owen',
@@ -953,63 +975,27 @@ const Blog = () => {
            }
   ];
 
-  // Show only posts that have corresponding HTML files and remove duplicates by slug
-  const validSlugs = [
-    'model-starters-8-presets',
-    'choose-the-right-model-helper',
-    'context-engineering-layer',
-    'quantum-safe-readiness-aethergenplatform',
-    'aethergenplatform-milestone-solo-innovations',
-    'pareto-operating-point-efficiency-in-ai',
-    'ablations-with-effect-sizes-proving-what-moves-the-needle',
-    'aethergenai-shipped-evidence-led-ai-training',
-    'ai-carbon-footprint-revolution-sustainable-computing',
-    'air-gapped-ai-packaging-sbom-qr-manifests',
-    'automotive-quality-edge-offline-vision-evidence',
-    'complexity-wall-natural-language-ai-engineering',
-    'databricks-marketplace-lab-to-revenue',
-    'dataset-and-model-cards-that-buyers-actually-use',
-    'democratising-ai-post-moores-law-revolution',
-    'drift-stress-stability-operating-ai-like-regulated',
-    'evidence-bundles-and-testing',
-    'evidence-in-ci-failing-closed-passing-audits',
-    'evidence-led-ai-regulated-industries',
-    'evidence-led-ai-signed-metrics-enterprise-adoption',
-    'financial-crime-labs-synthetic-graphs-risk-evidence',
-    'from-first-pilot-to-policy',
-    'from-starlings-to-swarms-8d-safety',
-    'insurance-fraud-playbooks-synthetic-scenarios',
-    'managed-delivery-on-databricks-slas-referencing-evidence',
-    'offline-readiness-designing-models-for-harsh-disconnected-environments',
-    'pricing-and-entitlements-explained',
-    'privacy-in-practice-probes-budgets-measurable-boundaries',
-    'public-sector-ai-secure-deployments-without-cloud-entanglements',
-    'scaling-synthetic-generation-safely-schemas-seeds-controls',
-    'schema-designer-multi-data-llm',
-    'segment-aware-evaluation-stability-that-survives-real-world-change',
-    'synthetic-data-healthcare-fraud-without-phi',
-    'synthetic-data-lifecycle',
-    'triumph-of-preparation-strategic-planning',
-    'unity-catalog-delivery-turning-models-into-procurement-ready-products',
-    'green-ai-carbon-neutral-machine-learning',
-    'energy-efficient-ai-optimization-beats-scaling',
-    'navigating-the-illusion-of-conscious-ai',
-    'hallucination-risk-guard-pre-generation',
-    'on-device-ai-slos-hybrid-routing',
-    'evidence-efficient-ai-73-percent-faster',
-    'a-billion-queries-10-months-promise-kept'
-    ,'always-on-evaluators-risk-guard'
-    ,'deterministic-inference-batch-invariant'
-  ];
-
+  // Show all posts except an explicit exclude list; de‑duplicate by slug
+  const excludedSlugs = new Set<string>([
+    'phoenix-rising-journey',
+    'weight-of-destiny-founders-reflection',
+    'innovators-website-challenge',
+    '4200-hour-course-abandoned-destiny',
+    'autistic-innovator-dilemma-building-tribe',
+    'buzz-lightyear-scale-3d-navigation',
+    'recursive-nightmare-navigator',
+    'bmw-pivot-strategy',
+    '90-percent-cost-savings',
+    'ai-human-partnership-friendship',
+    'democratising-ai-post-moores-law-revolution-original'
+  ]);
   const seenSlugs = new Set<string>();
-  const postsToShow = blogPosts
-    .filter((p: any) => validSlugs.includes(p.slug))
-    .filter((p: any) => {
-      if (seenSlugs.has(p.slug)) return false;
-      seenSlugs.add(p.slug);
-      return true;
-    });
+  const postsToShow = blogPosts.filter((p: any) => {
+    if (excludedSlugs.has(p.slug)) return false;
+    if (seenSlugs.has(p.slug)) return false;
+    seenSlugs.add(p.slug);
+    return true;
+  });
 
   // reserved: categories
 

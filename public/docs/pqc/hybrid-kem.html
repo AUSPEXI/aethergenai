@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hybrid KEM Integration (ML‑KEM + X25519)</title>
+  <meta name="description" content="Introduce post‑quantum key exchange alongside classical KEX for defense‑in‑depth during transition." />
+  <style> body{font-family:Inter,system-ui,Arial,sans-serif;line-height:1.7;color:#0f172a;margin:0;background:#f5f7fb} .wrap{max-width:860px;margin:0 auto;background:#fff;padding:36px;border-radius:12px;box-shadow:0 6px 24px rgba(0,0,0,0.06)} h1{margin:0 0 8px} h2{margin-top:24px} code{background:#e2e8f0;padding:2px 6px;border-radius:6px} </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Hybrid KEM Integration (ML‑KEM + X25519)</h1>
+    <p>Scope: introduce post‑quantum key exchange alongside a classical KEX for defense‑in‑depth during transition.</p>
+    <h2>Libraries</h2>
+    <ul>
+      <li>OpenSSL 3.x with OQS provider (liboqs)</li>
+      <li>Prefer distro packages when available; else vendor from source with CI cache</li>
+    </ul>
+    <h2>TLS server (reverse proxy / CDN / ingress)</h2>
+    <ul>
+      <li>Load oqsprovider at startup</li>
+      <li>Verify TLS groups include <code>x25519_mlkem768</code></li>
+      <li>Set groups list: <code>TLS_GROUPS="x25519_mlkem768:x25519:secp256r1"</code></li>
+    </ul>
+    <h2>gRPC / mTLS</h2>
+    <ul>
+      <li>Set <code>SSL_CTX_set1_groups_list(ctx, "x25519_mlkem768:x25519")</code></li>
+      <li>Log negotiated group per handshake</li>
+    </ul>
+    <h2>Canary & Metrics</h2>
+    <ol>
+      <li>Staging validation (PQ‑only / classical‑only / hybrid)</li>
+      <li>1% → 25% → 100% canary with rollback</li>
+      <li>Ship posture: success rate, p95 latency delta, payload sizes</li>
+    </ol>
+  </div>
+</body>
+</html>

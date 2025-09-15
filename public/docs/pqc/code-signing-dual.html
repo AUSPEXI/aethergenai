@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Code Signing: Dual‑Sign Rollout (ML‑DSA + Current)</title>
+  <meta name="description" content="Add ML‑DSA alongside the current scheme in CI/CD with verification gates and evidence." />
+  <style> body{font-family:Inter,system-ui,Arial,sans-serif;line-height:1.7;color:#0f172a;margin:0;background:#f5f7fb} .wrap{max-width:860px;margin:0 auto;background:#fff;padding:36px;border-radius:12px;box-shadow:0 6px 24px rgba(0,0,0,0.06)} h1{margin:0 0 8px} h2{margin-top:24px} code{background:#e2e8f0;padding:2px 6px;border-radius:6px} </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Code Signing: Dual‑Sign Rollout (ML‑DSA + Current)</h1>
+    <h2>CI/CD Steps</h2>
+    <ol>
+      <li>Generate ML‑DSA keys; keep current keys. Store ML‑DSA sealed (KMS/HSM where possible).</li>
+      <li>Sign artifacts with both schemes; attach metadata to manifest.</li>
+      <li>Verify both signatures in CI; fail build if either path fails.</li>
+      <li>Emit posture JSON: sizes, verify times, algorithm versions.</li>
+    </ol>
+    <h2>Consumer</h2>
+    <p>Update verifiers to accept both signatures; warn (don’t fail) if PQ verification unavailable during transition.</p>
+  </div>
+</body>
+</html>

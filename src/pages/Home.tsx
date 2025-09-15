@@ -317,20 +317,20 @@ const Home = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-slate-900 mb-6 text-center">Latest from the blog</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <Link to="/blog/model-starters-8-presets" className="block bg-slate-50 border border-slate-200 rounded-xl p-5 hover:border-blue-300 hover:bg-blue-50/30 transition">
-              <div className="text-sm text-slate-600 mb-1">Model Starters</div>
-              <div className="text-lg font-semibold text-slate-900">Build the Right Model: 8 Presets</div>
-              <div className="text-slate-700 text-sm mt-1">LLM, SLM, LAM, MoE, VLM, MLM, LCM, SAM</div>
+            <Link to="/blog/pqc-standards-safe-rollout" className="block bg-slate-50 border border-slate-200 rounded-xl p-5 hover:border-blue-300 hover:bg-blue-50/30 transition">
+              <div className="text-sm text-slate-600 mb-1">PQC</div>
+              <div className="text-lg font-semibold text-slate-900">Post‑Quantum Readiness: Standards‑Only Rollout</div>
+              <div className="text-slate-700 text-sm mt-1">Hybrid KEM + dual‑signing + evidence—safe migration that won’t break clients</div>
+            </Link>
+            <Link to="/blog/spinor-8d-math-demo" className="block bg-slate-50 border border-slate-200 rounded-xl p-5 hover:border-blue-300 hover:bg-blue-50/30 transition">
+              <div className="text-sm text-slate-600 mb-1">Research</div>
+              <div className="text-lg font-semibold text-slate-900">Geometry in Motion: Spinors & 8D Manifolds</div>
+              <div className="text-slate-700 text-sm mt-1">Plain‑English math tooling with citations, notebooks, and benchmarks</div>
             </Link>
             <Link to="/blog/context-engineering-layer" className="block bg-slate-50 border border-slate-200 rounded-xl p-5 hover:border-blue-300 hover:bg-blue-50/30 transition">
               <div className="text-sm text-slate-600 mb-1">Context</div>
               <div className="text-lg font-semibold text-slate-900">Context Engineering: Retrieval, Signals, Packing</div>
               <div className="text-slate-700 text-sm mt-1">Hybrid retrieval + risk‑aware context</div>
-            </Link>
-            <Link to="/blog/hallucination-risk-guard-pre-generation" className="block bg-slate-50 border border-slate-200 rounded-xl p-5 hover:border-blue-300 hover:bg-blue-50/30 transition">
-              <div className="text-sm text-slate-600 mb-1">Reliability</div>
-              <div className="text-lg font-semibold text-slate-900">Hallucination Risk Guard (Pre‑Generation)</div>
-              <div className="text-slate-700 text-sm mt-1">Risk signals → fetch/clarify/abstain</div>
             </Link>
           </div>
           <div className="text-center mt-4">

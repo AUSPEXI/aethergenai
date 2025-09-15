@@ -7,6 +7,8 @@ const blogHtmlDir = path.join(publicDir, 'blog-html')
 const blogIndexPath = path.join(blogHtmlDir, 'index.json')
 const sitemapPath = path.join(publicDir, 'sitemap.xml')
 
+function posixify(p) { return p.split('\\').join('/') }
+
 function loadBlogSlugs() {
   const slugs = new Set()
   // From manifest
@@ -38,6 +40,37 @@ function mtimeFor(p) {
   try { return fs.statSync(p).mtime.toISOString().slice(0,10) } catch { return null }
 }
 
+function scanPublicHtml() {
+  const out = []
+  const skipDirs = new Set(['blog-html', 'blog'])
+  function walk(dir) {
+    const entries = fs.readdirSync(dir, { withFileTypes: true })
+    for (const e of entries) {
+      const abs = path.join(dir, e.name)
+      const rel = posixify(path.relative(publicDir, abs))
+      if (e.isDirectory()) {
+        const top = rel.split('/')[0]
+        if (skipDirs.has(top)) continue
+        walk(abs)
+      } else if (e.isFile() && e.name.endsWith('.html')) {
+        const top = rel.split('/')[0]
+        if (skipDirs.has(top)) continue
+        // map index.html to folder path
+        let urlPath = '/' + rel
+        if (urlPath.endsWith('/index.html')) urlPath = urlPath.replace(/\/index\.html$/, '/')
+        else urlPath = urlPath.replace(/\.html$/, '')
+        // collapse double slashes
+        urlPath = urlPath.replace(/\/+/g, '/').replace(/\/$/, '')
+        // skip root index (already in core)
+        if (urlPath === '') continue
+        out.push({ loc: SITE + urlPath, lastmod: mtimeFor(abs) })
+      }
+    }
+  }
+  try { walk(publicDir) } catch {}
+  return out
+}
+
 function buildUrls() {
   const core = [
     '', 'about', 'technology', 'pricing', 'press', 'resources', 'ai', 'whitepaper', 'blog', 'build', 'context-engineering', 'choose-model'
@@ -45,7 +78,7 @@ function buildUrls() {
   const slugs = loadBlogSlugs()
   const blog = slugs.map(s => `blog/${s}`)
   const all = [...core, ...blog]
-  return all.map(p => {
+  const base = all.map(p => {
     const isBlog = p.startsWith('blog/')
     const slug = p.replace('blog/','')
     const src = isBlog ? path.join(publicDir, 'blog-html', `${slug}.html`) : null
@@ -53,6 +86,17 @@ function buildUrls() {
     const loc = isBlog ? `${SITE}/blog/${slug}` : `${SITE}/${p}`
     return { loc, lastmod }
   })
+  // Add other public HTML (docs, etc.)
+  const extras = scanPublicHtml()
+  // Merge unique by loc
+  const seen = new Set()
+  const merged = []
+  for (const u of [...base, ...extras]) {
+    if (seen.has(u.loc)) continue
+    seen.add(u.loc)
+    merged.push(u)
+  }
+  return merged
 }
 
 function writeSitemap(urls) {

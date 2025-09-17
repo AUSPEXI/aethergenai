@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dementia Anchor Triage: A Public‑Data, Evidence‑Led Demo</title>
+  <meta name="description" content="How we would triage dementia targets and compounds using public anchors with signed, reproducible outputs—showing practical, investable capability without PHI." />
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, Inter, Segoe UI, Roboto, Arial, sans-serif; line-height: 1.7; color: #0f172a; margin: 0; background: #f5f7fb; }
+    .article { max-width: 960px; margin: 0 auto; background: #fff; padding: 48px 36px; box-shadow: 0 10px 30px rgba(0,0,0,0.06); border-radius: 12px; }
+    h1 { font-size: 34px; margin: 0 0 8px; color: #0b1220; }
+    .meta { color: #475569; font-size: 14px; margin-bottom: 28px; }
+    h2 { color: #0b1220; margin-top: 28px; font-size: 22px; }
+    p, li { color: #1f2937; }
+    ul { padding-left: 20px; }
+    .callout { background: #ecfeff; border-left: 4px solid #06b6d4; padding: 16px; border-radius: 8px; }
+    a { color:#2563eb; text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    code { background:#e2e8f0; padding:2px 6px; border-radius:6px; }
+  </style>
+</head>
+<body>
+  <div class="article">
+    <h1>Dementia Anchor Triage: A Public‑Data, Evidence‑Led Demo</h1>
+    <div class="meta"><strong>Auspexi</strong> • Updated: <script>document.write(new Date().toISOString().slice(0,10))</script></div>
+
+    <div class="callout"><strong>TL;DR</strong>: We outline a <em>public‑data</em> methodology to turn well‑known anchors (genetics, expression, pathways, chemistry, trials) into a ranked, explainable shortlist of targets and repurposable compounds. The focus is on <strong>reproducible, signed outputs</strong>—not PHI, not proprietary cohorts. This demonstrates practical capability and an investable path for funded pilots.</div>
+
+    <h2>What we are demonstrating (and what we are not)</h2>
+    <ul>
+      <li><strong>Demonstrating</strong>: A small, verifiable workflow that ingests public anchors, scores candidates, and produces human‑readable rationales with citations and signed run metrics.</li>
+      <li><strong>Not claiming</strong>: We are not running clinical research, and we are not making treatment claims. This is a capability demo to accelerate literature‑driven triage and reviews.</li>
+    </ul>
+
+    <h2>Anchors (public‑first)</h2>
+    <ul>
+      <li><strong>Genetics</strong>: GWAS hits and rare variants (e.g., IGAP) — locus support and colocalization.</li>
+      <li><strong>Expression</strong>: bulk/single‑cell brain datasets (e.g., AMP‑AD/ROSMAP, Allen/HCA) with region/cell specificity.</li>
+      <li><strong>Pathways</strong>: Reactome/WikiPathways (microglial/innate immune, autophagy‑lysosome, mitochondrial, synaptic).</li>
+      <li><strong>Chemistry</strong>: Open Targets, ChEMBL, PubChem for ligandability and selectivity; PDB for structures.</li>
+      <li><strong>Trials & safety</strong>: ClinicalTrials.gov, SIDER/FAERS (signals, contraindications).</li>
+    </ul>
+
+    <h2>Methodology (plain English)</h2>
+    <ol>
+      <li><strong>Ingest & normalize</strong> public anchors into a provenance graph with licenses and citations.</li>
+      <li><strong>Score targets</strong> by a transparent formula combining genetic support, brain‑cell expression direction, and pathway centrality.</li>
+      <li><strong>Score compounds</strong> for tractability (activity proxies), brain exposure proxies, and safety signals.</li>
+      <li><strong>Shortlist</strong> 3–5 targets with 1–2 compounds each; generate a one‑pager per candidate with citations and “next step.”</li>
+      <li><strong>Sign outputs</strong>: notebooks print a sha256 of inputs/outputs for reproducibility; versions are recorded.</li>
+    </ol>
+
+    <h2>What a viewer sees in the demo</h2>
+    <ul>
+      <li>A <strong>Target Triage</strong> notebook producing a ranked list (e.g., TREM2, SORL1, CD33) with reasons.</li>
+      <li>A <strong>Compound Triage</strong> notebook with a small shortlist and risk notes (activity, BBB proxy, safety flags).</li>
+      <li>Two <strong>one‑pagers</strong> (target + compound) that read like a mini briefing with links.</li>
+      <li>A <strong>benchmark JSON</strong> with run timestamp and hash (“signed metrics”).</li>
+    </ul>
+
+    <h2>Why this matters commercially</h2>
+    <ul>
+      <li><strong>Faster reviews</strong>: move from discussion to a small, shared artifact with citations.</li>
+      <li><strong>Lower risk</strong>: signed runs and transparent scoring reduce ambiguity.</li>
+      <li><strong>Pilot‑ready</strong>: with funding and partners, swap public anchors for controlled datasets and add wet‑lab loops.</li>
+    </ul>
+
+    <h2>How to run our scaffold</h2>
+    <ul>
+      <li>Target notebook: <code>notebooks/dementia_target_triage.ipynb</code></li>
+      <li>Compound notebook: <code>notebooks/dementia_compound_triage.ipynb</code></li>
+      <li>Templates: <code>docs/templates/target_one_pager.md</code>, <code>docs/templates/compound_one_pager.md</code></li>
+    </ul>
+
+    <h2>Slide deck (investor/customer)</h2>
+    <p>Preview the 10‑slide outline: <a href="/slides/dementia-demo/" target="_blank" rel="noopener">/slides/dementia-demo/</a></p>
+
+    <h2>Ethics & compliance</h2>
+    <ul>
+      <li><strong>No PHI</strong>: public anchors only; controlled‑access data appear only under appropriate approvals.</li>
+      <li><strong>Reproducibility</strong>: signed runs, versioned inputs, deterministic re‑runs.</li>
+      <li><strong>Clear scope</strong>: this is a triage and communication tool, not a claim of efficacy.</li>
+    </ul>
+
+    <p><a href="/pilot">Request a Pilot</a> • <a href="/contact">Contact Sales</a></p>
+  </div>
+</body>
+</html>

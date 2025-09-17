@@ -169,6 +169,17 @@ const Blog = () => {
       slug: 'spinor-8d-math-demo'
     },
     {
+      title: 'Dementia Anchor Triage: A Public‑Data, Evidence‑Led Demo',
+      excerpt: 'How we would triage dementia targets and compounds using public anchors with signed, reproducible outputs—capability demo without PHI.',
+      author: 'Gwylym Owen',
+      date: 'September 15, 2025',
+      readTime: '9 min read',
+      category: 'Technology',
+      icon: Brain,
+      published: true,
+      slug: 'dementia-anchor-triage-methodology'
+    },
+    {
       title: 'Always‑on Evaluators: Cheap, Continuous Risk Scoring for Reliable AI',
       excerpt: 'Compact SLM evaluators score toxicity, PII, injection, bias, and jailbreaks per turn—feeding Risk Guard and evidence.',
       author: 'Gwylym Owen',

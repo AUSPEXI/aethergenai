@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dementia Demo — 10‑Slide Outline</title>
+  <style>
+    body{font-family:Inter,system-ui,Arial,sans-serif;margin:0;background:#0b1120;color:#e2e8f0}
+    .slide{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px}
+    .card{max-width:960px;background:#0f172a;border:1px solid #334155;border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,0.4);padding:36px}
+    h1,h2{color:#fff;margin:0 0 12px}
+    p,li{color:#cbd5e1}
+    .nav{position:fixed;bottom:16px;left:0;right:0;display:flex;justify-content:center;gap:10px}
+    .btn{background:#1e293b;color:#e2e8f0;border:1px solid #334155;padding:8px 12px;border-radius:8px;cursor:pointer}
+  </style>
+</head>
+<body>
+  <div class="slide"><div class="card"><h1>Dementia Anchor Triage — Evidence‑Led Demo</h1><p>Public anchors → transparent scoring → signed outputs. No PHI.</p></div></div>
+  <div class="slide"><div class="card"><h2>Anchors</h2><ul><li>Genetics (IGAP), Expression (AMP‑AD/ROSMAP, Allen/HCA)</li><li>Pathways (Reactome/WikiPathways), Chemistry (ChEMBL/PubChem), Trials (CT.gov)</li></ul></div></div>
+  <div class="slide"><div class="card"><h2>Pipeline</h2><ul><li>Ingest & normalize with citations</li><li>Score targets & compounds</li><li>Shortlist + one‑pagers</li></ul></div></div>
+  <div class="slide"><div class="card"><h2>Target Scoring</h2><ul><li>Genetic support</li><li>Brain‑cell expression direction</li><li>Pathway centrality</li></ul></div></div>
+  <div class="slide"><div class="card"><h2>Compound Scoring</h2><ul><li>Activity/tractability proxies</li><li>BBB proxy</li><li>Safety signals (SIDER/FAERS)</li></ul></div></div>
+  <div class="slide"><div class="card"><h2>Shortlist</h2><p>3–5 targets, 1–2 compounds each with rationale and risk notes.</p></div></div>
+  <div class="slide"><div class="card"><h2>Reproducibility</h2><p>Signed run metrics (sha256), versioned inputs, deterministic re‑runs.</p></div></div>
+  <div class="slide"><div class="card"><h2>Pilot Plan</h2><p>2–3 week public‑data demo → funded pilots with controlled datasets + wet‑lab loops.</p></div></div>
+  <div class="slide"><div class="card"><h2>Success Metrics</h2><ul><li>Review time ↓</li><li>Rework ↓</li><li>Acceptance rate ↑</li></ul></div></div>
+  <div class="slide"><div class="card"><h2>Next Steps</h2><p>Design partners + funding. 30‑minute NDA session with demo notebooks.</p></div></div>
+  <div class="nav"><button class="btn" onclick="prev()">Prev</button><button class="btn" onclick="next()">Next</button></div>
+  <script>
+    const slides = [...document.querySelectorAll('.slide')];
+    let i = 0; const show = j => { slides.forEach((s,k)=> s.style.display = k===j?'flex':'none'); i=j };
+    function prev(){ show(Math.max(0,i-1)) } function next(){ show(Math.min(slides.length-1,i+1)) }
+    show(0);
+  </script>
+</body>
+</html>
+

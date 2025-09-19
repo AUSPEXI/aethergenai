@@ -20,9 +20,23 @@
     .bullets { columns: 2; column-gap: 24px; }
     .small { font-size: 13px; color: var(--sub); }
     .tight li { margin: 2px 0; }
+    /* Tabs */
+    .tabs { margin-top: 20px; display:flex; flex-wrap:wrap; gap:8px; }
+    .tab-btn { appearance:none; border:1px solid #cbd5e1; background:#fff; color:var(--ink); padding:8px 12px; border-radius:8px; font-size:13px; cursor:pointer; }
+    .tab-btn[aria-selected="true"] { background: #e2e8f0; border-color:#94a3b8; }
+    .panels { margin-top: 8px; }
+    .tab-panel { display:none; }
+    .tab-panel.active { display:block; }
+    .chip { display:inline-block; padding:2px 8px; border:1px solid #cbd5e1; border-radius:999px; font-size:12px; color:var(--sub); margin-right:6px; }
+    .actions { display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
+    .btn { display:inline-block; padding:10px 14px; background:var(--accent); color:#fff; text-decoration:none; border-radius:8px; font-size:14px; border:none; cursor:pointer; }
+    .btn.secondary { background:#0ea5e9; }
+    .muted { color: var(--muted); }
     @media print {
       .page { padding: 8mm; }
       a { color: inherit; text-decoration: none; }
+      .tabs, .actions, .tab-btn { display:none !important; }
+      .tab-panel { display:block !important; }
     }
   </style>
   <meta name="description" content="Evidence‑led AI architect building synthetic‑first data and training pipelines for regulated teams. Verifiable outcomes; IP kept private." />
@@ -45,73 +59,206 @@
       </div>
     </header>
 
-    <section class="sec">
-      <h2>Profile</h2>
-      <div class="small">Evidence‑led AI architect building synthetic‑first data and training pipelines for regulated teams. Ships verifiable outcomes (hashes, lineage, metrics), keeps proprietary methods private, and focuses on compliant, cost‑sensitive scale.</div>
-    </section>
+    <!-- Tabs -->
+    <nav class="tabs" role="tablist" aria-label="Resume sections">
+      <button class="tab-btn" role="tab" aria-selected="true" aria-controls="tab-overview" id="tabbtn-overview">Overview</button>
+      <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-skills" id="tabbtn-skills">Skills</button>
+      <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-outcomes" id="tabbtn-outcomes">Outcomes</button>
+      <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-projects" id="tabbtn-projects">Projects</button>
+      <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-cover" id="tabbtn-cover">Cover Letter</button>
+      <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-video" id="tabbtn-video">Video</button>
+      <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-download" id="tabbtn-download">Download</button>
+    </nav>
 
-    <section class="sec">
-      <h2>Core skills</h2>
-      <ul class="bullets tight">
-        <li>Synthetic data: schema design, validation guardrails, ablations, evidence bundles</li>
-        <li>Frontend: React, TypeScript, Tailwind, Framer Motion; Three.js/R3F interactive 3D</li>
-        <li>Serverless: Netlify Functions (OAuth, schedulers, SSE), Node/TypeScript</li>
-        <li>Data/DB: Supabase (SQL, idempotent migrations, RLS control), JSON‑LD/SEO</li>
-        <li>Edge/offline: device profiles, checksums, SBOM, safety policy pack (packaging MVP)</li>
-        <li>Cloud/data: Databricks‑ready datasets/models; marketplace workflow prep</li>
-        <li>Social automation: LinkedIn OAuth, queue + scheduled posting, publisher UI</li>
-        <li>LLMSIO: machine‑readable brand facts (JSON/JSON‑LD, changelogs, APIs)</li>
-      </ul>
-    </section>
+    <div class="panels">
+      <!-- Overview -->
+      <section id="tab-overview" class="tab-panel active" role="tabpanel" aria-labelledby="tabbtn-overview">
+        <section class="sec">
+          <h2>Profile</h2>
+          <div class="small">Evidence-led builder with 22 years running companies and delivering enterprise systems. Self-taught, outcome driven, and comfortable owning delivery end to end. Strong written communication shaped by philosophy, art, and poetry. Known for deep focus, systematic thinking, and calm problem solving in high-pressure situations.</div>
+        </section>
+        <section class="sec">
+          <h2>Target roles</h2>
+          <div class="small">
+            <span class="chip">Office and operations</span>
+            <span class="chip">PMO support</span>
+            <span class="chip">Data and reporting</span>
+            <span class="chip">Technical lead</span>
+            <span class="chip">Solution architect</span>
+            <span class="chip">Contract or temp (Guildford, Surrey)</span>
+          </div>
+        </section>
+        <section class="sec">
+          <h2>Experience</h2>
+          <div class="small"><strong>Founder/Architect, Auspexi (AethergenPlatform)</strong> — Designed and shipped synthetic-first pipelines, evidence bundling, and scheduling/automation across web, serverless, and DB. Drove LLMSIO and Edge packaging MVPs; kept IP private while publishing verifiable outcomes.</div>
+          <div class="small">Self-employed (22 years): client references available upon request.</div>
+        </section>
+        <section class="sec">
+          <h2>Education</h2>
+          <div class="small">Self-directed advanced study in AI systems, data pipelines, and graphics; foundations via long-form professional coursework.</div>
+        </section>
+        <section class="sec">
+          <h2>Availability</h2>
+          <div class="small">Guildford, Surrey. Temp, contract, or short paid trials. Immediate start. Portfolio and demos available on request.</div>
+        </section>
+      </section>
 
-    <section class="sec">
-      <h2>Selected outcomes (public, verifiable)</h2>
-      <ul class="tight">
-        <li>Billion‑row synthetic generation demo with signed evidence artifacts (hashes, references)</li>
-        <li>SEO/LLM readiness: canonical URLs, robots/sitemap, rich JSON‑LD (Organization, WebSite, FAQPage, AboutPage, Dataset, SoftwareApplication)</li>
-        <li>Social automation: LinkedIn scheduling via Netlify + Supabase; Reply Assistant for low‑effort engagement</li>
-        <li>Blog scheduler: blog_posts schema, queue/publish functions, dynamic sitemap, library generator</li>
-        <li>Edge packaging MVP: bundle ZIP with manifest, checksums, safety pack, device profiles, eval guidance</li>
-        <li>3D experiences: neural hero and 8D manifold prototype (R3F/Three; raymarching; polished UX)</li>
-      </ul>
-    </section>
+      <!-- Skills -->
+      <section id="tab-skills" class="tab-panel" role="tabpanel" aria-labelledby="tabbtn-skills">
+        <section class="sec">
+          <h2>Core skills</h2>
+          <ul class="bullets tight">
+            <li>Synthetic data: schema design, validation guardrails, ablations, evidence bundles</li>
+            <li>Frontend: React, TypeScript, Tailwind, Framer Motion; Three.js/R3F interactive 3D</li>
+            <li>Serverless: Netlify Functions (OAuth, schedulers, SSE), Node/TypeScript</li>
+            <li>Data/DB: Supabase (SQL, idempotent migrations, RLS control), JSON-LD/SEO</li>
+            <li>Edge/offline: device profiles, checksums, SBOM, safety policy pack</li>
+            <li>Cloud/data: Databricks-ready datasets/models; marketplace workflow prep</li>
+            <li>Social automation: LinkedIn OAuth, queue and scheduled posting, publisher UI</li>
+            <li>LLMSIO: machine-readable brand facts (JSON/JSON-LD, changelogs, APIs)</li>
+          </ul>
+        </section>
+        <section class="sec">
+          <h2>Engineering and AI toolkit</h2>
+          <div class="small">Frontend: React, TypeScript, Tailwind, Framer Motion, Three.js/R3F. Backend: Node, serverless functions, REST, SSE, OAuth, schedulers. AI: prompt engineering, retrieval augmented generation, evaluation harnesses, model-agnostic runners. Reproducibility: evidence bundles, versioned datasets, signed run metrics. Web and SEO: static HTML, JSON-LD, sitemaps, canonical URLs. Security posture: standards-only PQC readiness (ML-KEM/Kyber, ML-DSA/Dilithium), TLS/PKI basics.</div>
+        </section>
+        <section class="sec">
+          <h2>Office and operations toolkit</h2>
+          <div class="small">Productivity: Excel/Sheets, Word/Docs, PowerPoint/Slides, Notion, Confluence. Collaboration: Teams, Slack, Zoom. Work tracking: Jira, Trello, Asana, GitHub Projects. Reporting: dashboards, KPIs, weekly status, risks and mitigations. Data handling: CSV/JSON, light SQL, data cleaning and checks.</div>
+        </section>
+        <section class="sec">
+          <h2>Technologies</h2>
+          <div class="small">React, TypeScript, Tailwind, Framer Motion; Three.js/R3F; Node/Netlify Functions; Supabase (SQL/Auth); JSON-LD/SEO; Databricks workflows (prep); GitHub Actions; JSZip; SSE; OAuth 2.0; cron scheduling.</div>
+        </section>
+        <section class="sec">
+          <h2>Tooling / open source</h2>
+          <div class="small">Recursive prompt engineering tool (chained prompts): <a href="https://steady-starlight-8f6328.netlify.app/" target="_blank" rel="noreferrer">steady-starlight-8f6328.netlify.app</a></div>
+        </section>
+      </section>
 
-    <section class="sec">
-      <h2>Recent work — AethergenPlatform</h2>
-      <ul class="tight">
-        <li>Frontend (React/TS): mobile‑first responsive site; reusable SEO; navigation, press kit, pricing, About, Resources, Blog, Publisher</li>
-        <li>3D/R3F: hero animation; manifold SDF blend, OrbitControls, curvature overlay, capture/flythrough scaffolds</li>
-        <li>APIs (Netlify): facts, feedback, events (SSE), prompts, crawler‑health, edge‑recommend, LinkedIn OAuth (start/callback/status/publish), social queue/scheduler, marketplace‑test</li>
-        <li>Supabase: core platform + social/blog schemas (idempotent SQL migrations); scheduled publishing; service‑role in functions</li>
-        <li>LLMSIO: /ai facts pack, JSON‑LD, RSS, changelog, snapshots, feedback; helpers (/.well-known/brand.json, /llms.txt)</li>
-        <li>Evidence: public evidence.json + SHA‑256 script; GitHub workflows to schedule</li>
-      </ul>
-    </section>
+      <!-- Outcomes -->
+      <section id="tab-outcomes" class="tab-panel" role="tabpanel" aria-labelledby="tabbtn-outcomes">
+        <section class="sec">
+          <h2>Selected outcomes (public, verifiable)</h2>
+          <ul class="tight">
+            <li>Billion-row synthetic generation demo with signed evidence artifacts (hashes, references)</li>
+            <li>SEO/LLM readiness: canonical URLs, robots/sitemap, rich JSON-LD (Organization, WebSite, FAQPage, AboutPage, Dataset, SoftwareApplication)</li>
+            <li>Social automation: LinkedIn scheduling via Netlify and Supabase; Reply Assistant for low-effort engagement</li>
+            <li>Blog scheduler: blog_posts schema, queue/publish functions, dynamic sitemap, library generator</li>
+            <li>Edge packaging MVP: bundle ZIP with manifest, checksums, safety pack, device profiles, eval guidance</li>
+            <li>3D experiences: neural hero and 8D manifold prototype (R3F/Three; raymarching; polished UX)</li>
+          </ul>
+        </section>
+      </section>
 
-    <section class="sec">
-      <h2>Technologies</h2>
-      <div class="small">React, TypeScript, Tailwind, Framer Motion; Three.js/R3F; Node/Netlify Functions; Supabase (SQL/Auth); JSON‑LD/SEO; Databricks workflows (prep); GitHub Actions; JSZip; SSE; OAuth 2.0; cron scheduling.</div>
-    </section>
+      <!-- Projects -->
+      <section id="tab-projects" class="tab-panel" role="tabpanel" aria-labelledby="tabbtn-projects">
+        <section class="sec">
+          <h2>Recent work — AethergenPlatform</h2>
+          <ul class="tight">
+            <li>Frontend (React/TS): mobile-first responsive site; reusable SEO; navigation, press kit, pricing, About, Resources, Blog, Publisher</li>
+            <li>3D/R3F: hero animation; manifold SDF blend, OrbitControls, curvature overlay, capture/flythrough scaffolds</li>
+            <li>APIs (Netlify): facts, feedback, events (SSE), prompts, crawler-health, edge-recommend, LinkedIn OAuth (start/callback/status/publish), social queue/scheduler, marketplace-test</li>
+            <li>Supabase: core platform and social/blog schemas (idempotent SQL migrations); scheduled publishing; service-role in functions</li>
+            <li>LLMSIO: /ai facts pack, JSON-LD, RSS, changelog, snapshots, feedback; helpers (/.well-known/brand.json, /llms.txt)</li>
+            <li>Evidence: public evidence.json and SHA-256 script; GitHub workflows to schedule</li>
+          </ul>
+        </section>
+        <section class="sec">
+          <h2>Projects and demos</h2>
+          <ul class="tight">
+            <li>Life sciences evidence triage: PubMed, ClinicalTrials.gov, ChEMBL with citation drill downs and exportable reports</li>
+            <li>Fraud and insurance: explainable scoring on synthetic scenarios with reviewer-friendly outputs</li>
+            <li>Drone and offline: on-device vision notebooks, run metrics, and offline readiness</li>
+            <li>SOP to checklist: turn SOP PDFs into structured checklists with links to exact clauses</li>
+          </ul>
+        </section>
+      </section>
 
-    <section class="sec">
-      <h2>Tooling / open source</h2>
-      <div class="small">Recursive prompt engineering tool (chained prompts): <a href="https://steady-starlight-8f6328.netlify.app/" target="_blank" rel="noreferrer">steady‑starlight‑8f6328.netlify.app</a></div>
-    </section>
+      <!-- Cover letter -->
+      <section id="tab-cover" class="tab-panel" role="tabpanel" aria-labelledby="tabbtn-cover">
+        <section class="sec">
+          <h2>Cover letter</h2>
+          <div class="small">I build reliable systems and keep teams moving. After 22 years running my own businesses, I am comfortable taking ownership of delivery, reporting clearly, and earning trust through measurable results. I can support day to day operations, improve processes, and ship evidence-led work that stands up to review. I am available for temp or contract roles in Guildford and can start quickly.</div>
+        </section>
+      </section>
 
-    <section class="sec">
-      <h2>Experience</h2>
-      <div class="small"><strong>Founder/Architect, Auspexi — AethergenPlatform</strong> (2024–Present) — Designed and shipped synthetic‑first pipelines, evidence bundling, and scheduling/automation across web, serverless, and DB. Drove LLMSIO and Edge packaging MVPs; kept IP private while publishing verifiable outcomes.</div>
-    </section>
+      <!-- Video placeholder -->
+      <section id="tab-video" class="tab-panel" role="tabpanel" aria-labelledby="tabbtn-video">
+        <section class="sec">
+          <h2>Introduction video</h2>
+          <div class="small">Video coming soon. A short introduction video will appear here. For now, this is a placeholder.</div>
+          <div style="position:relative;padding-top:56.25%;background:#0b1220;border-radius:8px;margin-top:8px;">
+            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#cbd5e1;">Intro video placeholder</div>
+          </div>
+        </section>
+      </section>
 
-    <section class="sec">
-      <h2>Education</h2>
-      <div class="small">Self‑directed advanced study in AI systems, data pipelines, and graphics; foundations via long‑form professional coursework.</div>
-    </section>
+      <!-- Download -->
+      <section id="tab-download" class="tab-panel" role="tabpanel" aria-labelledby="tabbtn-download">
+        <section class="sec">
+          <h2>Download</h2>
+          <div class="actions">
+            <button class="btn" id="btn-print">Download PDF (print)</button>
+            <button class="btn secondary" id="btn-json">Download JSON resume</button>
+          </div>
+          <div class="small muted" style="margin-top:8px;">PDF uses the browser print to PDF. JSON follows a simple schema suitable for forms.</div>
+        </section>
+      </section>
+    </div>
 
-    <section class="sec">
-      <h2>Availability</h2>
-      <div class="small">10–20 hrs/week (remote, UK). Open to short paid trials. References and demos on request.</div>
-    </section>
+    <script>
+      (function(){
+        const btns = Array.from(document.querySelectorAll('.tab-btn'));
+        const panels = Array.from(document.querySelectorAll('.tab-panel'));
+        function activate(id){
+          panels.forEach(p => p.classList.toggle('active', p.id === id));
+          btns.forEach(b => b.setAttribute('aria-selected', b.getAttribute('aria-controls') === id ? 'true' : 'false'));
+        }
+        btns.forEach(b => b.addEventListener('click', () => activate(b.getAttribute('aria-controls'))));
+        // Actions
+        const printBtn = document.getElementById('btn-print');
+        if (printBtn) printBtn.addEventListener('click', () => window.print());
+        const jsonBtn = document.getElementById('btn-json');
+        if (jsonBtn) jsonBtn.addEventListener('click', () => {
+          const resume = {
+            name: 'Gwylym Pryce-Owen',
+            title: 'Founder/Architect — Auspexi (AethergenPlatform)',
+            location: 'Guildford, Surrey, UK',
+            email: 'sales@auspexi.com',
+            website: 'https://auspexi.com',
+            profile: 'Evidence-led builder with 22 years running companies and delivering enterprise systems. Outcome driven; clear communication; calm under pressure.',
+            targetRoles: ['Office and operations','PMO support','Data and reporting','Technical lead','Solution architect','Contract or temp (Guildford, Surrey)'],
+            skills: {
+              core: ['Synthetic data','Frontend (React/TS/Tailwind/Framer Motion/Three.js/R3F)','Serverless (Netlify Functions, Node)','Supabase/SQL/RLS/idempotent migrations','JSON-LD/SEO','Edge/offline packaging','Databricks-ready data/models','Social automation','LLMSIO'],
+              engineeringAI: ['Prompt engineering','RAG','Evaluation harnesses','Model-agnostic runners','Evidence bundles','Signed run metrics','TLS/PKI basics','Standards-only PQC readiness'],
+              officeOps: ['Excel/Sheets','Word/Docs','PowerPoint/Slides','Notion/Confluence','Teams/Slack/Zoom','Jira/Trello/Asana/GitHub Projects']
+            },
+            outcomes: [
+              'Billion-row synthetic generation demo with signed evidence',
+              'SEO/LLM readiness (canonical, robots, JSON-LD schemas)',
+              'LinkedIn scheduling via Netlify and Supabase; Reply Assistant',
+              'Blog scheduler and dynamic sitemap',
+              'Edge packaging MVP (checksums, safety pack, device profiles)',
+              '3D experiences: neural hero and 8D manifold prototype'
+            ],
+            projects: [
+              'Life sciences evidence triage with citations and reports',
+              'Fraud and insurance triage with explainable scoring',
+              'Drone vision and offline readiness notebooks',
+              'SOP to checklist assistant'
+            ],
+            availability: 'Immediate; temp, contract, or short paid trials',
+          };
+          const blob = new Blob([JSON.stringify(resume, null, 2)], {type:'application/json'});
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url; a.download = 'gwylym-pryce-owen-resume.json';
+          document.body.appendChild(a); a.click(); a.remove();
+          URL.revokeObjectURL(url);
+        });
+      })();
+    </script>
   </main>
 </body>
 </html>

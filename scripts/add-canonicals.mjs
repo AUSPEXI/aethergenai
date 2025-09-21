@@ -43,3 +43,5 @@ for (const file of files) {
 console.log(`Canonicals added to ${updated} file(s).`);
 
 
+
+

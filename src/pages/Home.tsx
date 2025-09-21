@@ -88,7 +88,7 @@ const Home = () => {
       <div ref={heroHostRef} className="relative">
         {(heroVisible || heroActivated) && !prefersReducedMotion ? (
           <Suspense fallback={<div className="w-full h-[70vh] md:h-[78vh] min-h-[400px] md:min-h-[520px] bg-[#0b1120] flex items-center justify-center text-white">Loading…</div>}>
-            <AethergenHero />
+      <AethergenHero />
           </Suspense>
         ) : (
           <div className="w-full h-[70vh] md:h-[78vh] min-h-[400px] md:min-h-[520px] bg-[#0b1120] overflow-hidden relative flex items-center justify-center">
@@ -162,7 +162,7 @@ const Home = () => {
             <div className="bg-white rounded-xl p-6 shadow-md text-center">
               <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Eye className="w-8 h-8 text-blue-500" />
-              </div>
+                </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">Shadow Evaluation</h3>
               <p className="text-gray-600">
                 Test candidate models in parallel with live traffic before promotion for lower‑risk deployment.
@@ -342,7 +342,7 @@ const Home = () => {
         </div>
       </section>
 
-      
+
       {/* Where Art Meets Innovation */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -574,11 +574,7 @@ const Home = () => {
             </div>
           </div>
           
-          <div className="text-center mt-12">
-            <p className="text-blue-200 text-lg italic">
-              "Our Databricks partnership proves we're enterprise-ready, while our technology proves we're revolutionary."
-            </p>
-          </div>
+          
         </div>
       </section>
 

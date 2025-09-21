@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom'
 import {
   FileText, BookOpen, Video, Download, ExternalLink, ArrowRight,
   Shield, Target, Eye, RotateCcw, TrendingUp, Lock, Package,
-  Activity, Car, Brain, Settings, Gauge, AlertTriangle, CheckCircle,
-  Users, Globe, Award, Star, Zap, Database, Code
+  Activity, Car, Brain, Settings, Gauge, AlertTriangle,
+  Users, Globe, Zap, Database, Code
 } from 'lucide-react'
 
 export const Resources: React.FC = () => {
@@ -36,7 +36,7 @@ export const Resources: React.FC = () => {
     {
       icon: Shield,
       title: 'Operational AI Guide',
-      description: 'Complete guide to operating AI like a regulated system with fail-closed gates and automated rollback',
+      description: 'Guide to operating AI with gated promotions and rollback hooks (pilot‑scoped)',
       category: 'Technical Documentation',
       link: '/stability-demo',
       type: 'Interactive Demo'
@@ -160,7 +160,7 @@ export const Resources: React.FC = () => {
     {
       icon: Eye,
       title: 'Shadow Evaluation Implementation',
-      description: 'Step-by-step guide to implementing shadow evaluation for zero-risk model deployment',
+      description: 'Step-by-step guide to implementing shadow evaluation for lower‑risk model deployment',
       category: 'Best Practices',
       link: '/stability-demo',
       type: 'Guide'
@@ -187,7 +187,7 @@ export const Resources: React.FC = () => {
     {
       icon: Activity,
       title: 'Healthcare AI Operations',
-      description: 'How healthcare organizations can implement HIPAA-compliant AI operations',
+      description: 'How healthcare organisations can design privacy‑preserving workflows (not legal advice)',
       category: 'Case Studies',
       link: '/stability-demo',
       type: 'Use Case'
@@ -195,7 +195,7 @@ export const Resources: React.FC = () => {
     {
       icon: TrendingUp,
       title: 'Financial Services Model Risk',
-      description: 'Model risk management with fail-closed gates and automated rollback capabilities',
+      description: 'Model risk management with gated promotions and rollback hooks',
       category: 'Case Studies',
       link: '/stability-demo',
       type: 'Use Case'
@@ -247,7 +247,7 @@ export const Resources: React.FC = () => {
               Resources & Documentation
             </h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Everything you need to understand and implement operational AI stability with fail-closed gates and evidence-backed systems
+              Everything you need to understand and implement operational AI stability with gated promotions and evidence‑led reporting
             </p>
           </div>
         </div>
@@ -645,7 +645,7 @@ export const Resources: React.FC = () => {
             </Link>
             <Link to="/blog/always-on-evaluators-risk-guard" className="bg-white rounded-xl p-6 border hover:shadow-md transition">
               <div className="font-semibold text-gray-900 mb-1">Always‑on Evaluators</div>
-              <div className="text-sm text-gray-600">Fail‑closed thresholds feeding Risk Guard</div>
+              <div className="text-sm text-gray-600">Thresholds feeding Risk Guard; gates can block promotions</div>
             </Link>
           </div>
         </div>

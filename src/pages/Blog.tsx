@@ -1020,8 +1020,11 @@ const Blog = () => {
           <h1 className="text-4xl font-bold text-white mb-6">
             Founder's Blog
           </h1>
-          <p className="text-xl text-blue-100 mb-8 max-w-3xl mx-auto">
+          <p className="text-xl text-blue-100 mb-2 max-w-3xl mx-auto">
             Real stories from the front lines of AI innovation and entrepreneurship
+          </p>
+          <p className="text-sm text-blue-200 max-w-3xl mx-auto">
+            Research and pilot software. Claims are evidence‑led where linked; no legal, medical, or cryptographic claims. Read our <a href="/honesty-and-ip" className="underline">Honesty & IP‑safety</a>.
           </p>
         </div>
       </section>

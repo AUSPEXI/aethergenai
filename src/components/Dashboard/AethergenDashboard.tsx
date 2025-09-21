@@ -35,6 +35,7 @@ import DatasetsLibrary from '../Libraries/DatasetsLibrary';
 import ModelsLibrary from '../Libraries/ModelsLibrary';
 import TemplatesLibrary from '../Libraries/TemplatesLibrary';
 import MarketplaceHome from '../Marketplace/MarketplaceHome';
+import ReviewTab from '../QA/ReviewTab';
 const StorageUsagePanel: React.FC<{ role: 'viewer'|'developer'|'team'|'enterprise'|'admin' }> = ({ role }) => {
   const [usage, setUsage] = React.useState<{ datasetsBytes:number; datasetsCount:number; modelsCount:number; modelsBytes?:number }|null>(null);
   React.useEffect(()=>{ (async()=>{
@@ -108,6 +109,7 @@ type DashboardTab =
   | 'ablation'
   | 'benchmarks'
   | 'reporting'
+  | 'review'
   | 'pipelines'
   | 'models'
   | 'privacy'
@@ -200,6 +202,7 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
     { id: 'ablation', name: 'Ablation Tests', icon: Activity, description: 'Run ablation recipes and compare' },
     { id: 'benchmarks', name: 'Benchmarks', icon: LineChart, description: 'Performance and quality benchmarks' },
     { id: 'reporting', name: 'Reporting', icon: BarChart3, description: 'Reports and dashboards' },
+    { id: 'review', name: 'Review', icon: BadgeCheck, description: 'Human QA sample review and report export' },
     { id: 'models', name: 'Models', icon: BadgeCheck, description: 'Model registry and lab' },
     { id: 'privacy', name: 'Privacy Metrics', icon: Shield, description: 'Privacy and compliance tools' },
     { id: 'risk', name: 'Risk Assessment', icon: Activity, description: 'Model collapse risk analysis' },
@@ -467,6 +470,9 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
             benchmarkResults={[]}
           />
         );
+
+      case 'review':
+        return <ReviewTab />;
 
       case 'models':
         return (

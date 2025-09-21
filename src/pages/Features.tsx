@@ -2,8 +2,8 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import {
   Shield, Target, Eye, RotateCcw, TrendingUp, Lock, FileText, Package,
-  Activity, Car, Brain, Settings, Gauge, AlertTriangle, CheckCircle,
-  ArrowRight, Database, Users, Zap, Globe, Award, Star
+  Activity, Car, CheckCircle,
+  ArrowRight, Database, Users, Globe
 } from 'lucide-react'
 
 export const Features: React.FC = () => {
@@ -158,7 +158,7 @@ export const Features: React.FC = () => {
               Operational AI Features
             </h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              The only platform built for regulated AI operations with fail-closed gates, automated rollback, and evidence-backed stability
+              Evidence‑led AI operations with gated promotions, rollback hooks, and stability reports
             </p>
           </div>
         </div>
@@ -172,7 +172,7 @@ export const Features: React.FC = () => {
             Operational AI Stability
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Operate AI like a regulated system with fail-closed gates, automated rollback, and evidence-backed stability
+            Operate AI with gated promotions, rollback hooks, and stability reports (pilot‑scoped)
           </p>
         </div>
 
@@ -331,7 +331,7 @@ export const Features: React.FC = () => {
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">Healthcare</h3>
               <p className="text-gray-600 mb-4">
-                HIPAA-compliant AI operations with privacy probes and evidence-backed model cards
+                Privacy‑preserving workflows with probes and evidence‑backed model cards (not legal advice)
               </p>
               <ul className="text-sm text-gray-600 space-y-1">
                 <li>• Privacy-preserving model deployment</li>
@@ -346,7 +346,7 @@ export const Features: React.FC = () => {
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">Financial Services</h3>
               <p className="text-gray-600 mb-4">
-                Model risk management with fail-closed gates and automated rollback capabilities
+                Model risk management with gated promotions and rollback hooks
               </p>
               <ul className="text-sm text-gray-600 space-y-1">
                 <li>• Model risk management</li>
@@ -380,7 +380,7 @@ export const Features: React.FC = () => {
             Ready to Transform Your AI Operations?
           </h2>
           <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-            Join organizations that are operating AI with confidence using evidence-backed stability and fail-closed design principles.
+            Join organisations operating AI with confidence using evidence‑led stability and gated promotion principles.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link

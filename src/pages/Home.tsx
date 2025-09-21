@@ -58,11 +58,11 @@ const Home = () => {
       statLabel: 'Inventions'
     },
     {
-      title: 'Global Leadership',
-      description: 'Among the leading synthetic data platforms with revolutionary scale, quality, and innovation capabilities - scientifically validated',
+      title: 'Evidence & Scale',
+      description: 'Practical demos at scale with reproducible metrics and signed reports—no exclusivity or leadership claims',
       icon: Globe,
       stat: 'Evidence',
-      statLabel: 'Quality Compliance'
+      statLabel: 'Reproducible'
     },
     {
       title: 'Innovation Pipeline',
@@ -114,10 +114,13 @@ const Home = () => {
               Revolutionise Your AI Operations
             </h1>
             <p className="text-xl text-blue-100 max-w-3xl mx-auto mb-8">
-              The only platform built for regulated AI operations with fail-closed gates, automated rollback, and evidence-backed stability
+              Evidence‑led AI operations with gated promotions, rollback hooks, and stability reports
             </p>
             <div className="inline-block bg-emerald-500/20 border border-emerald-400 text-emerald-200 px-4 py-2 rounded-full text-sm mb-4">
               Latest results: 1,000,000,000 queries → 72% fewer tokens, 73% faster, 100% big‑model calls avoided. <Link to="/blog/evidence-efficient-ai-73-percent-faster" className="underline">Read</Link>
+            </div>
+            <div className="max-w-3xl mx-auto mb-4 text-blue-100 text-sm">
+              Research and pilot software. Capabilities shown are available in scoped pilots. No legal, medical, or cryptographic claims. Read our <a href="/honesty-and-ip.html" className="underline">Honesty & IP‑safety</a>.
             </div>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
@@ -150,9 +153,9 @@ const Home = () => {
               <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <RotateCcw className="w-8 h-8 text-red-500" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Fail-Closed by Design</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Gated Promotions by Design</h3>
               <p className="text-gray-600">
-                Every model promotion blocked until SLO gates pass with confidence intervals. No surprises, no incidents.
+                Promotions can be blocked when SLO checks fail; rollback hooks are available in scoped pilots.
               </p>
             </div>
             
@@ -162,7 +165,7 @@ const Home = () => {
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">Shadow Evaluation</h3>
               <p className="text-gray-600">
-                Test candidate models in parallel with live traffic before promotion. Zero-risk model deployment.
+                Test candidate models in parallel with live traffic before promotion for lower‑risk deployment.
               </p>
             </div>
             
@@ -172,7 +175,7 @@ const Home = () => {
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">Evidence in CI</h3>
               <p className="text-gray-600">
-                Every change regenerates signed evidence bundles. Complete audit trail for regulated environments.
+                Changes can regenerate signed evidence bundles. Audit‑friendly reports available in pilots.
               </p>
             </div>
           </div>
@@ -257,7 +260,7 @@ const Home = () => {
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-2">Healthcare</h3>
                 <p className="text-gray-600">
-                  HIPAA-compliant AI operations with privacy probes and evidence-backed model cards
+                  Privacy‑preserving workflows for PHI‑sensitive settings (not legal advice)
                 </p>
               </div>
               
@@ -267,7 +270,7 @@ const Home = () => {
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-2">Financial Services</h3>
                 <p className="text-gray-600">
-                  Model risk management with fail-closed gates and automated rollback capabilities
+                  Model risk management with gated promotions and rollback hooks
                 </p>
               </div>
               
@@ -481,8 +484,7 @@ const Home = () => {
                 <h3 className="text-xl font-bold text-slate-900">Elastic Collision Newton's Cradle</h3>
               </div>
               <p className="text-slate-600 mb-4">
-                Energy transfer approach enabling efficient data generation and processing 
-                at unprecedented scales while maintaining perfect quality compliance.
+                Energy transfer approach explored in research framing to improve efficiency at scale. Public demos available; no perfection claims.
               </p>
               <div className="bg-white p-4 rounded-lg">
                 <code className="text-sm text-slate-700">
@@ -497,8 +499,7 @@ const Home = () => {
                 <h3 className="text-xl font-bold text-slate-900">Radioactive Decay Universe Model</h3>
               </div>
               <p className="text-slate-600 mb-4">
-                Advanced pattern recognition system modeling cosmic processes including proton/photon decay 
-                and universal expansion patterns for optimal synthetic data generation.
+                High‑level research framing using cosmic‑scale patterns. Public demos with signed metrics; no specific mechanisms disclosed.
               </p>
               <div className="bg-white p-4 rounded-lg">
                 <code className="text-sm text-slate-700">
@@ -518,7 +519,7 @@ const Home = () => {
               </p>
               <div className="bg-white p-4 rounded-lg">
                 <code className="text-sm text-slate-700">
-                  Scale: Billion‑row demo; quality validated via evidence
+                  Scale: Billion‑row demo; public, reproducible metrics available
                 </code>
               </div>
             </div>
@@ -534,11 +535,10 @@ const Home = () => {
               <Database className="w-10 h-10 text-blue-400" />
             </div>
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Strategic Databricks Partnership
+              Databricks Integration & Certification
             </h2>
             <p className="text-xl text-blue-100 max-w-4xl mx-auto leading-relaxed">
-              We're honest enough to say we may not be the only ones, but confident enough to say we're among the most advanced - 
-              validated through our strategic partnership with the $6B+ leader in data platforms.
+              We integrate with Databricks (Unity Catalog delivery and marketplace‑ready runners). Founder holds Databricks Administrator certification.
             </p>
           </div>
           
@@ -586,11 +586,10 @@ const Home = () => {
       <section className="py-20 bg-gradient-to-br from-slate-50 to-blue-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl font-bold text-slate-900 mb-6">
-            Among the Leading Synthetic Data Platforms
+            Evidence‑Led Synthetic Data Capabilities
           </h2>
           <p className="text-xl text-slate-600 mb-8">
-            We're honest enough to say we may not be the only ones, but confident enough to say we're among the most advanced - 
-            with revolutionary scale, proven technology, and enterprise-ready solutions validated through scientific rigor.
+            We focus on practical, reproducible demos with signed metrics and pilot delivery. No leadership claims and no exclusivity—just evidence you can review and re‑run.
           </p>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">

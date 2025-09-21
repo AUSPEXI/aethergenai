@@ -6,13 +6,13 @@ const PrivacyPolicy = () => (
       <div className="bg-white border border-slate-200 rounded-xl p-8 shadow-md">
         <h1 className="text-3xl font-bold text-slate-900 mb-4">Privacy Policy</h1>
         <p className="text-blue-600 mb-6">Effective Date: June 15, 2025</p>
-        <p className="text-slate-700 mb-6">Auspexi Ltd ("Auspexi," "we," "us," or "our"), a UK-based company, is dedicated to safeguarding privacy and security in our Government Suite pipeline, delivering eight synthetic-first datasets: CHANGES, POISON, STRIVE, HYDRA, SIREN, REFORM, INSURE, and SHIELD. This Privacy Policy details our data collection, processing, storage, and protection practices, ensuring compliance with global regulations, including the UK General Data Protection Regulation (UK GDPR), EU General Data Protection Regulation (EU GDPR), Health Insurance Portability and Accountability Act (HIPAA), California Consumer Privacy Act (CCPA), ISO/IEC 27001, NIST Cybersecurity Framework, UK Ministry of Defence (MoD) Cyber Security Standards, and other standards relevant to healthcare, military, emergency services, and cybersecurity sectors. Our datasets, built on 57% synthetic data and 43% publicly available seeds, empower clients to meet their own compliance obligations with realistic, privacy-compliant scenarios, making Auspexi a trusted partner for global analytics and simulations.</p>
+        <p className="text-slate-700 mb-6">Auspexi Ltd ("Auspexi," "we," "us," or "our"), a UK‑based company, is committed to safeguarding privacy in our products and public websites. This notice explains what we collect, how we use it, and your choices. It is informational only and not legal advice.</p>
 
         <section className="mb-6">
           <h2 className="text-xl font-semibold text-slate-900 mb-2">1. Data Collection and Processing</h2>
-          <p className="text-slate-700">Our Government Suite generates 1 million data points per day, with 43% real/enhanced data from publicly available global sources and 57% synthetic data produced by 20 AI models. We prioritize privacy by avoiding personal data unless explicitly required for service delivery.</p>
+          <p className="text-slate-700">We prioritise privacy and aim to avoid personal data unless explicitly required for service delivery. Where customer data is processed, it is done under the customer’s control and contract.</p>
           <h3 className="text-lg font-semibold text-slate-900 mb-2">1.1 Publicly Available Data Seeds</h3>
-          <p className="text-slate-700">Sources: We collect non-personal, aggregated data from trusted public sources, ensuring compliance with source terms:</p>
+          <p className="text-slate-700">Sources: We may reference non‑personal, aggregated data from public sources, subject to source terms. Examples include:</p>
           <ul className="list-disc list-inside text-slate-700 ml-4">
             <li>CHANGES: World Health Organization (WHO) RSS feeds, Johns Hopkins University CSV files (e.g., epidemiological trends).</li>
             <li>POISON: Federal Bureau of Investigation (FBI) HTML pages, Interpol CSV datasets (e.g., crime statistics).</li>
@@ -23,14 +23,13 @@ const PrivacyPolicy = () => (
             <li>INSURE: National Association of Insurance Commissioners (NAIC) PDFs, Lloyd's HTML (e.g., insurance risk data).</li>
             <li>SHIELD: Cybersecurity and Infrastructure Security Agency (CISA) RSS feeds, National Institute of Standards and Technology (NIST) JSON (e.g., cyber threats).</li>
           </ul>
-          <p className="text-slate-700 mt-2">Nature: These datasets are free of personally identifiable information (PII) or protected health information (PHI), aligning with HIPAA, UK GDPR, and MoD requirements for sensitive sectors.</p>
+          <p className="text-slate-700 mt-2">Nature: Public examples we publish are designed without PII/PHI.</p>
           <p className="text-slate-700 mt-2">Method: Automated scraping via data_pipeline.py with multi-format parsing (RSS, CSV, JSON, PDF, HTML) and rate-limiting, hosted on Netlify servers.</p>
 
           <h3 className="text-lg font-semibold text-slate-900 mb-2">1.2 Synthetic Data</h3>
-          <p className="text-slate-700">Generation: 57% of data is synthetic, created by AI models (e.g., DistilBERT, GPT-2, CTGAN, Prophet, T5-Small, IsolationForest, ARIMA, Node2Vec, VAE) to simulate realistic scenarios (e.g., healthcare outbreaks, military strategies, cyber threats).</p>
-          <p className="text-slate-700 mt-2">Privacy Advantage: Synthetic data eliminates personal data risks, supporting compliance with GDPR Article 5(1)(c) (data minimization) and HIPAA (no PHI).</p>
+          <p className="text-slate-700">Generation: Synthetic data may be created to simulate scenarios. Synthetic data can reduce reliance on personal data, but customers remain responsible for their own compliance.</p>
           <p className="text-slate-700 mt-2">Add-Ons: 4 core (sentimentDynamics, behaviorPrediction, environmentalImpact, resourceOptimization) and 4 premium (network, optimization, clustering, forecasting) add-ons enhance utility while maintaining privacy.</p>
-          <p className="text-slate-700 mt-2">Compliance Benefit: Our synthetic data helps clients meet MoD JSP 440, NIST SP 800-53, and ISO 27001 by providing secure, realistic datasets for analytics without compromising sensitive information.</p>
+          <p className="text-slate-700 mt-2">Compliance: Our tools are designed to support governance and documentation; they do not, by themselves, make a customer compliant. Customers are responsible for their own legal compliance.</p>
 
           <h3 className="text-lg font-semibold text-slate-900 mb-2">1.3 User Data</h3>
           <p className="text-slate-700">Marketplace Interactions: Minimal personal data (name, email, billing details) is collected for account creation, payments, and support via government.auspexi.com or auspexi.com/data-suites.</p>
@@ -39,8 +38,8 @@ const PrivacyPolicy = () => (
 
         <section className="mb-6">
           <h2 className="text-xl font-semibold text-slate-900 mb-2">2. Data Use</h2>
-          <p className="text-slate-700">Dataset Creation: Public seeds are processed locally to generate synthetic datasets, anonymized via SHA-256 hashing to ensure irreversibility.</p>
-          <p className="text-slate-700 mt-2">Client Compliance: Datasets support client compliance with:</p>
+          <p className="text-slate-700">Dataset creation: When customers generate datasets, hashing and documentation features may be used for provenance. Configuration varies by deployment.</p>
+          <p className="text-slate-700 mt-2">Client compliance: Our software can support documentation needs. Examples of sector standards customers may consider include:</p>
           <ul className="list-disc list-inside text-slate-700 ml-4">
             <li>Healthcare (CHANGES, SIREN): HIPAA, UK NHS Data Security Standards.</li>
             <li>Military (STRIVE): MoD JSP 440, NATO STANAG.</li>
@@ -54,15 +53,13 @@ const PrivacyPolicy = () => (
         <section className="mb-6">
           <h2 className="text-xl font-semibold text-slate-900 mb-2">3. Privacy and Security Measures</h2>
           <h3 className="text-lg font-semibold text-slate-900 mb-2">3.1 Data Minimization</h3>
-          <p className="text-slate-700">Only non-personal public data and minimal user data are collected, per UK GDPR Article 5(1)(c) and CCPA. Synthetic data reduces real data reliance, aligning with ISO 27001 risk management.</p>
+          <p className="text-slate-700">We strive to minimise data collection on our sites and services and to give customers control in enterprise deployments.</p>
 
           <h3 className="text-lg font-semibold text-slate-900 mb-2">3.2 Anonymization</h3>
-          <p className="text-slate-700">SHA-256 Hashing: Applied to 43% real/enhanced data (sha256(data_str.encode()).hexdigest()), with logs (hashed[:10]...) for transparency, meeting NIST FIPS 180-4 standards.</p>
-          <p className="text-slate-700 mt-2">Zero-Knowledge Proofs (ZKPs): Mock ZKPs implemented, with full zk-SNARKs (circom) and differential privacy (diffprivlib) planned for Q4 2025, supporting MoD and CISA encryption requirements.</p>
-          <p className="text-slate-700 mt-2">No PII/PHI: Ensures HIPAA and UK GDPR compliance.</p>
+          <p className="text-slate-700">Security notes: Hashing and signatures may be used for provenance in evidence bundles. Advanced cryptography features are research or pilot‑scoped unless otherwise contracted.</p>
 
           <h3 className="text-lg font-semibold text-slate-900 mb-2">3.3 Local Processing</h3>
-          <p className="text-slate-700">AI models run on Netlify servers (UK/EU/US), avoiding external APIs, per ISO 27001 and NIST SP 800-171. Data stored in Supabase with AES-256 encryption at rest and TLS 1.3 in transit.</p>
+          <p className="text-slate-700">Hosting: Public demos run on common cloud providers; enterprise deployments run in customer environments. Transport encryption is standard; at‑rest encryption follows the hosting environment.</p>
 
           <h3 className="text-lg font-semibold text-slate-900 mb-2">3.4 Data Retention</h3>
           <p className="text-slate-700">Public/Synthetic Data: Retained indefinitely (no PII/PHI). User Data: Kept for account duration or legal requirements (e.g., 7 years for UK tax law). Deletion available on request. Compliance: Aligns with UK GDPR Article 5(1)(e) and CCPA.</p>
@@ -73,7 +70,7 @@ const PrivacyPolicy = () => (
 
         <section className="mb-6">
           <h2 className="text-xl font-semibold text-slate-900 mb-2">4. Global Compliance</h2>
-          <p className="text-slate-700">Our synthetic-first approach ensures compliance with:</p>
+          <p className="text-slate-700">Jurisdictions and frameworks customers may consider include (non‑exhaustive, examples only):</p>
           <ul className="list-disc list-inside text-slate-700 ml-4">
             <li>UK GDPR/EU GDPR: Lawful basis (legitimate interests for public data, consent/contract for user data), user rights, Data Protection Officer (sales@auspexi.com).</li>
             <li>HIPAA: No PHI; public health data (e.g., WHO) is non-identifiable.</li>

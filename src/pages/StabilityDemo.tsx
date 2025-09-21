@@ -244,7 +244,7 @@ export const StabilityDemo: React.FC = () => {
             Stability & SLO Management Demo
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Operating AI like a regulated system with fail-closed gates, automated rollback, and evidence-backed stability
+            Operating AI with gated promotions, rollback hooks, and stability reports (pilot‑scoped)
           </p>
         </div>
 

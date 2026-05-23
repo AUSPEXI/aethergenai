@@ -7,12 +7,14 @@
 
 # Environment variables for aethergen.auspexi.com
 [context.production.environment]
-  VITE_SUPABASE_URL = "https://scnbjflqabnzirqriqgs.supabase.co"
-  # Note: Add your VITE_SUPABASE_ANON_KEY in Netlify's environment variables dashboard
+  VITE_SUPABASE_URL = "https://gqzwvrklipkjjmidxmzp.supabase.co"
+  VITE_ADMIN_EMAILS = "sales@auspexi.com"
+  # Note: Add VITE_SUPABASE_ANON_KEY in Netlify's environment variables dashboard (keep secret)
 
 [context.deploy-preview.environment]
-  VITE_SUPABASE_URL = "https://scnbjflqabnzirqriqgs.supabase.co"
-  # Note: Add your VITE_SUPABASE_ANON_KEY in Netlify's environment variables dashboard
+  VITE_SUPABASE_URL = "https://gqzwvrklipkjjmidxmzp.supabase.co"
+  VITE_ADMIN_EMAILS = "sales@auspexi.com"
+  # Note: Add VITE_SUPABASE_ANON_KEY in Netlify's environment variables dashboard (keep secret)
 
 [functions]
   directory = "netlify/functions"

@@ -183,7 +183,7 @@ const SchemaDesigner: React.FC<SchemaDesignerProps> = ({ onSchemaChange, initial
               type="text"
               value={schema.name}
               onChange={(e) => updateSchema({ name: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
               placeholder="e.g., Healthcare Patient Records"
             />
           </div>
@@ -195,7 +195,7 @@ const SchemaDesigner: React.FC<SchemaDesignerProps> = ({ onSchemaChange, initial
             <select
               value={schema.domain}
               onChange={(e) => updateSchema({ domain: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
             >
               <option value="">Select Domain</option>
               {domains.map(domain => (
@@ -212,7 +212,7 @@ const SchemaDesigner: React.FC<SchemaDesignerProps> = ({ onSchemaChange, initial
           <textarea
             value={schema.description}
             onChange={(e) => updateSchema({ description: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
             rows={3}
             placeholder="Describe your data schema..."
           />
@@ -227,7 +227,7 @@ const SchemaDesigner: React.FC<SchemaDesignerProps> = ({ onSchemaChange, initial
               type="number"
               value={schema.targetVolume}
               onChange={(e) => updateSchema({ targetVolume: parseInt(e.target.value) || 0 })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
               min="1"
             />
           </div>
@@ -244,7 +244,7 @@ const SchemaDesigner: React.FC<SchemaDesignerProps> = ({ onSchemaChange, initial
                   differentialPrivacy: e.target.value === 'true' 
                 } 
               })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
             >
               <option value="true">Enabled</option>
               <option value="false">Disabled</option>
@@ -265,7 +265,7 @@ const SchemaDesigner: React.FC<SchemaDesignerProps> = ({ onSchemaChange, initial
                   epsilon: parseFloat(e.target.value) || 0.1 
                 } 
               })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
               min="0.1"
               max="10"
             />
@@ -288,7 +288,7 @@ const SchemaDesigner: React.FC<SchemaDesignerProps> = ({ onSchemaChange, initial
                 type="text"
                 value={newField.name}
                 onChange={(e) => setNewField(prev => ({ ...prev, name: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
                 placeholder="e.g., patient_id"
               />
             </div>
@@ -298,7 +298,7 @@ const SchemaDesigner: React.FC<SchemaDesignerProps> = ({ onSchemaChange, initial
               <select
                 value={newField.type}
                 onChange={(e) => setNewField(prev => ({ ...prev, type: e.target.value as any }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
               >
                 {fieldTypes.map(type => (
                   <option key={type} value={type}>{type}</option>
@@ -311,7 +311,7 @@ const SchemaDesigner: React.FC<SchemaDesignerProps> = ({ onSchemaChange, initial
               <select
                 value={newField.aiModel || ''}
                 onChange={(e) => setNewField(prev => ({ ...prev, aiModel: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
               >
                 <option value="">Auto-select</option>
                 {aiModels.map(model => (
@@ -325,7 +325,7 @@ const SchemaDesigner: React.FC<SchemaDesignerProps> = ({ onSchemaChange, initial
               <select
                 value={newField.privacyLevel}
                 onChange={(e) => setNewField(prev => ({ ...prev, privacyLevel: e.target.value as any }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
               >
                 {privacyLevels.map(level => (
                   <option key={level} value={level}>{level}</option>
@@ -362,7 +362,7 @@ const SchemaDesigner: React.FC<SchemaDesignerProps> = ({ onSchemaChange, initial
                   <select
                     value={field.type}
                     onChange={(e) => updateField(index, { ...field, type: e.target.value as any })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
                   >
                     {fieldTypes.map(type => (
                       <option key={type} value={type}>{type}</option>
@@ -375,7 +375,7 @@ const SchemaDesigner: React.FC<SchemaDesignerProps> = ({ onSchemaChange, initial
                   <select
                     value={field.aiModel || ''}
                     onChange={(e) => updateField(index, { ...field, aiModel: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
                   >
                     <option value="">Auto-select</option>
                     {aiModels.map(model => (
@@ -389,7 +389,7 @@ const SchemaDesigner: React.FC<SchemaDesignerProps> = ({ onSchemaChange, initial
                   <select
                     value={field.privacyLevel}
                     onChange={(e) => updateField(index, { ...field, privacyLevel: e.target.value as any })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
                   >
                     {privacyLevels.map(level => (
                       <option key={level} value={level}>{level}</option>
@@ -423,14 +423,14 @@ const SchemaDesigner: React.FC<SchemaDesignerProps> = ({ onSchemaChange, initial
           {fusionMappings.map((m, idx) => (
             <div key={idx} className="grid grid-cols-1 md:grid-cols-3 gap-2 items-center">
               <input
-                className="px-3 py-2 border rounded"
+                className="px-3 py-2 border rounded text-gray-900 bg-white"
                 placeholder="source.field_name"
                 value={m.sourceField}
                 onChange={(e) => setFusionMappings(prev => prev.map((x, i) => i === idx ? { ...x, sourceField: e.target.value } : x))}
               />
               <span className="text-center">→</span>
               <input
-                className="px-3 py-2 border rounded"
+                className="px-3 py-2 border rounded text-gray-900 bg-white"
                 placeholder="target.field_name"
                 value={m.targetField}
                 onChange={(e) => setFusionMappings(prev => prev.map((x, i) => i === idx ? { ...x, targetField: e.target.value } : x))}

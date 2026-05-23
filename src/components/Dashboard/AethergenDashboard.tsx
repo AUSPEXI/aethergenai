@@ -427,7 +427,13 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
 
       case 'schema':
         if (!roleHas(role, 'design_schema')) return <UpgradeGate feature="Schema Designer" />;
-        return <SchemaDesigner />;
+        return (
+          <SchemaDesigner
+            onSchemaChange={(s) => setActiveSchema(s)}
+            initialSchema={activeSchema}
+            seedData={seedData}
+          />
+        );
 
       case 'pipelines':
         if (!seedPresent && !qaMode) return <GatePanel title="Pipelines need data" body="Upload a seed or create a sample dataset to configure multi-schema pipelines." />;

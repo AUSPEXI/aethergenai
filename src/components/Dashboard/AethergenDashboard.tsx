@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { getEntitlements } from '../../services/entitlementsClient';
 import { entitlementsToRole, roleHas } from '../../services/rbacService';
+import type { SchemaField } from '../../types/schema';
 import ReportingDashboard from '../ReportingDashboard/ReportingDashboard';
 import SyntheticDataGenerator from '../SyntheticDataGenerator/SyntheticDataGenerator';
 import SchemaDesigner from '../SchemaDesigner/SchemaDesigner';
@@ -140,6 +141,18 @@ class TabErrorBoundary extends React.Component<{ children: React.ReactNode }, { 
   }
 }
 
+const defaultSchema = {
+  id: 'automotive_v1',
+  targetVolume: 1000,
+  fields: [
+    { name: 'vin', type: 'string', privacyLevel: 'medium', constraints: { required: true, unique: true } },
+    { name: 'model', type: 'string', privacyLevel: 'low', constraints: { required: true, unique: false } },
+    { name: 'defect_score', type: 'number', privacyLevel: 'low', constraints: { required: false, unique: false } },
+    { name: 'timestamp', type: 'date', privacyLevel: 'low', constraints: { required: false, unique: false } }
+  ],
+  privacySettings: { epsilon: 0.5, syntheticRatio: 1.0 }
+} as any;
+
 const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLogout }) => {
   const [activeTab, setActiveTab] = useState<DashboardTab>('overview');
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -147,6 +160,9 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
   const [seedPresent, setSeedPresent] = useState<boolean>(false);
   const [qaMode, setQaMode] = useState<boolean>(false);
   const [showOnboard, setShowOnboard] = useState<boolean>(false);
+  // Seed data wired through from uploader to generator
+  const [seedData, setSeedData] = useState<any[]>([]);
+  const [activeSchema, setActiveSchema] = useState<any>(defaultSchema);
 
   useEffect(() => {
     let mounted = true;
@@ -213,22 +229,23 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
     ] : [])
   ];
 
-  const defaultSchema = {
-    id: 'automotive_v1',
-    targetVolume: 1000,
-    fields: [
-      { name: 'vin', type: 'string', privacyLevel: 'medium', constraints: { required: true, unique: true } },
-      { name: 'model', type: 'string', privacyLevel: 'low', constraints: { required: true, unique: false } },
-      { name: 'defect_score', type: 'number', privacyLevel: 'low', constraints: { required: false, unique: false } },
-      { name: 'timestamp', type: 'date', privacyLevel: 'low', constraints: { required: false, unique: false } }
-    ],
-    privacySettings: { epsilon: 0.5, syntheticRatio: 1.0 }
-  } as any;
-
-  function handleSeedUploaded(data: any[]) {
+  function handleSeedUploaded(data: any[], detected?: SchemaField[]) {
     if (Array.isArray(data) && data.length > 0) {
+      setSeedData(data);
       setSeedPresent(true);
       try { localStorage.setItem('aeg_seed_present', '1'); } catch {}
+      // Update schema fields from the detected schema so the generator uses
+      // field names and types that match the actual uploaded data.
+      if (detected && detected.length > 0) {
+        setActiveSchema((prev: any) => ({
+          ...prev,
+          fields: detected.map(f => ({
+            ...f,
+            privacyLevel: f.privacyLevel || 'medium',
+            constraints: f.constraints || { required: true, unique: false }
+          }))
+        }));
+      }
     }
   }
 
@@ -390,11 +407,22 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
 
       case 'generate':
         return (
-          <SyntheticDataGenerator
-            schema={defaultSchema}
-            seedData={[]}
-            onGenerationComplete={() => {}}
-          />
+          <>
+            {seedData.length === 0 && (
+              <div className="mb-4 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+                <p className="text-amber-800 font-medium">
+                  No seed data loaded yet.
+                  <button onClick={() => setActiveTab('upload')} className="ml-2 underline">Upload seed data first</button>
+                  {' '}or use the sample seed button on the Upload tab.
+                </p>
+              </div>
+            )}
+            <SyntheticDataGenerator
+              schema={activeSchema}
+              seedData={seedData}
+              onGenerationComplete={() => {}}
+            />
+          </>
         );
 
       case 'schema':
@@ -430,9 +458,9 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
       case 'upload':
         return (
           <SeedDataUploader
-            schema={defaultSchema}
-            onDataUploaded={(data)=>{ handleSeedUploaded(data); }}
-            onValidationComplete={()=>{}}
+            schema={activeSchema}
+            onDataUploaded={(data, detected) => { handleSeedUploaded(data, detected); setActiveTab('generate'); }}
+            onValidationComplete={() => {}}
           />
         );
 
@@ -442,8 +470,8 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
           const stubData = qaMode ? [{ vin: 'QA1', model: 'Demo', defect_score: 0.1, timestamp: new Date().toISOString() }] : [] as any[];
           return (
             <AdvancedBenchmarking
-              schema={defaultSchema}
-              seedData={stubData}
+              schema={activeSchema}
+              seedData={seedData.length > 0 ? seedData.slice(0, 200) : stubData}
               generatedData={stubData}
             />
           );
@@ -464,8 +492,8 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
         const stubData = qaMode ? [{ vin: 'QA1', model: 'Demo', defect_score: 0.1, timestamp: new Date().toISOString() }] : [] as any[];
         return (
           <ReportingDashboard
-            schema={defaultSchema}
-            seedData={stubData}
+            schema={activeSchema}
+            seedData={seedData.length > 0 ? seedData.slice(0, 200) : stubData}
             generatedData={stubData}
             benchmarkResults={[]}
           />

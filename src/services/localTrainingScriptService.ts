@@ -1,5 +1,6 @@
 export type LocalTaskType = 'auto' | 'classification' | 'regression';
 export type LocalBackend = 'sklearn' | 'pytorch' | 'tensorflow';
+export type GeoBaseModel = 'microsoft/Phi-3-mini-4k-instruct' | 'TinyLlama/TinyLlama-1.1B-Chat-v1.0' | 'meta-llama/Llama-3.2-3B-Instruct' | 'mistralai/Mistral-7B-Instruct-v0.2';
 
 export function buildLocalTrainingScript(options: {
   targetColumn: string;
@@ -146,4 +147,401 @@ function buildTorchScript(targetColumn: string, task: LocalTaskType, ts: string)
 
 function buildTfScript(targetColumn: string, task: LocalTaskType, ts: string): string {
   return `# AethergenAI Local Training Script (TensorFlow)\n# Generated: ${ts}\n\nimport argparse, json\nimport pandas as pd\nimport numpy as np\nfrom sklearn.model_selection import train_test_split\nimport tensorflow as tf\n\ntry:\n    import mlflow\n    MLFLOW_AVAILABLE = True\nexcept Exception:\n    MLFLOW_AVAILABLE = False\n\nparser = argparse.ArgumentParser()\nparser.add_argument('--input', required=True)\nparser.add_argument('--target', required=True)\nparser.add_argument('--task', default='auto', choices=['auto','classification','regression'])\nparser.add_argument('--epochs', type=int, default=10)\nparser.add_argument('--batch_size', type=int, default=128)\nparser.add_argument('--hidden', type=int, default=128)\nargs = parser.parse_args()\n\ndf = pd.read_csv(args.input) if args.input.lower().endswith('.csv') else pd.DataFrame(json.load(open(args.input)))\nif args.target not in df.columns: raise SystemExit('target not in columns')\n\nif args.task == 'auto':\n    task = 'regression' if pd.api.types.is_numeric_dtype(df[args.target]) and df[args.target].nunique()>20 else 'classification'\nelse:\n    task = args.task\n\nX = pd.get_dummies(df.drop(columns=[args.target]), drop_first=True)\ny_raw = df[args.target]\nif task=='classification': y = y_raw.astype('category').cat.codes.values.astype(np.int64)\nelse: y = y_raw.values.astype(np.float32)\n\nXtr, Xte, ytr, yte = train_test_split(X.values.astype(np.float32), y, test_size=0.2, random_state=42, stratify=(y if task=='classification' and len(np.unique(y))<50 else None))\n\ninput_dim = Xtr.shape[1]\nnum_classes = int(np.max(y)+1) if task=='classification' else 1\n\nmodel = tf.keras.Sequential([tf.keras.layers.Input(shape=(input_dim,)), tf.keras.layers.Dense(args.hidden, activation='relu'), tf.keras.layers.Dense(num_classes)])\nif task=='classification':\n    loss = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)\n    metrics=['accuracy']\nelse:\n    loss = 'mse'\n    metrics=['mse']\nmodel.compile(optimizer=tf.keras.optimizers.Adam(1e-3), loss=loss, metrics=metrics)\n\nh = model.fit(Xtr, ytr, validation_split=0.1, epochs=args.epochs, batch_size=args.batch_size, verbose=0)\nresults = model.evaluate(Xte, yte, verbose=0)\nprint(dict(zip(model.metrics_names, [float(r) for r in results])))\nmodel.save('model_tf')\n\nif MLFLOW_AVAILABLE:\n    try:\n        mlflow.set_experiment('aethergen_local')\n        with mlflow.start_run():\n            mlflow.log_artifact(args.input)\n            mlflow.log_text(str(dict(zip(model.metrics_names, [float(r) for r in results]))), 'metrics.txt')\n    except Exception as e:\n        print('MLflow logging skipped:', e)\n`;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// GEO SLM Fine-tuning Bundle
+// Produces a complete HuggingFace PEFT LoRA training kit for GEO SLM
+// ─────────────────────────────────────────────────────────────────────────────
+
+export interface GeoSLMParams {
+  baseModel: GeoBaseModel;
+  loraRank: number;
+  loraAlpha: number;
+  epochs: number;
+  learningRate: number;
+  batchSize: number;
+  maxLength: number;
+  maxTrainRows: number;
+  targetColumn: string;
+}
+
+export function buildGeoSLMBundle(params: GeoSLMParams): {
+  script: string;
+  config: string;
+  requirements: string;
+  readme: string;
+} {
+  return {
+    script: buildGeoSLMScript(params),
+    config: buildGeoSLMConfig(params),
+    requirements: buildGeoSLMRequirements(),
+    readme: buildGeoSLMReadme(params),
+  };
+}
+
+function buildGeoSLMScript(p: GeoSLMParams): string {
+  return `#!/usr/bin/env python3
+"""
+AethergenAI – GEO SLM Fine-tuning Script
+Task:  Predict optimization_action from GEO query context + brand metrics
+Input: geo_synthetic_data.csv (46 fields, 1M rows)
+Label: ${p.targetColumn}  →  publish_fact | update_entity | add_statistic | build_comparison | no_action
+
+Run:   python train_geo_slm.py --data geo_synthetic_data.csv --config config.yaml
+Colab: Upload this script + config.yaml + data CSV, then run in a T4 GPU notebook.
+"""
+
+import argparse
+import os
+import json
+import yaml
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import f1_score, classification_report
+
+import torch
+from transformers import (
+    AutoModelForCausalLM,
+    AutoTokenizer,
+    TrainingArguments,
+    BitsAndBytesConfig,
+)
+from peft import (
+    LoraConfig,
+    TaskType,
+    get_peft_model,
+    prepare_model_for_kbit_training,
+)
+from trl import SFTTrainer
+from datasets import Dataset
+
+# ── Config ────────────────────────────────────────────────────────────────────
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--data',   required=True, help='Path to GEO synthetic CSV')
+parser.add_argument('--config', default='config.yaml')
+parser.add_argument('--output', default='geo_slm_adapter')
+args = parser.parse_args()
+
+with open(args.config) as f:
+    cfg = yaml.safe_load(f)
+
+BASE_MODEL    = cfg.get('base_model',    '${p.baseModel}')
+LORA_RANK     = cfg.get('lora_rank',     ${p.loraRank})
+LORA_ALPHA    = cfg.get('lora_alpha',    ${p.loraAlpha})
+LORA_DROPOUT  = cfg.get('lora_dropout',  0.05)
+EPOCHS        = cfg.get('epochs',        ${p.epochs})
+LR            = cfg.get('learning_rate', ${p.learningRate})
+BATCH_SIZE    = cfg.get('batch_size',    ${p.batchSize})
+GRAD_ACCUM    = cfg.get('gradient_accumulation_steps', 4)
+MAX_LENGTH    = cfg.get('max_length',    ${p.maxLength})
+MAX_ROWS      = cfg.get('max_train_rows',${p.maxTrainRows})
+TARGET_COL    = cfg.get('target_column', '${p.targetColumn}')
+USE_4BIT      = cfg.get('use_4bit', True) and torch.cuda.is_available()
+
+LABEL_CLASSES = ['publish_fact', 'update_entity', 'add_statistic', 'build_comparison', 'no_action']
+
+# ── Data formatting ───────────────────────────────────────────────────────────
+
+def row_to_prompt(row: pd.Series) -> str:
+    """Convert a GEO data row into an instruction-style prompt."""
+    return (
+        "### GEO Optimisation Request\\n"
+        f"Query: {row.get('query_text', row.get('search_query', ''))}\\n"
+        f"Brand: {row.get('brand', '')}\\n"
+        f"AI Engine: {row.get('ai_engine', '')}\\n"
+        f"Semantic Cluster: {row.get('semantic_cluster', '')}\\n"
+        f"Content Score: {float(row.get('content_score', 0)):.1f}\\n"
+        f"SOV Score: {float(row.get('sov_score', 0)):.1f}\\n"
+        f"Competitive Density: {int(row.get('competitive_density', 0))}\\n"
+        f"Citation Trigger: {row.get('citation_trigger', 'none')}\\n"
+        f"Decay Status: {row.get('decay_status', '')}\\n"
+        f"Is Cited: {row.get('is_cited', False)}\\n"
+        f"Drift Detected: {row.get('drift_detected', False)}\\n"
+        "\\n### Recommended Optimisation Action:"
+    )
+
+def build_hf_dataset(df: pd.DataFrame) -> Dataset:
+    records = []
+    for _, row in df.iterrows():
+        label = row.get(TARGET_COL)
+        if pd.isna(label) or label not in LABEL_CLASSES:
+            continue
+        prompt = row_to_prompt(row)
+        records.append({'text': f"{prompt} {label}", 'prompt': prompt})
+    return Dataset.from_list(records)
+
+# ── Load data ─────────────────────────────────────────────────────────────────
+
+print(f"Loading {args.data} ...")
+df = pd.read_csv(args.data)
+df = df[df[TARGET_COL].isin(LABEL_CLASSES)].copy()
+print(f"  {len(df):,} rows with valid labels")
+print(f"  Distribution:\\n{df[TARGET_COL].value_counts().to_string()}")
+
+if len(df) > MAX_ROWS:
+    df = df.sample(MAX_ROWS, random_state=42)
+    print(f"  Sampled to {MAX_ROWS:,} rows")
+
+train_df, eval_df = train_test_split(
+    df, test_size=0.1, random_state=42, stratify=df[TARGET_COL]
+)
+print(f"  Train: {len(train_df):,}  |  Eval: {len(eval_df):,}")
+
+train_ds = build_hf_dataset(train_df)
+eval_ds  = build_hf_dataset(eval_df)
+
+# ── Model + LoRA ─────────────────────────────────────────────────────────────
+
+print(f"\\nLoading {BASE_MODEL} ...")
+bnb_config = BitsAndBytesConfig(
+    load_in_4bit=True,
+    bnb_4bit_quant_type='nf4',
+    bnb_4bit_compute_dtype=torch.bfloat16,
+    bnb_4bit_use_double_quant=True,
+) if USE_4BIT else None
+
+model = AutoModelForCausalLM.from_pretrained(
+    BASE_MODEL,
+    quantization_config=bnb_config,
+    device_map='auto' if torch.cuda.is_available() else 'cpu',
+    trust_remote_code=True,
+    torch_dtype=torch.bfloat16 if torch.cuda.is_available() else torch.float32,
+)
+tokenizer = AutoTokenizer.from_pretrained(BASE_MODEL, trust_remote_code=True)
+if tokenizer.pad_token is None:
+    tokenizer.pad_token = tokenizer.eos_token
+tokenizer.padding_side = 'right'
+
+if USE_4BIT:
+    model = prepare_model_for_kbit_training(model)
+
+lora_cfg = LoraConfig(
+    task_type=TaskType.CAUSAL_LM,
+    r=LORA_RANK,
+    lora_alpha=LORA_ALPHA,
+    lora_dropout=LORA_DROPOUT,
+    target_modules=['q_proj', 'v_proj', 'k_proj', 'o_proj'],
+    bias='none',
+)
+model = get_peft_model(model, lora_cfg)
+model.print_trainable_parameters()
+
+# ── Training ─────────────────────────────────────────────────────────────────
+
+training_args = TrainingArguments(
+    output_dir=args.output,
+    num_train_epochs=EPOCHS,
+    per_device_train_batch_size=BATCH_SIZE,
+    per_device_eval_batch_size=BATCH_SIZE,
+    gradient_accumulation_steps=GRAD_ACCUM,
+    warmup_ratio=0.03,
+    learning_rate=LR,
+    weight_decay=0.001,
+    bf16=USE_4BIT,
+    fp16=torch.cuda.is_available() and not USE_4BIT,
+    logging_steps=100,
+    eval_strategy='epoch',
+    save_strategy='epoch',
+    load_best_model_at_end=True,
+    report_to='none',
+)
+
+trainer = SFTTrainer(
+    model=model,
+    args=training_args,
+    train_dataset=train_ds,
+    eval_dataset=eval_ds,
+    tokenizer=tokenizer,
+    dataset_text_field='text',
+    max_seq_length=MAX_LENGTH,
+    packing=False,
+)
+
+print("\\nFine-tuning started ...")
+trainer.train()
+
+# ── Save adapter ──────────────────────────────────────────────────────────────
+
+trainer.model.save_pretrained(args.output)
+tokenizer.save_pretrained(args.output)
+print(f"\\nLoRA adapter saved to {args.output}/")
+
+# ── Quick evaluation ──────────────────────────────────────────────────────────
+
+print("\\nEvaluating on 500 held-out samples ...")
+model.eval()
+sample = eval_df.sample(min(500, len(eval_df)), random_state=42)
+preds, truths = [], []
+
+with torch.no_grad():
+    for _, row in sample.iterrows():
+        prompt = row_to_prompt(row)
+        inputs = tokenizer(prompt, return_tensors='pt', max_length=MAX_LENGTH, truncation=True)
+        inputs = {k: v.to(model.device) for k, v in inputs.items()}
+        out = model.generate(
+            **inputs, max_new_tokens=8, do_sample=False,
+            pad_token_id=tokenizer.eos_token_id
+        )
+        decoded = tokenizer.decode(
+            out[0][inputs['input_ids'].shape[1]:], skip_special_tokens=True
+        ).strip().split()[0] if out[0].shape[0] > inputs['input_ids'].shape[1] else ''
+        preds.append(decoded if decoded in LABEL_CLASSES else 'no_action')
+        truths.append(row[TARGET_COL])
+
+f1 = f1_score(truths, preds, average='macro', labels=LABEL_CLASSES, zero_division=0)
+print(f"\\nF1 (macro): {f1:.4f}")
+print(classification_report(truths, preds, labels=LABEL_CLASSES, zero_division=0))
+
+results = {
+    'base_model': BASE_MODEL, 'lora_rank': LORA_RANK, 'epochs': EPOCHS,
+    'f1_macro': round(f1, 4), 'train_rows': len(train_df), 'eval_rows': len(eval_df),
+}
+with open(os.path.join(args.output, 'eval_results.json'), 'w') as f:
+    json.dump(results, f, indent=2)
+print(f"Results: {results}")
+print(f"\\nDone. Load adapter with:")
+print(f"  from peft import PeftModel")
+print(f"  model = PeftModel.from_pretrained(base_model, '{args.output}')")
+`;
+}
+
+function buildGeoSLMConfig(p: GeoSLMParams): string {
+  return `# AethergenAI GEO SLM Training Configuration
+# Edit these values before running train_geo_slm.py
+
+base_model: "${p.baseModel}"
+target_column: "${p.targetColumn}"
+
+# LoRA parameters
+lora_rank: ${p.loraRank}
+lora_alpha: ${p.loraAlpha}
+lora_dropout: 0.05
+
+# Training
+epochs: ${p.epochs}
+learning_rate: ${p.learningRate}
+batch_size: ${p.batchSize}
+gradient_accumulation_steps: 4
+max_length: ${p.maxLength}
+max_train_rows: ${p.maxTrainRows}
+
+# Hardware
+use_4bit: true        # set false if bitsandbytes not available
+
+# Optional
+use_wandb: false
+run_name: geo-slm-finetune
+`;
+}
+
+function buildGeoSLMRequirements(): string {
+  return `# AethergenAI GEO SLM requirements
+torch>=2.1.0
+transformers>=4.40.0
+peft>=0.10.0
+trl>=0.8.6
+datasets>=2.18.0
+accelerate>=0.27.0
+bitsandbytes>=0.43.0
+scikit-learn>=1.3.0
+pandas>=2.0.0
+numpy>=1.24.0
+pyyaml>=6.0
+`;
+}
+
+function buildGeoSLMReadme(p: GeoSLMParams): string {
+  return `# GEO SLM Fine-tuning — AethergenAI
+
+## What this does
+Fine-tunes **${p.baseModel}** on GEO Platform synthetic data using LoRA (PEFT).
+
+**Task:** Given a GEO query + brand metrics, predict the best optimisation action.
+**Label field:** \`${p.targetColumn}\`
+**Classes:** publish_fact | update_entity | add_statistic | build_comparison | no_action
+
+---
+
+## Files
+| File | Purpose |
+|---|---|
+| \`train_geo_slm.py\` | Main fine-tuning script |
+| \`config.yaml\` | All hyperparameters — edit here |
+| \`requirements.txt\` | Python dependencies |
+| \`geo_synthetic_data.csv\` | Your 1M row training data (download from AethergenAI) |
+
+---
+
+## Quick start (Google Colab — free T4 GPU)
+
+\`\`\`python
+# In a Colab cell:
+!pip install -r requirements.txt
+!python train_geo_slm.py --data geo_synthetic_data.csv --config config.yaml
+\`\`\`
+
+Upload all 4 files to your Colab session before running.
+
+---
+
+## Quick start (local GPU, 8GB+ VRAM)
+
+\`\`\`bash
+python -m venv .venv
+source .venv/bin/activate       # Windows: .venv\\Scripts\\activate
+pip install -r requirements.txt
+python train_geo_slm.py --data geo_synthetic_data.csv --config config.yaml
+\`\`\`
+
+---
+
+## Using the trained adapter
+
+\`\`\`python
+from transformers import AutoModelForCausalLM, AutoTokenizer
+from peft import PeftModel
+import torch
+
+base = AutoModelForCausalLM.from_pretrained("${p.baseModel}", torch_dtype=torch.bfloat16)
+model = PeftModel.from_pretrained(base, "geo_slm_adapter")
+tokenizer = AutoTokenizer.from_pretrained("${p.baseModel}")
+
+prompt = """### GEO Optimisation Request
+Query: best AI SEO tools for enterprise
+Brand: AcmeCloud
+AI Engine: ChatGPT
+Semantic Cluster: enterprise-trusted
+Content Score: 62.5
+SOV Score: 41.3
+Competitive Density: 4
+Citation Trigger: case_study
+Decay Status: decaying
+Is Cited: False
+Drift Detected: True
+
+### Recommended Optimisation Action:"""
+
+inputs = tokenizer(prompt, return_tensors="pt")
+out = model.generate(**inputs, max_new_tokens=8, do_sample=False)
+print(tokenizer.decode(out[0][inputs["input_ids"].shape[1]:], skip_special_tokens=True))
+\`\`\`
+
+---
+
+## Phase 2 — augment with real Gemini data
+
+Once the base SLM is fine-tuned, collect real GEO queries via the Gemini API
+(with Google Search grounding enabled) and fine-tune again on the augmented dataset.
+This replaces synthetic optimization_action labels with real observed citation outcomes.
+
+\`\`\`python
+# Gemini grounded collection (see consultancy repo collect-geo-data.ts)
+tools = [{"googleSearch": {}}]
+response = genai_client.generate_content(query, tools=tools)
+citations = response.candidates[0].grounding_metadata.grounding_chunks
+\`\`\`
+`;
 }

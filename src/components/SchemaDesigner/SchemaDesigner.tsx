@@ -372,10 +372,10 @@ const SchemaDesigner: React.FC<SchemaDesignerProps> = ({ onSchemaChange, initial
                   <label className="block text-sm font-medium text-gray-700 mb-1">Required</label>
                   <input
                     type="checkbox"
-                    checked={field.constraints.required || false}
-                    onChange={(e) => updateField(index, { 
-                      ...field, 
-                      constraints: { ...field.constraints, required: e.target.checked } 
+                    checked={field.constraints?.required || false}
+                    onChange={(e) => updateField(index, {
+                      ...field,
+                      constraints: { ...field.constraints, required: e.target.checked }
                     })}
                     className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                   />

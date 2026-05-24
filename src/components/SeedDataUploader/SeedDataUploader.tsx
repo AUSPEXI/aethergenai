@@ -101,7 +101,7 @@ const SeedDataUploader: React.FC<SeedDataUploaderProps> = ({
     }
 
     // Check for required fields
-    const requiredFields = schema.fields.filter(field => field.constraints.required);
+    const requiredFields = schema.fields.filter(field => field.constraints?.required);
     const sample = data[0];
     
     requiredFields.forEach(field => {
@@ -132,7 +132,7 @@ const SeedDataUploader: React.FC<SeedDataUploaderProps> = ({
     });
 
     // Check for unique constraints
-    schema.fields.filter(field => field.constraints.unique).forEach(field => {
+    schema.fields.filter(field => field.constraints?.unique).forEach(field => {
       const values = data.map(row => row[field.name]).filter(v => v !== undefined);
       const uniqueValues = new Set(values);
       if (uniqueValues.size !== values.length) {
@@ -1071,10 +1071,10 @@ const SeedDataUploader: React.FC<SeedDataUploaderProps> = ({
                     <div>AI Model: {field.aiModel}</div>
                   )}
                   <div>Privacy: {field.privacyLevel}</div>
-                  {field.constraints.required && (
+                  {field.constraints?.required && (
                     <div className="text-blue-600">Required</div>
                   )}
-                  {field.constraints.unique && (
+                  {field.constraints?.unique && (
                     <div className="text-green-600">Unique</div>
                   )}
                 </div>

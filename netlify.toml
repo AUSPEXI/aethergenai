@@ -108,6 +108,11 @@
   to = "/.netlify/functions/processData"
   status = 200
 
+[[redirects]]
+  from = "/api/store-schema"
+  to = "/.netlify/functions/store-schema"
+  status = 200
+
 # Serve prerendered blog pages and normalize trailing slashes (BEFORE SPA fallback)
 [[redirects]]
   from = "/blog/:slug"

@@ -349,7 +349,15 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
             if (startRef.current) setElapsedMs(Date.now() - startRef.current);
           } else if (msg.type === 'done') {
             const { sample, jsonText, csvText, elapsedMs, generated } = msg;
-            setGeneratedData(sample);
+            // Parse full records for the in-memory pipeline (cap at 10k to keep UI responsive)
+            let fullRecords: any[] = sample;
+            try {
+              if (jsonText) {
+                const parsed = JSON.parse(jsonText);
+                fullRecords = Array.isArray(parsed) ? parsed.slice(0, 10000) : sample;
+              }
+            } catch (_) { fullRecords = sample; }
+            setGeneratedData(fullRecords);
             // Build blobs on main thread for reliable downloads
             try {
               const jBlob = new Blob([jsonText || '[]'], { type: 'application/json' });
@@ -409,7 +417,7 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
             setElapsedMs(elapsedMs || (startRef.current ? Date.now() - startRef.current : 0));
             const finalResult: SyntheticDataResult = {
               success: true,
-              records: sample,
+              records: fullRecords,
               metrics: {
                 privacyScore: qualityMetrics.privacyScore,
                 utilityScore: qualityMetrics.utilityScore,
@@ -447,10 +455,10 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
         if (i % 2 === 0) await new Promise(r => setTimeout(r, 0));
       }
       
+      const pipelineRecords = allRecords.slice(0, 10000);
       const finalResult: SyntheticDataResult = {
         success: true,
-        // Pass only the sample to downstream UI to keep app responsive
-        records: sampleRecords,
+        records: pipelineRecords,
         metrics: {
           privacyScore: qualityMetrics.privacyScore,
           utilityScore: qualityMetrics.utilityScore,
@@ -458,9 +466,9 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
           recordsPerSecond: Math.round(allRecords.length / ((Date.now() - startTime) / 1000))
         }
       };
-      
+
       onGenerationComplete(finalResult);
-      setGeneratedData(sampleRecords); // keep UI sample only
+      setGeneratedData(pipelineRecords);
 
       // Generate ZK proof once after completion
       await generateZKProofForSyntheticData();

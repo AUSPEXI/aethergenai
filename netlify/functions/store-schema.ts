@@ -2,8 +2,8 @@ import type { Handler } from '@netlify/functions';
 import { createClient } from '@supabase/supabase-js';
 import crypto from 'crypto';
 
-const url = process.env.SUPABASE_URL as string;
-const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY as string;
+const url = (process.env.SUPABASE_URL || process.env.SUPABASE_DATABASE_URL) as string;
+const serviceKey = (process.env.SUPABASE_SERVICE_ROLE_KEY) as string;
 
 export const handler: Handler = async (event) => {
   if (event.httpMethod !== 'POST') return { statusCode: 405, body: 'Method Not Allowed' };

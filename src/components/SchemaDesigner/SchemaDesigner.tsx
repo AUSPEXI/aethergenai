@@ -451,7 +451,7 @@ const SchemaDesigner: React.FC<SchemaDesignerProps> = ({ onSchemaChange, initial
           </div>
         )}
 
-        <div className="mt-4 flex items-center gap-3">
+        <div className="mt-4 flex items-center gap-3 flex-wrap">
           <button
             onClick={saveSchemaToSupabase}
             className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
@@ -459,6 +459,30 @@ const SchemaDesigner: React.FC<SchemaDesignerProps> = ({ onSchemaChange, initial
             {saveStatus === 'saving' ? 'Saving...' : 'Save to Supabase'}
           </button>
           {saveStatus === 'saved' && <span className="text-green-600 font-medium">✓ Saved to Supabase</span>}
+          {saveStatus === 'error' && <span className="text-red-600 font-medium">✗ Save failed</span>}
+          <label className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 cursor-pointer">
+            Import JSON
+            <input type="file" accept=".json" className="hidden" onChange={(e) => {
+              const file = e.target.files?.[0]; if (!file) return;
+              const reader = new FileReader();
+              reader.onload = (ev) => {
+                try {
+                  const parsed = JSON.parse(ev.target?.result as string);
+                  setSchema(prev => ({
+                    ...prev,
+                    name: parsed.name || prev.name,
+                    description: parsed.description || prev.description,
+                    domain: parsed.domain || prev.domain,
+                    fields: parsed.fields || prev.fields,
+                    targetVolume: parsed.targetVolume || prev.targetVolume,
+                    privacySettings: parsed.privacySettings || prev.privacySettings,
+                  }));
+                } catch { alert('Invalid JSON file'); }
+              };
+              reader.readAsText(file);
+              e.target.value = '';
+            }} />
+          </label>
           {saveStatus === 'error' && <span className="text-red-600 font-medium">✗ Save failed</span>}
           <button
             onClick={() => {

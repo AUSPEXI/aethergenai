@@ -162,6 +162,7 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
   const [showOnboard, setShowOnboard] = useState<boolean>(false);
   // Seed data wired through from uploader to generator
   const [seedData, setSeedData] = useState<any[]>([]);
+  const [generatedData, setGeneratedData] = useState<any[]>([]);
   const [activeSchema, setActiveSchema] = useState<any>(defaultSchema);
 
   // Load most recently saved schema from Supabase on mount
@@ -436,7 +437,11 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
             <SyntheticDataGenerator
               schema={activeSchema}
               seedData={seedData}
-              onGenerationComplete={() => {}}
+              onGenerationComplete={(result) => {
+                if (result.success && result.records?.length > 0) {
+                  setGeneratedData(result.records);
+                }
+              }}
             />
           </>
         );
@@ -456,14 +461,38 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
         if (!roleHas(role, 'manage_pipelines')) return <UpgradeGate feature="Pipelines" />;
         return <PipelineManager schema={activeSchema} seedData={seedData} />;
 
-      case 'clean':
+      case 'clean': {
         if (!roleHas(role, 'run_privacy')) return <UpgradeGate feature="Data Cleaner" />;
-        return <DataCleaner mode="seed" schema={activeSchema} data={seedData} onCleaned={(cleaned) => setSeedData(cleaned)} />;
+        const cleanTarget = generatedData.length > 0 ? generatedData : seedData;
+        const cleanMode = generatedData.length > 0 ? 'synthetic' : 'seed';
+        return (
+          <div className="space-y-4">
+            <div className="flex items-center gap-3 p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-800">
+              <span>Cleaning: <strong>{generatedData.length > 0 ? `${generatedData.length.toLocaleString()} generated records` : `${seedData.length} seed records`}</strong></span>
+              {generatedData.length > 0 && seedData.length > 0 && (
+                <button
+                  onClick={() => setGeneratedData([])}
+                  className="ml-auto text-xs underline text-blue-600 hover:text-blue-800"
+                >Switch to seed data</button>
+              )}
+            </div>
+            <DataCleaner
+              mode={cleanMode as any}
+              schema={activeSchema}
+              data={cleanTarget}
+              onCleaned={(cleaned) => {
+                if (generatedData.length > 0) setGeneratedData(cleaned);
+                else setSeedData(cleaned);
+              }}
+            />
+          </div>
+        );
+      }
 
       case 'privacy':
         if (!seedPresent && !qaMode) return <GatePanel title="Privacy metrics need data" body="Upload a seed or generate a sample so we can compute privacy/utility metrics." />;
         if (!roleHas(role, 'run_privacy')) return <UpgradeGate feature="Privacy Metrics" />;
-        return <PrivacyMetrics seedData={seedData} syntheticData={[]} privacySettings={{ syntheticRatio: activeSchema.privacySettings?.syntheticRatio ?? 1, epsilon: activeSchema.privacySettings?.epsilon ?? 0.5 }} onPrivacySettingsChange={(s) => setActiveSchema((prev: any) => ({ ...prev, privacySettings: { ...prev.privacySettings, ...s } }))} />;
+        return <PrivacyMetrics seedData={seedData} syntheticData={generatedData} privacySettings={{ syntheticRatio: activeSchema.privacySettings?.syntheticRatio ?? 1, epsilon: activeSchema.privacySettings?.epsilon ?? 0.5 }} onPrivacySettingsChange={(s) => setActiveSchema((prev: any) => ({ ...prev, privacySettings: { ...prev.privacySettings, ...s } }))} />;
 
       case 'risk':
         if (!seedPresent && !qaMode) return <GatePanel title="Risk assessment needs data" body="Upload a seed or generate a sample to run risk analysis." />;
@@ -494,7 +523,7 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
             <AdvancedBenchmarking
               schema={activeSchema}
               seedData={seedData.length > 0 ? seedData.slice(0, 200) : stubData}
-              generatedData={stubData}
+              generatedData={generatedData.length > 0 ? generatedData.slice(0, 200) : stubData}
             />
           );
         }
@@ -516,7 +545,7 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
           <ReportingDashboard
             schema={activeSchema}
             seedData={seedData.length > 0 ? seedData.slice(0, 200) : stubData}
-            generatedData={stubData}
+            generatedData={generatedData.length > 0 ? generatedData.slice(0, 200) : stubData}
             benchmarkResults={[]}
           />
         );

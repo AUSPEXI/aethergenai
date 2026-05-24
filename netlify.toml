@@ -43,7 +43,37 @@
   to = "/.netlify/functions/stripe-webhook"
   status = 200
 
-# General API redirects (must come BEFORE the catch-all)
+[[redirects]]
+  from = "/api/store-schema"
+  to = "/.netlify/functions/store-schema"
+  status = 200
+
+[[redirects]]
+  from = "/api/verify-zkp"
+  to = "/.netlify/functions/verifyZKP"
+  status = 200
+
+[[redirects]]
+  from = "/api/process-feedback"
+  to = "/.netlify/functions/processMetaLearning"
+  status = 200
+
+[[redirects]]
+  from = "/api/upload-marketplace"
+  to = "/.netlify/functions/uploadToMarketplace"
+  status = 200
+
+[[redirects]]
+  from = "/api/fetch-data"
+  to = "/.netlify/functions/fetchData"
+  status = 200
+
+[[redirects]]
+  from = "/api/process-data"
+  to = "/.netlify/functions/processData"
+  status = 200
+
+# General API catch-all (must come AFTER all specific /api/* routes)
 [[redirects]]
   from = "/api/:resource"
   to = "/.netlify/functions/api?resource=:resource"
@@ -80,37 +110,6 @@
 [[redirects]]
   from = "/trigger-databricks-upload"
   to = "/.netlify/functions/enhanced-marketplace-upload"
-  status = 200
-
-# Additional API endpoints for SDSP features
-[[redirects]]
-  from = "/api/verify-zkp"
-  to = "/.netlify/functions/verifyZKP"
-  status = 200
-
-[[redirects]]
-  from = "/api/process-feedback"
-  to = "/.netlify/functions/processMetaLearning"
-  status = 200
-
-[[redirects]]
-  from = "/api/upload-marketplace"
-  to = "/.netlify/functions/uploadToMarketplace"
-  status = 200
-
-[[redirects]]
-  from = "/api/fetch-data"
-  to = "/.netlify/functions/fetchData"
-  status = 200
-
-[[redirects]]
-  from = "/api/process-data"
-  to = "/.netlify/functions/processData"
-  status = 200
-
-[[redirects]]
-  from = "/api/store-schema"
-  to = "/.netlify/functions/store-schema"
   status = 200
 
 # Serve prerendered blog pages and normalize trailing slashes (BEFORE SPA fallback)

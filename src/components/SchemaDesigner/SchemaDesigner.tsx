@@ -43,14 +43,20 @@ const SchemaDesigner: React.FC<SchemaDesignerProps> = ({ onSchemaChange, initial
     onSchemaChange(schema);
   }, [schema, onSchemaChange]);
 
+  const [saveStatus, setSaveStatus] = useState<'idle'|'saving'|'saved'|'error'>('idle');
+
   const saveToSupabase = async (s: typeof schema) => {
     if (!supabase) return;
     if (!s.name && s.fields.length === 0) return;
+    setSaveStatus('saving');
     const schemaJson = { name: s.name, description: s.description, domain: s.domain, fields: s.fields, targetVolume: s.targetVolume, privacySettings: s.privacySettings };
     const schemaString = JSON.stringify(schemaJson);
     const schemaHash = btoa(schemaString).slice(0, 64);
-    const { data } = await supabase.from('ae_schemas').upsert({ id: s.id !== 'automotive_v1' ? s.id : undefined, name: s.name || 'Untitled Schema', description: s.description || '', schema_json: schemaJson, schema_hash: schemaHash }, { onConflict: 'id' }).select('id').single();
+    const { data, error } = await supabase.from('ae_schemas').upsert({ id: s.id !== 'automotive_v1' ? s.id : undefined, name: s.name || 'Untitled Schema', description: s.description || '', schema_json: schemaJson, schema_hash: schemaHash }, { onConflict: 'id' }).select('id').single();
+    if (error) { setSaveStatus('error'); return; }
     if (data?.id && data.id !== s.id) setSchema(prev => ({ ...prev, id: data.id }));
+    setSaveStatus('saved');
+    setTimeout(() => setSaveStatus('idle'), 3000);
   };
 
   // Debounced autosave
@@ -450,8 +456,10 @@ const SchemaDesigner: React.FC<SchemaDesignerProps> = ({ onSchemaChange, initial
             onClick={saveSchemaToSupabase}
             className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
           >
-            Save to Supabase
+            {saveStatus === 'saving' ? 'Saving...' : 'Save to Supabase'}
           </button>
+          {saveStatus === 'saved' && <span className="text-green-600 font-medium">✓ Saved to Supabase</span>}
+          {saveStatus === 'error' && <span className="text-red-600 font-medium">✗ Save failed</span>}
           <button
             onClick={() => {
               const content = JSON.stringify({

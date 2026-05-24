@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { SchemaField, DataSchema } from '../../types/schema';
+import { supabase } from '../../services/supabaseClient';
 
 interface SchemaDesignerProps {
   onSchemaChange: (schema: DataSchema) => void;
@@ -42,43 +43,25 @@ const SchemaDesigner: React.FC<SchemaDesignerProps> = ({ onSchemaChange, initial
     onSchemaChange(schema);
   }, [schema, onSchemaChange]);
 
+  const saveToSupabase = async (s: typeof schema) => {
+    if (!supabase) return;
+    if (!s.name && s.fields.length === 0) return;
+    const schemaJson = { name: s.name, description: s.description, domain: s.domain, fields: s.fields, targetVolume: s.targetVolume, privacySettings: s.privacySettings };
+    const schemaString = JSON.stringify(schemaJson);
+    const schemaHash = btoa(schemaString).slice(0, 64);
+    const { data } = await supabase.from('ae_schemas').upsert({ id: s.id !== 'automotive_v1' ? s.id : undefined, name: s.name || 'Untitled Schema', description: s.description || '', schema_json: schemaJson, schema_hash: schemaHash }, { onConflict: 'id' }).select('id').single();
+    if (data?.id && data.id !== s.id) setSchema(prev => ({ ...prev, id: data.id }));
+  };
+
   // Debounced autosave
   useEffect(() => {
-    const controller = new AbortController();
     const timeout = setTimeout(async () => {
       try {
-        if (offline) return; // offline mode: skip autosave
-        if (!schema.name && schema.fields.length === 0) return; // avoid saving empty drafts
-        await fetch('/api/store-schema', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            id: schema.id,
-            name: schema.name || 'Untitled Schema',
-            description: schema.description || '',
-            schema_json: {
-              name: schema.name,
-              description: schema.description,
-              domain: schema.domain,
-              fields: schema.fields,
-              targetVolume: schema.targetVolume,
-              privacySettings: schema.privacySettings
-            }
-          }),
-          signal: controller.signal
-        }).then(async (r) => {
-          if (!r.ok) return;
-          const js = await r.json().catch(() => null);
-          if (js?.id && js.id !== schema.id) setSchema(prev => ({ ...prev, id: js.id }));
-        });
-      } catch {
-        /* ignore autosave errors */
-      }
+        if (offline) return;
+        await saveToSupabase(schema);
+      } catch { /* ignore autosave errors */ }
     }, 600);
-    return () => {
-      controller.abort();
-      clearTimeout(timeout);
-    };
+    return () => clearTimeout(timeout);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [schema.name, schema.description, schema.domain, schema.fields, schema.targetVolume, schema.privacySettings, offline]);
 
@@ -137,26 +120,8 @@ const SchemaDesigner: React.FC<SchemaDesignerProps> = ({ onSchemaChange, initial
 
   const saveSchemaToSupabase = async () => {
     try {
-      const res = await fetch('/api/store-schema', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: schema.name || 'Untitled Schema',
-          description: schema.description || '',
-          schema_json: {
-            name: schema.name,
-            description: schema.description,
-            domain: schema.domain,
-            fields: schema.fields,
-            targetVolume: schema.targetVolume,
-            privacySettings: schema.privacySettings
-          }
-        })
-      });
-      if (!res.ok) throw new Error(`store-schema failed: ${res.status}`);
-      const json = await res.json();
-      if (json?.id) {
-        setSchema(prev => ({ ...prev, id: json.id }));
+      await saveToSupabase(schema);
+      {
       }
     } catch (e) {
       console.warn('Schema save failed', e);

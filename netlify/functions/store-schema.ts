@@ -7,7 +7,7 @@ const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY as string;
 
 export const handler: Handler = async (event) => {
   if (event.httpMethod !== 'POST') return { statusCode: 405, body: 'Method Not Allowed' };
-  if (!url || !serviceKey) return { statusCode: 500, body: 'Missing Supabase service config' };
+  if (!url || !serviceKey) return { statusCode: 500, body: JSON.stringify({ error: 'Missing Supabase service config', hasUrl: !!url, hasKey: !!serviceKey, urlPrefix: url ? url.slice(0, 30) : null }) };
 
   try {
     const payload = JSON.parse(event.body || '{}');

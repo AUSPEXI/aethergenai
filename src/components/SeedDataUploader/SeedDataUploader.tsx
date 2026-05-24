@@ -655,8 +655,8 @@ const SeedDataUploader: React.FC<SeedDataUploaderProps> = ({
                 const GEO_POOLS: Record<string, any[]> = {
                   brand: ['AcmeCloud', 'DataPulse', 'NexusSEO', 'VantageAI', 'OmniSearch', 'ClearSignal', 'TrustLayer', 'ContentEdge'],
                   domain: ['acmecloud.io', 'datapulse.com', 'nexusseo.co', 'vantageai.com', 'omnisearch.io', 'clearsignal.co', 'trustlayer.com', 'contentedge.io'],
-                  ai_engine: ['ChatGPT', 'Perplexity', 'Claude', 'Gemini'],
-                  model_version: ['gpt-4o-2025-03', 'gpt-4o-2024-11', 'sonar-large-online', 'sonar-pro', 'claude-3-5-sonnet', 'claude-3-opus', 'gemini-1.5-pro', 'gemini-2.0-flash'],
+                  ai_engine: ['ChatGPT', 'ChatGPT', 'Perplexity', 'Claude', 'Claude', 'Gemini'],
+                  // model_version is engine-correlated — handled below via ENGINE_MODELS
                   sentiment: ['Positive', 'Positive', 'Positive', 'Neutral', 'Neutral', 'Negative'],
                   query_intent: ['informational', 'informational', 'commercial', 'navigational', 'transactional'],
                   semantic_cluster: ['enterprise-trusted', 'cost-leader', 'thought-leader', 'technical-authority', 'brand-advocate', 'challenger', 'niche-specialist'],
@@ -667,7 +667,57 @@ const SeedDataUploader: React.FC<SeedDataUploaderProps> = ({
                   competitor_name: ['RivalSoft', 'SearchMind', 'AltaRank', 'PivotSEO', 'CoreSignal', 'MetaSearch', 'PulseAI'],
                   category: ['AI Search Visibility', 'Brand Monitoring', 'Content Performance', 'Competitor Analysis', 'Citation Tracking', 'Sentiment Analysis'],
                   search_query: ['generative AI search', 'LLM citation optimization', 'brand visibility in AI', 'content scoring for GPT', 'semantic anchor strategy', 'entity density optimization', 'AI-first SEO', 'zero-click content strategy', 'perplexity optimization', 'AI traffic attribution'],
-                  trend: ['+1.2%', '+3.4%', '+7.1%', '-0.8%', '-2.3%', '-5.1%', '+0.5%', '+4.9%'],
+                  trend: ['rising', 'rising', 'stable', 'stable', 'stable', 'falling'],
+                  // 6 new SLM training fields
+                  optimization_action: ['publish_fact', 'publish_fact', 'update_entity', 'add_statistic', 'build_comparison', 'no_action'],
+                  citation_trigger: ['statistic', 'statistic', 'case_study', 'technical_spec', 'comparison', 'price_anchor', 'none'],
+                  query_text: [
+                    'Which AI SEO tools give the best citation results in ChatGPT?',
+                    'How do I improve my brand visibility in Perplexity search results?',
+                    'What content types get cited most often by Gemini?',
+                    'Best practices for entity density in AI-first content strategies',
+                    'How does semantic clustering affect share of voice in LLM responses?',
+                    'Which brands lead in AI search citation frequency for enterprise software?',
+                    'How to detect content decay before it affects AI citations?',
+                    'What statistical anchors improve content scoring for AI engines?',
+                    'How does zero-click content strategy affect generative engine visibility?',
+                    'Which competitor analysis tools track AI citation decay in real time?',
+                    'How to optimise inverted pyramid structure for AI-first indexing?',
+                    'What triggers a trojan horse citation opportunity in AI search?',
+                    'How does brand SOV change across ChatGPT vs Claude vs Gemini?',
+                    'What is the best content type for increasing AI traffic attribution?',
+                    'How does drift detection work in GEO platform monitoring?',
+                    'Which GEO metrics predict model collapse risk for synthetic datasets?',
+                    'How do competing citations affect share of voice in LLM responses?',
+                    'What role does sentiment play in AI engine brand citations?',
+                  ],
+                  fact_text: [
+                    'Brands that include verified statistics in content see 42% higher citation frequency in AI engine responses.',
+                    'Entity density above 0.8 correlates with a 3x increase in LLM citation probability for informational queries.',
+                    'Content published within 90 days receives 67% more AI citations than content older than 12 months.',
+                    'Inverted pyramid structure increases AI citation rank by an average of 2.1 positions in Perplexity responses.',
+                    'Competitor SOV decays at an average rate of 8.3% per quarter without active content updates.',
+                    'Adding price anchor data to product pages increases commercial query citation by 55%.',
+                    'Technical specification content drives 3.8x more citations in Claude responses vs general blog posts.',
+                    'Case study content earns citation in AI responses at 2.9x the rate of opinion-based articles.',
+                    'Brands with entropy scores above 75 are 40% more likely to be cited as the leading authority.',
+                    'Zero-click content optimised for featured snippets sees 28% cross-over citation benefit in AI engines.',
+                    'Statistical anchor content reduces model collapse risk by preventing repetitive citation patterns.',
+                    'Semantic cluster alignment with enterprise-trusted positioning increases SOV by 18 percentage points.',
+                    'AI traffic attribution grows 4.2x faster for brands that update content monthly vs quarterly.',
+                    'Drift detection triggers occur 72% more frequently during competitor content release windows.',
+                    'Brands appearing in comparison content are cited 2.2x more often for transactional intent queries.',
+                    'SOV scores above 60 in ChatGPT correlate with 89% positive sentiment in brand mentions.',
+                    'Content with z-scores beyond ±2.5 represent outlier citation opportunities worth prioritising.',
+                    'Trojan horse opportunities appear most in stale competitor content older than 180 days.',
+                  ],
+                };
+                // Engine-to-model mapping — ensures model_version always matches ai_engine (all 20 models)
+                const ENGINE_MODELS: Record<string, string[]> = {
+                  ChatGPT:   ['gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo', 'gpt-4', 'gpt-3.5-turbo'],
+                  Perplexity:['sonar-pro', 'sonar', 'sonar-reasoning-pro', 'sonar-reasoning', 'sonar-medium'],
+                  Claude:    ['claude-3-5-sonnet', 'claude-3-5-haiku', 'claude-3-opus', 'claude-3-sonnet', 'claude-3-haiku'],
+                  Gemini:    ['gemini-2.0-flash', 'gemini-1.5-pro', 'gemini-1.5-flash', 'gemini-1.0-pro', 'gemini-ultra'],
                 };
 
                 const pick = (pool: any[]) => pool[Math.floor(Math.random() * pool.length)];
@@ -701,6 +751,7 @@ const SeedDataUploader: React.FC<SeedDataUploaderProps> = ({
                       if (f.name === 'decay_score') { row[f.name] = rndScore(decayStatus === 'healthy' ? 10 : decayStatus === 'decaying' ? 40 : 70, decayStatus === 'healthy' ? 40 : decayStatus === 'decaying' ? 70 : 95); return; }
                       if (f.name === 'citation_rank') { row[f.name] = row['is_cited'] !== false ? Math.floor(Math.random() * 10) + 1 : null; return; }
                       if (f.name === 'competing_citations_count') { row[f.name] = Math.floor(Math.random() * 6); return; }
+                      if (f.name === 'competitive_density') { row[f.name] = Math.floor(Math.random() * 9); return; }
                       if (f.name === 'z_score') { row[f.name] = Math.round((Math.random() * 6 - 3) * 100) / 100; return; }
                       if (f.name === 'ai_traffic') { row[f.name] = Math.floor(Math.random() * 14950) + 50; return; }
                       if (f.name === 'ai_citations') { row[f.name] = Math.floor(Math.random() * 500); return; }
@@ -709,8 +760,21 @@ const SeedDataUploader: React.FC<SeedDataUploaderProps> = ({
                       return;
                     }
                     // String fields — use GEO pools or construct values
-                    if (GEO_POOLS[f.name]) { row[f.name] = pick(GEO_POOLS[f.name]); return; }
                     if (f.name === 'id') { row[f.name] = `geo_${String(i + 1).padStart(6, '0')}`; return; }
+                    if (f.name === 'row_id') {
+                      // UUID v4
+                      row[f.name] = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+                        const r = Math.random() * 16 | 0;
+                        return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+                      }); return;
+                    }
+                    if (f.name === 'model_version') {
+                      // Engine-correlated — picks from the correct 5-model group
+                      const engine = row['ai_engine'] as string;
+                      const pool = ENGINE_MODELS[engine] || ENGINE_MODELS['ChatGPT'];
+                      row[f.name] = pick(pool); return;
+                    }
+                    if (GEO_POOLS[f.name]) { row[f.name] = pick(GEO_POOLS[f.name]); return; }
                     if (f.name === 'domain') { row[f.name] = domains[brandIdx]; return; }
                     if (f.name === 'page_url') {
                       const slug = pick(GEO_POOLS.search_query).toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');

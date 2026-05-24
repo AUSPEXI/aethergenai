@@ -304,8 +304,8 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
             const fields = (schema.fields || []).map((f: any) => f.name);
             function ns(eps: number) { const s = 1 / Math.max(eps, 0.01); return Math.min(Math.max(s, 0.1), 5); }
             function hp(val: any, t: string, eps: number) { const n = ns(eps); if (t==='string') return `anon_${Math.random().toString(36).slice(2,10)}`; if (t==='number') return Math.floor((Math.random()*1000)*n); if (t==='date') return new Date(Date.now()-Math.random()*31536e6*n).toISOString(); return val; }
-            function mp(val: any, t: string, eps: number) { const n = ns(eps)*0.2; if (t==='string') return typeof val==='string'?`${val}_syn`:val; if (t==='number') return typeof val==='number'?val+(Math.random()-0.5)*20*n:val; return val; }
-            function gv(f: any, seed: any[], eps: number) { const sample = seed.map(r=>r[f.name]).filter((v:any)=>v!==undefined); if(sample.length===0){ if(f.type==='string')return `synthetic_${f.name}_${Math.random().toString(36).slice(2,10)}`; if(f.type==='number')return Math.floor(Math.random()*1000); if(f.type==='boolean')return Math.random()>0.5; if(f.type==='date')return new Date(Date.now()-Math.random()*31536e6).toISOString(); if(f.type==='json')return {synthetic:true,field:f.name}; return null;} let v=sample[Math.floor(Math.random()*sample.length)]; if(f.privacyLevel==='high')v=hp(v,f.type,eps); else if(f.privacyLevel==='medium')v=mp(v,f.type,eps); return v; }
+            function mp(val: any, t: string, eps: number, sample: any[]) { const n = ns(eps)*0.2; if (t==='string') { const pool = sample.filter((v:any)=>typeof v==='string'&&!String(v).endsWith('_syn')); return pool.length>0?pool[Math.floor(Math.random()*pool.length)]:val; } if (t==='number') { const nums = sample.filter((v:any)=>typeof v==='number'); const mn=nums.length?Math.min(...nums):0; const mx=nums.length?Math.max(...nums):100; const allInt=nums.every((v:any)=>Number.isInteger(v)); const noisy=typeof val==='number'?val+(Math.random()-0.5)*20*n:val; const clamped=Math.max(mn,Math.min(mx,noisy)); return allInt?Math.round(clamped):Math.round(clamped*100)/100; } return val; }
+            function gv(f: any, seed: any[], eps: number) { const sample = seed.map(r=>r[f.name]).filter((v:any)=>v!==undefined); if(sample.length===0){ if(f.type==='string')return `synthetic_${f.name}`; if(f.type==='number')return 0; if(f.type==='boolean')return Math.random()>0.5; if(f.type==='date')return new Date(Date.now()-Math.random()*31536e6).toISOString(); if(f.type==='json')return {synthetic:true,field:f.name}; return null;} let v=sample[Math.floor(Math.random()*sample.length)]; if(f.privacyLevel==='high')v=hp(v,f.type,eps); else if(f.privacyLevel==='medium')v=mp(v,f.type,eps,sample); return v; }
             const start = Date.now();
             let generated = 0, lastTick = Date.now(), lastGen = 0;
             const sample: any[] = [];
@@ -634,7 +634,7 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
     if (field.privacyLevel === 'high') {
       value = applyHighPrivacyTransformation(value, field.type);
     } else if (field.privacyLevel === 'medium') {
-      value = applyMediumPrivacyTransformation(value, field.type);
+      value = applyMediumPrivacyTransformation(value, field.type, sampleData);
     }
     
     return value;
@@ -660,13 +660,22 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
     }
   };
 
-  const applyMediumPrivacyTransformation = (value: any, type: string): any => {
+  const applyMediumPrivacyTransformation = (value: any, type: string, samplePool: any[] = []): any => {
     const noise = getNoiseScale(schema.privacySettings.epsilon) * 0.2;
     switch (type) {
-      case 'string':
-        return typeof value === 'string' ? `${value}_syn` : value;
-      case 'number':
-        return typeof value === 'number' ? value + (Math.random() - 0.5) * 20 * noise : value;
+      case 'string': {
+        const pool = samplePool.filter(v => typeof v === 'string');
+        return pool.length > 0 ? pool[Math.floor(Math.random() * pool.length)] : value;
+      }
+      case 'number': {
+        const nums = samplePool.filter(v => typeof v === 'number');
+        const mn = nums.length ? Math.min(...nums) : 0;
+        const mx = nums.length ? Math.max(...nums) : 100;
+        const allInt = nums.every(v => Number.isInteger(v));
+        const noisy = typeof value === 'number' ? value + (Math.random() - 0.5) * 20 * noise : value;
+        const clamped = Math.max(mn, Math.min(mx, noisy));
+        return allInt ? Math.round(clamped) : Math.round(clamped * 100) / 100;
+      }
       default:
         return value;
     }

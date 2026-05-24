@@ -26,7 +26,7 @@ import PipelineManager from '../SchemaDesigner/PipelineManager';
 import DataCleaner from '../DataCleaner/DataCleaner';
 import PrivacyMetrics from '../PrivacyMetrics/PrivacyMetrics';
 import ModelCollapseRiskDial from '../ModelCollapseRiskDial/ModelCollapseRiskDial';
-import { assertSupabase } from '../../services/supabaseClient';
+import { assertSupabase, supabase } from '../../services/supabaseClient';
 import UpgradeGate from './UpgradeGate';
 import SeedDataUploader from '../SeedDataUploader/SeedDataUploader';
 import AdvancedBenchmarking from '../AdvancedBenchmarking/AdvancedBenchmarking';
@@ -163,6 +163,22 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
   // Seed data wired through from uploader to generator
   const [seedData, setSeedData] = useState<any[]>([]);
   const [activeSchema, setActiveSchema] = useState<any>(defaultSchema);
+
+  // Load most recently saved schema from Supabase on mount
+  useEffect(() => {
+    if (!supabase) return;
+    supabase
+      .from('ae_schemas')
+      .select('id, name, schema_json')
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .single()
+      .then(({ data }) => {
+        if (data?.schema_json) {
+          setActiveSchema({ ...data.schema_json, id: data.id });
+        }
+      });
+  }, []);
 
   useEffect(() => {
     let mounted = true;

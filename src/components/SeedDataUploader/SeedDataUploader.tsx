@@ -646,7 +646,30 @@ const SeedDataUploader: React.FC<SeedDataUploaderProps> = ({
           <button
             onClick={async ()=>{
               try {
-                const sample = Array.from({ length: 200 }).map((_,i)=>({ vin: `VIN_SAMPLE_${(i+1).toString().padStart(6,'0')}`, model: ['Alpha','Beta','Gamma'][i%3], defect_score: Math.round(Math.random()*100)/100, timestamp: new Date(Date.now()-i*86400000).toISOString() }));
+                const fields = schema?.fields?.length > 0 ? schema.fields : [
+                  { name: 'vin', type: 'string' }, { name: 'model', type: 'string' },
+                  { name: 'defect_score', type: 'number' }, { name: 'timestamp', type: 'date' }
+                ];
+                const sample = Array.from({ length: 200 }).map((_, i) => {
+                  const row: Record<string, any> = {};
+                  fields.forEach((f: any) => {
+                    if (f.type === 'number') row[f.name] = Math.round((Math.random() * 10) * 100) / 100;
+                    else if (f.type === 'boolean') row[f.name] = Math.random() > 0.5;
+                    else if (f.type === 'date') row[f.name] = new Date(Date.now() - i * 86400000).toISOString();
+                    else if (f.name === 'vin') row[f.name] = `VIN_${(i + 1).toString().padStart(6, '0')}`;
+                    else if (f.name === 'model') row[f.name] = ['Alpha', 'Beta', 'Gamma', 'Delta'][i % 4];
+                    else if (f.name === 'plant') row[f.name] = ['Birmingham', 'Swindon', 'Oxford', 'Solihull'][i % 4];
+                    else if (f.name === 'shift') row[f.name] = ['Day', 'Night', 'Afternoon'][i % 3];
+                    else if (f.name === 'engine_type' || f.name === 'engin_type') row[f.name] = ['EV', 'Hybrid', 'Petrol', 'Diesel'][i % 4];
+                    else if (f.name === 'trim') row[f.name] = ['Base', 'Sport', 'Premium', 'Luxury'][i % 4];
+                    else if (f.name === 'defect_type') row[f.name] = ['Paint', 'Weld', 'Assembly', 'Electrical', 'None'][i % 5];
+                    else if (f.name === 'supplier_code') row[f.name] = `SUP_${String.fromCharCode(65 + (i % 10))}`;
+                    else if (f.name === 'batch_id') row[f.name] = `BATCH_${Math.floor(i / 10).toString().padStart(4, '0')}`;
+                    else if (f.name === 'operator_id') row[f.name] = `OP_${(1000 + (i % 50)).toString()}`;
+                    else row[f.name] = `${f.name}_${i % 10}`;
+                  });
+                  return row;
+                });
                 setUploadedData(sample);
                 setPreviewRows(sample.slice(0,10));
                 const detected = detectSchemaFromData(sample);

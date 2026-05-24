@@ -154,30 +154,49 @@ const ReportingDashboard: React.FC<ReportingDashboardProps> = ({
   };
 
   const calculateFidelityScore = (realData: any[], syntheticData: any[]): number => {
-    // Simplified KS test implementation
-    let totalScore = 0;
     const fields = schema.fields;
-    
+    if (!fields?.length) return 0;
+    let totalScore = 0;
+    let fieldCount = 0;
+
+    // Sample for performance when dealing with large datasets
+    const realSample = realData.length > 1000 ? realData.slice(0, 1000) : realData;
+    const synthSample = syntheticData.length > 2000 ? syntheticData.slice(0, 2000) : syntheticData;
+
     for (const field of fields) {
-      const realValues = realData.map(d => d[field.name]).filter(v => v !== null && v !== undefined);
-      const syntheticValues = syntheticData.map(d => d[field.name]).filter(v => v !== null && v !== undefined);
-      
+      const realValues = realSample.map((d: any) => d[field.name]).filter((v: any) => v !== null && v !== undefined);
+      const syntheticValues = synthSample.map((d: any) => d[field.name]).filter((v: any) => v !== null && v !== undefined);
+
       if (realValues.length > 0 && syntheticValues.length > 0) {
         const similarity = calculateFieldSimilarity(realValues, syntheticValues);
-        totalScore += similarity;
+        if (!isNaN(similarity)) {
+          totalScore += similarity;
+          fieldCount++;
+        }
       }
     }
-    
-    return Math.min(1, totalScore / fields.length);
+
+    return fieldCount > 0 ? Math.min(1, totalScore / fieldCount) : 0;
   };
 
   const calculateFieldSimilarity = (realValues: any[], syntheticValues: any[]): number => {
-    // Simplified similarity calculation
-    const realMean = realValues.reduce((a, b) => a + b, 0) / realValues.length;
-    const syntheticMean = syntheticValues.reduce((a, b) => a + b, 0) / syntheticValues.length;
-    const meanDiff = Math.abs(realMean - syntheticMean) / Math.max(realMean, 1);
-    
-    return Math.max(0, 1 - meanDiff);
+    const numReal = realValues.filter((v: any) => typeof v === 'number' && !isNaN(v));
+    const numSynth = syntheticValues.filter((v: any) => typeof v === 'number' && !isNaN(v));
+
+    if (numReal.length > 0 && numSynth.length > 0) {
+      // Numeric: compare means
+      const realMean = numReal.reduce((a: number, b: number) => a + b, 0) / numReal.length;
+      const synthMean = numSynth.reduce((a: number, b: number) => a + b, 0) / numSynth.length;
+      const diff = Math.abs(realMean - synthMean) / Math.max(Math.abs(realMean), 1);
+      return Math.max(0, 1 - diff);
+    } else {
+      // Categorical/string: Jaccard overlap of unique values
+      const realSet = new Set(realValues.map(String));
+      const synthSet = new Set(syntheticValues.map(String));
+      const intersection = [...realSet].filter(v => synthSet.has(v)).length;
+      const union = new Set([...realSet, ...synthSet]).size;
+      return union > 0 ? intersection / union : 1;
+    }
   };
 
   const calculatePrivacyScore = (realData: any[], syntheticData: any[]): number => {
@@ -239,30 +258,34 @@ const ReportingDashboard: React.FC<ReportingDashboardProps> = ({
   };
 
   const calculateDiversityLoss = (): number => {
-    const uniqueRecords = new Set(generatedData.map(d => JSON.stringify(d)));
-    const diversityRatio = uniqueRecords.size / generatedData.length;
+    const sample = generatedData.length > 2000 ? generatedData.slice(0, 2000) : generatedData;
+    if (sample.length === 0) return 0;
+    const uniqueRecords = new Set(sample.map((d: any) => JSON.stringify(d)));
+    const diversityRatio = uniqueRecords.size / sample.length;
     return 1 - diversityRatio;
   };
 
   const calculateModeCollapse = (): number => {
-    // Simplified mode collapse detection
-    const fieldValues = schema.fields.map(field => {
-      const values = generatedData.map(d => d[field.name]);
+    const sample = generatedData.length > 2000 ? generatedData.slice(0, 2000) : generatedData;
+    if (!schema.fields?.length || sample.length === 0) return 0;
+    const fieldValues = schema.fields.map((field: any) => {
+      const values = sample.map((d: any) => d[field.name]);
       const uniqueValues = new Set(values);
-      return uniqueValues.size / values.length;
+      return uniqueValues.size / Math.max(values.length, 1);
     });
-    
-    const avgDiversity = fieldValues.reduce((a, b) => a + b, 0) / fieldValues.length;
+
+    const avgDiversity = fieldValues.reduce((a: number, b: number) => a + b, 0) / fieldValues.length;
     return 1 - avgDiversity;
   };
 
   const calculateQualityDegradation = (): number => {
-    // Simplified quality degradation
-    const nullValues = generatedData.filter(record => 
+    const sample = generatedData.length > 2000 ? generatedData.slice(0, 2000) : generatedData;
+    if (sample.length === 0) return 0;
+    const nullValues = sample.filter((record: any) =>
       Object.values(record).some(value => value === null || value === undefined)
     ).length;
-    
-    return nullValues / generatedData.length;
+
+    return nullValues / sample.length;
   };
 
   const calculateNoveltyScore = (): number => {

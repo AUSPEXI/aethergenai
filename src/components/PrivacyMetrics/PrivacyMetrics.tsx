@@ -42,6 +42,47 @@ const PrivacyMetrics: React.FC<PrivacyMetricsProps> = ({ seedData, syntheticData
     setLocalSettings(privacySettings);
   }, [privacySettings]);
 
+  const computeLocalScores = (seed: any[], synth: any[]): PrivacyScores => {
+    const seedSample = seed.length > 500 ? seed.slice(0, 500) : seed;
+    const synthSample = synth.length > 2000 ? synth.slice(0, 2000) : synth;
+
+    // Nearest neighbor: % of synthetic records with no exact match in seed (higher = safer)
+    const seedSet = new Set(seedSample.map((d: any) => JSON.stringify(d)));
+    const exactMatches = synthSample.filter((d: any) => seedSet.has(JSON.stringify(d))).length;
+    const nearest_neighbor = Math.round((1 - exactMatches / Math.max(synthSample.length, 1)) * 100);
+
+    // Membership inference proxy: synthetic uniqueness (higher = harder to infer membership)
+    const uniqueSynth = new Set(synthSample.map((d: any) => JSON.stringify(d))).size;
+    const membership_inference = Math.round(Math.min(100, (uniqueSynth / Math.max(synthSample.length, 1)) * 100));
+
+    // Attribute disclosure: fields in synthetic that expand beyond seed value space
+    const fields = Object.keys(synthSample[0] || {});
+    let attribute_disclosure = 80;
+    if (fields.length > 0) {
+      const attrScores = fields.map(f => {
+        const synthVals = new Set(synthSample.map((d: any) => String(d[f])));
+        const seedVals = new Set(seedSample.map((d: any) => String(d[f])));
+        const sharedVals = [...synthVals].filter(v => seedVals.has(v)).length;
+        return sharedVals / Math.max(seedVals.size, 1);
+      });
+      const avgCoverage = attrScores.reduce((a, b) => a + b, 0) / attrScores.length;
+      attribute_disclosure = Math.round(Math.min(100, avgCoverage * 100));
+    }
+
+    // Diversity loss: how repetitive is the synthetic output (lower = better, so we invert for display)
+    const diversityRatio = uniqueSynth / Math.max(synthSample.length, 1);
+    const diversity_loss = Math.round((1 - diversityRatio) * 100);
+
+    // Model collapse: compare seed uniqueness vs synthetic uniqueness
+    const uniqueSeed = new Set(seedSample.map((d: any) => JSON.stringify(d))).size;
+    const seedDivRatio = uniqueSeed / Math.max(seedSample.length, 1);
+    const model_collapse = Math.round(Math.max(0, Math.min(100, (seedDivRatio - diversityRatio) / Math.max(seedDivRatio, 0.01) * 100)));
+
+    return { nearest_neighbor, membership_inference, attribute_disclosure, diversity_loss, model_collapse };
+  };
+
+  const [localMode, setLocalMode] = useState(false);
+
   useEffect(() => {
     const fetchPrivacyScores = async () => {
       if (!seedData.length || !syntheticData.length) return;
@@ -49,13 +90,17 @@ const PrivacyMetrics: React.FC<PrivacyMetricsProps> = ({ seedData, syntheticData
       setError(null);
       try {
         const formData = new FormData();
-        formData.append("real_json", JSON.stringify(seedData));
-        formData.append("synth_json", JSON.stringify(syntheticData));
+        formData.append("real_json", JSON.stringify(seedData.slice(0, 200)));
+        formData.append("synth_json", JSON.stringify(syntheticData.slice(0, 500)));
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 8000);
         const res = await fetch("/api/privacy-metrics", {
           method: "POST",
           body: formData,
+          signal: controller.signal,
         });
-        if (!res.ok) throw new Error("Failed to fetch privacy metrics");
+        clearTimeout(timeout);
+        if (!res.ok) throw new Error("API unavailable");
         const data = await res.json();
         const s = {
           ...data,
@@ -63,17 +108,22 @@ const PrivacyMetrics: React.FC<PrivacyMetricsProps> = ({ seedData, syntheticData
           model_collapse: data.model_collapse ?? 0,
         } as PrivacyScores;
         setScores(s);
-        // Risk badge (quick harness; replace with real attacks later)
+        setLocalMode(false);
         const low = [s.nearest_neighbor, s.membership_inference, s.attribute_disclosure].filter(v=>v<70).length;
         setRiskBadge(low>=2 ? 'red' : low===1 ? 'amber' : 'green');
-        // Privacy budget: accumulate epsilon
         setConsumed(prev => {
           const next = Math.min(epsilonBudget, prev + (privacySettings.epsilon || 0));
           try { localStorage.setItem('aeg_epsilon_consumed', String(next)); } catch {}
           return next;
         });
-      } catch (err: any) {
-        setError(err.message || "Unknown error");
+      } catch {
+        // Fall back to local computation
+        const s = computeLocalScores(seedData, syntheticData);
+        setScores(s);
+        setLocalMode(true);
+        const low = [s.nearest_neighbor, s.membership_inference, s.attribute_disclosure].filter(v=>v<70).length;
+        setRiskBadge(low>=2 ? 'red' : low===1 ? 'amber' : 'green');
+        setError(null);
       } finally {
         setLoading(false);
       }
@@ -92,7 +142,12 @@ const PrivacyMetrics: React.FC<PrivacyMetricsProps> = ({ seedData, syntheticData
       <h2>Privacy Metrics</h2>
       <div className="text-xs" style={{color: riskBadge==='red'?'#dc2626': riskBadge==='amber'?'#b45309':'#16a34a'}}>Risk: {riskBadge.toUpperCase()}</div>
       <div className="text-xs text-gray-600">ε budget: {epsilonBudget.toFixed(2)} • consumed: {consumed.toFixed(2)} • remaining: {(Math.max(0, epsilonBudget - consumed)).toFixed(2)}</div>
-      {loading && <div>Checking privacy...</div>}
+      {loading && <div className="text-sm text-gray-500 mt-2">Computing privacy metrics…</div>}
+      {localMode && !loading && (
+        <div className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded px-2 py-1 mt-1 inline-block">
+          Local computation (API offline) — approximations based on {syntheticData.length.toLocaleString()} synthetic vs {seedData.length} seed records
+        </div>
+      )}
       {error && <div style={{ color: "red" }}>{error}</div>}
       <div className="dials-row" style={{ display: "flex", gap: "2rem", marginTop: "2rem" }}>
         <PrivacyGauge label="Nearest Neighbor" value={scores.nearest_neighbor} info="Measures how closely synthetic data points resemble real data points. Higher is safer." />

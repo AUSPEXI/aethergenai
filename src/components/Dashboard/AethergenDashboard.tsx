@@ -551,8 +551,8 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
         return (
           <ReportingDashboard
             schema={activeSchema}
-            seedData={seedData.length > 0 ? seedData.slice(0, 200) : stubData}
-            generatedData={generatedData.length > 0 ? generatedData.slice(0, 200) : stubData}
+            seedData={seedData.length > 0 ? seedData.slice(0, 500) : stubData}
+            generatedData={generatedData.length > 0 ? generatedData : stubData}
             benchmarkResults={[]}
           />
         );

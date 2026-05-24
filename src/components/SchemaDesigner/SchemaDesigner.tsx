@@ -8,8 +8,15 @@ interface SchemaDesignerProps {
   seedData?: any[];
 }
 
+const normalizeFields = (fields: any[]): SchemaField[] =>
+  (fields || []).map(f => ({
+    ...f,
+    constraints: f.constraints || {},
+    privacyLevel: f.privacyLevel || f.privacy || 'medium',
+  }));
+
 const SchemaDesigner: React.FC<SchemaDesignerProps> = ({ onSchemaChange, initialSchema, seedData }) => {
-  const [schema, setSchema] = useState<DataSchema>(initialSchema || {
+  const [schema, setSchema] = useState<DataSchema>(initialSchema ? { ...initialSchema, fields: normalizeFields(initialSchema.fields) } : {
     id: crypto.randomUUID(),
     name: '',
     description: '',
@@ -42,6 +49,15 @@ const SchemaDesigner: React.FC<SchemaDesignerProps> = ({ onSchemaChange, initial
   useEffect(() => {
     onSchemaChange(schema);
   }, [schema, onSchemaChange]);
+
+  // Sync when parent loads a schema from Supabase after mount
+  useEffect(() => {
+    if (!initialSchema) return;
+    setSchema(prev => {
+      if (prev.id === initialSchema.id && prev.fields.length === initialSchema.fields?.length) return prev;
+      return { ...initialSchema, fields: normalizeFields(initialSchema.fields) };
+    });
+  }, [initialSchema?.id]);
 
   const [saveStatus, setSaveStatus] = useState<'idle'|'saving'|'saved'|'error'>('idle');
 
@@ -473,7 +489,7 @@ const SchemaDesigner: React.FC<SchemaDesignerProps> = ({ onSchemaChange, initial
                     name: parsed.name || prev.name,
                     description: parsed.description || prev.description,
                     domain: parsed.domain || prev.domain,
-                    fields: parsed.fields || prev.fields,
+                    fields: normalizeFields(parsed.fields || prev.fields),
                     targetVolume: parsed.targetVolume || prev.targetVolume,
                     privacySettings: parsed.privacySettings || prev.privacySettings,
                   }));

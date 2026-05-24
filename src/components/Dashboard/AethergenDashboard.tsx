@@ -497,11 +497,18 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
       case 'risk':
         if (!seedPresent && !qaMode) return <GatePanel title="Risk assessment needs data" body="Upload a seed or generate a sample to run risk analysis." />;
         if (!roleHas(role, 'view_risk')) return <UpgradeGate feature="Risk Assessment" />;
+        if (generatedData.length === 0) return (
+          <div className="bg-amber-50 border border-amber-200 rounded-lg p-8 text-center">
+            <h3 className="text-lg font-semibold text-amber-900 mb-2">Generate data first</h3>
+            <p className="text-amber-800 mb-4">Model collapse risk compares your synthetic output against the seed. Generate data first, then come back here.</p>
+            <button onClick={() => setActiveTab('generate')} className="px-5 py-2 rounded-lg bg-amber-600 text-white hover:bg-amber-700">Go to Generate</button>
+          </div>
+        );
         return (
           <div className="space-y-6">
             <div className="bg-white rounded-lg shadow-sm border p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Model Collapse Risk Assessment</h3>
-              <ModelCollapseRiskDial syntheticData={seedData} schema={activeSchema} />
+              <p className="text-sm text-gray-500 mb-4">Analysing {Math.min(generatedData.length, 2000).toLocaleString()} of {generatedData.length.toLocaleString()} generated records against {seedData.length} seed records.</p>
+              <ModelCollapseRiskDial syntheticData={generatedData.slice(0, 2000)} schema={activeSchema} />
             </div>
           </div>
         );

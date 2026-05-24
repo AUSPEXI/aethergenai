@@ -647,26 +647,84 @@ const SeedDataUploader: React.FC<SeedDataUploaderProps> = ({
             onClick={async ()=>{
               try {
                 const fields = schema?.fields?.length > 0 ? schema.fields : [
-                  { name: 'vin', type: 'string' }, { name: 'model', type: 'string' },
-                  { name: 'defect_score', type: 'number' }, { name: 'timestamp', type: 'date' }
+                  { name: 'id', type: 'string' }, { name: 'date', type: 'date' },
+                  { name: 'sov_score', type: 'number' }, { name: 'is_cited', type: 'boolean' }
                 ];
+
+                // GEO field value pools — nearest-neighbour learns distributions from these
+                const GEO_POOLS: Record<string, any[]> = {
+                  brand: ['AcmeCloud', 'DataPulse', 'NexusSEO', 'VantageAI', 'OmniSearch', 'ClearSignal', 'TrustLayer', 'ContentEdge'],
+                  domain: ['acmecloud.io', 'datapulse.com', 'nexusseo.co', 'vantageai.com', 'omnisearch.io', 'clearsignal.co', 'trustlayer.com', 'contentedge.io'],
+                  ai_engine: ['ChatGPT', 'Perplexity', 'Claude', 'Gemini'],
+                  model_version: ['gpt-4o-2025-03', 'gpt-4o-2024-11', 'sonar-large-online', 'sonar-pro', 'claude-3-5-sonnet', 'claude-3-opus', 'gemini-1.5-pro', 'gemini-2.0-flash'],
+                  sentiment: ['Positive', 'Positive', 'Positive', 'Neutral', 'Neutral', 'Negative'],
+                  query_intent: ['informational', 'informational', 'commercial', 'navigational', 'transactional'],
+                  semantic_cluster: ['enterprise-trusted', 'cost-leader', 'thought-leader', 'technical-authority', 'brand-advocate', 'challenger', 'niche-specialist'],
+                  content_type: ['blog', 'blog', 'technical', 'sales'],
+                  decay_status: ['healthy', 'healthy', 'decaying', 'stale'],
+                  user_tier: ['Free', 'Basic', 'Basic', 'Medium', 'Premium'],
+                  social_platform: ['LinkedIn', 'Reddit', 'Twitter', 'YouTube', 'TikTok', 'Instagram'],
+                  competitor_name: ['RivalSoft', 'SearchMind', 'AltaRank', 'PivotSEO', 'CoreSignal', 'MetaSearch', 'PulseAI'],
+                  category: ['AI Search Visibility', 'Brand Monitoring', 'Content Performance', 'Competitor Analysis', 'Citation Tracking', 'Sentiment Analysis'],
+                  search_query: ['generative AI search', 'LLM citation optimization', 'brand visibility in AI', 'content scoring for GPT', 'semantic anchor strategy', 'entity density optimization', 'AI-first SEO', 'zero-click content strategy', 'perplexity optimization', 'AI traffic attribution'],
+                  trend: ['+1.2%', '+3.4%', '+7.1%', '-0.8%', '-2.3%', '-5.1%', '+0.5%', '+4.9%'],
+                };
+
+                const pick = (pool: any[]) => pool[Math.floor(Math.random() * pool.length)];
+                const rndScore = (mn = 0, mx = 100) => Math.round((Math.random() * (mx - mn) + mn) * 10) / 10;
+
                 const sample = Array.from({ length: 200 }).map((_, i) => {
                   const row: Record<string, any> = {};
+                  const brandIdx = i % 8;
+                  const brands = GEO_POOLS.brand;
+                  const domains = GEO_POOLS.domain;
+                  const decayStatus = pick(GEO_POOLS.decay_status);
+
                   fields.forEach((f: any) => {
-                    if (f.type === 'number') row[f.name] = Math.round((Math.random() * 10) * 100) / 100;
-                    else if (f.type === 'boolean') row[f.name] = Math.random() > 0.5;
-                    else if (f.type === 'date') row[f.name] = new Date(Date.now() - i * 86400000).toISOString();
-                    else if (f.name === 'vin') row[f.name] = `VIN_${(i + 1).toString().padStart(6, '0')}`;
-                    else if (f.name === 'model') row[f.name] = ['Alpha', 'Beta', 'Gamma', 'Delta'][i % 4];
-                    else if (f.name === 'plant') row[f.name] = ['Birmingham', 'Swindon', 'Oxford', 'Solihull'][i % 4];
-                    else if (f.name === 'shift') row[f.name] = ['Day', 'Night', 'Afternoon'][i % 3];
-                    else if (f.name === 'engine_type' || f.name === 'engin_type') row[f.name] = ['EV', 'Hybrid', 'Petrol', 'Diesel'][i % 4];
-                    else if (f.name === 'trim') row[f.name] = ['Base', 'Sport', 'Premium', 'Luxury'][i % 4];
-                    else if (f.name === 'defect_type') row[f.name] = ['Paint', 'Weld', 'Assembly', 'Electrical', 'None'][i % 5];
-                    else if (f.name === 'supplier_code') row[f.name] = `SUP_${String.fromCharCode(65 + (i % 10))}`;
-                    else if (f.name === 'batch_id') row[f.name] = `BATCH_${Math.floor(i / 10).toString().padStart(4, '0')}`;
-                    else if (f.name === 'operator_id') row[f.name] = `OP_${(1000 + (i % 50)).toString()}`;
-                    else row[f.name] = `${f.name}_${i % 10}`;
+                    // Boolean fields
+                    if (f.type === 'boolean') {
+                      if (f.name === 'is_cited') row[f.name] = Math.random() > 0.4;
+                      else if (f.name === 'trojan_horse_opportunity') row[f.name] = decayStatus === 'stale' && Math.random() > 0.5;
+                      else if (f.name === 'drift_detected') row[f.name] = Math.random() > 0.88;
+                      else row[f.name] = Math.random() > 0.5;
+                      return;
+                    }
+                    // Date fields
+                    if (f.type === 'date') {
+                      row[f.name] = new Date(Date.now() - Math.floor(Math.random() * 365) * 86400000).toISOString().split('T')[0];
+                      return;
+                    }
+                    // Number fields with GEO-appropriate ranges
+                    if (f.type === 'number') {
+                      const scoreFields = ['sov_score','content_score','entity_density_score','statistical_anchors_score','inverted_pyramid_score','entropy_score','competitor_sov','risk_score','platform_chatgpt','platform_perplexity','platform_claude','platform_gemini'];
+                      if (scoreFields.includes(f.name)) { row[f.name] = rndScore(5, 95); return; }
+                      if (f.name === 'decay_score') { row[f.name] = rndScore(decayStatus === 'healthy' ? 10 : decayStatus === 'decaying' ? 40 : 70, decayStatus === 'healthy' ? 40 : decayStatus === 'decaying' ? 70 : 95); return; }
+                      if (f.name === 'citation_rank') { row[f.name] = row['is_cited'] !== false ? Math.floor(Math.random() * 10) + 1 : null; return; }
+                      if (f.name === 'competing_citations_count') { row[f.name] = Math.floor(Math.random() * 6); return; }
+                      if (f.name === 'z_score') { row[f.name] = Math.round((Math.random() * 6 - 3) * 100) / 100; return; }
+                      if (f.name === 'ai_traffic') { row[f.name] = Math.floor(Math.random() * 14950) + 50; return; }
+                      if (f.name === 'ai_citations') { row[f.name] = Math.floor(Math.random() * 500); return; }
+                      if (f.name === 'days_since_published') { row[f.name] = Math.floor(Math.random() * 729) + 1; return; }
+                      row[f.name] = Math.round(Math.random() * 100 * 10) / 10;
+                      return;
+                    }
+                    // String fields — use GEO pools or construct values
+                    if (GEO_POOLS[f.name]) { row[f.name] = pick(GEO_POOLS[f.name]); return; }
+                    if (f.name === 'id') { row[f.name] = `geo_${String(i + 1).padStart(6, '0')}`; return; }
+                    if (f.name === 'domain') { row[f.name] = domains[brandIdx]; return; }
+                    if (f.name === 'page_url') {
+                      const slug = pick(GEO_POOLS.search_query).toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+                      row[f.name] = `https://${domains[brandIdx]}/blog/${slug}`; return;
+                    }
+                    if (f.name === 'decay_status') { row[f.name] = decayStatus; return; }
+                    // Automotive fallbacks (kept for non-GEO schemas)
+                    if (f.name === 'vin') { row[f.name] = `VIN_${(i + 1).toString().padStart(6, '0')}`; return; }
+                    if (f.name === 'model') { row[f.name] = ['Alpha', 'Beta', 'Gamma', 'Delta'][i % 4]; return; }
+                    if (f.name === 'plant') { row[f.name] = ['Birmingham', 'Swindon', 'Oxford', 'Solihull'][i % 4]; return; }
+                    if (f.name === 'shift') { row[f.name] = ['Day', 'Night', 'Afternoon'][i % 3]; return; }
+                    if (f.name === 'engine_type' || f.name === 'engin_type') { row[f.name] = ['EV', 'Hybrid', 'Petrol', 'Diesel'][i % 4]; return; }
+                    // Generic fallback
+                    row[f.name] = `${f.name}_sample_${i % 20}`;
                   });
                   return row;
                 });

@@ -438,16 +438,16 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
       case 'pipelines':
         if (!seedPresent && !qaMode) return <GatePanel title="Pipelines need data" body="Upload a seed or create a sample dataset to configure multi-schema pipelines." />;
         if (!roleHas(role, 'manage_pipelines')) return <UpgradeGate feature="Pipelines" />;
-        return <PipelineManager />;
+        return <PipelineManager schema={activeSchema} seedData={seedData} />;
 
       case 'clean':
         if (!roleHas(role, 'run_privacy')) return <UpgradeGate feature="Data Cleaner" />;
-        return <DataCleaner />;
+        return <DataCleaner mode="seed" schema={activeSchema} data={seedData} onCleaned={(cleaned) => setSeedData(cleaned)} />;
 
       case 'privacy':
         if (!seedPresent && !qaMode) return <GatePanel title="Privacy metrics need data" body="Upload a seed or generate a sample so we can compute privacy/utility metrics." />;
         if (!roleHas(role, 'run_privacy')) return <UpgradeGate feature="Privacy Metrics" />;
-        return <PrivacyMetrics />;
+        return <PrivacyMetrics seedData={seedData} syntheticData={[]} privacySettings={{ syntheticRatio: activeSchema.privacySettings?.syntheticRatio ?? 1, epsilon: activeSchema.privacySettings?.epsilon ?? 0.5 }} onPrivacySettingsChange={(s) => setActiveSchema((prev: any) => ({ ...prev, privacySettings: { ...prev.privacySettings, ...s } }))} />;
 
       case 'risk':
         if (!seedPresent && !qaMode) return <GatePanel title="Risk assessment needs data" body="Upload a seed or generate a sample to run risk analysis." />;
@@ -456,7 +456,7 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
           <div className="space-y-6">
             <div className="bg-white rounded-lg shadow-sm border p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Model Collapse Risk Assessment</h3>
-              <ModelCollapseRiskDial />
+              <ModelCollapseRiskDial syntheticData={seedData} schema={activeSchema} />
             </div>
           </div>
         );

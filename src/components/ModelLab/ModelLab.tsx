@@ -155,9 +155,16 @@ const DEFAULT_GEO_PARAMS: GeoSLMParams = {
   targetColumn: 'optimization_action',
 };
 
-const ModelLab: React.FC = () => {
+interface ModelLabProps {
+  generatedData?: any[];
+  seedData?: any[];
+  generatedCount?: number;
+}
+
+const ModelLab: React.FC<ModelLabProps> = ({ generatedData = [], seedData = [], generatedCount = 0 }) => {
   const [selectedModelId, setSelectedModelId] = useState<string>('geo-slm-v1');
   const selectedModel = useMemo(() => MODEL_TEMPLATES.find(m => m.id === selectedModelId), [selectedModelId]);
+  const totalGenerated = generatedCount || generatedData.length;
 
   const [params, setParams] = useState<Record<string, any>>({});
   const [geoParams, setGeoParams] = useState<GeoSLMParams>(DEFAULT_GEO_PARAMS);
@@ -208,6 +215,14 @@ const ModelLab: React.FC = () => {
       setMetrics(result);
     } catch (error) { console.error('Training failed:', error); }
     finally { setBusy(false); }
+  };
+
+  const downloadGeneratedCsv = () => {
+    if (generatedData.length === 0) return;
+    const keys = Object.keys(generatedData[0]);
+    const esc = (v: any) => { const s = String(v ?? ''); return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
+    const csv = [keys.join(','), ...generatedData.map(r => keys.map(k => esc(r[k])).join(','))].join('\n');
+    download(`geo_training_data_${generatedData.length}rows.csv`, csv, 'text/csv');
   };
 
   const downloadTrainingBundle = () => {
@@ -451,22 +466,57 @@ const ModelLab: React.FC = () => {
         </div>
       )}
 
-      {/* GEO SLM — instructions card */}
+      {/* GEO SLM — pipeline status + instructions */}
       {selectedModelId === 'geo-slm-v1' && (
-        <div className="bg-slate-900 border border-slate-700 rounded-lg p-6 text-slate-100">
-          <h3 className="text-lg font-semibold mb-3">How to use the training bundle</h3>
-          <ol className="list-decimal ml-5 space-y-2 text-sm text-slate-300">
-            <li>Configure parameters above and click <strong className="text-white">Download Training Bundle</strong> — you'll receive 4 files.</li>
-            <li>Generate your GEO synthetic data (Data Generator tab) and export as CSV.</li>
-            <li>Open <code className="bg-slate-800 px-1 rounded">GEO_SLM_README.md</code> and follow the Colab or local GPU instructions.</li>
-            <li>Run <code className="bg-slate-800 px-1 rounded">pip install -r requirements.txt</code> then <code className="bg-slate-800 px-1 rounded">python geo_slm_train.py --csv your_data.csv</code>.</li>
-            <li>The script saves a LoRA adapter to <code className="bg-slate-800 px-1 rounded">./geo_slm_adapter/</code> and prints F1 on a held-out validation split.</li>
-          </ol>
-          <p className="mt-4 text-xs text-slate-400">
-            Target column: <strong className="text-slate-200">{geoParams.targetColumn}</strong> (5-class: publish_fact, update_entity, add_statistic, build_comparison, no_action).
-            Minimum recommended VRAM: 8 GB for Phi-3-mini / TinyLlama; 16 GB for Mistral-7B.
-          </p>
-        </div>
+        <>
+          {/* Pipeline data status */}
+          <div className={`border rounded-lg p-4 ${totalGenerated > 0 ? 'bg-green-50 border-green-200' : 'bg-amber-50 border-amber-200'}`}>
+            <div className="flex items-center justify-between flex-wrap gap-3">
+              <div>
+                <p className={`font-medium text-sm ${totalGenerated > 0 ? 'text-green-800' : 'text-amber-800'}`}>
+                  {totalGenerated > 0
+                    ? `Pipeline data ready: ${totalGenerated.toLocaleString()} records generated`
+                    : 'No generated data yet — go to Generate tab first'}
+                </p>
+                {totalGenerated > 0 && generatedData.length < totalGenerated && (
+                  <p className="text-xs text-green-700 mt-1">
+                    {generatedData.length.toLocaleString()} records in preview · full {totalGenerated.toLocaleString()} available via Generator download
+                  </p>
+                )}
+                {seedData.length > 0 && (
+                  <p className="text-xs text-green-700 mt-1">{seedData.length.toLocaleString()} seed records loaded</p>
+                )}
+              </div>
+              {generatedData.length > 0 && (
+                <button
+                  onClick={downloadGeneratedCsv}
+                  className="px-4 py-2 rounded bg-green-600 hover:bg-green-500 text-white text-sm font-medium"
+                >
+                  Download training CSV ({generatedData.length.toLocaleString()} rows)
+                </button>
+              )}
+            </div>
+            {totalGenerated > 10000 && (
+              <p className="text-xs text-amber-700 mt-2 bg-amber-100 border border-amber-200 rounded px-2 py-1 inline-block">
+                For the full {totalGenerated.toLocaleString()} rows: use the JSON/CSV download buttons on the Generate tab — those stream the complete file.
+              </p>
+            )}
+          </div>
+
+          {/* Instructions */}
+          <div className="bg-slate-900 border border-slate-700 rounded-lg p-6 text-slate-100">
+            <h3 className="text-lg font-semibold mb-3">Training workflow</h3>
+            <ol className="list-decimal ml-5 space-y-2 text-sm text-slate-300">
+              <li>Generate data on the <strong className="text-white">Generate tab</strong> — download the CSV from there for large runs (&gt;10k rows).</li>
+              <li>Configure LoRA parameters above and click <strong className="text-white">Download Training Bundle</strong> — you get 4 files.</li>
+              <li>Run <code className="bg-slate-800 px-1 rounded">pip install -r requirements.txt</code> then <code className="bg-slate-800 px-1 rounded">python geo_slm_train.py --csv your_data.csv</code>.</li>
+              <li>The script saves the adapter to <code className="bg-slate-800 px-1 rounded">./geo_slm_adapter/</code> and prints F1 per class.</li>
+            </ol>
+            <p className="mt-3 text-xs text-slate-400">
+              Target: <strong className="text-slate-200">{geoParams.targetColumn}</strong> · 5-class · VRAM: 8 GB (Phi-3-mini/TinyLlama), 16 GB (Mistral-7B).
+            </p>
+          </div>
+        </>
       )}
 
       {/* Results display */}

@@ -107,7 +107,6 @@ type DashboardTab =
   | 'upload'
   | 'generate'
   | 'clean'
-  | 'ablation'
   | 'benchmarks'
   | 'reporting'
   | 'review'
@@ -163,7 +162,20 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
   // Seed data wired through from uploader to generator
   const [seedData, setSeedData] = useState<any[]>([]);
   const [generatedData, setGeneratedData] = useState<any[]>([]);
+  const [generatedCount, setGeneratedCount] = useState<number>(0);
+  const [lastSpeed, setLastSpeed] = useState<number>(0);
   const [activeSchema, setActiveSchema] = useState<any>(defaultSchema);
+
+  // Track true total from worker (may be >10k in memory)
+  React.useEffect(() => {
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      if (detail?.total) setGeneratedCount(detail.total);
+      if (detail?.rps) setLastSpeed(detail.rps);
+    };
+    window.addEventListener('aethergen:gen-total', handler);
+    return () => window.removeEventListener('aethergen:gen-total', handler);
+  }, []);
 
   // Load most recently saved schema from Supabase on mount
   useEffect(() => {
@@ -226,21 +238,20 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
   }, []);
 
   const dashboardTabs = [
-    { id: 'overview', name: 'Overview', icon: BarChart3, description: 'Platform metrics and performance' },
-    { id: 'schema', name: 'Schema Designer', icon: Settings, description: 'Design single or multiple schemas' },
-    { id: 'pipelines', name: 'Pipelines', icon: GitBranch, description: 'Manage multi‑schema pipelines' },
-    { id: 'upload', name: 'Upload / Seed', icon: Upload, description: 'Upload or generate seed (encrypted with proofs)' },
-    { id: 'generate', name: 'Generate Data', icon: Database, description: 'Create synthetic datasets' },
-    { id: 'clean', name: 'Clean Data', icon: Activity, description: 'Clean and prepare data' },
-    { id: 'ablation', name: 'Ablation Tests', icon: Activity, description: 'Run ablation recipes and compare' },
-    { id: 'benchmarks', name: 'Benchmarks', icon: LineChart, description: 'Performance and quality benchmarks' },
-    { id: 'reporting', name: 'Reporting', icon: BarChart3, description: 'Reports and dashboards' },
-    { id: 'review', name: 'Review', icon: BadgeCheck, description: 'Human QA sample review and report export' },
-    { id: 'models', name: 'Models', icon: BadgeCheck, description: 'Model registry and lab' },
-    { id: 'privacy', name: 'Privacy Metrics', icon: Shield, description: 'Privacy and compliance tools' },
-    { id: 'risk', name: 'Risk Assessment', icon: Activity, description: 'Model collapse risk analysis' },
-    { id: 'billing', name: 'Billing', icon: CreditCard, description: 'Subscription and usage' },
-    { id: 'settings', name: 'Settings', icon: Settings, description: 'Account and platform settings' },
+    { id: 'overview',    name: 'Overview',       icon: BarChart3,   description: 'Pipeline status and live metrics' },
+    { id: 'upload',      name: 'Upload Seed',    icon: Upload,      description: 'Upload seed data — first step' },
+    { id: 'schema',      name: 'Schema',         icon: Settings,    description: 'Design and import field schemas' },
+    { id: 'generate',    name: 'Generate',       icon: Database,    description: 'Generate synthetic datasets' },
+    { id: 'clean',       name: 'Clean',          icon: Activity,    description: 'Clean and validate generated data' },
+    { id: 'privacy',     name: 'Privacy',        icon: Shield,      description: 'Privacy metrics and DP settings' },
+    { id: 'benchmarks',  name: 'Benchmarks',     icon: LineChart,   description: 'Quality benchmarks and ablation recipes' },
+    { id: 'reporting',   name: 'Reporting',      icon: BarChart3,   description: 'Fidelity, diversity and field reports' },
+    { id: 'models',      name: 'Model Lab',      icon: BadgeCheck,  description: 'Download LoRA fine-tuning bundle' },
+    { id: 'risk',        name: 'Risk',           icon: Activity,    description: 'Model collapse risk analysis' },
+    { id: 'review',      name: 'Review',         icon: BadgeCheck,  description: 'Human QA sample review' },
+    { id: 'pipelines',   name: 'Pipelines',      icon: GitBranch,   description: 'Multi-schema pipeline snapshots' },
+    { id: 'billing',     name: 'Billing',        icon: CreditCard,  description: 'Subscription and usage' },
+    { id: 'settings',    name: 'Settings',       icon: Settings,    description: 'Account and platform settings' },
     ...(import.meta.env.VITE_FEATURE_MARKETPLACE === '1' ? [
       { id: 'marketplace', name: 'Marketplace', icon: GitBranch, description: 'Model rental marketplace (preview)' }
     ] : [])
@@ -300,124 +311,70 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
                   >✕</button>
                 </div>
                 <ol className="list-decimal ml-6 space-y-2 text-gray-800">
-                  <li>
-                    <button className="text-blue-700 underline" onClick={() => setActiveTab('upload')}>Upload a small seed dataset</button>
-                  </li>
-                  <li>
-                    <button className="text-blue-700 underline" onClick={() => setActiveTab('benchmarks')}>Run Benchmarks (uses safe local stubs in QA)</button>
-                  </li>
-                  <li>
-                    <button className="text-blue-700 underline" onClick={() => setActiveTab('reporting')}>Open Reporting dashboard</button>
-                  </li>
-                  <li>
-                    <button className="text-blue-700 underline" onClick={() => setActiveTab('privacy')}>Review Privacy metrics</button>
-                  </li>
-                  <li>
-                    <button className="text-blue-700 underline" onClick={() => setActiveTab('models')}>Open Libraries (Datasets/Models/Templates)</button>
-                  </li>
-                  <li>
-                    <button className="text-blue-700 underline" onClick={() => setActiveTab('pipelines')}>Manage Pipelines / Snapshots</button>
-                  </li>
-                  <li>
-                    <button className="text-blue-700 underline" onClick={() => setActiveTab('billing')}>Configure Billing (if eligible)</button>
-                  </li>
+                  <li><button className="text-blue-700 underline" onClick={() => setActiveTab('upload')}>Upload seed data</button> — your real sample (CSV/JSON)</li>
+                  <li><button className="text-blue-700 underline" onClick={() => setActiveTab('schema')}>Import or design your schema</button> — 46-field GEO schema supported</li>
+                  <li><button className="text-blue-700 underline" onClick={() => setActiveTab('generate')}>Generate synthetic data</button> — set target rows, download CSV/JSON</li>
+                  <li><button className="text-blue-700 underline" onClick={() => setActiveTab('clean')}>Clean the output</button> — dedupe, IQR cap, schema enforce</li>
+                  <li><button className="text-blue-700 underline" onClick={() => setActiveTab('models')}>Model Lab</button> — configure LoRA params and download the training bundle</li>
                 </ol>
               </div>
             )}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="bg-white rounded-lg shadow-sm border p-6"
-              >
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white rounded-lg shadow-sm border p-6">
                 <div className="flex items-center">
-                  <div className="p-2 bg-blue-100 rounded-lg">
-                    <Database className="h-6 w-6 text-blue-600" />
-                  </div>
+                  <div className="p-2 bg-blue-100 rounded-lg"><Database className="h-6 w-6 text-blue-600" /></div>
                   <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">Total Records</p>
-                    <p className="text-2xl font-bold text-gray-900">1,000,000,000+</p>
+                    <p className="text-sm font-medium text-gray-600">Generated Records</p>
+                    <p className="text-2xl font-bold text-gray-900">{(generatedCount || generatedData.length) > 0 ? (generatedCount || generatedData.length).toLocaleString() : '—'}</p>
                   </div>
                 </div>
               </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-                className="bg-white rounded-lg shadow-sm border p-6"
-              >
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="bg-white rounded-lg shadow-sm border p-6">
                 <div className="flex items-center">
-                  <div className="p-2 bg-green-100 rounded-lg">
-                    <Activity className="h-6 w-6 text-green-600" />
-                  </div>
+                  <div className="p-2 bg-green-100 rounded-lg"><Activity className="h-6 w-6 text-green-600" /></div>
                   <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">Generation Speed</p>
-                    <p className="text-2xl font-bold text-gray-900">50K/sec</p>
+                    <p className="text-sm font-medium text-gray-600">Last Gen Speed</p>
+                    <p className="text-2xl font-bold text-gray-900">{lastSpeed > 0 ? `${lastSpeed.toLocaleString()}/s` : '—'}</p>
                   </div>
                 </div>
               </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="bg-white rounded-lg shadow-sm border p-6"
-              >
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-white rounded-lg shadow-sm border p-6">
                 <div className="flex items-center">
-                  <div className="p-2 bg-purple-100 rounded-lg">
-                    <Shield className="h-6 w-6 text-purple-600" />
-                  </div>
+                  <div className="p-2 bg-purple-100 rounded-lg"><Shield className="h-6 w-6 text-purple-600" /></div>
                   <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">Quality Score</p>
-                    <p className="text-2xl font-bold text-gray-900">100%</p>
+                    <p className="text-sm font-medium text-gray-600">Seed Records</p>
+                    <p className="text-2xl font-bold text-gray-900">{seedData.length > 0 ? seedData.length.toLocaleString() : '—'}</p>
                   </div>
                 </div>
               </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                className="bg-white rounded-lg shadow-sm border p-6"
-              >
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="bg-white rounded-lg shadow-sm border p-6">
                 <div className="flex items-center">
-                  <div className="p-2 bg-orange-100 rounded-lg">
-                    <Users className="h-6 w-6 text-orange-600" />
-                  </div>
+                  <div className="p-2 bg-orange-100 rounded-lg"><Settings className="h-6 w-6 text-orange-600" /></div>
                   <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">Active Users</p>
-                    <p className="text-2xl font-bold text-gray-900">1,247</p>
+                    <p className="text-sm font-medium text-gray-600">Schema Fields</p>
+                    <p className="text-2xl font-bold text-gray-900">{activeSchema?.fields?.length ?? '—'}</p>
                   </div>
                 </div>
               </motion.div>
             </div>
 
             <div className="bg-white rounded-lg shadow-sm border p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h3>
-              <div className="space-y-3">
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                  <div className="flex items-center">
-                    <div className="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
-                    <span className="text-sm text-gray-700">Dataset generation completed - 1M records</span>
-                  </div>
-                  <span className="text-xs text-gray-500">2 minutes ago</span>
-                </div>
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                  <div className="flex items-center">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full mr-3"></div>
-                    <span className="text-sm text-gray-700">Schema validation passed</span>
-                  </div>
-                  <span className="text-xs text-gray-500">15 minutes ago</span>
-                </div>
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                  <div className="flex items-center">
-                    <div className="w-2 h-2 bg-purple-500 rounded-full mr-3"></div>
-                    <span className="text-sm text-gray-700">Privacy metrics updated</span>
-                  </div>
-                  <span className="text-xs text-gray-500">1 hour ago</span>
-                </div>
-              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Pipeline Status</h3>
+              <ol className="space-y-2">
+                {[
+                  { label: 'Upload seed data', done: seedData.length > 0, tab: 'upload' as DashboardTab, detail: seedData.length > 0 ? `${seedData.length.toLocaleString()} records` : 'Required first step' },
+                  { label: 'Design schema', done: (activeSchema?.fields?.length ?? 0) > 3, tab: 'schema' as DashboardTab, detail: `${activeSchema?.fields?.length ?? 0} fields` },
+                  { label: 'Generate synthetic data', done: (generatedCount || generatedData.length) > 0, tab: 'generate' as DashboardTab, detail: (generatedCount || generatedData.length) > 0 ? `${(generatedCount || generatedData.length).toLocaleString()} records` : 'Not run yet' },
+                  { label: 'Clean & validate', done: false, tab: 'clean' as DashboardTab, detail: generatedData.length > 0 ? 'Ready to clean' : 'Generate data first' },
+                  { label: 'Download training bundle', done: false, tab: 'models' as DashboardTab, detail: 'Configure LoRA params and download' },
+                ].map(step => (
+                  <li key={step.tab} className="flex items-center gap-3 p-3 rounded-lg bg-gray-50">
+                    <span className={`w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold ${step.done ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-500'}`}>{step.done ? '✓' : '○'}</span>
+                    <button onClick={() => setActiveTab(step.tab)} className="text-sm font-medium text-blue-700 underline hover:text-blue-900 text-left">{step.label}</button>
+                    <span className="text-xs text-gray-500 ml-auto">{step.detail}</span>
+                  </li>
+                ))}
+              </ol>
             </div>
           </div>
         );
@@ -440,6 +397,7 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
               onGenerationComplete={(result) => {
                 if (result.success && result.records?.length > 0) {
                   setGeneratedData(result.records);
+                  if (result.metrics?.recordsPerSecond) setLastSpeed(result.metrics.recordsPerSecond);
                 }
               }}
             />
@@ -535,14 +493,6 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
           );
         }
 
-      case 'ablation':
-        return (
-          <div className="bg-white rounded-lg border p-8 text-center">
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Ablation moved under Benchmarks</h3>
-            <p className="text-gray-700 mb-6">Use the Benchmarks tab to run ablation recipes and model comparisons.</p>
-            <button onClick={() => setActiveTab('benchmarks')} className="px-5 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700">Go to Benchmarks</button>
-          </div>
-        );
 
       case 'reporting':
         if (!seedPresent && !qaMode) return <GatePanel title="Reporting needs data" body="Upload a seed or generate a sample to populate reports. No external calls are made until you confirm." />;
@@ -562,15 +512,11 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
 
       case 'models':
         return (
-          <div className="space-y-6">
-            <ModelsLibrary />
-            <DatasetsLibrary />
-            <TemplatesLibrary />
-            <div className="bg-white rounded-lg shadow-sm border p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Model Lab</h3>
-              <ModelLab />
-            </div>
-          </div>
+          <ModelLab
+            generatedData={generatedData}
+            seedData={seedData}
+            generatedCount={generatedCount}
+          />
         );
 
       case 'billing':

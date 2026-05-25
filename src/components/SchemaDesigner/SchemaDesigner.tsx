@@ -88,18 +88,6 @@ const SchemaDesigner: React.FC<SchemaDesignerProps> = ({ onSchemaChange, initial
     setTimeout(() => setSaveStatus('idle'), 3000);
   };
 
-  // Debounced autosave
-  useEffect(() => {
-    const timeout = setTimeout(async () => {
-      try {
-        if (offline) return;
-        await saveToSupabase(schema);
-      } catch { /* ignore autosave errors */ }
-    }, 600);
-    return () => clearTimeout(timeout);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [schema.name, schema.description, schema.domain, schema.fields, schema.targetVolume, schema.privacySettings, offline]);
-
   // Listen for offline toggle
   useEffect(() => {
     const handler = (e: Event) => {
@@ -151,16 +139,6 @@ const SchemaDesigner: React.FC<SchemaDesignerProps> = ({ onSchemaChange, initial
 
   const updateSchema = (updates: Partial<DataSchema>) => {
     setSchema(prev => ({ ...prev, ...updates }));
-  };
-
-  const saveSchemaToSupabase = async () => {
-    try {
-      await saveToSupabase(schema);
-      {
-      }
-    } catch (e) {
-      console.warn('Schema save failed', e);
-    }
   };
 
   return (
@@ -482,7 +460,7 @@ const SchemaDesigner: React.FC<SchemaDesignerProps> = ({ onSchemaChange, initial
 
         <div className="mt-4 flex items-center gap-3 flex-wrap">
           <button
-            onClick={saveSchemaToSupabase}
+            onClick={() => saveToSupabase(schema)}
             className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
           >
             {saveStatus === 'saving' ? 'Saving...' : 'Save to Supabase'}

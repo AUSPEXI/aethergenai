@@ -51,17 +51,20 @@ function calcPrivacy(seedData: any[], generatedData: any[]): number {
   return 1 - overlap / generatedData.length;
 }
 
-function calcUtility(generatedData: any[]): number {
-  if (!generatedData.length) return 0;
-  const fields = Object.keys(generatedData[0] || {});
-  if (!fields.length) return 0;
-  let totalUniqueness = 0;
-  for (const f of fields) {
-    const vals = generatedData.map(d => d[f]).filter(v => v != null);
-    if (!vals.length) continue;
-    totalUniqueness += new Set(vals.map(String)).size / vals.length;
+// Utility: for each field, what fraction of the seed's unique values appear in synthetic data.
+// This is meaningful at any fixed sample size — it answers "does the generator cover the value space?"
+function calcUtility(seedData: any[], generatedData: any[], fields: any[]): number {
+  if (!seedData.length || !generatedData.length || !fields?.length) return 0;
+  let total = 0, count = 0;
+  for (const field of fields) {
+    const seedVals  = new Set(seedData.map((d: any) => d[field.name]).filter((v: any) => v != null).map(String));
+    const synthVals = new Set(generatedData.map((d: any) => d[field.name]).filter((v: any) => v != null).map(String));
+    if (!seedVals.size) continue;
+    const covered = [...seedVals].filter(v => synthVals.has(v)).length;
+    total += covered / seedVals.size;
+    count++;
   }
-  return Math.min(1, totalUniqueness / fields.length);
+  return count > 0 ? total / count : 0;
 }
 
 function calcDiversityLoss(data: any[]): number {
@@ -70,15 +73,20 @@ function calcDiversityLoss(data: any[]): number {
   return 1 - unique.size / data.length;
 }
 
-function calcModeCollapse(data: any[], fields: any[]): number {
-  if (!fields?.length || !data.length) return 0;
-  const diversities = fields.map((field: any) => {
-    const vals = data.map((d: any) => d[field.name]).filter((v: any) => v != null);
-    if (!vals.length) return 1;
-    return new Set(vals).size / vals.length;
-  });
-  const avg = diversities.reduce((a, b) => a + b, 0) / diversities.length;
-  return 1 - avg;
+// Mode collapse: fraction of each field's seed value space NOT covered by synthetic data.
+// 0% = generator reproduces all seed values (good). 100% = generator produces only one value (collapsed).
+function calcModeCollapse(seedData: any[], generatedData: any[], fields: any[]): number {
+  if (!fields?.length || !seedData.length || !generatedData.length) return 0;
+  let total = 0, count = 0;
+  for (const field of fields) {
+    const seedVals  = new Set(seedData.map((d: any) => d[field.name]).filter((v: any) => v != null).map(String));
+    const synthVals = new Set(generatedData.map((d: any) => d[field.name]).filter((v: any) => v != null).map(String));
+    if (!seedVals.size) continue;
+    const covered = [...seedVals].filter(v => synthVals.has(v)).length;
+    total += 1 - covered / seedVals.size;
+    count++;
+  }
+  return count > 0 ? total / count : 0;
 }
 
 function calcQualityDegradation(data: any[], fields: any[]): number {
@@ -136,11 +144,11 @@ const ReportingDashboard: React.FC<ReportingDashboardProps> = ({ schema, seedDat
 
   const fidelity          = calcFidelity(seedData, generatedData, fields);
   const privacy           = calcPrivacy(seedData, generatedData);
-  const utility           = calcUtility(generatedData);
+  const utility           = calcUtility(seedData, generatedData, fields);
   const overallScore      = generatedData.length ? (fidelity + privacy + utility) / 3 : 0;
 
   const diversityLoss     = calcDiversityLoss(generatedData);
-  const modeCollapse      = calcModeCollapse(generatedData, fields);
+  const modeCollapse      = calcModeCollapse(seedData, generatedData, fields);
   const qualityDegradation = calcQualityDegradation(generatedData, fields);
   const noveltyScore      = calcNovelty(seedData, generatedData);
   const riskLevel         = generatedData.length
@@ -210,10 +218,10 @@ const ReportingDashboard: React.FC<ReportingDashboardProps> = ({ schema, seedDat
       {/* Key metrics */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: 'Quality Score',    value: `${(overallScore * 100).toFixed(1)}%`, sub: 'avg fidelity / privacy / utility', color: 'text-blue-600' },
+          { label: 'Quality Score',    value: `${(overallScore * 100).toFixed(1)}%`, sub: 'avg fidelity / privacy / value-space coverage', color: 'text-blue-600' },
           { label: 'Records',          value: generatedData.length.toLocaleString(), sub: `of ${schema?.targetVolume?.toLocaleString() ?? '—'} target`, color: 'text-green-600' },
           { label: 'Seed Records',     value: seedData.length.toLocaleString(),      sub: 'reference dataset',                  color: 'text-purple-600' },
-          { label: 'Collapse Risk',    value: riskLevel,                             sub: 'from required-field analysis',       color: riskLevel === 'LOW' ? 'text-green-600' : riskLevel === 'MEDIUM' ? 'text-yellow-600' : riskLevel === 'HIGH' ? 'text-orange-600' : 'text-red-600' },
+          { label: 'Collapse Risk',    value: riskLevel,                             sub: 'based on value-space coverage vs seed', color: riskLevel === 'LOW' ? 'text-green-600' : riskLevel === 'MEDIUM' ? 'text-yellow-600' : riskLevel === 'HIGH' ? 'text-orange-600' : 'text-red-600' },
         ].map(m => (
           <div key={m.label} className="bg-white rounded-lg border shadow-sm p-5">
             <p className="text-sm font-medium text-gray-600 mb-1">{m.label}</p>
@@ -264,10 +272,10 @@ const ReportingDashboard: React.FC<ReportingDashboardProps> = ({ schema, seedDat
             <div className={`p-4 rounded-lg border-2 mb-4 ${riskColorClass(riskLevel)}`}>
               <p className="font-bold text-lg mb-3">Level: {riskLevel}</p>
               {[
-                { label: 'Diversity Loss',      val: diversityLoss,      note: 'duplicate records / total' },
-                { label: 'Mode Collapse',       val: modeCollapse,       note: 'avg per-field repetition' },
+                { label: 'Diversity Loss',      val: diversityLoss,      note: 'duplicate records in sample' },
+                { label: 'Mode Collapse',       val: modeCollapse,       note: '% of seed value space NOT covered' },
                 { label: 'Quality Degradation', val: qualityDegradation, note: 'required fields missing' },
-                { label: 'Novelty Score',       val: noveltyScore,       note: 'records not in seed (higher = better)', invert: true },
+                { label: 'Novelty Score',       val: noveltyScore,       note: 'records absent from seed (higher = better)', invert: true },
               ].map(({ label, val, note, invert }) => (
                 <div key={label} className="flex items-center justify-between text-sm mb-1">
                   <span className="text-gray-700">{label}</span>

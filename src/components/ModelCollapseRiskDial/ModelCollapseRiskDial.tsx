@@ -126,18 +126,16 @@ const ModelCollapseRiskDial: React.FC<ModelCollapseRiskDialProps> = ({
   };
 
   const calculateModeCollapse = (): number => {
-    if (schema.fields.length === 0) return 0;
-    
-    const fieldDiversities = schema.fields.map(field => {
-      const values = syntheticData.map(d => d[field.name]).filter(v => v !== null && v !== undefined);
-      if (values.length === 0) return 1;
-      
-      const uniqueValues = new Set(values);
-      return uniqueValues.size / values.length;
+    if (!schema?.fields?.length || !syntheticData.length) return 0;
+    // Requires seed data context — without it fall back to raw uniqueness ratio
+    // (ModelCollapseRiskDial only receives syntheticData, no seedData prop)
+    const diversities = schema.fields.map((field: any) => {
+      const vals = syntheticData.map((d: any) => d[field.name]).filter((v: any) => v != null);
+      if (!vals.length) return 1;
+      return new Set(vals).size / Math.min(vals.length, 50); // cap at 50 so 200-row samples aren't penalised
     });
-    
-    const avgDiversity = fieldDiversities.reduce((a, b) => a + b, 0) / fieldDiversities.length;
-    return 1 - avgDiversity;
+    const avg = diversities.reduce((a: number, b: number) => a + b, 0) / diversities.length;
+    return Math.max(0, 1 - Math.min(1, avg));
   };
 
   const calculateQualityDegradation = (): number => {

@@ -309,10 +309,13 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
             const start = Date.now();
             let generated = 0, lastTick = Date.now(), lastGen = 0;
             const sample: any[] = [];
-            let jsonParts: string[] = ['[']; let first = true;
-            const csvRows: string[] = [fields.join(',')];
+            const enc = new TextEncoder();
+            // Send CSV header as first transfer (zero-copy ArrayBuffer)
+            const headerBuf = enc.encode(fields.join(',') + '\n').buffer;
+            (self as any).postMessage({ type: 'batch', buffer: headerBuf, generated: 0, rps: 0 }, [headerBuf]);
             while (generated < total) {
               const n = Math.min(batchSize, total - generated);
+              let csvLines: string[] = [];
               for (let i=0;i<n;i++){
                 const rec: any = {}; for (const f of schema.fields) rec[f.name]=gv(f,seedData,epsilon);
                 if (useAgo) {
@@ -324,61 +327,55 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
                   if (knum) { const base = Number(rec[knum])||0; rec[knum] = base + 0.02*Math.sin(2*Math.PI*((generated+i)/50)); }
                 }
                 sample.push(rec); if (sample.length>sampleMax) sample.splice(0,sample.length-sampleMax);
-                const frag = JSON.stringify(rec); if(!first) jsonParts.push(','); jsonParts.push(frag); first=false;
-                const csvVals = fields.map(fn=>{ const v=rec[fn]; if(v===null||v===undefined) return ''; if(typeof v==='object') return '"'+JSON.stringify(v).replace(/"/g,'""')+'"'; return '"'+String(v).replace(/"/g,'""')+'"'; }); csvRows.push(csvVals.join(','));
+                const csvVals = fields.map(fn=>{ const v=rec[fn]; if(v===null||v===undefined) return ''; if(typeof v==='object') return '"'+JSON.stringify(v).replace(/"/g,'""')+'"'; return '"'+String(v).replace(/"/g,'""')+'"'; }); csvLines.push(csvVals.join(','));
               }
               generated += n;
               const now = Date.now();
-              if (now-lastTick>=300){ const rps=Math.round((generated-lastGen)/((now-lastTick)/1000)); (self as any).postMessage({type:'progress',generated,rps}); lastTick=now; lastGen=generated; await new Promise(r=>setTimeout(r,0)); }
+              const rps = (now-lastTick)>0 ? Math.round((generated-lastGen)/((now-lastTick)/1000)) : 0;
+              if (now-lastTick>=300){ lastTick=now; lastGen=generated; }
+              // Encode batch and transfer ArrayBuffer zero-copy; worker loses reference immediately
+              const chunk = csvLines.join('\n') + '\n';
+              csvLines = [];
+              const buf = enc.encode(chunk).buffer;
+              (self as any).postMessage({ type: 'batch', buffer: buf, generated, rps }, [buf]);
+              await new Promise(r=>setTimeout(r,0));
             }
-            jsonParts.push(']');
-            const jsonText = jsonParts.join('');
-            const csvText = csvRows.join('\n');
-            (self as any).postMessage({type:'done', generated, total, sample, jsonText, csvText, elapsedMs: Date.now()-start});
+            (self as any).postMessage({type:'done', generated, total, sample, elapsedMs: Date.now()-start});
           };
         /* worker-end */ };
         const code = `(${workerFn.toString()})()`;
         const blob = new Blob([code], { type: 'application/javascript' });
         const w = new Worker(URL.createObjectURL(blob));
+        // Accumulate CSV as Blob parts — browser can page these to disk, never held as strings
+        const csvBlobParts: Blob[] = [];
         w.onmessage = (ev: MessageEvent) => {
           const msg: any = ev.data || {};
-          if (msg.type === 'progress') {
-            setGeneratedRecords(msg.generated);
-            setProgress(Math.min(100, (msg.generated / targetRecords) * 100));
-            setCurrentSpeed(msg.rps);
-            if (startRef.current) setElapsedMs(Date.now() - startRef.current);
-          } else if (msg.type === 'done') {
-            const { sample, jsonText, csvText, elapsedMs, generated } = msg;
-            // Parse full records for the in-memory pipeline (cap at 10k to keep UI responsive)
-            let fullRecords: any[] = sample;
-            try {
-              if (jsonText) {
-                const parsed = JSON.parse(jsonText);
-                fullRecords = Array.isArray(parsed) ? parsed.slice(0, 10000) : sample;
-              }
-            } catch (_) { fullRecords = sample; }
-            setGeneratedData(fullRecords);
-            // Build blobs on main thread for reliable downloads
-            try {
-              const jBlob = new Blob([jsonText || '[]'], { type: 'application/json' });
-              const cBlob = new Blob([csvText || ''], { type: 'text/csv' });
-              setFinalJsonBlob(jBlob);
-              setFinalCsvBlob(cBlob);
-            } catch (_) {
-              setFinalJsonBlob(null);
-              setFinalCsvBlob(null);
+          if (msg.type === 'batch') {
+            // Zero-copy: worker transferred the ArrayBuffer, wrap in Blob and track
+            if (msg.buffer && msg.buffer.byteLength > 0) csvBlobParts.push(new Blob([msg.buffer]));
+            if (msg.generated > 0) {
+              setGeneratedRecords(msg.generated);
+              setProgress(Math.min(100, (msg.generated / targetRecords) * 100));
+              if (msg.rps > 0) setCurrentSpeed(msg.rps);
+              if (startRef.current) setElapsedMs(Date.now() - startRef.current);
             }
-            // Optional post-generation cleaning (outside recipes)
+          } else if (msg.type === 'done') {
+            const { sample, elapsedMs, generated } = msg;
+            const lastSample: any[] = sample || [];
+            setGeneratedData(lastSample);
+            // Assemble final CSV from streamed parts — no giant string ever created
+            const cBlob = new Blob(csvBlobParts, { type: 'text/csv' });
+            setFinalCsvBlob(cBlob);
+            setFinalJsonBlob(null);
+            // Post-generation cleaning runs on sample only (full dataset lives in CSV blob)
             if (cleanBeforeDownload || autoTighten) {
               try {
                 setIsCleaning(true);
-                const raw = jsonText ? JSON.parse(jsonText) : [];
-                // drift detection
+                const raw = lastSample;
                 const metrics = detectDrift(seedData, raw);
                 if (autoTighten && (metrics.uniqueness < 0.9 || metrics.entropy < 0.6)) {
                   setDriftAlert(`Auto-tighten applied (uniqueness ${Math.round(metrics.uniqueness*100)}%, entropy ${Math.round(metrics.entropy*100)}%)`);
                 }
-                // Prefer user-chosen IQR k from Autopilot if present
                 let k = (autoTighten && (metrics.uniqueness < 0.9 || metrics.entropy < 0.6)) ? 1.2 : 1.5;
                 try {
                   const s = localStorage.getItem('aeg_cleaning_iqrk');
@@ -393,31 +390,21 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
                   dates: { iso8601: true },
                 });
                 setCleaningReport(report);
+                // JSON preview blob is sample-only; full data is in the CSV blob
                 const j = new Blob([JSON.stringify(cleaned)], { type: 'application/json' });
                 setFinalJsonBlob(j);
-                // rebuild CSV
-                const fields = Object.keys(cleaned[0] || {});
-                const rows = [fields.join(',')].concat(cleaned.map((row:any)=>fields.map(f=>{
-                  const val = row[f];
-                  if (val === null || val === undefined) return '';
-                  if (typeof val === 'object') return '"' + JSON.stringify(val).replace(/"/g,'""') + '"';
-                  return '"' + String(val).replace(/"/g,'""') + '"';
-                }).join(',')));
-                const c = new Blob([rows.join('\n')], { type: 'text/csv' });
-                setFinalCsvBlob(c);
               } catch (e) {
                 console.warn('post-gen cleaning failed', e);
               } finally {
                 setIsCleaning(false);
               }
             }
-            // Ensure counters show actual generated count
             setGeneratedRecords(generated ?? targetRecords);
             setProgress(Math.min(100, ((generated ?? targetRecords) / targetRecords) * 100));
             setElapsedMs(elapsedMs || (startRef.current ? Date.now() - startRef.current : 0));
             const finalResult: SyntheticDataResult = {
               success: true,
-              records: fullRecords,
+              records: lastSample,
               metrics: {
                 privacyScore: qualityMetrics.privacyScore,
                 utilityScore: qualityMetrics.utilityScore,
@@ -429,7 +416,6 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
             generateZKProofForSyntheticData();
             setIsGenerating(false);
             setIsComplete(true);
-            // Notify app of total generated count for status bar
             window.dispatchEvent(new CustomEvent('aethergen:gen-total', { detail: { total: generated ?? targetRecords } }));
             w.terminate();
           }

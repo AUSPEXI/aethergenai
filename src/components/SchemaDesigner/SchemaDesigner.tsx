@@ -67,7 +67,7 @@ const SchemaDesigner: React.FC<SchemaDesignerProps> = ({ onSchemaChange, initial
     setSaveStatus('saving');
     const schemaJson = { name: s.name, description: s.description, domain: s.domain, fields: s.fields, targetVolume: s.targetVolume, privacySettings: s.privacySettings };
     const schemaString = JSON.stringify(schemaJson);
-    const schemaHash = btoa(schemaString).slice(0, 64);
+    const schemaHash = btoa(unescape(encodeURIComponent(schemaString))).slice(0, 64);
     let result: { data: any; error: any } | null = null;
     try {
       result = await Promise.race([

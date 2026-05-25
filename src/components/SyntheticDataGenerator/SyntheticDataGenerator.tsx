@@ -132,7 +132,8 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
 
   const saveGeneratedToDatasets = async () => {
     try {
-      if (!generatedData || generatedData.length === 0) return;
+      const totalRows = generatedRecords || generatedData.length;
+      if (totalRows === 0) return;
       const owner_id = localStorage.getItem('aeg_owner_id') || 'anonymous';
       const name = `${schema?.id || 'schema'}_synthetic_${new Date().toISOString().slice(0,10)}`;
       const createRes = await fetch('/api/datasets?action=create', {
@@ -141,16 +142,18 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
       });
       const created = await createRes.json();
       if (!created.dataset?.id) throw new Error(created.error || 'Dataset create failed');
+      const byteSize = finalCsvBlob ? finalCsvBlob.size : JSON.stringify(generatedData).length;
       const vRes = await fetch('/api/datasets?action=addVersion', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ dataset_id: created.dataset.id, version_label: 'v1', row_count: generatedData.length, byte_size: JSON.stringify(generatedData).length, checksum: undefined, proof_json: zkProof })
+        body: JSON.stringify({ dataset_id: created.dataset.id, version_label: 'v1', row_count: totalRows, byte_size: byteSize, checksum: undefined, proof_json: zkProof })
       });
+      if (!vRes.ok) { const t = await vRes.text(); throw new Error(`addVersion failed: ${t}`); }
       const vJs = await vRes.json();
       await fetch('/api/evidence?action=record', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ event_type: 'synthetic_saved', owner_id, details: { dataset_id: created.dataset.id, version_id: vJs.version?.id, schema_id: schema?.id } }) });
       if (zkProof) {
         await fetch('/api/evidence?action=link-proof', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ dataset_version_id: vJs.version?.id, proof_id: null }) });
       }
-      alert('Synthetic data saved to Datasets');
+      alert(`Synthetic data saved to Datasets (${totalRows.toLocaleString()} rows)`);
     } catch (e: any) {
       alert('Save failed: ' + (e.message || 'unknown'));
     }
@@ -524,14 +527,14 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
             metadata: {
               epsilon: schema.privacySettings.epsilon,
               synthetic_ratio: schema.privacySettings.syntheticRatio,
-              cleaned: (cleanBeforeDownload || autoTighten) || undefined,
+              cleaned: cleanBeforeDownload || undefined,
               cleaning_report: cleaningReport || undefined
             }
           })
         });
         }
         // If we cleaned post-fact, record a second entry for cleaned artifacts
-        if (!offline && (cleanBeforeDownload || autoTighten) && cleaningReport) {
+        if (!offline && cleanBeforeDownload && cleaningReport) {
           await fetch('/api/record-dataset', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -1212,8 +1215,8 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
               )}
               <button
                 onClick={saveGeneratedToDatasets}
-                disabled={!generatedData || generatedData.length === 0}
-                className={`px-4 py-2 rounded-md text-sm ${generatedData && generatedData.length ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-gray-400 text-gray-600 cursor-not-allowed'}`}
+                disabled={!(generatedRecords > 0 || generatedData.length > 0)}
+                className={`px-4 py-2 rounded-md text-sm ${(generatedRecords > 0 || generatedData.length > 0) ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-gray-400 text-gray-600 cursor-not-allowed'}`}
                 title="Save generated dataset to library"
               >
                 💾 Save to Datasets

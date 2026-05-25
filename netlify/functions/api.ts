@@ -52,6 +52,12 @@ const handler: Handler = async (event) => {
           if (error) return bad(error.message, 500)
           return ok({ dataset: data })
         }
+        if (action === 'addVersion') {
+          const body = parseBody(event); const { dataset_id, version_label, row_count, byte_size, checksum, proof_json } = body; if (!dataset_id) return bad('dataset_id required')
+          const { data, error } = await getServiceSupabase().from('dataset_versions').insert({ dataset_id, version_label, row_count, byte_size, checksum, proof_json }).select('*').single()
+          if (error) return bad(error.message, 500)
+          return ok({ version: data })
+        }
         return bad('unknown action')
       }
       case 'models': {

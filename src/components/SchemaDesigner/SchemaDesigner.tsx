@@ -68,9 +68,22 @@ const SchemaDesigner: React.FC<SchemaDesignerProps> = ({ onSchemaChange, initial
     const schemaJson = { name: s.name, description: s.description, domain: s.domain, fields: s.fields, targetVolume: s.targetVolume, privacySettings: s.privacySettings };
     const schemaString = JSON.stringify(schemaJson);
     const schemaHash = btoa(schemaString).slice(0, 64);
-    const { data, error } = await supabase.from('ae_schemas').upsert({ id: s.id !== 'automotive_v1' ? s.id : undefined, name: s.name || 'Untitled Schema', description: s.description || '', schema_json: schemaJson, schema_hash: schemaHash }, { onConflict: 'id' }).select('id').single();
-    if (error) { setSaveStatus('error'); return; }
-    if (data?.id && data.id !== s.id) setSchema(prev => ({ ...prev, id: data.id }));
+    let result: { data: any; error: any } | null = null;
+    try {
+      result = await Promise.race([
+        supabase.from('ae_schemas').upsert(
+          { id: s.id !== 'automotive_v1' ? s.id : undefined, name: s.name || 'Untitled Schema', description: s.description || '', schema_json: schemaJson, schema_hash: schemaHash },
+          { onConflict: 'id' }
+        ).select('id').single(),
+        new Promise<never>((_, reject) => setTimeout(() => reject(new Error('timeout')), 10000)),
+      ]);
+    } catch {
+      setSaveStatus('error');
+      setTimeout(() => setSaveStatus('idle'), 4000);
+      return;
+    }
+    if (result.error) { setSaveStatus('error'); setTimeout(() => setSaveStatus('idle'), 4000); return; }
+    if (result.data?.id && result.data.id !== s.id) setSchema(prev => ({ ...prev, id: result!.data.id }));
     setSaveStatus('saved');
     setTimeout(() => setSaveStatus('idle'), 3000);
   };

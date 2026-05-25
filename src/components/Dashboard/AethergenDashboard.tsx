@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  BarChart3, 
-  Database, 
-  Settings, 
-  Users, 
-  CreditCard, 
-  Shield, 
+import {
+  BarChart3,
+  Database,
+  Settings,
+  CreditCard,
+  Shield,
   Activity,
   ChevronRight,
   LogOut,
@@ -14,7 +13,6 @@ import {
   GitBranch,
   Upload,
   BadgeCheck,
-  LineChart
 } from 'lucide-react';
 import { getEntitlements } from '../../services/entitlementsClient';
 import { entitlementsToRole, roleHas } from '../../services/rbacService';
@@ -29,14 +27,8 @@ import ModelCollapseRiskDial from '../ModelCollapseRiskDial/ModelCollapseRiskDia
 import { assertSupabase, supabase } from '../../services/supabaseClient';
 import UpgradeGate from './UpgradeGate';
 import SeedDataUploader from '../SeedDataUploader/SeedDataUploader';
-import AdvancedBenchmarking from '../AdvancedBenchmarking/AdvancedBenchmarking';
 import ModelLab from '../ModelLab/ModelLab';
 import AugmentationPanel from '../AugmentationPanel/AugmentationPanel';
-import ModuleBenchmarks from '../DataCollection/ModuleBenchmarks';
-import DatasetsLibrary from '../Libraries/DatasetsLibrary';
-import ModelsLibrary from '../Libraries/ModelsLibrary';
-import TemplatesLibrary from '../Libraries/TemplatesLibrary';
-import MarketplaceHome from '../Marketplace/MarketplaceHome';
 import ReviewTab from '../QA/ReviewTab';
 const StorageUsagePanel: React.FC<{ role: 'viewer'|'developer'|'team'|'enterprise'|'admin' }> = ({ role }) => {
   const [usage, setUsage] = React.useState<{ datasetsBytes:number; datasetsCount:number; modelsCount:number; modelsBytes?:number }|null>(null);
@@ -108,7 +100,6 @@ type DashboardTab =
   | 'upload'
   | 'generate'
   | 'clean'
-  | 'benchmarks'
   | 'reporting'
   | 'review'
   | 'pipelines'
@@ -246,7 +237,6 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
     { id: 'generate',    name: 'Generate',       icon: Database,    description: 'Generate synthetic datasets' },
     { id: 'clean',       name: 'Clean',          icon: Activity,    description: 'Clean and validate generated data' },
     { id: 'privacy',     name: 'Privacy',        icon: Shield,      description: 'Privacy metrics and DP settings' },
-    { id: 'benchmarks',  name: 'Benchmarks',     icon: LineChart,   description: 'Quality benchmarks and ablation recipes' },
     { id: 'reporting',   name: 'Reporting',      icon: BarChart3,   description: 'Fidelity, diversity and field reports' },
     { id: 'models',      name: 'Model Lab',      icon: BadgeCheck,  description: 'Download LoRA fine-tuning bundle' },
     { id: 'augment',     name: 'Augmentation',   icon: Database,    description: 'Real labeled rows from audit logs and Citacious' },
@@ -428,12 +418,17 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
         const cleanMode = generatedData.length > 0 ? 'synthetic' : 'seed';
         return (
           <div className="space-y-4">
-            <div className="flex items-center gap-3 p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-800">
-              <span>Cleaning: <strong>{generatedData.length > 0 ? `${generatedData.length.toLocaleString()} generated records` : `${seedData.length} seed records`}</strong></span>
+            <div className="flex flex-col gap-2 p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-800">
+              <span>
+                Cleaning: <strong>{generatedData.length > 0 ? `${generatedData.length.toLocaleString()}-row preview sample` : `${seedData.length} seed records`}</strong>
+                {generatedData.length > 0 && generatedCount > generatedData.length && (
+                  <span className="ml-1 text-blue-600">(full run was {generatedCount.toLocaleString()} rows — download CSV then re-upload here to clean the full dataset)</span>
+                )}
+              </span>
               {generatedData.length > 0 && seedData.length > 0 && (
                 <button
                   onClick={() => setGeneratedData([])}
-                  className="ml-auto text-xs underline text-blue-600 hover:text-blue-800"
+                  className="self-start text-xs underline text-blue-600 hover:text-blue-800"
                 >Switch to seed data</button>
               )}
             </div>
@@ -483,18 +478,6 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
           />
         );
 
-      case 'benchmarks':
-        if (!seedPresent && !qaMode) return <GatePanel title="Benchmarks need data" body="Upload a seed or generate a sample dataset so benchmark results reflect your schema." />;
-        {
-          const stubData = qaMode ? [{ vin: 'QA1', model: 'Demo', defect_score: 0.1, timestamp: new Date().toISOString() }] : [] as any[];
-          return (
-            <AdvancedBenchmarking
-              schema={activeSchema}
-              seedData={seedData.length > 0 ? seedData.slice(0, 200) : stubData}
-              generatedData={generatedData.length > 0 ? generatedData.slice(0, 200) : stubData}
-            />
-          );
-        }
 
 
       case 'reporting':
@@ -595,7 +578,7 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 text-gray-900">
       {/* Header */}
       <header className="bg-white shadow-sm border-b">
         <div className="flex items-center justify-between px-6 py-4">

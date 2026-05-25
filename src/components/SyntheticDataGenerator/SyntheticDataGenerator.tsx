@@ -874,18 +874,16 @@ const SyntheticDataGenerator: React.FC<SyntheticDataGeneratorProps> = ({
           <span className="px-2 py-1 border rounded">Est. generation latency: {Math.round((estimateStep('generation', { records: generationVolume }).latencyMs||0))} ms • $0</span>
           <span className="px-2 py-1 border rounded">Est. cleaning latency: {Math.round((estimateStep('cleaning', { records: generationVolume }).latencyMs||0))} ms • $0</span>
         </div>
-        <div className="mb-3 text-sm text-gray-700 flex items-center gap-3">
-          <label className="flex items-center gap-2"><input type="checkbox" checked={cleanBeforeDownload} onChange={(e)=>setCleanBeforeDownload(e.target.checked)} /> Clean synthetic before download</label>
-        <label className="flex items-center gap-2"><input type="checkbox" checked={autoTighten} onChange={(e)=>setAutoTighten(e.target.checked)} /> Auto‑tighten if drift/collapse detected</label>
-          <label className="flex items-center gap-2"><input type="checkbox" checked={useAgo} onChange={(e)=>{ setUseAgo(e.target.checked); try{ localStorage.setItem('aeg_use_ago', e.target.checked?'1':'0'); }catch{} }} /> AGO‑guided generation</label>
-          <label className="flex items-center gap-2"><input type="checkbox" checked={useHarm432} onChange={(e)=>{ setUseHarm432(e.target.checked); try{ localStorage.setItem('aeg_use_432', e.target.checked?'1':'0'); }catch{} }} /> 432 harmonic regularizer</label>
+        <div className="mb-3 text-sm text-gray-700 flex flex-wrap items-center gap-3">
+          <label className="flex items-center gap-2">
+            <input type="checkbox" checked={cleanBeforeDownload} onChange={(e)=>setCleanBeforeDownload(e.target.checked)} />
+            Clean 200-row preview before download
+          </label>
           {isCleaning && <span className="text-xs text-blue-700">Cleaning…</span>}
           {cleaningReport && (
-            <span className="text-xs text-gray-500">Cleaned: removed {cleaningReport.rowsRemoved}, dedup {cleaningReport.duplicatesRemoved}, outliers {cleaningReport.outliersCapped}</span>
+            <span className="text-xs text-gray-500">Preview cleaned: removed {cleaningReport.rowsRemoved}, dedup {cleaningReport.duplicatesRemoved}, outliers {cleaningReport.outliersCapped}</span>
           )}
-        {driftAlert && (
-          <span className="text-xs text-amber-700">{driftAlert}</span>
-        )}
+          <span className="text-xs text-gray-400">Full dataset cleaning: download CSV → re-upload to Clean tab</span>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">

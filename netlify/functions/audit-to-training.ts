@@ -262,14 +262,16 @@ function processEvents(events: AuditEvent[]) {
 export const handler: Handler = async (event) => {
   if (event.httpMethod === 'OPTIONS') return { statusCode: 204, headers: CORS, body: '' };
 
-  if (!SUPABASE_URL || !SUPABASE_KEY) {
-    return { statusCode: 500, headers: CORS, body: JSON.stringify({ error: 'Missing Supabase config' }) };
-  }
-
-  const sb = createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { persistSession: false } });
+  const supabaseReady = !!(SUPABASE_URL && SUPABASE_KEY);
+  const sb = supabaseReady
+    ? createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { persistSession: false } })
+    : null;
 
   // GET — stats
   if (event.httpMethod === 'GET') {
+    const empty = { total: 0, audit_rows: 0, distribution: {}, date_range: null };
+    if (!sb) return { statusCode: 200, headers: CORS, body: JSON.stringify(empty) };
+
     try {
       const { data, error } = await sb
         .from('geo_training_rows')
@@ -277,7 +279,11 @@ export const handler: Handler = async (event) => {
         .order('event_date', { ascending: false })
         .limit(5000);
 
-      if (error) throw error;
+      if (error) {
+        // Table not yet created or access denied — return empty stats so the panel loads
+        console.warn('geo_training_rows query error:', error.message);
+        return { statusCode: 200, headers: CORS, body: JSON.stringify(empty) };
+      }
 
       const distribution: Record<string, number> = {};
       let auditCount = 0;
@@ -303,12 +309,17 @@ export const handler: Handler = async (event) => {
         }),
       };
     } catch (e: any) {
-      return { statusCode: 500, headers: CORS, body: JSON.stringify({ error: e.message }) };
+      console.warn('audit-to-training GET error:', e.message);
+      return { statusCode: 200, headers: CORS, body: JSON.stringify(empty) };
     }
   }
 
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, headers: CORS, body: JSON.stringify({ error: 'Method Not Allowed' }) };
+  }
+
+  if (!sb) {
+    return { statusCode: 503, headers: CORS, body: JSON.stringify({ error: 'Service not configured' }) };
   }
 
   // POST — ingest audit events

@@ -185,7 +185,7 @@ function buildGeoSLMScript(p: GeoSLMParams): string {
 """
 AethergenAI – GEO SLM Fine-tuning Script
 Task:  Predict optimization_action from GEO query context + brand metrics
-Input: geo_synthetic_data.csv (56 fields, 1M rows)
+Input: geo_synthetic_data.csv (69 fields, 1M rows)
 Label: ${p.targetColumn}  →  publish_fact | update_entity | add_statistic | build_comparison | no_action
 
 Run:   python train_geo_slm.py --data geo_synthetic_data.csv --config config.yaml
@@ -289,6 +289,19 @@ def row_to_prompt(row: pd.Series) -> str:
         f"Z-Score: {float(row.get('z_score', 0)):.2f}\\n"
         f"Drift Detected: {row.get('drift_detected', False)}\\n"
         f"Decay Status: {row.get('decay_status', '')} (score: {float(row.get('decay_score', 0)):.1f})\\n"
+        "\\n# Latent Space Geometry\\n"
+        f"UMAP Position: x={float(row.get('umap_x', 0)):.2f}  y={float(row.get('umap_y', 0)):.2f}  z={float(row.get('umap_z', 0)):.2f}\\n"
+        f"Distance to Nearest Anchor: {float(row.get('distance_to_nearest_anchor', 0.5)):.3f}\\n"
+        f"Distance Delta (30d): {float(row.get('distance_delta_30d', 0)):+.3f}\\n"
+        f"Drift Direction: {row.get('drift_direction', 'neutral')}\\n"
+        "\\n# Anchor Proximity Scores\\n"
+        f"  enterprise-trusted:   {float(row.get('cluster_sim_enterprise_trusted', 0)):.3f}\\n"
+        f"  thought-leader:       {float(row.get('cluster_sim_thought_leader', 0)):.3f}\\n"
+        f"  cost-leader:          {float(row.get('cluster_sim_cost_leader', 0)):.3f}\\n"
+        f"  technical-authority:  {float(row.get('cluster_sim_technical_authority', 0)):.3f}\\n"
+        f"  brand-advocate:       {float(row.get('cluster_sim_brand_advocate', 0)):.3f}\\n"
+        f"  challenger:           {float(row.get('cluster_sim_challenger', 0)):.3f}\\n"
+        f"  niche-specialist:     {float(row.get('cluster_sim_niche_specialist', 0)):.3f}\\n"
         "\\n### Recommended Optimisation Action:"
     )
 
@@ -500,7 +513,7 @@ Fine-tunes **${p.baseModel}** on GEO Platform synthetic data using LoRA (PEFT).
 | \`train_geo_slm.py\` | Main fine-tuning script |
 | \`config.yaml\` | All hyperparameters — edit here |
 | \`requirements.txt\` | Python dependencies |
-| \`geo_synthetic_data.csv\` | Your 1M row training data (download from AethergenAI) |
+| \`geo_synthetic_data.csv\` | Your 1M row training data — 69 fields (download from AethergenAI) |
 
 ---
 
@@ -582,6 +595,21 @@ Risk Score: 31.0
 Z-Score: 0.42
 Drift Detected: False
 Decay Status: decaying (score: 52.1)
+
+# Latent Space Geometry
+UMAP Position: x=3.18  y=1.31  z=0.64
+Distance to Nearest Anchor: 0.214
+Distance Delta (30d): +0.038
+Drift Direction: negative
+
+# Anchor Proximity Scores
+  enterprise-trusted:   0.786
+  thought-leader:       0.541
+  cost-leader:          0.112
+  technical-authority:  0.423
+  brand-advocate:       0.198
+  challenger:           0.087
+  niche-specialist:     0.143
 
 ### Recommended Optimisation Action:"""
 

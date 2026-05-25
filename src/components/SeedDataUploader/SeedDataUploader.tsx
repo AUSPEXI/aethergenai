@@ -722,6 +722,27 @@ const SeedDataUploader: React.FC<SeedDataUploaderProps> = ({
                   Gemini:    ['gemini-2.0-flash', 'gemini-1.5-pro', 'gemini-1.5-flash', 'gemini-1.0-pro', 'gemini-ultra'],
                 };
 
+                // Approximate UMAP centroids per semantic cluster (3D embedding space)
+                const UMAP_CENTROIDS: Record<string, [number, number, number]> = {
+                  'enterprise-trusted':  [ 3.2,  1.5,  0.8],
+                  'cost-leader':         [-2.8,  0.5, -1.2],
+                  'thought-leader':      [ 1.1,  4.2,  0.3],
+                  'technical-authority': [ 2.5, -1.8,  2.1],
+                  'brand-advocate':      [-1.2,  2.9, -0.7],
+                  'challenger':          [-0.5, -2.1,  1.4],
+                  'niche-specialist':    [ 0.3,  0.2, -0.5],
+                };
+                // Adjacent cluster pairs share moderate cosine similarity
+                const ADJACENT_CLUSTERS: Record<string, string[]> = {
+                  'enterprise-trusted':  ['thought-leader', 'technical-authority'],
+                  'thought-leader':      ['enterprise-trusted', 'brand-advocate'],
+                  'technical-authority': ['enterprise-trusted', 'challenger'],
+                  'cost-leader':         ['challenger', 'niche-specialist'],
+                  'brand-advocate':      ['thought-leader', 'niche-specialist'],
+                  'challenger':          ['cost-leader', 'technical-authority'],
+                  'niche-specialist':    ['cost-leader', 'brand-advocate'],
+                };
+
                 const pick = (pool: any[]) => pool[Math.floor(Math.random() * pool.length)];
                 const rndScore = (mn = 0, mx = 100) => Math.round((Math.random() * (mx - mn) + mn) * 10) / 10;
 
@@ -777,6 +798,29 @@ const SeedDataUploader: React.FC<SeedDataUploaderProps> = ({
                         const cs = typeof row['content_score'] === 'number' ? row['content_score'] : 50;
                         row[f.name] = Math.floor(Math.random() * (Math.max(0, Math.ceil((100 - cs) / 20)) + 1)); return;
                       }
+                      // ── Latent space geometry ─────────────────────────────
+                      if (f.name === 'umap_x') { const c = UMAP_CENTROIDS[row['semantic_cluster'] as string] || [0,0,0]; row[f.name] = Math.round((c[0] + Math.random()*1.6-0.8)*100)/100; return; }
+                      if (f.name === 'umap_y') { const c = UMAP_CENTROIDS[row['semantic_cluster'] as string] || [0,0,0]; row[f.name] = Math.round((c[1] + Math.random()*1.6-0.8)*100)/100; return; }
+                      if (f.name === 'umap_z') { const c = UMAP_CENTROIDS[row['semantic_cluster'] as string] || [0,0,0]; row[f.name] = Math.round((c[2] + Math.random()*1.6-0.8)*100)/100; return; }
+                      if (f.name.startsWith('cluster_sim_')) {
+                        const fc = f.name.replace('cluster_sim_', '').replace(/_/g, '-');
+                        const ac = (row['semantic_cluster'] as string) || 'niche-specialist';
+                        const adj = ADJACENT_CLUSTERS[ac] || [];
+                        if (fc === ac)          { row[f.name] = Math.round((Math.random()*0.23+0.72)*1000)/1000; return; }
+                        if (adj.includes(fc))   { row[f.name] = Math.round((Math.random()*0.30+0.30)*1000)/1000; return; }
+                        row[f.name] = Math.round((Math.random()*0.20+0.05)*1000)/1000; return;
+                      }
+                      if (f.name === 'distance_to_nearest_anchor') {
+                        const ck = 'cluster_sim_' + ((row['semantic_cluster'] as string)||'niche-specialist').replace(/-/g,'_');
+                        const ps = typeof row[ck] === 'number' ? row[ck] as number : 0.5;
+                        row[f.name] = Math.round(Math.max(0, 1 - ps + (Math.random()*0.04-0.02))*1000)/1000; return;
+                      }
+                      if (f.name === 'distance_delta_30d') {
+                        const dir = row['drift_direction'] as string;
+                        if (dir === 'positive') { row[f.name] = Math.round((-Math.random()*0.12)*1000)/1000; return; }
+                        if (dir === 'negative') { row[f.name] = Math.round((Math.random()*0.15)*1000)/1000; return; }
+                        row[f.name] = Math.round((Math.random()*0.06-0.03)*1000)/1000; return;
+                      }
                       row[f.name] = Math.round(Math.random() * 100 * 10) / 10;
                       return;
                     }
@@ -802,6 +846,13 @@ const SeedDataUploader: React.FC<SeedDataUploaderProps> = ({
                       row[f.name] = `https://${domains[brandIdx]}/blog/${slug}`; return;
                     }
                     if (f.name === 'decay_status') { row[f.name] = decayStatus; return; }
+                    if (f.name === 'drift_direction') {
+                      // Correlated with drift_detected: if anomaly flagged, direction tends negative
+                      row[f.name] = (row['drift_detected'] === true)
+                        ? (Math.random() > 0.3 ? 'negative' : 'neutral')
+                        : pick(['positive', 'positive', 'neutral', 'neutral', 'neutral', 'negative']);
+                      return;
+                    }
                     // Automotive fallbacks (kept for non-GEO schemas)
                     if (f.name === 'vin') { row[f.name] = `VIN_${(i + 1).toString().padStart(6, '0')}`; return; }
                     if (f.name === 'model') { row[f.name] = ['Alpha', 'Beta', 'Gamma', 'Delta'][i % 4]; return; }

@@ -43,6 +43,11 @@ const ModelCollapseRiskDial: React.FC<ModelCollapseRiskDialProps> = ({
   const monitoringTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const lastActivityRef = useRef<number>(Date.now());
 
+  // Cleanup interval on unmount
+  useEffect(() => {
+    return () => { if (monitorIntervalRef.current) clearInterval(monitorIntervalRef.current); };
+  }, []);
+
   // Start monitoring automatically when syntheticData changes
   useEffect(() => {
     if (syntheticData.length > 0 && !isMonitoring) {
@@ -136,24 +141,22 @@ const ModelCollapseRiskDial: React.FC<ModelCollapseRiskDialProps> = ({
   };
 
   const calculateQualityDegradation = (): number => {
-    const nullValues = syntheticData.filter(record => 
-      Object.values(record).some(value => value === null || value === undefined)
+    const requiredFields = schema?.fields?.filter((f: any) => f.constraints?.required).map((f: any) => f.name) ?? [];
+    if (!requiredFields.length || !syntheticData.length) return 0;
+    const bad = syntheticData.filter(record =>
+      requiredFields.some((name: string) => record[name] == null || record[name] === '')
     ).length;
-    
-    return nullValues / syntheticData.length;
+    return bad / syntheticData.length;
   };
 
   const calculateNoveltyScore = (): number => {
-    // Simplified novelty calculation
-    const uniqueValues = new Set();
+    if (!syntheticData.length) return 0;
+    const uniqueValues = new Set<string>();
     syntheticData.forEach(record => {
       Object.values(record).forEach(value => {
-        if (value !== null && value !== undefined) {
-          uniqueValues.add(value);
-        }
+        if (value != null) uniqueValues.add(String(value));
       });
     });
-    
     const totalPossibleValues = syntheticData.length * Object.keys(syntheticData[0] || {}).length;
     return uniqueValues.size / Math.max(totalPossibleValues, 1);
   };
@@ -226,20 +229,21 @@ const ModelCollapseRiskDial: React.FC<ModelCollapseRiskDialProps> = ({
     }
   };
 
+  const monitorIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
   const startMonitoring = () => {
     setIsMonitoring(true);
     setMonitoringStartTime(Date.now());
-    // Start real-time monitoring
-    const interval = setInterval(() => {
+    if (monitorIntervalRef.current) clearInterval(monitorIntervalRef.current);
+    monitorIntervalRef.current = setInterval(() => {
       detectModelCollapse();
-    }, 5000); // Check every 5 seconds
-
-    return () => clearInterval(interval);
+    }, 5000);
   };
 
   const stopMonitoring = () => {
     setIsMonitoring(false);
     setShowContinuePrompt(false);
+    if (monitorIntervalRef.current) { clearInterval(monitorIntervalRef.current); monitorIntervalRef.current = null; }
   };
 
   const handleContinueMonitoring = () => {

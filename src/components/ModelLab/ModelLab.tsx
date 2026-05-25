@@ -32,7 +32,24 @@ const MODEL_TEMPLATES: ModelTemplate[] = [
     readyForFineTuning: true,
     bundledWithEvidence: true,
     sampleDataRows: 50000,
-    features: ['query_text', 'brand', 'ai_engine', 'content_score', 'semantic_cluster', 'competitive_density', 'citation_trigger'],
+    features: [
+      // Query context
+      'query_text', 'brand', 'ai_engine', 'model_version', 'semantic_cluster', 'anchor_type',
+      // Content quality (10 signals)
+      'content_score', 'entity_recall_rate', 'entity_density_score', 'statistical_anchors_score',
+      'inverted_pyramid_score', 'entropy_score', 'content_feedback_count', 'rewritten_snippet_available',
+      'days_since_published', 'content_type',
+      // Citation & visibility (6 signals)
+      'is_cited', 'citation_rank', 'citation_trigger', 'sov_score', 'cross_engine_citation_rate',
+      'ai_traffic', 'competitive_density',
+      // Competitive position (3 signals)
+      'competitor_gap', 'competitor_sov', 'trojan_horse_opportunity',
+      // Fact vault (3 signals)
+      'fact_category', 'fact_entropy_score', 'fact_text',
+      // Brand health (7 signals)
+      'sentiment', 'sentiment_score', 'threat_count', 'risk_score', 'z_score',
+      'drift_detected', 'decay_status', 'decay_score',
+    ],
     defaultParams: {},
     generator: async () => [],
     trainer: async () => null,

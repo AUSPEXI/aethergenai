@@ -185,7 +185,7 @@ function buildGeoSLMScript(p: GeoSLMParams): string {
 """
 AethergenAI – GEO SLM Fine-tuning Script
 Task:  Predict optimization_action from GEO query context + brand metrics
-Input: geo_synthetic_data.csv (46 fields, 1M rows)
+Input: geo_synthetic_data.csv (56 fields, 1M rows)
 Label: ${p.targetColumn}  →  publish_fact | update_entity | add_statistic | build_comparison | no_action
 
 Run:   python train_geo_slm.py --data geo_synthetic_data.csv --config config.yaml
@@ -246,20 +246,49 @@ LABEL_CLASSES = ['publish_fact', 'update_entity', 'add_statistic', 'build_compar
 # ── Data formatting ───────────────────────────────────────────────────────────
 
 def row_to_prompt(row: pd.Series) -> str:
-    """Convert a GEO data row into an instruction-style prompt."""
+    """Convert a 56-field GEO data row into an instruction-style prompt."""
+    cited_rank = "" if pd.isna(row.get('citation_rank')) else f" (rank {int(row.get('citation_rank', 0))})"
+    fact_snippet = str(row.get('fact_text', ''))[:120]
     return (
         "### GEO Optimisation Request\\n"
         f"Query: {row.get('query_text', row.get('search_query', ''))}\\n"
         f"Brand: {row.get('brand', '')}\\n"
-        f"AI Engine: {row.get('ai_engine', '')}\\n"
+        f"AI Engine: {row.get('ai_engine', '')}  |  Model: {row.get('model_version', '')}\\n"
         f"Semantic Cluster: {row.get('semantic_cluster', '')}\\n"
+        f"Anchor Type: {row.get('anchor_type', 'none')}\\n"
+        "\\n# Content Quality\\n"
         f"Content Score: {float(row.get('content_score', 0)):.1f}\\n"
-        f"SOV Score: {float(row.get('sov_score', 0)):.1f}\\n"
-        f"Competitive Density: {int(row.get('competitive_density', 0))}\\n"
+        f"Entity Recall Rate: {float(row.get('entity_recall_rate', 0)):.1f}\\n"
+        f"Entity Density Score: {float(row.get('entity_density_score', 0)):.1f}\\n"
+        f"Statistical Anchors: {float(row.get('statistical_anchors_score', 0)):.1f}\\n"
+        f"Inverted Pyramid: {float(row.get('inverted_pyramid_score', 0)):.1f}\\n"
+        f"Entropy Score: {float(row.get('entropy_score', 0)):.1f}\\n"
+        f"Content Feedback Count: {int(row.get('content_feedback_count', 0))}\\n"
+        f"Rewrite Available: {row.get('rewritten_snippet_available', False)}\\n"
+        f"Days Since Published: {int(row.get('days_since_published', 0))}\\n"
+        f"Content Type: {row.get('content_type', '')}\\n"
+        "\\n# Citation & Visibility\\n"
+        f"Is Cited: {row.get('is_cited', False)}{cited_rank}\\n"
         f"Citation Trigger: {row.get('citation_trigger', 'none')}\\n"
-        f"Decay Status: {row.get('decay_status', '')}\\n"
-        f"Is Cited: {row.get('is_cited', False)}\\n"
+        f"SOV Score: {float(row.get('sov_score', 0)):.1f}\\n"
+        f"Cross-Engine Citation Rate: {float(row.get('cross_engine_citation_rate', 0)):.2f}\\n"
+        f"AI Traffic: {int(row.get('ai_traffic', 0))}\\n"
+        f"Competitive Density: {int(row.get('competitive_density', 0))}\\n"
+        "\\n# Competitive Position\\n"
+        f"Competitor Gap: {float(row.get('competitor_gap', 0)):.1f}\\n"
+        f"Competitor SOV: {float(row.get('competitor_sov', 0)):.1f}\\n"
+        f"Trojan Horse Opportunity: {row.get('trojan_horse_opportunity', False)}\\n"
+        "\\n# Fact Vault\\n"
+        f"Fact Category: {row.get('fact_category', 'none')}\\n"
+        f"Fact Entropy Score: {float(row.get('fact_entropy_score', 0)):.1f}\\n"
+        f"Best Fact: {fact_snippet}\\n"
+        "\\n# Brand Health\\n"
+        f"Sentiment: {row.get('sentiment', '')} ({float(row.get('sentiment_score', 0)):.0f})\\n"
+        f"Threat Count: {int(row.get('threat_count', 0))}\\n"
+        f"Risk Score: {float(row.get('risk_score', 0)):.1f}\\n"
+        f"Z-Score: {float(row.get('z_score', 0)):.2f}\\n"
         f"Drift Detected: {row.get('drift_detected', False)}\\n"
+        f"Decay Status: {row.get('decay_status', '')} (score: {float(row.get('decay_score', 0)):.1f})\\n"
         "\\n### Recommended Optimisation Action:"
     )
 
@@ -512,15 +541,47 @@ tokenizer = AutoTokenizer.from_pretrained("${p.baseModel}")
 prompt = """### GEO Optimisation Request
 Query: best AI SEO tools for enterprise
 Brand: AcmeCloud
-AI Engine: ChatGPT
+AI Engine: ChatGPT  |  Model: gpt-4o
 Semantic Cluster: enterprise-trusted
+Anchor Type: systemic_anchor
+
+# Content Quality
 Content Score: 62.5
-SOV Score: 41.3
-Competitive Density: 4
-Citation Trigger: case_study
-Decay Status: decaying
+Entity Recall Rate: 38.0
+Entity Density Score: 41.2
+Statistical Anchors: 35.8
+Inverted Pyramid: 71.0
+Entropy Score: 58.3
+Content Feedback Count: 3
+Rewrite Available: True
+Days Since Published: 187
+Content Type: blog
+
+# Citation & Visibility
 Is Cited: False
-Drift Detected: True
+Citation Trigger: none
+SOV Score: 41.3
+Cross-Engine Citation Rate: 0.25
+AI Traffic: 3420
+Competitive Density: 4
+
+# Competitive Position
+Competitor Gap: -14.2
+Competitor SOV: 55.5
+Trojan Horse Opportunity: False
+
+# Fact Vault
+Fact Category: none
+Fact Entropy Score: 72.0
+Best Fact:
+
+# Brand Health
+Sentiment: Neutral (8)
+Threat Count: 2
+Risk Score: 31.0
+Z-Score: 0.42
+Drift Detected: False
+Decay Status: decaying (score: 52.1)
 
 ### Recommended Optimisation Action:"""
 

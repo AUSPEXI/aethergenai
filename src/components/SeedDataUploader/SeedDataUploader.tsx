@@ -668,7 +668,9 @@ const SeedDataUploader: React.FC<SeedDataUploaderProps> = ({
                   category: ['AI Search Visibility', 'Brand Monitoring', 'Content Performance', 'Competitor Analysis', 'Citation Tracking', 'Sentiment Analysis'],
                   search_query: ['generative AI search', 'LLM citation optimization', 'brand visibility in AI', 'content scoring for GPT', 'semantic anchor strategy', 'entity density optimization', 'AI-first SEO', 'zero-click content strategy', 'perplexity optimization', 'AI traffic attribution'],
                   trend: ['rising', 'rising', 'stable', 'stable', 'stable', 'falling'],
-                  // 6 new SLM training fields
+                  anchor_type: ['systemic_anchor', 'signal_point', 'emergent_trend', 'risk_vector', 'none', 'none'],
+                  fact_category: ['extracted', 'extracted', 'auto_researched', 'counter_fact', 'none', 'none'],
+                  // SLM training fields
                   optimization_action: ['publish_fact', 'publish_fact', 'update_entity', 'add_statistic', 'build_comparison', 'no_action'],
                   citation_trigger: ['statistic', 'statistic', 'case_study', 'technical_spec', 'comparison', 'price_anchor', 'none'],
                   query_text: [
@@ -736,6 +738,7 @@ const SeedDataUploader: React.FC<SeedDataUploaderProps> = ({
                       if (f.name === 'is_cited') row[f.name] = Math.random() > 0.4;
                       else if (f.name === 'trojan_horse_opportunity') row[f.name] = decayStatus === 'stale' && Math.random() > 0.5;
                       else if (f.name === 'drift_detected') row[f.name] = Math.random() > 0.88;
+                      else if (f.name === 'rewritten_snippet_available') row[f.name] = (typeof row['content_score'] === 'number' ? row['content_score'] : 70) < 60 && Math.random() > 0.3;
                       else row[f.name] = Math.random() > 0.5;
                       return;
                     }
@@ -756,6 +759,24 @@ const SeedDataUploader: React.FC<SeedDataUploaderProps> = ({
                       if (f.name === 'ai_traffic') { row[f.name] = Math.floor(Math.random() * 14950) + 50; return; }
                       if (f.name === 'ai_citations') { row[f.name] = Math.floor(Math.random() * 500); return; }
                       if (f.name === 'days_since_published') { row[f.name] = Math.floor(Math.random() * 729) + 1; return; }
+                      if (f.name === 'entity_recall_rate') { row[f.name] = rndScore(5, 95); return; }
+                      if (f.name === 'cross_engine_citation_rate') { row[f.name] = Math.round(Math.random() * 100) / 100; return; }
+                      if (f.name === 'competitor_gap') { row[f.name] = Math.round((Math.random() * 120 - 60) * 10) / 10; return; }
+                      if (f.name === 'sentiment_score') {
+                        const sent = row['sentiment'] as string;
+                        const mn = sent === 'Positive' ? 30 : sent === 'Negative' ? -100 : -20;
+                        const mx = sent === 'Positive' ? 100 : sent === 'Negative' ? -30 : 30;
+                        row[f.name] = Math.round((Math.random() * (mx - mn) + mn) * 10) / 10; return;
+                      }
+                      if (f.name === 'fact_entropy_score') { row[f.name] = rndScore(5, 95); return; }
+                      if (f.name === 'threat_count') {
+                        // mostly 0-3, occasional spike 7-20 (IsolationForest signal)
+                        row[f.name] = Math.random() > 0.15 ? Math.floor(Math.random() * 4) : Math.floor(Math.random() * 14) + 7; return;
+                      }
+                      if (f.name === 'content_feedback_count') {
+                        const cs = typeof row['content_score'] === 'number' ? row['content_score'] : 50;
+                        row[f.name] = Math.floor(Math.random() * (Math.max(0, Math.ceil((100 - cs) / 20)) + 1)); return;
+                      }
                       row[f.name] = Math.round(Math.random() * 100 * 10) / 10;
                       return;
                     }
@@ -871,53 +892,6 @@ const SeedDataUploader: React.FC<SeedDataUploaderProps> = ({
         </div>
       )}
 
-      {/* Debug Information - Remove this after fixing */}
-      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-        <h4 className="font-semibold text-yellow-800 mb-2">🔍 Debug Information</h4>
-        <div className="text-sm text-yellow-700 space-y-1">
-          <div>zkProof exists: {zkProof ? '✅ YES' : '❌ NO'}</div>
-          <div>proofVerified: {proofVerified === null ? '⏳ PENDING' : proofVerified ? '✅ TRUE' : '❌ FALSE'}</div>
-          <div>uploadedData length: {uploadedData.length}</div>
-          {zkProof && (
-            <div className="mt-2">
-              <div>Proof structure: {Object.keys(zkProof).join(', ')}</div>
-              <div>Has pi_a: {zkProof.proof?.pi_a ? '✅ YES' : '❌ NO'}</div>
-              <div>Proof timestamp: {zkProof.timestamp}</div>
-              <div>Proof type: {zkProof.proof?.pi_a?.[0]?.startsWith('0x') && zkProof.proof?.pi_a?.[0]?.length > 20 ? '🔐 REAL CRYPTOGRAPHIC' : '🎭 MOCK'}</div>
-              <div>Proof hash: {zkProof.proof?.pi_a?.[0]?.substring(0, 20)}...</div>
-              <div>Verification status: {proofVerified ? '✅ VERIFIED' : '❌ FAILED'}</div>
-            </div>
-          )}
-          {uploadedData.length > 0 && (
-            <div className="mt-2">
-              <button
-                onClick={async () => {
-                  console.log('🔄 Manual proof regeneration triggered');
-                  try {
-                    await generateZKProof(uploadedData);
-                    console.log('✅ Manual proof regeneration completed');
-                  } catch (error) {
-                    console.error('❌ Manual proof regeneration failed:', error);
-                  }
-                }}
-                className="px-3 py-1 bg-blue-600 text-white rounded text-xs hover:bg-blue-700 disabled:bg-gray-400"
-              >
-                🔄 Regenerate Proof
-              </button>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* zk-SNARK Proof Status */}
-      {zkProof && (
-        <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
-          <div className="flex items-center space-x-3">
-            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-purple-600"></div>
-            <span className="text-purple-800 font-medium">zk-SNARK Proof Status</span>
-          </div>
-        </div>
-      )}
 
       {/* Proof Management Section - Always Visible */}
       <div className="bg-white rounded-lg shadow-lg p-6">

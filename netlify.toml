@@ -22,11 +22,6 @@
 [functions."*"]
   timeout = 120
 
-[functions."databricks-jobs"]
-  included_files = [
-    "databricks/**"
-  ]
-
 # Specific API redirects (must come BEFORE the catch-all)
 [[redirects]]
   from = "/api/entitlements"
@@ -41,6 +36,11 @@
 [[redirects]]
   from = "/api/stripe/webhook"
   to = "/.netlify/functions/stripe-webhook"
+  status = 200
+
+[[redirects]]
+  from = "/api/audit-to-training"
+  to = "/.netlify/functions/audit-to-training"
   status = 200
 
 [[redirects]]

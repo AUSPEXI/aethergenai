@@ -31,6 +31,7 @@ import UpgradeGate from './UpgradeGate';
 import SeedDataUploader from '../SeedDataUploader/SeedDataUploader';
 import AdvancedBenchmarking from '../AdvancedBenchmarking/AdvancedBenchmarking';
 import ModelLab from '../ModelLab/ModelLab';
+import AugmentationPanel from '../AugmentationPanel/AugmentationPanel';
 import ModuleBenchmarks from '../DataCollection/ModuleBenchmarks';
 import DatasetsLibrary from '../Libraries/DatasetsLibrary';
 import ModelsLibrary from '../Libraries/ModelsLibrary';
@@ -112,6 +113,7 @@ type DashboardTab =
   | 'review'
   | 'pipelines'
   | 'models'
+  | 'augment'
   | 'privacy'
   | 'risk'
   | 'billing'
@@ -247,6 +249,7 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
     { id: 'benchmarks',  name: 'Benchmarks',     icon: LineChart,   description: 'Quality benchmarks and ablation recipes' },
     { id: 'reporting',   name: 'Reporting',      icon: BarChart3,   description: 'Fidelity, diversity and field reports' },
     { id: 'models',      name: 'Model Lab',      icon: BadgeCheck,  description: 'Download LoRA fine-tuning bundle' },
+    { id: 'augment',     name: 'Augmentation',   icon: Database,    description: 'Real labeled rows from audit logs and Citacious' },
     { id: 'risk',        name: 'Risk',           icon: Activity,    description: 'Model collapse risk analysis' },
     { id: 'review',      name: 'Review',         icon: BadgeCheck,  description: 'Human QA sample review' },
     { id: 'pipelines',   name: 'Pipelines',      icon: GitBranch,   description: 'Multi-schema pipeline snapshots' },
@@ -518,6 +521,9 @@ const AethergenDashboard: React.FC<AethergenDashboardProps> = ({ userEmail, onLo
             generatedCount={generatedCount}
           />
         );
+
+      case 'augment':
+        return <AugmentationPanel />;
 
       case 'billing':
         if (!roleHas(role, 'view_billing')) return <UpgradeGate feature="Billing" />;
